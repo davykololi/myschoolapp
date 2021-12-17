@@ -3,24 +3,25 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Models\CategorySchool;
-use App\Models\School;
-use Illuminate\Support\Str;
+use App\Services\SchoolService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\SchoolFormRequest as StoreRequest;
+use App\Http\Requests\SchoolFormRequest as UpdateRequest;
 
 class SchoolController extends Controller
 {
-    use ImageUploadTrait;
+    protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->schoolService = $schoolService;
     }
     
     /**
@@ -31,7 +32,7 @@ class SchoolController extends Controller
     public function index()
     {
         //
-        $schools = School::with('teachers','students','category_school')->get();
+        $schools = $this->schoolService->all();
 
         return view('superadmin.schools.index',['schools'=>$schools]);
     }
@@ -55,14 +56,10 @@ class SchoolController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        $input['code'] = strtoupper(Str::random(15));
-        $input['category_school_id'] = $request->school_category;
-        $school = School::create($input);
+        $school = $this->schoolService->create($request);
 
         return redirect()->route('superadmin.schools.index')->withSuccess(ucwords($school->name." ".'created successfully'));
     }
@@ -76,7 +73,7 @@ class SchoolController extends Controller
     public function show($id)
     {
         //
-        $school = School::findOrFail($id);
+        $school = $this->schoolService->getId($id);
 
         return view('superadmin.schools.show',['school'=>$school]);
     }
@@ -90,7 +87,7 @@ class SchoolController extends Controller
     public function edit($id)
     {
         //
-        $school = School::findOrFail($id);
+        $school = $this->schoolService->getId($id);
         $schoolCategories = CategorySchool::all();
 
         return view('superadmin.schools.edit',compact('school','schoolCategories'));
@@ -103,16 +100,13 @@ class SchoolController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $school = School::findOrFail($id);
+        $school = $this->schoolService->getId($id);
         if($school){
             Storage::delete('public/storage/'.$school->image);
-            $input = $request->only('name','head','ass_head','motto','vision','email','postal_address','mission','core_values');
-            $input['category_school_id'] = $request->school_category;
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $school->update($input);
+            $this->schoolService->update($request,$id);
 
             return redirect()->route('superadmin.schools.index')->withSuccess(ucwords($school->name." ".'details updated successfully'));
         }
@@ -127,10 +121,10 @@ class SchoolController extends Controller
     public function destroy($id)
     {
         //
-        $school = School::findOrFail($id);
+        $school = $this->schoolService->getId($id);
         if($school){
             Storage::delete('public/storage/'.$school->image);
-            $school->delete();
+            $this->schoolService->delete($id);
 
             return redirect()->route('superadmin.schools.index')->withSuccess(ucwords($school->name." ".'deleted successfully'));
         }

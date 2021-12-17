@@ -10,6 +10,8 @@ class Intake extends Model implements Searchable
 {
     //
     protected $table = 'intakes';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['name','desc','school_id'];
 
     public function getSearchResult(): SearchResult
@@ -46,5 +48,10 @@ class Intake extends Model implements Searchable
     public function exams()
     {
         return $this->belongsToMany('App\Models\Exam')->withTimestamps();
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('students','school')->get();
     }
 }

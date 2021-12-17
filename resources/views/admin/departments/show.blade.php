@@ -67,11 +67,13 @@
             <strong>{{ $department->name }} Meetings:</strong>
             <ol>
             @forelse($department->meetings as $meeting)
-                <li>{{ $meeting->name }} Date: {{ \Carbon\Carbon::parse($meeting->date)->format('d-m-Y') }}, 
-                    Agenda: {{ $meeting->agenda }}
+            <a href="{{route('admin.meetings.show',$meeting->id)}}">
+                <li>
+                    {{$meeting->name}} will be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda wiil be {{ $meeting->agenda }}.
                 </li>
+            </a>
             @empty
-            <p style="color: red">No meeting(s) assigned yet.</p>
+            <p style="color: red">No meeting(s) assigned to {{ $department->name }} yet.</p>
             @endforelse
             </ol>
         </div>
@@ -81,9 +83,11 @@
             <strong>{{ $department->name }} Teachers:</strong>
             <ol>
             @forelse($department->teachers as $teacher)
-                <li>{{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
+            <a href="{{route('admin.teachers.show',$teacher->id)}}">
+                <li>{{ $teacher->title }} {{ $teacher->full_name }} - {{ $teacher->phone_no }} {{ $teacher->email }}</li>
+            </a>
             @empty
-            <p style="color: red">No teachers(s) assigned yet.</p>
+            <p style="color: red">No teachers(s) assigned to {{ $department->name }} yet.</p>
             @endforelse
             </ol>
         </div>
@@ -93,9 +97,11 @@
             <strong>{{ $department->name }} Substaffs:</strong>
             <ol>
             @forelse($department->staffs as $staff)
-                <li>{{ $staff->title }} {{ $staff->full_name }} {{ $staff->phone_no }}</li>
+            <a href="{{route('admin.staffs.show',$staff->id)}}">
+                <li>{{ $staff->title }} {{ $staff->full_name }} - {{ $staff->phone_no }}</li>
+            </a>
             @empty
-            <p style="color: red">No substaff(s) assigned yet.</p>
+            <p style="color: red">No substaff(s) assigned to {{ $department->name }} yet.</p>
             @endforelse
             </ol>
         </div>

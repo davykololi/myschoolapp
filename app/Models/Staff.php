@@ -12,16 +12,14 @@ use App\Notifications\StaffResetPasswordNotification;
 class Staff extends Authenticatable implements Searchable
 {
     use Notifiable;
-    //
     protected $guard = 'staff';
-
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'staffs';
-    protected $fillable = ['first_name','middle_name','last_name','title','image','email','emp_no','id_no','dob','designation','postal_address','phone_no','history','school_id','position_staff_id','password','admin_id'];
-    protected $appends = ['full_name','age'];
+    protected $fillable = ['title','name','image','gender','email','emp_no','id_no','dob','designation','address','phone_no','history','bg_id','school_id','position_staff_id','password','admin_id'];
+    protected $appends = ['age'];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -41,8 +39,8 @@ class Staff extends Authenticatable implements Searchable
 
         return new SearchResult(
                 $this,
-                $this->full_name,
-                $url
+                $this->name,
+                $url,
             );
     }
 
@@ -54,6 +52,11 @@ class Staff extends Authenticatable implements Searchable
     public function position_staff()
     {
         return $this->belongsTo('App\Models\PositionStaff')->withDefault();
+    }
+
+    public function blood_group()
+    {
+        return $this->belongsTo('App\Models\BloodGroup')->withDefault();
     }
 
     public function departments()
@@ -81,11 +84,6 @@ class Staff extends Authenticatable implements Searchable
         return $this->belongsTo('App\Models\Admin')->withDefault();
     }
 
-    public function getFullNameAttribute()       
-    {        
-    return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
     public function assignments()
     {
         return $this->belongsToMany('App\Models\Assignment')->withTimestamps();
@@ -99,18 +97,13 @@ class Staff extends Authenticatable implements Searchable
         return $years;     
     }
 
-    public function setFirstNameAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['first_name'] = ucfirst($value);
+        $this->attributes['name'] = ucfirst($value);
     }
 
-    public function setMiddleNameAttribute($value)
+    public function scopeEagerLoaded($query)
     {
-        $this->attributes['middle_name'] = ucfirst($value);
-    }
-
-    public function setLastNameAttribute($value)
-    {
-        $this->attributes['last_name'] = ucfirst($value);
+        return $query->with('school','position_staff','departments','meetings','rewards','clubs','assignments','admin')->get();
     }
 }

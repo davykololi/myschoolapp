@@ -1,4 +1,4 @@
-<form action="{{ route('detach.std.meeting',['id'=>$meeting->id]) }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+<form action="{{ route('detach.stream.meeting',['id'=>$meeting->id]) }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
     {{ csrf_field() }}
     <div class="form-group">
         <label class="control-label col-sm-2" >Detach Stream</label>

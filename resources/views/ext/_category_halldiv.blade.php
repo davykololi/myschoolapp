@@ -10,7 +10,7 @@
 
                             @if($errors->has('hall_category'))
                                 <span class="help-block">
-                                    <strong>{{$errors->first('hall_category')}}</strong>
+                                    <span class="text-danger">{{$errors->first('hall_category')}}</span>
                                 </span>
                             @endif
                         </div>

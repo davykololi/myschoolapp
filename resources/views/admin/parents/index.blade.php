@@ -29,7 +29,7 @@
                     @foreach($parents as $parent)
                         <tr>
                             <td class="table-text">
-                                <div>{{$parent->title}} {{$parent->full_name}}</div>
+                                <div>{{$parent->title}} {{$parent->name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$parent->email}}</div>

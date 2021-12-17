@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\GradeSystem;
-use App\Models\Student;
-use App\Models\Stream;
-use App\Models\Department;
-use App\Models\Teacher;
-use App\Models\Staff;
-use App\Models\Librarian;
-use App\Models\Matron;
-use App\Models\Accountant;
+use App\Models\GradeSystem;;
 use App\Models\MyClass;
-use App\Models\MyParent;
-use App\Models\Dormitory;
-use App\Models\Subject;
-use App\Models\StandardSubject;
+use App\Models\Stream;
+use App\Models\Year;
+use App\Models\Section;
 use App\Rules\AllowedMark;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -53,21 +44,12 @@ class GradeSystemController extends Controller
     public function create()
     {
         //
-        $students = Student::all();
-        $streams = Stream::all();
-        $departments = Department::all();
-        $teachers = Teacher::all();
-        $staffs = Staff::all();
-        $librarians = Librarian::all();
-        $matrons = Matron::all();
-        $accountants = Accountant::all();
         $classes = MyClass::all();
-        $parents = MyParent::all();
-        $dormitories = Dormitory::all();
-        $subjects = Subject::all();
-        $standardSubjects = StandardSubject::all();
+        $years = Year::all();
+        $streams = Stream::all();
+        $sections = Section::all();
 
-        return view('admin.grade-systems.create',compact('students','streams','departments','teachers','staffs','librarians','matrons','accountants','classes','parents','dormitories','subjects','standardSubjects'));
+        return view('admin.grade-systems.create',compact('classes','years','streams','sections'));
     }
 
     /**
@@ -83,23 +65,14 @@ class GradeSystemController extends Controller
                 'points' => 'required',
                 'grade' => 'required',
                 'from_mark' => ['required'],
-                'to_mark' => ['required',],
+                'to_mark' => ['required'],
             ]);
         $input = $request->all();
         $input['school_id'] = auth()->user()->school->id;
-        $input['student_id'] = $request->student;
-        $input['stream_id'] = $request->stream;
-        $input['department_id'] = $request->department;
-        $input['teacher_id'] = $request->teacher;
-        $input['staff_id'] = $request->staff;
-        $input['librarian_id'] = $request->librarian;
-        $input['matron_id'] = $request->matron;
-        $input['accountant_id'] = $request->accountant;
         $input['class_id'] = $request->class;
-        $input['parent_id'] = $request->parent;
-        $input['dormitory_id'] = $request->dormitory;
-       	$input['subject_id'] = $request->subject;
-       	$input['standard_subject_id'] = $request->standard_subject;
+        $input['year_id'] = $request->year;
+        $input['stream_id'] = $request->stream;
+        $input['section_id'] = $request->section;
        	$gradeSystem = GradeSystem::create($input);
 
        	return redirect()->route('admin.grade-systems.index')->withSuccess(ucwords($gradeSystem->grade." ".'info created successfully'));
@@ -129,21 +102,12 @@ class GradeSystemController extends Controller
     {
         //
         $gradeSystem = GradeSystem::findOrFail($id);
-        $students = Student::all();
-        $streams = Stream::all();
-        $departments = Department::all();
-        $teachers = Teacher::all();
-        $staffs = Staff::all();
-        $librarians = Librarian::all();
-        $matrons = Matron::all();
-        $accountants = Accountant::all();
         $classes = MyClass::all();
-        $parents = MyParent::all();
-        $dormitories = Dormitory::all();
-        $subjects = Subject::all();
-        $standardSubjects = StandardSubject::all();
+        $years = Year::all();
+        $streams = Stream::all();
+        $sections = Section::all();
 
-        return view('admin.grade-systems.edit',compact('gradeSystem','students','streams','departments','teachers','staffs','librarians','matrons','accountants','classes','parents','dormitories','subjects','standardSubjects'));
+        return view('admin.grade-systems.edit',compact('classes','years','streams','sections'));
     }
 
     /**
@@ -158,26 +122,17 @@ class GradeSystemController extends Controller
         //
         $gradeSystem = GradeSystem::findOrFail($id);
         $request->validate([
-                'point' => 'required',
+                'points' => 'required',
                 'grade' => 'required',
-                'from_mark' => ['required',new AllowedMark],
-                'to_mark' => ['required',new AllowedMark],
+                'from_mark' => 'required',
+                'to_mark' => ['required'],
             ]);
         $input = $request->all();
         $input['school_id'] = auth()->user()->school->id;
-        $input['student_id'] = $request->student;
-        $input['stream_id'] = $request->stream;
-        $input['department_id'] = $request->department;
-        $input['teacher_id'] = $request->teacher;
-        $input['staff_id'] = $request->staff;
-        $input['librarian_id'] = $request->librarian;
-        $input['matron_id'] = $request->matron;
-        $input['accountant_id'] = $request->accountant;
         $input['class_id'] = $request->class;
-        $input['parent_id'] = $request->parent;
-        $input['dormitory_id'] = $request->dormitory;
-       	$input['subject_id'] = $request->subject;
-       	$input['standard_subject_id'] = $request->standard_subject;
+        $input['year_id'] = $request->year;
+        $input['stream_id'] = $request->stream;
+        $input['section_id'] = $request->section;
        	$gradeSystem->update($input);
 
        	return redirect()->route('admin.grade-systems.index')->withSuccess(ucwords($gradeSystem->grade." ".'info updated successfully'));

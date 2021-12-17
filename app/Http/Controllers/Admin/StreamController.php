@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\School;
-use App\Models\Stream;
+use App\Services\StreamService;
 use App\Models\Teacher;
 use App\Models\Assignment;
 use App\Models\Exam;
@@ -15,17 +15,21 @@ use App\Models\StreamSection;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\StreamFormRequest as StoreRequest;
+use App\Http\Requests\StreamFormRequest as UpdateRequest;
 
 class StreamController extends Controller
 {
+    protected $streamService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StreamService $streamService)
     {
         $this->middleware('auth:admin');
+        $this->streamService = $streamService;
     }
     
     /**
@@ -36,7 +40,7 @@ class StreamController extends Controller
     public function index()
     {
         //
-        $streams = Stream::with('teachers','students','school','class')->get();
+        $streams = $this->streamService->all();
 
         return view('admin.streams.index',compact('streams'));
     }
@@ -61,15 +65,10 @@ class StreamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(auth()->user()->school->initials.'/'.Str::random(5).'/'.now()->year);
-        $input['class_id'] = $request->class;
-        $input['stream_section_id'] = $request->stream_section;
-        $input['school_id'] = auth()->user()->school->id;
-        $stream = Stream::create($input);
+        $stream = $this->streamService->create($request);
 
         return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info created successfully'));
     }
@@ -83,7 +82,7 @@ class StreamController extends Controller
     public function show($id)
     {
         //
-        $stream = Stream::findOrFail($id);
+        $stream = $this->streamService->getId($id);
         $teachers = Teacher::all();
         $streamTeachers = $stream->teachers;
         $assignments = Assignment::all();
@@ -109,7 +108,7 @@ class StreamController extends Controller
     public function edit($id)
     {
         //
-        $stream = Stream::findOrFail($id);
+        $stream = $this->streamService->getId($id);
         $classes = MyClass::all();
         $streamSections = StreamSection::all();
 
@@ -123,18 +122,15 @@ class StreamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $stream = Stream::findOrFail($id);
-        $input = $request->only(['name']);
-        $input['school_id'] = auth()->user()->school->id;
-        $input['stream_section_id'] = $request->stream_section;
-        $input['code'] = strtoupper(auth()->user()->school->initials.'/'.Str::random(5).'/'.now()->year);
-        $input['class_id'] = $request->class;
-        $stream->update($input);
+        $stream = $this->streamService->getId($id);
+        if($stream){
+            $this->streamService->update($request,$id);
 
-        return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info updated successfully'));
+            return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info updated successfully'));
+        }
     }
 
     /**
@@ -146,9 +142,11 @@ class StreamController extends Controller
     public function destroy($id)
     {
         //
-        $stream = Stream::findOrFail($id);
-        $stream->delete();
+        $stream = $this->streamService->getId($id);
+        if($stream){
+            $this->streamService->delete($id);
 
-        return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info deleted successfully'));
+            return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info deleted successfully'));
+        }
     }
 }

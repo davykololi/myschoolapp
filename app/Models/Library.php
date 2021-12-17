@@ -57,4 +57,9 @@ class Library extends Model implements Searchable
     {
         return $this->belongsToMany('App\Models\Assignment')->withTimestamps();
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('meetings','rewards','books','librarians','school','students')->get();
+    }
 }

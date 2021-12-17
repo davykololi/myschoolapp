@@ -31,7 +31,7 @@
                                 @endforeach
                             </li>
                             @empty
-                            <p style="color: red">No assignment(s) to {{ $user->stream->name}}.</p>
+                            <p style="color: red">No assignment(s) to {{ Auth::user()->stream->name }}.</p>
                             @endforelse
                         </ol>
                     </div>

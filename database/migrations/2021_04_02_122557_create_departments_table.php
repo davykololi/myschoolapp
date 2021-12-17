@@ -22,6 +22,7 @@ class CreateDepartmentsTable extends Migration
             $table->string('asshead_name');
             $table->string('motto');
             $table->string('vision');
+            $table->string('mission');
             $table->bigInteger('school_id')->unsigned();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->timestamps();

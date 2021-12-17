@@ -14,7 +14,7 @@
                     <h2>FIELDS CATEGORIES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.category-fields.create')}}"> Create Field Category</a>
+                    <a class="btn btn-success" href="{{route('admin.category-fields.create')}}">Create</a>
                 </div>
             </div>
         </div>

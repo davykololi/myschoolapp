@@ -194,14 +194,14 @@
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
-									<img src="/storage/storage/{{Auth::user()->image }}" alt="{{Auth::user()->full_name }}" class="avatar-img rounded-circle">
+									<img src="/storage/storage/{{Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{Auth::user()->full_name }}" class="avatar-img rounded-circle">
 								</div>
 							</a>
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<div class="dropdown-user-scroll scrollbar-outer">
 									<li>
 										<div class="user-box">
-											<div class="avatar-lg"><img src="/storage/storage/{{Auth::user()->image }}" alt="{{Auth::user()->full_name }}" class="avatar-img rounded"></div>
+											<div class="avatar-lg"><img src="/storage/storage/{{Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{Auth::user()->full_name }}" class="avatar-img rounded"></div>
 											<div class="u-text">
 												<h4>
 													{{Auth::user()->title }} {{Auth::user()->first_name }} {{Auth::user()->last_name }}

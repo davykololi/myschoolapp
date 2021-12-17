@@ -19,11 +19,10 @@ class SuperadminTableSeeder extends Seeder
     	//
         DB::table('superadmins')->delete();
         Superadmin::create([
-        			'first_name' => 'David',
-        			'middle_name' => 'Misiko',
-        			'last_name' => 'Kololi',
+        			'name' => 'David Misiko Kololi',
         			'email' => 'kololimdavid@gmail.com',
         			'title' => 'Engineer',
+        			'address' => '688 Bungoma, Kenya',
         			'password' => Hash::make('kenyayangu17'),
         			]); 
     }

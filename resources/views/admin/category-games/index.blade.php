@@ -14,7 +14,7 @@
                     <h2>GAME CATEGORIES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.category-games.create')}}"> Create Game Category</a>
+                    <a class="btn btn-success" href="{{route('admin.category-games.create')}}">Create</a>
                 </div>
             </div>
         </div>

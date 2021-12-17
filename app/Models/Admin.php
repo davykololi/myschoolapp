@@ -10,18 +10,17 @@ use App\Notifications\AdminResetPasswordNotification;
 class Admin extends Authenticatable
 {
     use Notifiable;
-    //
     protected $guard = 'admin';
-
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'admins';
-    protected $fillable = ['first_name','middle_name','last_name','title','email','image','id_no','emp_no','dob','designation','postal_address','phone_no','history','school_id','superadmin_id','password'];
-    protected $appends = ['full_name','age'];
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $fillable = ['title','name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history','school_id','superadmin_id','password'];
+    protected $appends = ['age'];
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i'];
-
     /**
     * The attributes that should be hidden for arrays.
     *
@@ -59,11 +58,6 @@ class Admin extends Authenticatable
         return $this->hasMany('App\Models\Staff','admin_id','id');
     }
 
-    public function getFullNameAttribute()       
-    {        
-    return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
     public function assignments()
     {
         return $this->belongsToMany('App\Models\Assignment')->withTimestamps();
@@ -82,18 +76,13 @@ class Admin extends Authenticatable
         return $years;     
     }
 
-    public function setFirstNameAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['first_name'] = ucfirst($value);
+        $this->attributes['name'] = ucfirst($value);
     }
 
-    public function setMiddleNameAttribute($value)
+    public function scopeEagerLoaded($query)
     {
-        $this->attributes['middle_name'] = ucfirst($value);
-    }
-
-    public function setLastNameAttribute($value)
-    {
-        $this->attributes['last_name'] = ucfirst($value);
+        return $query->with('superadmin','school','staffs','students')->get();
     }
 }

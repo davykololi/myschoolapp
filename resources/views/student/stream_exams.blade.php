@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h1 style="text-transform: uppercase;">{{ $user->stream->name}} Exam Schedule</h1>
+                        <h1 style="text-transform: uppercase;">{{ Auth::user()->stream->name }} Exam Schedule</h1>
                     </div>
                     <div class="panel-body">
                         <ol>
@@ -17,7 +17,7 @@
                                 <span style="color: blue">End Date:</span> {{ date("jS,F,Y",strtotime($exam->end_date)) }}.
                                 <span style="color: green;">Timetable:</span> 
                                 @if(!empty($exam->timetables))
-                                    @forelse($exam->exam_timetables as $examTimetable)
+                                    @forelse($exam->timetables as $timetable)
                                         <a href="{{route('student.timetable.download',$timetable->id)}}" class="btn btn-outline-warning">
                                             Download
                                         </a>
@@ -27,7 +27,7 @@
                                 @endif
                             </li>
                             @empty
-                                <p style="color: red">{{$user->stream->name}} Has No Exam Schedule.</p>
+                                <p style="color: red">{{ Auth::user()->stream->name }} Has No Exam Schedule.</p>
                             @endforelse
                         </ol>
                     </div>

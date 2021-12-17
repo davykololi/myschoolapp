@@ -63,7 +63,7 @@
             <strong>{{ $meeting->name }} Students:</strong>
             <ol>
             @forelse($meeting->students as $student)
-                <li>{{ $student->full_name }} {{ $student->standard->name }}</li>
+                <li>{{ $student->full_name }} {{ $student->stream->name }}</li>
             @empty
             <p>No student(s) assigned to {{ $meeting->name }} yet.</p>
             @endforelse
@@ -118,8 +118,8 @@
     @include('meeting.detachstudentform')
     @include('meeting.attachstaffform')
     @include('meeting.detachstaffform')
-    @include('meeting.attachstdform')
-    @include('meeting.detachstdform')
+    @include('meeting.attachstreamform')
+    @include('meeting.detachstreamform')
 </div>
 </main>
 @endsection

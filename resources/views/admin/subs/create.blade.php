@@ -18,6 +18,9 @@
                         <label class="control-label col-sm-2" >Subject</label>
                         <div class="col-sm-10">
                             <input type="text" name="desc" id="desc" class="form-control" placeholder="Eg. English F1 North">
+                            @error('desc')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     @include('ext._attach_teacherdiv')

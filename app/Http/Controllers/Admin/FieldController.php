@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\Field;
-use App\Models\School;
-use App\Models\CategoryField;
+use App\Services\FieldService;
+use App\Services\FieldCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\FieldFormRequest as StoreRequest;
+use App\Http\Requests\FieldFormRequest as UpdateRequest;
 
 class FieldController extends Controller
 {
+    protected $fieldService,$fieldCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(FieldService $fieldService,FieldCatService $fieldCatService)
     {
         $this->middleware('auth:admin');
+        $this->fieldService = $fieldService;
+        $this->fieldCatService = $fieldCatService;
     }
 
     /**
@@ -30,7 +32,7 @@ class FieldController extends Controller
     public function index()
     {
         //
-        $fields = Field::with('school','category_field')->get();
+        $fields = $this->fieldService->all();
 
         return view('admin.fields.index',compact('fields'));
     }
@@ -43,7 +45,7 @@ class FieldController extends Controller
     public function create()
     {
         //
-        $categoryFields = CategoryField::all();
+        $categoryFields = $this->fieldCatService->all();
 
         return view('admin.fields.create',compact('categoryFields'));
     }
@@ -54,14 +56,10 @@ class FieldController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_field_id'] = $request->field_category;
-        $field = Field::create($input);
+        $field = $this->fieldService->create($request);
 
         return redirect()->route('admin.fields.index')->withSuccess(ucwords($field->name." ".'created successfully'));
     }
@@ -72,9 +70,11 @@ class FieldController extends Controller
      * @param  \App\Models\Field  $field
      * @return \Illuminate\Http\Response
      */
-    public function show(Field $field)
+    public function show($id)
     {
         //
+        $field = $this->fieldService->getId($id);
+
         return view('admin.fields.show',compact('field'));
     }
 
@@ -84,13 +84,13 @@ class FieldController extends Controller
      * @param  \App\Models\Field  $field
      * @return \Illuminate\Http\Response
      */
-    public function edit(Field $field)
+    public function edit($id)
     {
         //
-        $schools = School::all();
-        $categoryFields = CategoryField::all();
+        $field = $this->fieldService->getId($id);
+        $categoryFields = $this->fieldCatService->all();
 
-        return view('admin.fields.edit',compact('field','schools','categoryFields'));
+        return view('admin.fields.edit',compact('field','categoryFields'));
     }
 
     /**
@@ -100,15 +100,15 @@ class FieldController extends Controller
      * @param  \App\Models\Field  $field
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Field $field)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->only(['name']);
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_field_id'] = $request->field_category;
-        $field->update($input);
+        $field = $this->fieldService->getId($id);
+        if($field){
+            $this->fieldService->update($request,$id);
 
-        return redirect()->route('admin.fields.index')->withSuccess(ucwords($field->name." ".'updated successfully'));
+            return redirect()->route('admin.fields.index')->withSuccess(ucwords($field->name." ".'updated successfully'));
+        }
     }
 
     /**
@@ -117,11 +117,14 @@ class FieldController extends Controller
      * @param  \App\Models\Field  $field
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Field $field)
+    public function destroy($id)
     {
         //
-        $field->delete();
+        $field = $this->fieldService->getId($id);
+        if($field){
+            $this->fieldService->delete($id);
 
-        return redirect()->route('admin.fields.index')->withSuccess(ucwords($field->name." ".'deleted successfully'));
+            return redirect()->route('admin.fields.index')->withSuccess(ucwords($field->name." ".'deleted successfully'));
+        }
     }
 }

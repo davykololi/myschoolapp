@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\CategoryGame;
+use App\Services\GameCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\GameCatFormRequest as StoreRequest;
+use App\Http\Requests\GameCatFormRequest as UpdateRequest;
 
 class CategoryGameController extends Controller
 {
+    protected $gameCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(GameCatService $gameCatService)
     {
         $this->middleware('auth:admin');
+        $this->gameCatService = $gameCatService;
     }
 
     /**
@@ -27,7 +30,7 @@ class CategoryGameController extends Controller
     public function index()
     {
         //
-        $categoryGames = CategoryGame::get();
+        $categoryGames = $this->gameCatService->all();
 
         return view('admin.category-games.index',compact('categoryGames'));
     }
@@ -49,14 +52,12 @@ class CategoryGameController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        CategoryGame::create($input);
+        $categoryGame = $this->gameCatService->create($request);
 
-        return redirect()->route('admin.category-games.index')->withSuccess('The game category created successfully!');
+        return redirect()->route('admin.category-games.index')->withSuccess(ucwords($categoryGame->name." ".'category created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class CategoryGameController extends Controller
      * @param  \App\Models\CategoryGame  $categoryGame
      * @return \Illuminate\Http\Response
      */
-    public function show(CategoryGame $categoryGame)
+    public function show($id)
     {
         //
+        $categoryGame = $this->gameCatService->getId($id);
+
         return view('admin.category-games.show',compact('categoryGame'));
     }
 
@@ -77,9 +80,11 @@ class CategoryGameController extends Controller
      * @param  \App\Models\CategoryGame  $categoryGame
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryGame $categoryGame)
+    public function edit($id)
     {
         //
+        $categoryGame = $this->gameCatService->getId($id);
+
         return view('admin.category-games.edit',compact('categoryGame'));
     }
 
@@ -90,14 +95,15 @@ class CategoryGameController extends Controller
      * @param  \App\Models\CategoryGame  $categoryGame
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoryGame $categoryGame)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $categoryGame->update($input);
+        $categoryGame = $this->gameCatService->getId($id);
+        if($categoryGame){
+            $this->gameCatService->update($request,$id);
 
-        return redirect()->route('admin.category-games.index')->withSuccess('The game category updated successfully!');
+            return redirect()->route('admin.category-games.index')->withSuccess(ucwords($categoryGame->name." ".'category updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class CategoryGameController extends Controller
      * @param  \App\Models\CategoryGame  $categoryGame
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryGame $categoryGame)
+    public function destroy($id)
     {
         //
-        $categoryGame->delete();
+        $categoryGame = $this->gameCatService->getId($id);
+        if($categoryGame){
+            $this->gameCatService->delete($id);
 
-        return redirect()->route('admin.category-games.index')->withSuccess('The game category deleted successfully!');
+            return redirect()->route('admin.category-games.index')->withSuccess(ucwords($categoryGame->name." ".'category deleted successfully!'));
+        }
     }
 }

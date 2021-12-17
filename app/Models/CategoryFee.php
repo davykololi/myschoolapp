@@ -10,6 +10,8 @@ class CategoryFee extends Model
     use HasFactory;
 
     protected $table = 'category_fees';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['name','desc','slug'];
 
     public function fees() {

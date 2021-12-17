@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Library;
 
-use App\Models\Library;
-use App\Models\Meeting;
+use App\Repositories\LibraryRepository as LibRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class AttachMeetingController extends Controller
 {
+    protected $libRepo;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(LibRepo $libRepo)
     {
         $this->middleware('auth:admin');
+        $this->libRepo = $libRepo;
     }
 
     public function attachMeeting(Request $request,$id)
     {
-    	$library = Library::findOrFail($id);
+    	$library = $this->libRepo->getId($id);
     	$meeting = $request->meeting;
     	$library->meetings()->attach($meeting);
 

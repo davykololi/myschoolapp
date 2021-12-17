@@ -7,7 +7,6 @@
                 <option value="{{$lesson->id}}">{{$lesson->name}}</option>
                 @endforeach
             </select>
-
             @if($errors->has('lesson'))
             <span class="help-block">
                 <strong>{{$errors->first('lesson')}}</strong>

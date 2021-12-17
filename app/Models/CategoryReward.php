@@ -10,6 +10,8 @@ class CategoryReward extends Model
     use HasFactory;
 
     protected $table = 'category_rewards';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['name','desc','slug'];
 
     public function rewards() {

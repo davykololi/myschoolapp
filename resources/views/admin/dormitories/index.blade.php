@@ -14,7 +14,7 @@
                     <h2>DORMITORY LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.dormitories.create')}}"> Add Dormitory</a>
+                    <a class="btn btn-success" href="{{route('admin.dormitories.create')}}">Create</a>
                 </div>
             </div>
         </div>

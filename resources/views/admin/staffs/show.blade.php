@@ -6,7 +6,7 @@
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
-            <h2 style="text-transform: uppercase;">{{$staff->first_name}}'s Details</h2>
+            <h2 style="text-transform: uppercase;">{{$staff->name}}'s Details</h2>
             <br/>
         </div>
         <div class="pull-right">
@@ -23,7 +23,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $staff->title }} {{ $staff->full_name }}
+            {{ $staff->title }} {{ $staff->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -71,7 +71,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Postal Address:</strong>
-            {{$staff->postal_address}}
+            {{$staff->address}}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

@@ -33,7 +33,7 @@
                     @foreach($teachers as $key => $teacher)
                         <tr>
                             <td class="table-text">
-                                <div>{{$teacher->title}} {{$teacher->full_name}}</div>
+                                <div>{{$teacher->title}} {{$teacher->name}}</div>
                             </td>
                             </td>
                             <td class="table-text">

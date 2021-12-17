@@ -19,6 +19,7 @@ class CreateDormitoriesTable extends Migration
             $table->string('code');
             $table->bigInteger('bed_no')->unsigned();
             $table->string('dom_head');
+            $table->string('ass_head');
             $table->bigInteger('school_id')->unsigned();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->timestamps();

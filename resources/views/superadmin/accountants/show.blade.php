@@ -24,7 +24,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $accountant->title }} {{ $accountant->full_name }}
+            {{ $accountant->title }} {{ $accountant->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -35,20 +35,20 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>Blood Group:</strong>
+            {{ $accountant->blood_group->id }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <strong>Phone No.:</strong>
             {{ $accountant->phone_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Current Address</strong>
-            {{ $accountant->current_address }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Permanent Address</strong>
-            {{ $accountant->permanent_address }}
+            <strong>Postal Address</strong>
+            {{ $accountant->address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

@@ -22,21 +22,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >First Name</label>
+                        <label class="control-label col-sm-2" >Name</label>
                         <div class="col-sm-10">
-                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ $admin->first_name }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Middle Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="middle_name" id="middle_name" class="form-control" value="{{ $admin->middle_name }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Last Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ $admin->last_name }}">
+                            <input type="text" name="name" id="name" class="form-control" value="{{ $admin->name }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -49,6 +37,9 @@
                         <label class="control-label col-sm-2" >Image</label>
                         <div class="col-sm-10">
                             <input type="file" name="image" id="image" class="form-control" value="{{ $admin->image }}">
+                            @error('image')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
@@ -78,7 +69,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Postal Address</label>
                         <div class="col-sm-10">
-                            <input type="text" name="postal_address" id="postal_address" class="form-control" value="{{ $admin->postal_address }}">
+                            <input type="text" name="address" id="address" class="form-control" value="{{ $admin->address }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -88,6 +79,12 @@
                         </div>
                     </div>
                     @include('ext._attach_schooldiv')
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >History</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="summary-ckeditor" name="history">{!! $admin->history !!}</textarea>
+                        </div>        
+                    </div>
                     @include('ext._submit_update_button')
                 </form>
             </div>

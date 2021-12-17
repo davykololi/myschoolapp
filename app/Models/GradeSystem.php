@@ -10,10 +10,30 @@ class GradeSystem extends Model
     use HasFactory;
 
     protected $table = 'grade_systems';
-    protected $fillable = ['grade','points','from_mark','to_mark','student_id','school_id','stream_id','department_id','teacher_id','staff_id','librarian_id','matron_id','accountant_id','admin_id','class_id','parent_id','dormitory_id','intake_id','subject_id','standard_subject_id'];
+    protected $fillable = ['grade','points','from_mark','to_mark','school_id','class_id','stream_id','year_id','section_id'];
 
-    public function students()
+    public function section()
     {
-    	return $this->belongsToMany('App\Models\Student')->withTimestamps();
+    	return $this->belongsTo('App\Models\Section')->withDefault();
+    }
+
+    public function school()
+    {
+    	return $this->belongsTo('App\Models\School')->withDefault();
+    }
+
+    public function class()
+    {
+    	return $this->belongsTo('App\Models\MyClass')->withDefault();
+    }
+
+    public function stream()
+    {
+    	return $this->belongsTo('App\Models\Stream')->withDefault();
+    }
+
+    public function year()
+    {
+    	return $this->belongsTo('App\Models\Year')->withDefault();
     }
 }

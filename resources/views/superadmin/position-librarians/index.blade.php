@@ -14,7 +14,7 @@
                     <h2>LIBRARIANS ROLES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('superadmin.position-librarians.create')}}"> Create Librarian Role</a>
+                    <a class="btn btn-success" href="{{route('superadmin.position-librarians.create')}}">Create</a>
                 </div>
             </div>
         </div>

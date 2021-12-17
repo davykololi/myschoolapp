@@ -11,16 +11,15 @@ use App\Notifications\SuperadminResetPasswordNotification;
 class Superadmin extends Authenticatable
 {
     use Notifiable;
-    //
     protected $guard = 'superadmin';
-
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'superadmins';
-    protected $fillable = ['first_name','middle_name','last_name','title','email','password'];
-    protected $appends = ['full_name'];
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $fillable = ['name','title','email','address','password'];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -45,11 +44,6 @@ class Superadmin extends Authenticatable
         return auth()->id() == $admin->superadmin->id;
     }
 
-    public function getFullNameAttribute()       
-    {        
-    return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
     public function assignments()
     {
         return $this->belongsToMany('App\Models\Assignment')->withTimestamps();
@@ -60,18 +54,8 @@ class Superadmin extends Authenticatable
         return $this->belongsToMany('App\Models\Reward')->withTimestamps();
     }
 
-    public function setFirstNameAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['first_name'] = ucfirst($value);
-    }
-
-    public function setMiddleNameAttribute($value)
-    {
-        $this->attributes['middle_name'] = ucfirst($value);
-    }
-
-    public function setLastNameAttribute($value)
-    {
-        $this->attributes['last_name'] = ucfirst($value);
+        $this->attributes['name'] = ucfirst($value);
     }
 }

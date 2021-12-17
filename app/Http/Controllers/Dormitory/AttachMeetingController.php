@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Dormitory;
 
-use App\Models\Dormitory;
-use App\Models\Meeting;
+use App\Repositories\DormitoryRepository as DormRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class AttachMeetingController extends Controller
 {
+    protected $dormRepo;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(DormRepo $dormRepo)
     {
         $this->middleware('auth:admin');
+        $this->dormRepo = $dormRepo;
     }
 
     public function attachMeeting(Request $request,$id)
     {
-    	$dormitory = Dormitory::findOrFail($id);
+    	$dormitory = $this->dormRepo->getId($id);
     	$meeting = $request->meeting;
     	$dormitory->meetings()->attach($meeting);
 

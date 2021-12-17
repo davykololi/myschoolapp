@@ -24,7 +24,8 @@
                     <!-- Table Headings -->
                     <thead>
                         <th width="30%">NAME</th>
-                        <th width="45%">DESCRIPTION</th>
+                        <th width="15%">INITIALS</th>
+                        <th width="30%">DESCRIPTION</th>
                         <th width="25%">ACTION</th>
                     </thead>
                     <!-- Table Body -->
@@ -33,6 +34,9 @@
                         <tr>
                             <td class="table-text">
                                 <div>{{$streamSection->name}}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>{{$streamSection->initials}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$streamSection->desc}}</div>

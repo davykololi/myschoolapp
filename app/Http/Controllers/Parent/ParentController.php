@@ -3,24 +3,30 @@
 namespace App\Http\Controllers\Parent;
 
 use Auth;
-use App\Models\Student;
-use App\Models\Stream;
-use App\Models\Department;
-use App\Models\Teacher;
-use App\Models\PositionTeacher;
+use App\Repositories\StudentRepository as StudentRepo;
+use App\Repositories\StreamRepository as StreamRepo;
+use App\Repositories\DepartmentRepository as DeptRepo;
+use App\Repositories\TeacherRepository as TeacherRepo;
+use App\Repositories\TeacherRoleRepository as TeacherRoleRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ParentController extends Controller
 {
+    protected $studentRepo,$streamRepo,$deptRepo,$teacherRepo,$teacherRoleRepo;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StudentRepo $studentRepo,StreamRepo $streamRepo,DeptRepo $deptRepo,TeacherRepo $teacherRepo,TeacherRoleRepo $teacherRoleRepo)
     {
         $this->middleware('auth:parent');
+        $this->studentRepo = $studentRepo;
+        $this->streamRepo = $streamRepo;
+        $this->deptRepo = $deptRepo;
+        $this->teacherRepo = $teacherRepo;
+        $this->teacherRoleRepo = $teacherRoleRepo;
     }
  
     /**
@@ -41,14 +47,16 @@ class ParentController extends Controller
         return view('parent.students',compact('user','students'));
     }
 
-    public function showStudent(Student $student)
+    public function showStudent($id)
     {
+        $student = $this->studentRepo->getId($id);
 
         return view('parent.show_student',compact('student'));
     }
 
-    public function studentStream(Stream $stream)
+    public function studentStream($id)
     {
+        $stream = $this->streamRepo->getId($id);
         $standardSubjects = $stream->standard_subjects;
 
         return view('parent.student_stream',compact('stream','standardSubjects'));
@@ -57,24 +65,26 @@ class ParentController extends Controller
     public function schoolTeachers()
     {
         $user = Auth::user();
-        $principal = PositionTeacher::whereName('The Principal')->first();
+        $principal = $this->teacherRoleRepo->principal();
         $headTeachers = $principal->teachers()->with('position_teacher')->get();
 
-        $deputy = PositionTeacher::whereName('The Deputy Principal')->first();
+        $deputy = $this->teacherRoleRepo->deputyPrincipal();
         $deputyHeadTeachers = $deputy->teachers()->with('position_teacher')->get();
 
-        $scienceDept = Department::whereName('Science Department')->first();
-        $scienceDeptHead = PositionTeacher::whereName('The Head Science Department')->first();
+        $scienceDept = $this->deptRepo->scienceDept();
+        $scienceDeptHead = $this->teacherRoleRepo->scienceDeptHead();
         $scienceDeptHeadTeachers = $scienceDeptHead->teachers()->with('position_teacher')->get();
-        $scienceDeptAssHead = PositionTeacher::whereName('The Assistant Head Science Department')->first();
+        $scienceDeptAssHead = $this->teacherRoleRepo->assistScienceDept();
         $scienceDeptAssHeadTeachers = $scienceDeptAssHead->teachers()->with('position_teacher')->get();
         $scienceDeptTeachers = $scienceDept->teachers()->with('position_teacher')->get();
 
         return view('parent.school_teachers',compact('user','headTeachers','deputyHeadTeachers','scienceDept','scienceDeptHeadTeachers','scienceDeptAssHeadTeachers','scienceDeptTeachers'));
     }
 
-    public function showTeacher(Teacher $teacher)
+    public function showTeacher($id)
     {
+        $teacher = $this->teacherRepo->getId($id);
+
     	return view('parent.show_teacher',compact('teacher'));
     }
 }

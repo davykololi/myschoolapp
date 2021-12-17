@@ -14,7 +14,7 @@
                     <h2>TIMETABLES LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.timetables.create')}}"> Add A Timetable</a>
+                    <a class="btn btn-success" href="{{route('admin.timetables.create')}}">Create</a>
                 </div>
             </div>
         </div>

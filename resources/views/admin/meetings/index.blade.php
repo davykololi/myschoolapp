@@ -14,7 +14,7 @@
                     <h2>MEETING LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.meetings.create')}}"> Add A Meeting</a>
+                    <a class="btn btn-success" href="{{route('admin.meetings.create')}}">Create</a>
                 </div>
             </div>
         </div>

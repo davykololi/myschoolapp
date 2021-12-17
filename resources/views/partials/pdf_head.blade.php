@@ -12,10 +12,11 @@
         .uc{text-transform: uppercase;}
         .school_margin{margin-top: -0.5em;margin-bottom: -0.5em;}
         .email_margin{margin-top: 0.5em;margin-bottom: 1em;}
-        #table_style{width: 100%;page-break-inside: always;}
+        #table_style{width: 100%;page-break-inside: always;margin-left: 80px}
         .table_caption{text-transform: uppercase;text-align: center;margin-top: 5em;margin-bottom: -04em;}
         .title{text-transform: uppercase;text-align: center;margin-top: 30px;margin-bottom: 0}
         .table_row{text-transform: uppercase;}
+        tr,td{border: 1px solid black}
     </style>
     @include('partials.pdf_script')
 </head>

@@ -9,6 +9,8 @@ class Term extends Model
 {
     use HasFactory;
     protected $table = 'terms';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['name','code','school_id'];
 
     public function school()
@@ -24,5 +26,10 @@ class Term extends Model
     public function exams()
     {
         return $this->hasMany('App\Models\Exam','term_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school')->get();
     }
 }

@@ -14,7 +14,7 @@
                     <h2>EXAMS CATEGORIES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.category-exams.create')}}"> Create Exam Category</a>
+                    <a class="btn btn-success" href="{{route('admin.category-exams.create')}}">Create</a>
                 </div>
             </div>
         </div>

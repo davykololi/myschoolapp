@@ -1,68 +1,114 @@
 @extends('layouts.admin')
-@section('title', '| Add Student')
-
+@section('title', 'Add Student')
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
-    <div class="col-lg-12">
-        @include('partials.errors')
         <div class="card">
-            <div class="card-header">
-                <h5 class="card-title">CREATE STUDENT</h5>
-                <a href="{{ route('admin.students.index') }}" class="btn btn-primary pull-right">Back</a>
+            <div class="card-header bg-white header-elements-inline">
+                <h6 class="card-title">STUDENT ADMISSION FORM</h6>
             </div>
-            <div class="card-body">
-                <form action="{{ route('admin.students.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
-                    @include('ext._csrfdiv')
-                    @include('ext._common_detailsdiv')
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Image</label>
-                        <div class="col-sm-10">
-                            <input type="file" name="image" id="image" value="{{old('image')}}" class="form-control">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <a href="{{ route('admin.students.index') }}" class="btn btn-primary pull-right">Back</a>
+                </div>
+            </div>
+            
+            <form id="ajax-reg" method="post" enctype="multipart/form-data" class="wizard-form steps-validation" action="{{ route('admin.students.store') }}" data-fouc>
+               @csrf
+                <h6>Personal data</h6>
+                <fieldset>
+                    @include('ext._first_common_detailsdiv')
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="section_id">Blood Group: <span class="text-danger">*</span></label>
+                                @include('ext._blood_group_div')
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Admission No.</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="admission_no" id="admission_no"value="{!! old('admission_no') !!}" class="form-control" placeholder="Admission No.">
+                </fieldset>
+
+                <h6>Student Data</h6>
+                <fieldset>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="section_id">Class: <span class="text-danger">*</span></label>
+                                @include('ext._attach_streamdiv')
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="section_id">Intake: <span class="text-danger">*</span></label>
+                                @include('ext._attach_intakediv')
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="year_admitted">Admission Date: <span class="text-danger">*</span></label>
+                                <input type="text" name="doa" id="datetimepicker" class="form-control">
+                                @error('doa')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Admission Number:</label>
+                                <input type="text" name="admission_no" placeholder="Admission Number" class="form-control" value="{{ old('admission_no') }}">
+                                @error('admission_no')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >DOB</label>
-                        <div class="col-sm-10">
-                            <input type="date" name="dob" id="dob" value="{!! old('dob') !!}" class="form-control" placeholder="Date of Birth">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="student_role">Student Role At School: </label>
+                                @include('ext._attach_student_rolediv')
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="my_parent_id">Parent: </label>
+                                @include('ext._attach_parentdiv')
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Postal Address</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="postal_address" id="postal_address" value="{!! old('postal_address') !!}" class="form-control" placeholder="Postal Address">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dorm_id">Dormitory: </label>
+                                @include('ext._attach_dormitorydiv')
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Dormitory Room No:</label>
+                                <input type="text" name="dorm_room_no" placeholder="Dormitory Room No" class="form-control" value="{{ old('dorm_room_no') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Sport House:</label>
+                                <input type="text" name="house" placeholder="Sport House" class="form-control" value="{{ old('house') }}">
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Phone No.</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="phone_no" id="phone_no" value="{!! old('phone_no') !!}" class="form-control" placeholder="Phone Number.">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>More Information:</label>
+                                @include('ext._content_div')
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >DOA</label>
-                        <div class="col-sm-10">
-                            <input type="date" name="doa" id="doa" value="{!! old('doa') !!}" class="form-control" placeholder="Date of Admission">
-                        </div>
+                    <div class="row">
+                        @include('ext._passworddiv')
                     </div>
-                    @include('ext._attach_student_rolediv')
-                    @include('ext._attach_streamdiv')
-                    @include('ext._attach_intakediv')
-                    @include('ext._attach_dormitorydiv')
-                    @include('ext._attach_parentdiv')
-                    @include('ext._content_div')
-                    @include('ext._passworddiv')
                     @include('ext._submit_register_button')
-                </form>
-            </div>
+                </fieldset>
+            </form>
         </div>
-    </div>
-</div>
-</main>
-@endsection
+    @endsection

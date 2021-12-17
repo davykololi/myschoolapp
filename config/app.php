@@ -166,6 +166,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         jpmurray\LaravelCountdown\CountdownServiceProvider::class,
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -180,6 +181,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ComposerServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
 
     ],
 

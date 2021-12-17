@@ -68,4 +68,9 @@ class Reward extends Model implements Searchable
     {
         return $this->belongsToMany('App\Models\Attendance')->withTimestamps();
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('students','category_reward','teachers','school','staffs','department','streams','libraries')->get();
+    }
 }

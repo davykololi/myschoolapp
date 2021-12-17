@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\CategorySubject;
+use App\Services\SubjectCatService as SubjCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\SubjectCatFormRequest as StoreRequest;
+use App\Http\Requests\SubjectCatFormRequest as UpdateRequest;
 
 class CategorySubjectController extends Controller
 {
+    protected $subjCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SubjCatService $subjCatService)
     {
         $this->middleware('auth:admin');
+        $this->subjCatService = $subjCatService;
     }
 
     /**
@@ -27,7 +30,7 @@ class CategorySubjectController extends Controller
     public function index()
     {
         //
-        $categorySubjects = CategorySubject::get();
+        $categorySubjects = $this->subjCatService->all();
 
         return view('admin.category-subjects.index',compact('categorySubjects'));
     }
@@ -49,14 +52,12 @@ class CategorySubjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        CategorySubject::create($input);
+        $categorySubject = $this->subjCatService->create($request);
 
-        return redirect()->route('admin.category-subjects.index')->withSuccess('The subject category created successfully!');
+        return redirect()->route('admin.category-subjects.index')->withSuccess(ucwords($categorySubject->name." ".'category created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class CategorySubjectController extends Controller
      * @param  \App\Models\CategorySubject  $categorySubject
      * @return \Illuminate\Http\Response
      */
-    public function show(CategorySubject $categorySubject)
+    public function show($id)
     {
         //
+        $categorySubject = $this->subjCatService->getId($id);
+
         return view('admin.category-subjects.show',compact('categorySubject'));
     }
 
@@ -77,9 +80,11 @@ class CategorySubjectController extends Controller
      * @param  \App\Models\CategorySubject  $categorySubject
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategorySubject $categorySubject)
+    public function edit($id)
     {
         //
+        $categorySubject = $this->subjCatService->getId($id);
+
         return view('admin.category-subjects.edit',compact('categorySubject'));
     }
 
@@ -90,14 +95,15 @@ class CategorySubjectController extends Controller
      * @param  \App\Models\CategorySubject  $categorySubject
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategorySubject $categorySubject)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $categorySubject->update($input);
+        $categorySubject = $this->subjCatService->getId($id);
+        if($categorySubject){
+            $this->subjCatService->update($request,$id);
 
-        return redirect()->route('admin.category-subjects.index')->withSuccess('The subject category updated successfully!');
+            return redirect()->route('admin.category-subjects.index')->withSuccess(ucwords($categorySubject->name." ".'category updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class CategorySubjectController extends Controller
      * @param  \App\Models\CategorySubject  $categorySubject
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategorySubject $categorySubject)
+    public function destroy($id)
     {
         //
-        $categorySubject->delete();
+        $categorySubject = $this->subjCatService->getId($id);
+        if($categorySubject){
+            $this->subjCatService->delete($id);
 
-        return redirect()->route('admin.category-subjects.index')->withSuccess('The subject category deleted successfully!');
+            return redirect()->route('admin.category-subjects.index')->withSuccess(ucwords($categorySubject->name." ".'deleted created successfully!'));
+        }
     }
 }

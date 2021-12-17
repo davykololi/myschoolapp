@@ -4,19 +4,23 @@ namespace App\Http\Controllers\Superadmin;
 
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\PositionTeacher;
+use App\Services\TeacherRoleService as TechRoService;
 use Illuminate\Http\Request;
+use App\Http\Requests\TeacherRoleFormRequest as StoreRequest;
+use App\Http\Requests\TeacherRoleFormRequest as UpdateRequest;
 
 class PositionTeacherController extends Controller
 {
+    protected $techRoService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(TechRoService $techRoService)
     {
         $this->middleware('auth:superadmin');
+        $this->techRoService = $techRoService;
     }
 
     /**
@@ -27,7 +31,7 @@ class PositionTeacherController extends Controller
     public function index()
     {
         //
-        $positionTeachers = PositionTeacher::get();
+        $positionTeachers = $this->techRoService->all();
 
         return view('superadmin.position-teachers.index',compact('positionTeachers'));
     }
@@ -49,14 +53,12 @@ class PositionTeacherController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        PositionTeacher::create($input);
+        $positionTeacher = $this->techRoService->create($request);
 
-        return redirect()->route('superadmin.position-teachers.index')->withSuccess('The teacher role created successfully!');
+        return redirect()->route('superadmin.position-teachers.index')->withSuccess(ucwords($positionTeacher->name." ".'role created successfully!'));
     }
 
     /**
@@ -65,9 +67,11 @@ class PositionTeacherController extends Controller
      * @param  \App\Models\PositionTeacher  $positionTeacher
      * @return \Illuminate\Http\Response
      */
-    public function show(PositionTeacher $positionTeacher)
+    public function show($id)
     {
         //
+        $positionTeacher = $this->techRoService->getId($id);
+
         return view('superadmin.position-teachers.show',compact('positionTeacher'));
     }
 
@@ -77,9 +81,11 @@ class PositionTeacherController extends Controller
      * @param  \App\Models\PositionTeacher  $positionTeacher
      * @return \Illuminate\Http\Response
      */
-    public function edit(PositionTeacher $positionTeacher)
+    public function edit($id)
     {
         //
+        $positionTeacher = $this->techRoService->getId($id);
+
         return view('superadmin.position-teachers.edit',compact('positionTeacher'));
     }
 
@@ -90,14 +96,15 @@ class PositionTeacherController extends Controller
      * @param  \App\Models\PositionTeacher  $positionTeacher
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PositionTeacher $positionTeacher)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $positionTeacher->update($input);
+        $positionTeacher = $this->techRoService->getId($id);
+        if($positionTeacher){
+            $this->techRoService->update($request,$id);
 
-        return redirect()->route('superadmin.position-teachers.index')->withSuccess('The teacher role updated successfully!');
+            return redirect()->route('superadmin.position-teachers.index')->withSuccess(ucwords($positionTeacher->name." ".'role updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +113,14 @@ class PositionTeacherController extends Controller
      * @param  \App\Models\PositionTeacher  $positionTeacher
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PositionTeacher $positionTeacher)
+    public function destroy($id)
     {
         //
-        $positionTeacher->delete();
+        $positionTeacher = $this->techRoService->getId($id);
+        if($positionTeacher){
+            $this->techRoService->delete($id);
 
-        return redirect()->route('superadmin.position-teachers.index')->withSuccess('The teacher role deleted successfully!');
+            return redirect()->route('superadmin.position-teachers.index')->withSuccess(ucwords($positionTeacher->name." ".'role deleted successfully!'));
+        }
     }
 }

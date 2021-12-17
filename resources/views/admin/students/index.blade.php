@@ -31,7 +31,7 @@
                     @foreach($students as $student)
                         <tr>
                             <td class="table-text">
-                                <div>{{$student->title}} {{$student->full_name}}</div>
+                                <div>{{$student->title}} {{$student->name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$student->admission_no}}</div>

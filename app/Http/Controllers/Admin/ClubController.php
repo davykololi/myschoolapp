@@ -2,27 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use App\Models\School;
-use App\Models\Club;
-use App\Models\Student;
-use App\Models\Teacher;
-use App\Models\Staff;
+use App\Services\ClubService;
+use App\Services\StudentService;
+use App\Services\TeacherService;
+use App\Services\StaffService;
 use App\Models\Meeting;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\ClubFormRequest as StoreRequest;
+use App\Http\Requests\ClubFormRequest as UpdateRequest;
 
 class ClubController extends Controller
 {
+    protected $clubService,$studentService,$teacherService,$staffService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ClubService $clubService,StudentService $studentService,TeacherService $teacherService,StaffService $staffService)
     {
         $this->middleware('auth:admin');
+        $this->clubService = $clubService;
+        $this->studentService = $studentService;
+        $this->teacherService = $teacherService;
+        $this->staffService = $staffService;
     }
     
     /**
@@ -33,7 +37,7 @@ class ClubController extends Controller
     public function index()
     {
         //
-        $clubs = Club::with('teachers','students','school')->latest()->get();
+        $clubs = $this->clubService->all();
 
         return view('admin.clubs.index',['clubs'=>$clubs]);
     }
@@ -46,9 +50,9 @@ class ClubController extends Controller
     public function create()
     {
         //
-        $teachers = Teacher::all();
-        $students = Student::all();
-        $staffs = Staff::all();
+        $teachers = $this->teacherService->all();
+        $students = $this->teacherService->all();
+        $staffs = $this->staffService->all();
 
         return view('admin.clubs.create',compact('teachers','students','staffs'));
     }
@@ -59,13 +63,10 @@ class ClubController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = Auth::user()->school->id;
-        $club = Club::create($input);
+        $club = $this->clubService->create($request);
         $teacherId = $request->teacher;
         $club->teachers()->attach($teacherId);
         $studentId = $request->student;
@@ -85,12 +86,12 @@ class ClubController extends Controller
     public function show($id)
     {
         //
-        $club = Club::findOrFail($id);
-        $students = Student::all();
+        $club = $this->clubService->getId($id);
+        $students = $this->studentService->all();
         $clubStudents = $club->students;
-        $teachers = Teacher::all();
+        $teachers = $this->teacherService->all();
         $clubTeachers = $club->teachers;
-        $staffs = Staff::all();
+        $staffs = $this->staffService->all();
         $clubStaffs = $club->staffs;
         $meetings = Meeting::all();
         $clubMeetings = $club->meetings;
@@ -107,10 +108,10 @@ class ClubController extends Controller
     public function edit($id)
     {
         //
-        $club = Club::findOrFail($id);
-        $teachers = Teacher::all();
-        $students = Student::all();
-        $staffs = Staff::all();
+        $club = $this->clubService->getId($id);
+        $teachers = $this->teacherService->all();
+        $students = $this->teacherService->all();
+        $staffs = $this->staffService->all();
 
         return view('admin.clubs.edit',compact('club','teachers','students','staffs'));
     }
@@ -122,21 +123,22 @@ class ClubController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $club = Club::findOrFail($id);
-        $input = $request->only(['name','reg_date']);
-        $input['school_id'] = Auth::user()->school->id;
-        $club->update($input);
-        $teacherId = $request->teacher;
-        $club->teachers()->sync($teacherId);
-        $studentId = $request->student;
-        $club->students()->sync($studentId);
-        $staffId = $request->staff;
-        $club->staffs()->sync($staffId);
+        $club = $this->clubService->getId($id);
+        if($club){
+            $this->clubService->update($request,$id);
 
-        return redirect()->route('admin.clubs.index')->withSuccess(ucwords($club->name." ".'updated successfully'));
+            $teacherId = $request->teacher;
+            $club->teachers()->sync($teacherId);
+            $studentId = $request->student;
+            $club->students()->sync($studentId);
+            $staffId = $request->staff;
+            $club->staffs()->sync($staffId);
+
+            return redirect()->route('admin.clubs.index')->withSuccess(ucwords($club->name." ".'updated successfully'));
+        }
     }
 
     /**
@@ -148,12 +150,14 @@ class ClubController extends Controller
     public function destroy($id)
     {
         //
-        $club = Club::findOrFail($id);
-        $club->delete();
-        $club->teachers()->detach();
-        $club->students()->detach();
-        $club->staffs()->detach();
+        $club = $this->clubService->getId($id);
+        if($club){
+            $this->clubService->delete($id);
+            $club->teachers()->detach();
+            $club->students()->detach();
+            $club->staffs()->detach();
 
-        return redirect()->route('admin.clubs.index')->withSuccess(ucwords($club->name." ".'deleted successfully'));
+            return redirect()->route('admin.clubs.index')->withSuccess(ucwords($club->name." ".'deleted successfully'));
+        }
     }
 }

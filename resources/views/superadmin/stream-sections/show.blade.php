@@ -23,6 +23,12 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>Initials:</strong>
+            {{ $streamSection->initials }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <strong>Description:</strong>
             {{ $streamSection->desc }}
         </div>

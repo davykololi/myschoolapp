@@ -4,13 +4,13 @@
 				<div class="sidebar-content">
 					<div class="user">
 						<div class="avatar-sm float-left mr-2">
-							<img src="../assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+							<img src="../assets/img/profile.jpg" onerror="this.src='{{asset('static/avatar.png')}}'" alt="..." class="avatar-img rounded-circle">
 						</div>
 						<div class="info">
 							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 								@auth
 								<span>
-									{{Auth::user()->title }} {{Auth::user()->first_name }} {{Auth::user()->last_name }}
+									{{Auth::user()->title }}
 									<span class="user-level">Administrator</span>
 									<span class="caret"></span>
 								</span>
@@ -286,6 +286,11 @@
 													</a>
 												</li>
 												<li>
+													<a href="{{ route('superadmin.blood-groups.index') }}">
+														<span class="sub-item">BLOOD GROUP</span>
+													</a>
+												</li>
+												<li>
 													<a href="{{ route('superadmin.position-teachers.index') }}">
 														<span class="sub-item">TEACHERS ROLES</span>
 													</a>
@@ -323,6 +328,11 @@
 												<li>
 													<a href="{{ route('superadmin.matrons.index') }}">
 														<span class="sub-item">MATRONS</span>
+													</a>
+												</li>
+												<li>
+													<a href="{{ route('superadmin.marksheet.form') }}">
+														<span class="sub-item">MARKSHEETS</span>
 													</a>
 												</li>
 					</ul>

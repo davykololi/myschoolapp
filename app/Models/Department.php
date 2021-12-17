@@ -10,7 +10,7 @@ class Department extends Model implements Searchable
 {
     //
     protected $table = 'departments';
-    protected $fillable = ['name','code','phone_no','head_name','asshead_name','motto','vision','school_id'];
+    protected $fillable = ['name','code','phone_no','head_name','asshead_name','motto','vision','mission','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -66,5 +66,10 @@ class Department extends Model implements Searchable
     public function notes()
     {
         return $this->hasMany('App\Models\Note','department_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('teachers','school',)->get();
     }
 }

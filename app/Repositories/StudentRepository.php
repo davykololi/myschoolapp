@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\PostInterface;
+use App\Interfaces\StudentInterface;
 use App\Models\Student;
 
 class StudentRepository implements StudentInterface
 {
-	protected $post;
+	protected $student;
 	/**
      * Create a new controller instance.
      *
@@ -18,9 +18,9 @@ class StudentRepository implements StudentInterface
         $this->student = $student;
     }
 
-    public function eagerLoaded()
+    public function all()
     {
-        return $this->student->with('school','libraries','teachers',)->get();
+        return $this->student->eagerLoaded();
     }
 
     public function create(array $data)

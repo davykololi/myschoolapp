@@ -2,28 +2,32 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use Auth;
 use App\Http\Controllers\Controller;
-use App\Models\School;
-use App\Models\Accountant;
-use App\Models\PositionAccountant;
+use App\Services\SchoolService;
+use App\Models\BloodGroup;
+use App\Services\AccountantService as AccService;
+use App\Services\AccountantRoleService as AccRolService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use App\Traits\ImageUploadTrait;
+use App\Http\Requests\AccFormRequest as StoreRequest;
+use App\Http\Requests\AccFormRequest as UpdateRequest;
 
 class AccountantController extends Controller
 {
-    use ImageUploadTrait;
-
+    protected $accService;
+    protected $accRolService;
+    protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(AccService $accService,AccRolService $accRolService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->accService = $accService;
+        $this->accRolService = $accRolService;
+        $this->schoolService = $schoolService;
     }
 
     /**
@@ -34,7 +38,7 @@ class AccountantController extends Controller
     public function index()
     {
         //
-        $accountants = Accountant::with('school')->get();
+        $accountants = $this->accService->all();
 
         return view('superadmin.accountants.index',compact('accountants'));
     }
@@ -47,10 +51,11 @@ class AccountantController extends Controller
     public function create()
     {
         //
-        $schools = School::all();
-        $accountantRoles = PositionAccountant::all();
+        $schools = $this->schoolService->all();
+        $accountantRoles = $this->accRolService->all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.accountants.create',compact('schools','accountantRoles'));
+        return view('superadmin.accountants.create',compact('schools','accountantRoles','bloodGroups'));
     }
 
     /**
@@ -59,17 +64,12 @@ class AccountantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = $request->school;
-        $input['position_accountant_id'] = $request->accountant_role;
-        $input['password'] = Hash::make($request->password);
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        Accountant::create($input);
+        $accountant = $this->accService->create($request);
 
-        return redirect()->route('superadmin.accountants.index')->withSuccess('The accountant info created successfully');
+        return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($accountant->full_name." ".'info created successfully'));
     }
 
     /**
@@ -78,9 +78,11 @@ class AccountantController extends Controller
      * @param  \App\Models\Accountant  $accountant
      * @return \Illuminate\Http\Response
      */
-    public function show(Accountant $accountant)
+    public function show($id)
     {
         //
+        $accountant = $this->accService->getId($id);
+
         return view('superadmin.accountants.show',compact('accountant'));
     }
 
@@ -90,13 +92,15 @@ class AccountantController extends Controller
      * @param  \App\Models\Accountant  $accountant
      * @return \Illuminate\Http\Response
      */
-    public function edit(Accountant $accountant)
+    public function edit($id)
     {
         //
-        $schools = School::all();
-        $accountantRoles = PositionAccountant::all();
+        $accountant = $this->accService->getId($id);
+        $schools = $this->schoolService->all();
+        $accountantRoles = $this->accRolService->all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.accountants.edit',compact('accountant','schools','accountantRoles'));
+        return view('superadmin.accountants.edit',compact('accountant','schools','accountantRoles','bloodGroups'));
     }
 
     /**
@@ -106,18 +110,15 @@ class AccountantController extends Controller
      * @param  \App\Models\Accountant  $accountant
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Accountant $accountant)
+    public function update(UpdateRequest $request, $id)
     {
         //
+        $accountant = $this->accService->getId($id);
         if($accountant){
             Storage::delete('public/storage/'.$accountant->image);
-            $input=$request->only('title','first_name','middle_name','last_name','dob','email','current_address','permanent_address','phone_no','id_no','designation','emp_no','history');
-            $input['school_id'] = $request->school;
-            $input['position_accountant_id'] = $request->accountant_role;
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $accountant->update($input);
+            $this->accService->update($request,$id);
 
-            return redirect()->route('superadmin.accountants.index')->withSuccess('The accountant info updated successfully');
+            return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($accountant->full_name." ".'info updated successfully'));
         }
     }
 
@@ -127,14 +128,15 @@ class AccountantController extends Controller
      * @param  \App\Models\Accountant  $accountant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Accountant $accountant)
+    public function destroy($id)
     {
         //
+        $accountant = $this->accService->getId($id);
         if($accountant){
             Storage::delete('public/storage/'.$accountant->image);
-            $accountant->delete();
+            $this->accService->delete($id);
 
-            return redirect()->route('superadmin.accountants.index')->withSuccess('The accountant info deleted successfully');
+            return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($accountant->full_name." ".'info deleted successfully'));
         }
     }
 }

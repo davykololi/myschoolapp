@@ -2,13 +2,29 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Models\StreamSection;
-use App\Models\School;
+use App\Services\StreamSecService;
+use App\Services\SchoolService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\StreamSecFormRequest as StoreRequest;
+use App\Http\Requests\StreamSecFormRequest as UpdateRequest;
 
 class StreamSectionController extends Controller
 {
+    protected $streamSecService;
+    protected $schoolService;
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(StreamSecService $streamSecService,SchoolService $schoolService)
+    {
+        $this->middleware('auth:superadmin');
+        $this->streamSecService = $streamSecService;
+        $this->schoolService = $schoolService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +33,7 @@ class StreamSectionController extends Controller
     public function index()
     {
         //
-        $streamSections = StreamSection::with('streams','school')->get();
+        $streamSections = $this->streamSecService->all();
 
         return view('superadmin.stream-sections.index',compact('streamSections'));
     }
@@ -30,7 +46,7 @@ class StreamSectionController extends Controller
     public function create()
     {
         //
-        $schools = School::all();
+        $schools = $this->schoolService->all();
 
         return view('superadmin.stream-sections.create',compact('schools'));
     }
@@ -41,12 +57,10 @@ class StreamSectionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = $request->school;
-        $streamSection = StreamSection::create($input);
+        $streamSection = $this->streamSecService->create($request);
 
         return redirect()->route('superadmin.stream-sections.index')->withSuccess(ucwords($streamSection->name." ".'info created successfully'));
     }
@@ -60,7 +74,7 @@ class StreamSectionController extends Controller
     public function show($id)
     {
         //
-        $streamSection = StreamSection::findOrFail($id);
+        $streamSection = $this->streamSecService->getId($id);
 
         return view('superadmin.stream-sections.show',compact('streamSection'));
     }
@@ -74,10 +88,10 @@ class StreamSectionController extends Controller
     public function edit($id)
     {
         //
-        $streamSection = StreamSection::findOrFail($id);
-        $schools = School::all();
+        $streamSection = $this->streamSecService->getId($id);
+        $schools = $this->schoolService->all();
 
-        return view('superadmin.stream-sections.show',compact('streamSection','schools'));
+        return view('superadmin.stream-sections.edit',compact('streamSection','schools'));
     }
 
     /**
@@ -87,14 +101,15 @@ class StreamSectionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $streamSection = StreamSection::findOrFail($id);
-        $input['school_id'] = $request->school;
-        $streamSection->update($input);
+        $streamSection = $this->streamSecService->getId($id);
+        if($streamSection){
+            $this->streamSecService->update($request,$id);
 
-        return redirect()->route('superadmin.stream-sections.index')->withSuccess(ucwords($streamSection->name." ".'info updated successfully'));
+            return redirect()->route('superadmin.stream-sections.index')->withSuccess(ucwords($streamSection->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -106,12 +121,14 @@ class StreamSectionController extends Controller
     public function destroy($id)
     {
         //
-        $streamSection = StreamSection::findOrFail($id);
+        $streamSection = $this->streamSecService->getId($id);
         if($streamSection->hasStreams){
             return back()->withErrors(($stream->name." ".'has class streams and cant be deleted'));
         }
-        $streamSection->delete();
+        if($streamSection){
+            $this->streamSecService->delete($id);
 
-        return redirect()->route('superadmin.stream-sections.index')->withSuccess(ucwords($streamSection->name." ".'info deleted successfully'));
+            return redirect()->route('superadmin.stream-sections.index')->withSuccess(ucwords($streamSection->name." ".'info deleted successfully'));
+        }
     }
 }

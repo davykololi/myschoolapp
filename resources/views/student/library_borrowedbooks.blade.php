@@ -16,7 +16,8 @@
                                 <span style="color: blue">Borrowed Date:</span> {{\Carbon\Carbon::parse($borrowedBook->issued_date)->format('d-m-Y')}} 
                                 <span style="color: blue">Return Date:</span> {{\Carbon\Carbon::parse($borrowedBook->return_date)->format('d-m-Y')}}
                                 <span style="color: blue">Remaining Time:</span>
-                                {{$days}}
+                                {{now()->diffInDays(\Carbon\Carbon::parse($borrowedBook->return_date))}} Days
+                                {{now()->diff(\Carbon\Carbon::parse($borrowedBook->return_date))->format('%H Hours %I Minutes %S Seconds')}}  
                             </li>
                             @empty
                             <p>No books borrowed.</p>

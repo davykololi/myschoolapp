@@ -58,4 +58,9 @@ class Note extends Model implements Searchable
     {
         return $this->belongsTo('App\Models\StandardSubject')->withDefault();
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school','class','stream','department','teacher','subject','standard_subject')->get();
+    }
 }

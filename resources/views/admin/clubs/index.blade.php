@@ -36,7 +36,7 @@
                                 <div>{{$club->code}}</div>
                             </td>
                             <td class="table-text">
-                                <div>{{$club->reg_date}}</div>
+                                <div>{{$club->regDate()}}</div>
                             </td>
                             <td>
                                 <form action="{{route('admin.clubs.destroy',$club->id)}}" method="POST">

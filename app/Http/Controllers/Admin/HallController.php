@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use App\Models\School;
-use App\Models\Hall;
-use App\Models\CategoryHall;
-use Illuminate\Support\Str;
+use App\Services\HallService;
+use App\Services\HallCatService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\HallFormRequest as StoreRequest;
+use App\Http\Requests\HallFormRequest as UpdateRequest;
 
 class HallController extends Controller
 {
+    protected $hallService,$hallCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(HallService $hallService,HallCatService $hallCatService)
     {
         $this->middleware('auth:admin');
+        $this->hallService = $hallService;
+        $this->hallCatService = $hallCatService;
     }
 
     /**
@@ -30,7 +32,7 @@ class HallController extends Controller
     public function index()
     {
         //
-        $halls = Hall::with('school',)->get();
+        $halls = $this->hallService->all();
 
         return view('admin.halls.index',['halls'=>$halls]);
     }
@@ -43,7 +45,7 @@ class HallController extends Controller
     public function create()
     {
         //
-        $categoryHalls = CategoryHall::all();
+        $categoryHalls = $this->hallCatService->all();
 
         return view('admin.halls.create',compact('categoryHalls'));
     }
@@ -54,14 +56,10 @@ class HallController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_hall_id'] = $request->hall_category;
-        $hall = Hall::create($input);
+        $hall = $this->hallService->create($request);
 
         return redirect()->route('admin.halls.index')->withSuccess(ucwords($hall->name." ".'info created successfully'));
     }
@@ -75,7 +73,7 @@ class HallController extends Controller
     public function show($id)
     {
         //
-        $hall = Hall::findOrFail($id);
+        $hall = $this->hallService->getId($id);
 
         return view('admin.halls.show',['hall'=>$hall]);
     }
@@ -89,8 +87,8 @@ class HallController extends Controller
     public function edit($id)
     {
         //
-        $hall = Hall::findOrFail($id);
-        $categoryHalls = CategoryHall::all();
+        $hall = $this->hallService->getId($id);
+        $categoryHalls = $this->hallCatService->all();
 
         return view('admin.halls.edit',compact('hall','categoryHalls'));
     }
@@ -102,16 +100,15 @@ class HallController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $hall = Hall::findOrFail($id);
-        $input = $request->only('name');
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_hall_id'] = $request->hall_category;
-        $hall->update($input);
+        $hall = $this->hallService->getId($id);
+        if($hall){
+            $this->hallService->update($request,$id);
 
-        return redirect()->route('admin.halls.index')->withSuccess(ucwords($hall->name." ".'info updated successfully'));
+            return redirect()->route('admin.halls.index')->withSuccess(ucwords($hall->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -123,9 +120,11 @@ class HallController extends Controller
     public function destroy($id)
     {
         //
-        $hall = Hall::findOrFail($id);
-        $hall->delete();
+        $hall = $this->hallService->getId($id);
+        if($hall){
+            $this->hallService->delete($id);
 
-        return redirect()->route('admin.halls.index')->withSuccess(ucwords($hall->name." ".'info deleted successfully'));
+            return redirect()->route('admin.halls.index')->withSuccess(ucwords($hall->name." ".'info deleted successfully'));
+        }
     }
 }

@@ -3,28 +3,34 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Note;
-use App\Models\School;
-use App\Models\Department;
-use App\Models\Stream;
-use App\Models\Teacher;
-use App\Models\Subject;
-use App\Models\StandardSubject;
+use App\Services\NotesService;
+use App\Services\DepartmentService as DeptService;
+use App\Services\StreamService;
+use App\Services\TeacherService;
+use App\Services\SubjectService;
+use App\Services\StdSubjectService;
 use Illuminate\Http\Request;
-use App\Traits\FilesUploadTrait;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\NotesFormRequest as StoreRequest;
+use App\Http\Requests\NotesFormRequest as UpdateRequest;
 
 class NoteController extends Controller
 {
-    use FilesUploadTrait;
+    protected $notesService,$deptService,$streamService,$teacherService,$subjectService,$stdSubjectService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(NotesService $notesService,DeptService $deptService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService,StdSubjectService $stdSubjectService)
     {
         $this->middleware('auth:admin');
+        $this->notesService = $notesService;
+        $this->deptService = $deptService;
+        $this->streamService = $streamService;
+        $this->teacherService = $teacherService;
+        $this->subjectService = $subjectService;
+        $this->stdSubjectService = $stdSubjectService;
     }
 
     /**
@@ -35,7 +41,7 @@ class NoteController extends Controller
     public function index()
     {
         //
-        $notes = Note::with('teacher','department','school','stream')->latest()->get();
+        $notes = $this->notesService->all();
 
         return view('admin.notes.index',compact('notes'));
     }
@@ -48,11 +54,11 @@ class NoteController extends Controller
     public function create()
     {
         //
-        $streams = Stream::all();
-        $teachers = Teacher::all();
-        $departments = Department::all();
-        $subjects = Subject::all();
-        $standardSubjects = StandardSubject::all();
+        $streams = $this->streamService->all();
+        $teachers = $this->teacherService->all();
+        $departments = $this->deptService->all();
+        $subjects = $this->subjectService->all();
+        $standardSubjects = $this->stdSubjectService->all();
 
         return view('admin.notes.create',compact('streams','teachers','departments','subjects','standardSubjects'));
     }
@@ -63,18 +69,10 @@ class NoteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
-        $input['school_id'] = auth()->user()->school->id;
-        $input['department_id'] = $request->department;
-        $input['stream_id'] = $request->stream;
-        $input['teacher_id'] = $request->teacher;
-        $input['subject_id'] = $request->subject;
-        $input['standard_subject_id'] = $request->standard_subject;
-        Note::create($input);
+        $note = $this->notesService->create($request);
 
         return redirect()->route('admin.notes.index')->withSuccess(ucwords('The notes uploaded successfully!'));
     }
@@ -85,9 +83,11 @@ class NoteController extends Controller
      * @param  \App\Models\Note  $note
      * @return \Illuminate\Http\Response
      */
-    public function show(Note $note)
+    public function show($id)
     {
         //
+        $note = $this->notesService->getId($id);
+
         return view('admin.notes.show',compact('note'));
     }
 
@@ -97,14 +97,15 @@ class NoteController extends Controller
      * @param  \App\Models\Note  $note
      * @return \Illuminate\Http\Response
      */
-    public function edit(Note $note)
+    public function edit($id)
     {
         //
-        $streams = Stream::all();
-        $teachers = Teacher::all();
-        $departments = Department::all();
-        $subjects = Subject::all();
-        $standardSubjects = StandardSubject::all();
+        $note = $this->notesService->getId($id);
+        $streams = $this->streamService->all();
+        $teachers = $this->teacherService->all();
+        $departments = $this->deptService->all();
+        $subjects = $this->subjectService->all();
+        $standardSubjects = $this->stdSubjectService->all();
 
         return view('admin.notes.edit',compact('note','streams','teachers','departments','subjects','standardSubjects'));
     }
@@ -116,20 +117,13 @@ class NoteController extends Controller
      * @param  \App\Models\Note  $note
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Note $note)
+    public function update(UpdateRequest $request, $id)
     {
         //
+        $note = $this->notesService->getId($id);
         if($note){
             Storage::delete('public/files/'.$note->file);
-            $input = $request->all();
-            $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
-            $input['school_id'] = auth()->user()->school->id;
-            $input['department_id'] = $request->department;
-            $input['stream_id'] = $request->stream;
-            $input['teacher_id'] = $request->teacher;
-            $input['subject_id'] = $request->subject;
-            $input['standard_subject_id'] = $request->standard_subject;
-            $note->update($input);
+            $this->notesService->update($request,$id);
 
             return redirect()->route('admin.notes.index')->withSuccess(ucwords('The notes updated successfully!'));
         }
@@ -141,12 +135,13 @@ class NoteController extends Controller
      * @param  \App\Models\Note  $note
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Note $note)
+    public function destroy($id)
     {
         //
+        $note = $this->notesService->getId($id);
         if($note){
             Storage::delete('public/files/'.$note->file);
-            $note->delete();
+            $this->notesService->delete($id);
 
             return redirect()->route('admin.notes.index')->withSuccess(ucwords('The notes deleted successfully!'));
         }

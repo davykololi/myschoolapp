@@ -127,8 +127,8 @@
                 <li>
                     {{ $assignment->name }} Published: {{ date("jS,F,Y,g:i a",strtotime($assignment->date)) }} 
                     Deadline: {{ date("jS,F,Y",strtotime($assignment->deadline)) }} {{ $assignment->file }}
-                    @foreach($assignment->standards as $standard)
-                        {{$standard->name}}.
+                    @foreach($assignment->streams as $stream)
+                        {{$stream->name}}.
                     @endforeach
                 </li>
             @empty

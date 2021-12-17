@@ -14,7 +14,7 @@
                     <h2>ASSIGNMENT LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.assignments.create')}}"> Add An Assignment</a>
+                    <a class="btn btn-success" href="{{route('admin.assignments.create')}}">Create</a>
                 </div>
             </div>
         </div>

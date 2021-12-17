@@ -21,7 +21,7 @@ use App\Models\Intake;
 use App\Models\Library;
 use App\Models\Meeting;
 use App\Models\Note;
-use App\Models\Report;
+use App\Models\ReportCard;
 use App\Models\Reward;
 use App\Models\StandardSubject;
 use App\Models\Timetable;
@@ -46,10 +46,10 @@ class SearchController extends Controller
     	$searchterm = $request->input('query');
 
         $searchResults = (new Search())
-                        ->registerModel(Student::class,['first_name','middle_name','last_name','phone_no','admission_no','dob','email','postal_address'])
-                        ->registerModel(Teacher::class,['first_name','middle_name','last_name','email','id_no','emp_no','dob','designation','postal_address','phone_no'])
-                        ->registerModel(MyParent::class,['first_name','middle_name','last_name','email','id_no','emp_no','dob','designation','current_address','permanent_address','phone_no'])
-                        ->registerModel(Staff::class,['first_name','middle_name','last_name','email','emp_no','id_no','dob','designation','postal_address','phone_no'])
+                        ->registerModel(Student::class,['name','phone_no','admission_no','dob','email','address'])
+                        ->registerModel(Teacher::class,['name','email','id_no','emp_no','dob','designation','address','phone_no'])
+                        ->registerModel(MyParent::class,['name','email','id_no','emp_no','dob','designation','address','phone_no'])
+                        ->registerModel(Staff::class,['name','email','emp_no','id_no','dob','designation','address','phone_no'])
                         ->registerModel(Club::class,['name','code','reg_date'])
                         ->registerModel(Department::class,['name','code','phone_no','head_name','asshead_name','motto','vision'])
                         ->registerModel(Dormitory::class,['name','code','bed_no','dom_head'])
@@ -65,7 +65,7 @@ class SearchController extends Controller
                         ->registerModel(Library::class,['name','phone_no','lib_head','lib_asshead'])
                         ->registerModel(Meeting::class,['name','agenda','date','venue','code'])
                         ->registerModel(Note::class,['desc'])
-                        ->registerModel(Report::class,['name'])
+                        ->registerModel(ReportCard::class,['name'])
                         ->registerModel(Reward::class,['name','purpose','date'])
                         ->registerModel(StandardSubject::class,['desc'])
                         ->registerModel(Timetable::class,['desc'])

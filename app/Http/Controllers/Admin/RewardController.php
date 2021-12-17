@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\School;
-use App\Models\Stream;
-use App\Models\Department;
-use App\Models\Reward;
-use App\Models\Teacher;
-use App\Models\Student;
-use App\Models\Staff;
+use App\Services\StreamService;
+use App\Services\DepartmentService as DeptService;
+use App\Services\RewardService;
+use App\Services\TeacherService;
+use App\Services\StudentService;
+use App\Services\StaffService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\RewardFormRequest as StoreRequest;
+use App\Http\Requests\RewardFormRequest as UpdateRequest;
 
 class RewardController extends Controller
 {
+    protected $streamService,$deptService,$rewardService,$teacherService,$studentService,$staffService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StreamService $streamService,DeptService $deptService,RewardService $rewardService,TeacherService $teacherService,StudentService $studentService,StaffService $staffService)
     {
         $this->middleware('auth:admin');
+        $this->streamService = $streamService;
+        $this->deptService = $deptService;
+        $this->rewardService = $rewardService;
+        $this->teacherService = $teacherService;
+        $this->studentService = $studentService;
+        $this->staffService = $staffService;
     }
 
     /**
@@ -32,7 +40,7 @@ class RewardController extends Controller
     public function index()
     {
         //
-        $rewards = Reward::with('school')->latest()->get();
+        $rewards = $this->rewardService->all();
 
         return view('admin.rewards.index',compact('rewards'));
     }
@@ -45,10 +53,10 @@ class RewardController extends Controller
     public function create()
     {
         //
-        $teachers = Teacher::all();
-        $students = Student::all();
-        $staffs = Staff::all();
-        $streams = Stream::all();
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $staffs = $this->staffService->all();
+        $streams = $this->streamService->all();
 
         return view('admin.rewards.create',compact('teachers','students','staffs','streams'));
     }
@@ -59,12 +67,10 @@ class RewardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = auth()->user()->school->id;
-        $reward = Reward::create($input);
+        $reward = $this->rewardService->create($request);
         $teacherId = $request->teacher;
         $reward->teachers()->attach($teacherId);
         $studentId = $request->student;
@@ -74,7 +80,7 @@ class RewardController extends Controller
         $streamId = $request->stream;
         $reward->streams()->attach($streamId);
 
-        return redirect()->route('admin.rewards.index')->withSuccess('The reward created successfully');
+        return redirect()->route('admin.rewards.index')->withSuccess(($reward->name." ".'info created successfully'));
     }
 
     /**
@@ -86,7 +92,7 @@ class RewardController extends Controller
     public function show($id)
     {
         //
-        $reward = Reward::findOrFail($id);
+        $reward = $this->rewardService->getId($id);
 
         return view('admin.rewards.show',['reward'=>$reward]);
     }
@@ -100,11 +106,11 @@ class RewardController extends Controller
     public function edit($id)
     {
         //
-        $reward = Reward::findOrFail($id);
-        $teachers = Teacher::all();
-        $students = Student::all();
-        $staffs = Staff::all();
-        $streams = Stream::all();
+        $reward = $this->rewardService->getId($id);
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $staffs = $this->staffService->all();
+        $streams = $this->streamService->all();
 
         return view('admin.rewards.edit',compact('reward','teachers','students','staffs','streams'));
     }
@@ -116,24 +122,23 @@ class RewardController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $reward = Reward::findOrFail($id);
-        $input = $request->all();
-        $input['school_id'] = auth()->user()->school->id;
-        $reward->update($input);
-        $teacherId = $request->teacher;
-        $reward->teachers()->sync($teacherId);
-        $studentId = $request->student;
-        $reward->students()->sync($studentId);
-        $staffId = $request->staff;
-        $reward->staffs()->sync($staffId);
-        $streamId = $request->stream;
-        $reward->streams()->sync($streamId);
+        $reward = $this->rewardService->getId($id);
+        if($reward){
+        	$this->rewardService->update($request,$id);
+        	$teacherId = $request->teacher;
+        	$reward->teachers()->sync($teacherId);
+        	$studentId = $request->student;
+        	$reward->students()->sync($studentId);
+        	$staffId = $request->staff;
+        	$reward->staffs()->sync($staffId);
+        	$streamId = $request->stream;
+        	$reward->streams()->sync($streamId);
 
-        return redirect()->route('admin.rewards.index')->withSuccess('The reward updated successfully');
-
+        	return redirect()->route('admin.rewards.index')->withSuccess(($reward->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -145,8 +150,17 @@ class RewardController extends Controller
     public function destroy($id)
     {
         //
-        $reward = Reward::findOrFail($id)->delete();
+        $reward = $this->rewardService->getId($id);
+        if($reward){
+        	$this->rewardService->delete($id);
 
-        return redirect()->route('admin.rewards.index')->withSuccess('The reward deleted successfully');
+        	$reward->teachers()->detach();
+        	$reward->students()->detach();
+        	$reward->staffs()->detach();
+        	$reward->streams()->detach();
+        	$reward->clubs()->detach();
+
+        	return redirect()->route('admin.rewards.index')->withSuccess(($reward->name." ".'info deleted successfully'));
+        }
     }
 }

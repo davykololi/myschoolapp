@@ -2,28 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use App\Models\School;
-use App\Models\Staff;
+use App\Services\StaffService;
 use App\Models\Admin;
-use App\Models\PositionStaff;
-use Illuminate\Support\Facades\Hash;
+use App\Models\BloodGroup;
+use App\Services\StaffRoleService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Traits\ImageUploadTrait;
+use App\Http\Requests\StaffFormRequest as StoreRequest;
+use App\Http\Requests\StaffFormRequest as UpdateRequest;
 
 class StaffController extends Controller
 {
-    use ImageUploadTrait;
+    protected $staffService,$staffRoleService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StaffService $staffService,StaffRoleService $staffRoleService)
     {
         $this->middleware('auth:admin');
+        $this->staffService = $staffService;
+        $this->staffRoleService = $staffRoleService;
     }
 
     /**
@@ -34,7 +35,7 @@ class StaffController extends Controller
     public function index()
     {
         //
-        $staffs = Staff::get();
+        $staffs = $this->staffService->all();
 
         return view('admin.staffs.index',compact('staffs'));
     }
@@ -47,9 +48,10 @@ class StaffController extends Controller
     public function create()
     {
         //
-        $staffRoles = PositionStaff::all();
+        $staffRoles = $this->staffRoleService->all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('admin.staffs.create',compact('staffRoles'));
+        return view('admin.staffs.create',compact('staffRoles','bloodGroups'));
     }
 
     /**
@@ -58,18 +60,12 @@ class StaffController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = auth()->user()->school->id;
-        $input['position_staff_id'] = $request->staff_role;
-        $input['admin_id'] = Auth::id();
-        $input['password'] = Hash::make($request->password);
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        Staff::create($input);
+        $staff = $this->staffService->create($request);
 
-        return redirect()->route('admin.staffs.index')->withSuccess('The subordnade created successfully');
+        return redirect()->route('admin.staffs.index')->withSuccess(ucwords($staff->name." ".'created successfully'));
     }
 
     /**
@@ -81,7 +77,7 @@ class StaffController extends Controller
     public function show($id)
     {
         //
-        $staff = Staff::findOrFail($id);
+        $staff = $this->staffService->getId($id);
 
         return view('admin.staffs.show',['staff'=>$staff]);
     }
@@ -95,10 +91,11 @@ class StaffController extends Controller
     public function edit($id)
     {
         //
-        $staff = Staff::findOrFail($id);
-        $staffRoles = PositionStaff::all();
+        $staff = $this->staffService->getId($id);
+        $staffRoles = $this->staffRoleService->all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('admin.staffs.edit',compact('staff','staffRoles'));
+        return view('admin.staffs.edit',compact('staff','staffRoles','bloodGroups'));
     }
 
     /**
@@ -108,20 +105,15 @@ class StaffController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $staff = Staff::findOrFail($id);
+        $staff = $this->staffService->getId($id);
         if($staff){
             Storage::delete('public/storage/'.$staff->image);
-            $input = $request->only('first_name','middle_name','last_name','title','email','emp_no','id_no','dob','designation','postal_address','phone_no','history');
-            $input['school_id'] = auth()->user()->school_id;
-            $input['position_staff_id'] = $request->staff_role;
-            $input['admin_id'] = Auth::id();
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $staff->update($input);
+            $this->staffService->update($request,$id);
 
-            return redirect()->route('admin.staffs.index')->withSuccess('The subordnade staff updated successfully');
+            return redirect()->route('admin.staffs.index')->withSuccess(ucwords($staff->name." ".'updated successfully'));
         }
     }
 
@@ -134,12 +126,12 @@ class StaffController extends Controller
     public function destroy($id)
     {
         //
-        $staff = Staff::findOrFail($id);
+        $staff = $this->staffService->getId($id);
         if($staff){
             Storage::delete('public/storage/'.$staff->image);
-            $staff->delete();
+            $this->staffService->delete($id);
 
-            return redirect()->route('admin.staffs.index')->withSuccess('The subordnade staff deleted successfully');
+            return redirect()->route('admin.staffs.index')->withSuccess(ucwords($staff->name." ".'deleted successfully'));
         }
     }
 }

@@ -28,6 +28,7 @@ Route::group(['middleware' => 'prevent-back-history'], function(){
 Route::resource('users','Admin\UserController');
 Route::get('contact-us','User\PageController@contactForm')->name('contact.us');
 Route::post('contact-us','User\PageController@contactSave')->name('contact.save');
+Route::get('about-us','User\PageController@aboutUs')->name('about.page');
 
 //START OF SUPERADMIN ROUTES
 //Auth folder routes
@@ -51,12 +52,15 @@ Route::prefix('superadmin')->name('superadmin.')->namespace('Superadmin')->group
 	Route::resource('librarians','LibrarianController');
 	Route::resource('accountants','AccountantController');
 	Route::resource('matrons','MatronController');
+	Route::resource('blood-groups','BloodGroupController');
 	Route::resource('category-schools','CategorySchoolController');
 	Route::resource('stream-sections','StreamSectionController');
 	Route::resource('position-teachers','PositionTeacherController');
 	Route::resource('position-librarians','PositionLibrarianController');
 	Route::resource('position-matrons','PositionMatronController');
 	Route::resource('position-accountants','PositionAccountantController');
+	Route::get('marksheet-form','ExcelController@marksheetsForm')->name('marksheet.form');
+	Route::get('/delete-class-marksheets','DeleteReportMarksheetController')->name('delete.classMarksheets');
 	//Superadmin Change Password Routes
 	Route::get('/change-password','SuperadminChangePasswordController@index')->name('change-password.form');
 	Route::post('/change-password','SuperadminChangePasswordController@store')->name('change-password.save');
@@ -93,8 +97,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::get('/report-card/{report}','PdfController@reportCard')->name('report.card');
 	Route::get('/stream-facitators','PdfController@streamFacilitators')->name('stream.facilitators');
 	Route::get('/class-marksheet','PdfController@classMarksheet')->name('class.marksheet');
-	Route::get('/stream.marksheet','PdfController@streamMarksheet')->name('stream.marksheet');
+	Route::get('/stream.marksheet','PdfController@streamMarksheet')->name('stream.pdfMarksheet');
+	Route::get('/st-pdf-report-card-form','PdfController@studentReportCardForm')->name('studentPdf.reportCardForm');
+	Route::get('/st-pdf-report-card','PdfController@studentReportCard')->name('studentPdf.reportCard');
 	Route::get('/delete-reports','ReportsDeleteController')->name('delete.reports');
+	//Reportcard Totals
+	Route::post('/class-totals','ReportCardTotalsController@classTotalsStore')->name('classTotals.store');
+	Route::post('/stream-totals','ReportCardTotalsController@streamTotalsStore')->name('streamTotals.store');
+	Route::get('/class-totals-clear','ReportCardTotalsController@clearClassTotals')->name('classTotals.clear');
+	Route::get('/stream-totals-clear','ReportCardTotalsController@clearStreamTotals')->name('streamTotals.clear');
 	//Downloads routes
     Route::get('timetable/{id}',['as'=>'timetable.download','uses'=>'DownloadTimetableController@dowmloadTimetable']);
 	Route::get('examtable/{id}',['as'=>'examtimetable.download','uses'=>'DownloadExamTimetableController@dowmloadExamTimetable']);
@@ -102,9 +113,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::get('notes-download/{id}',['as'=>'notes.download','uses'=>'DownloadNotesController@dowmloadNotes']);
 	Route::get('importReportView', [ReportExcelController::class, 'importExportView'])->name('report_view');
 	// Route for export/download tabledata to .csv, .xls or .xlsx
-	Route::get('exportReport/{type}', [ReportExcelController::class, 'exportReport'])->name('exportReport');
+	Route::get('export-report-cards/{type}', [ReportExcelController::class, 'exportReportCards'])->name('export.reportCards');
 	// Route for import excel data to database.
-	Route::post('importReport', [ReportExcelController::class, 'importReport'])->name('importReport');
+	Route::post('import-report-cards', [ReportExcelController::class, 'importReportCards'])->name('import.reportCards');
 	Route::get('search','SearchController@search')->name('search');
 	//Sent sms on adimission
 	Route::get('parent-sms','StudentController@sendSms');
@@ -143,6 +154,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::resource('reports','ReportController');
 	Route::resource('classes','MyClassController');
 	Route::resource('grade-systems','GradeSystemController');
+	Route::resource('sections','SectionController');
 	Route::get('std/teacher/{teacher}{stream}','StreamTeacherController@streamTeacher')->name('stream.teacher');
 	Route::post('/student-record','StudentRecordController@studentRecord')->name('student.record');
 	//Excel download and imports routes
@@ -150,15 +162,20 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::get('excel-streamstudents/{stream}','ExcelController@exportStreamStudents')->name('export.stream_students');
 	Route::get('excel-streamteachers/{stream}','ExcelController@exportStreamTeachers')->name('export.stream_teachers');
 	Route::get('excel-schoolteachers','ExcelController@exportSchoolTeachers')->name('export.shool_teachers');
-	Route::get('classes-report-cards','ExcelController@classReportsImport')->name('classes.reportcardForm');
+	Route::get('class-excel-marksheet','ExcelController@classResultMarks')->name('class.excelMarksheet');
+	Route::get('stream-excel-marksheet','ExcelController@streamResultMarks')->name('stream.excelMarksheet');
+	Route::get('streams-report-cards','ExcelController@streamsReportCardsImport')->name('streams.reportCardsForm');
+	Route::post('streams-report-cards','ExcelController@streamsReportCardsStore')->name('streams.reportCardStore');
 	//Class Marksheet Import routes
-	Route::get('class-marksheet-import','ExcelController@classMarkSheetImportForm')->name('classMarksheet.form');
-	Route::post('class-marksheet-import','ExcelController@classMarkSheetImportStore')->name('classMarksheet.store');
+	Route::get('marksheet-import-form','ExcelController@marksheetImportForm')->name('marksheet.importForm');
 	//Form One Streams Marksheets Import route
-	Route::post('streams-marksheets','ExcelController@streamsMarksheets')->name('streams.marksheets');
+	Route::post('streams-marksheets','ExcelController@streamsMarksheets')->name('streams.marksheetsImport');
 	//Admin Change Password Routes
 	Route::get('/change-password','AdminChangePasswordController@index')->name('change-password.form');
 	Route::post('/change-password','AdminChangePasswordController@store')->name('change-password.save');
+	//Mail Sent Route
+	Route::get('mail-form','SendMailController@mailForm')->name('mail.form');
+	Route::post('sent-mails','SendMailController@sendMail')->name('send.mail');
 
 }); //END OF ADMIN ROUTES
 
@@ -216,11 +233,11 @@ Route::prefix('student')->name('student.')->namespace('Student')->group(function
 	Route::get('/stream/students','StudentController@students')->name('stream.students');
 	Route::get('/stream/teachers','StudentController@teachers')->name('stream.teachers');
 	Route::get('/stream/exams','StudentController@exams')->name('stream.exams');
-	Route::get('/club/{club}','StudentController@showClub')->name('club');
+	Route::get('/club/{id}','StudentController@showClub')->name('club');
 	Route::get('/meetings','StudentController@meetings')->name('stream.meetings');
 	Route::get('/rewards','StudentController@rewards')->name('stream.rewards');
 	Route::get('/stream/subjects','StudentController@streamSubjects')->name('stream.subjects');
-	Route::get('/subject/notes/{standardSubject}','StudentController@subjectNotes')->name('subject.notes');
+	Route::get('/subject/notes/{id}','StudentController@subjectNotes')->name('subject.notes');
 	Route::get('/library/books','StudentController@libraryBooks')->name('library.books');
 	Route::get('/school/fields','StudentController@schoolFields')->name('school.fields');
 	Route::get('/school/halls','StudentController@schoolHalls')->name('school.halls');
@@ -232,7 +249,7 @@ Route::prefix('student')->name('student.')->namespace('Student')->group(function
 	Route::get('assign-download/{id}',['as'=>'assignment.download','uses'=>'DownloadAssignmentController@dowmloadAssignment']);
 	Route::get('notes-download/{id}',['as'=>'notes.download','uses'=>'DownloadNotesController@dowmloadNotes']);
 	//Teacher details route
-	Route::get('teacher/info/{teacher}{standard}','StudentController@teacherDetails')->name('teacher.details');
+	Route::get('teacher/info/{id}','StudentController@teacherDetails')->name('teacher.details');
 	//Student Change Password Routes
 	Route::get('/change-password','StudentChangePasswordController@index')->name('change-password.form');
 	Route::post('/change-password','StudentChangePasswordController@store')->name('change-password.save');
@@ -276,10 +293,10 @@ Route::prefix('parent')->name('parent.')->namespace('Auth')->group(function () {
 Route::prefix('parent')->name('parent.')->namespace('Parent')->group(function () {
 	Route::get('/', 'ParentController@index')->name('dashboard');
 	Route::get('/students', 'ParentController@parentStudents')->name('students');
-	Route::get('/student/{student}', 'ParentController@showStudent')->name('show.student');
-	Route::get('/student/stream/{stream}', 'ParentController@studentStream')->name('student.stream');
+	Route::get('/student/{id}', 'ParentController@showStudent')->name('show.student');
+	Route::get('/student/stream/{id}', 'ParentController@studentStream')->name('student.stream');
 	Route::get('/school-teachers', 'ParentController@schoolTeachers')->name('school.teachers');
-	Route::get('/teacher/{teacher}', 'ParentController@showTeacher')->name('show.teacher');
+	Route::get('/teacher/{id}', 'ParentController@showTeacher')->name('show.teacher');
 	//Parent Profile Route
     Route::get('/profile','ParentProfileController@parentProfile')->name('profile');
     //Admin Change Password Routes
@@ -366,8 +383,8 @@ Route::prefix('matron')->name('matron.')->namespace('Auth')->group(function () {
 //Matron folder routes
 Route::prefix('matron')->name('matron.')->namespace('Matron')->group(function () {
 	Route::get('/', 'MatronController@index')->name('dashboard');
-	Route::get('/dormitories/{school}', 'MatronController@dormitories')->name('dormitories');
-	Route::get('/dormitory/{dormitory}', 'MatronController@dormitory')->name('dormitory');
+	Route::get('/dormitories/{id}', 'MatronController@dormitories')->name('dormitories');
+	Route::get('/dormitory/{id}', 'MatronController@dormitory')->name('dormitory');
 	//Parent Profile Route
     Route::get('/profile','MatronProfileController@matronProfile')->name('profile');
     //Matron Change Password Routes

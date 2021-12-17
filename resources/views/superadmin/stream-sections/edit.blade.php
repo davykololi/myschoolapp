@@ -7,8 +7,9 @@
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
+            <h2>EDIT STREAM SECTION</h2>
             <div class="panel-heading">
-                Edit Stream Section<a href="{{ route('superadmin.stream-sections.index') }}" class="label label-primary pull-right">Back</a>
+                <a href="{{ route('superadmin.stream-sections.index') }}" class="label label-primary pull-right">Back</a>
             </div>
             <div class="panel-body">
                 <form action="{{ route('superadmin.stream-sections.update', $streamSection->id) }}" method="post" class="form-horizontal" enctype="multipart/form-data">
@@ -18,6 +19,12 @@
                         <label class="control-label col-sm-2" >Name</label>
                         <div class="col-sm-10">
                             <input type="text" name="name" id="name" class="form-control" value="{{ $streamSection->name }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Initials</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="initials" id="initials" class="form-control" value="{{ $streamSection->initials }}">
                         </div>
                     </div>
                     <div class="form-group">

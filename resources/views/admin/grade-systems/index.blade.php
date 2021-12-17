@@ -37,6 +37,18 @@
                             <td class="table-text">
                                 <div>{{$gradeSystem->points}}</div>
                             </td>
+                            <td class="table-text">
+                                <div>{{$gradeSystem->year->year}}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>{{$gradeSystem->class->name}}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>{{$gradeSystem->stream->name}}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>{{$gradeSystem->section->name}}</div>
+                            </td>
                             <td>
                                 <form action="{{route('admin.grade-systems.destroy',$gradeSystem->id)}}" method="POST">
                                     @csrf

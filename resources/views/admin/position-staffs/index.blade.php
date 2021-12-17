@@ -14,7 +14,7 @@
                     <h2>SUB STAFF ROLES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.position-staffs.create')}}"> Create Sub Staff Role</a>
+                    <a class="btn btn-success" href="{{route('admin.position-staffs.create')}}">Create</a>
                 </div>
             </div>
         </div>

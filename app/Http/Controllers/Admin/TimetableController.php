@@ -2,25 +2,33 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Timetable;
-use App\Models\School;
-use App\Models\Stream;
+use App\Services\TimetableService;
+use App\Services\StreamService;
+use App\Services\ClassService;
+use App\Services\ExamService;
+use App\Services\TeacherService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Traits\FilesUploadTrait;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\TimetableFormRequest as StoreRequest;
+use App\Http\Requests\TimetableFormRequest as UpdateRequest;
 
 class TimetableController extends Controller
 {
-    use FilesUploadTrait;
+    protected $timetableService,$streamService,$classService,$examService,$teacherService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(TimetableService $timetableService,StreamService $streamService,ClassService $classService,ExamService $examService,TeacherService $teacherService)
     {
         $this->middleware('auth:admin');
+        $this->timetableService = $timetableService;
+        $this->streamService = $streamService;
+        $this->classService = $classService;
+        $this->examService = $examService;
+        $this->teacherService = $teacherService;
     }
 
     /**
@@ -31,7 +39,7 @@ class TimetableController extends Controller
     public function index()
     {
         //
-        $timetables = Timetable::with('school','stream')->get();
+        $timetables = $this->timetableService->all();
 
         return view('admin.timetables.index',['timetables'=>$timetables]);
     }
@@ -44,9 +52,12 @@ class TimetableController extends Controller
     public function create()
     {
         //
-        $streams = Stream::all();
+        $streams = $this->streamService->all();
+        $classes = $this->classService->all();
+        $teachers = $this->teacherService->all();
+        $exams = $this->examService->all();
 
-        return view('admin.timetables.create',compact('streams'));
+        return view('admin.timetables.create',compact('streams','classes','teachers','exams'));
     }
 
     /**
@@ -55,16 +66,12 @@ class TimetableController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
-        $input['school_id'] = auth()->user()->school->id;
-        $input['stream_id'] = $request->stream;
-        $timetable = Timetable::create($input);
+        $timetable = $this->timetableService->create($request);
 
-        return redirect()->route('admin.timetables.index')->withSuccess('The timetable created successfully');
+        return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->name." ".'info created successfully'));
     }
 
     /**
@@ -76,7 +83,7 @@ class TimetableController extends Controller
     public function show($id)
     {
         //
-        $timetable = Timetable::findOrFail($id);
+        $timetable = $this->timetableService->getId($id);
 
         return view('admin.timetables.show',['timetable'=>$timetable]);
     }
@@ -90,10 +97,13 @@ class TimetableController extends Controller
     public function edit($id)
     {
         //
-        $timetable = Timetable::findOrFail($id);
-        $streams = Stream::all();
+        $timetable = $this->timetableService->getId($id);
+        $streams = $this->streamService->all();
+        $classes = $this->classService->all();
+        $teachers = $this->teacherService->all();
+        $exams = $this->examService->all();
     
-        return view('admin.timetables.edit',['timetable'=>$timetable,'streams'=>$streams]);
+        return view('admin.timetables.edit',compact('timetable','streams','classes','teachers','exams'));
     }
 
     /**
@@ -103,20 +113,15 @@ class TimetableController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $timetable = Timetable::findOrFail($id);
-
+        $timetable = $this->timetableService->getId($id);
         if($timetable){
             Storage::delete('public/files/'.$timetable->file);
-            $input = $request->all();
-            $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
-            $input['school_id'] = $request->school;
-            $input['stream_id'] = $request->stream;
-            $timetable->update($input);
+            $this->timetableService->update($request,$id);
 
-            return redirect()->route('admin.timetables.index')->withSuccess('The timetable updated successfully');
+            return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->name." ".'info updated successfully'));
         }
     }
 
@@ -129,12 +134,12 @@ class TimetableController extends Controller
     public function destroy($id)
     {
         //
-        $timetable = Timetable::findOrFail($id);
+        $timetable = $this->timetableService->getId($id);
         if($timetable){
             Storage::delete('public/files/'.$timetable->file);
-            $timetable->delete();
+            $this->timetableService->delete($id);
 
-            return redirect()->route('admin.timetables.index')->withSuccess('The timetable deleted successfully');
+            return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->name." ".'info deleted successfully'));
         }
     }
 }

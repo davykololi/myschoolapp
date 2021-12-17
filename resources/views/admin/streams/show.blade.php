@@ -58,7 +58,9 @@
             <strong>{{ $stream->name }} Students:</strong>
             <ol>
             @forelse($stream->students as $student)
-                <li>{{ $student->full_name }} {{ $student->phone_no }}</li>
+            <a href="{{ route('admin.students.show', $student->id) }}">
+                <li>{{ $student->name }} {{ $student->phone_no }}</li>
+            </a>
             @empty
             <p style="color: red">No students(s) assigned to {{ $stream->name }} yet.</p>
             @endforelse

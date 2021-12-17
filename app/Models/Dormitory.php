@@ -10,7 +10,9 @@ class Dormitory extends Model implements Searchable
 {
     //
     protected $table = 'dormitories';
-    protected $fillable = ['name','code','bed_no','dom_head','school_id'];
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $fillable = ['name','code','bed_no','dom_head','ass_head','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -46,5 +48,10 @@ class Dormitory extends Model implements Searchable
     public function rewards()
     {
         return $this->belongsToMany('App\Models\Reward')->withTimestamps();
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('students','school')->get();
     }
 }

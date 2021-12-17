@@ -70,14 +70,9 @@ class Exam extends Model implements Searchable
         return $this->belongsToMany(Teacher::class)->withTimestamps();
     }
 
-    public function admissions()
-    {
-        return $this->belongsToMany(Admission::class)->withTimestamps();
-    }
-
     public function timetables()
     {
-        return $this->belongsToMany(Timetable::class)->withTimestamps();
+        return $this->hasMany(Timetable::class,'exam_id','id');
     }
 
     public function year()
@@ -99,5 +94,10 @@ class Exam extends Model implements Searchable
     {
         $year = \App\Models\Exam::select('updated_at')->first();
         return \Carbon\Carbon::parse($year->updated_at,'year');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('teachers','students','schools','streams','category_exam')->latest()->get();
     }
 }

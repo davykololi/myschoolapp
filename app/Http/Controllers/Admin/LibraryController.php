@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use App\Models\School;
-use App\Models\Library;
+use App\Services\LibraryService as LibService;
 use App\Models\Meeting;
 use App\Models\Librarian;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\LibFormRequest as StoreRequest;
+use App\Http\Requests\LibFormRequest as UpdateRequest;
 
 class LibraryController extends Controller
 {
+    protected $libService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(LibService $libService)
     {
         $this->middleware('auth:admin');
+        $this->libService = $libService;
     }
 
     /**
@@ -31,7 +32,7 @@ class LibraryController extends Controller
     public function index()
     {
         //
-        $libraries = Library::with('students','school',)->latest()->get();
+        $libraries = $this->libService->all();
 
         return view('admin.libraries.index',['libraries'=>$libraries]);
     }
@@ -44,7 +45,6 @@ class LibraryController extends Controller
     public function create()
     {
         //
-
         return view('admin.libraries.create');
     }
 
@@ -54,13 +54,10 @@ class LibraryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = Auth::user()->school->id;
-        $library = Library::create($input);
+        $library = $this->libService->create($request);
 
         return redirect()->route('admin.libraries.index')->withSuccess(ucwords($library->name." ".'info created successfully'));
     }
@@ -74,7 +71,7 @@ class LibraryController extends Controller
     public function show($id)
     {
         //
-        $library = Library::findOrFail($id);
+        $library = $this->libService->getId($id);
         $meetings = Meeting::all();
         $libraryMeetings = $library->meetings;
 
@@ -90,7 +87,7 @@ class LibraryController extends Controller
     public function edit($id)
     {
         //
-        $library = Library::findOrFail($id);
+        $library = $this->libService->getId($id);
 
         return view('admin.libraries.edit',compact('library'));
     }
@@ -102,15 +99,15 @@ class LibraryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $library = Library::findOrFail($id);
-        $input = $request->only('name','phone_no');
-        $input['school_id'] = Auth::user()->school->id;
-        $library->update($input);
+        $library = $this->libService->getId($id);
+        if($library){
+            $this->libService->update($request,$id);
 
-        return redirect()->route('admin.libraries.index')->withSuccess(ucwords($library->name." ".'info updated successfully'));
+            return redirect()->route('admin.libraries.index')->withSuccess(ucwords($library->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -122,9 +119,11 @@ class LibraryController extends Controller
     public function destroy($id)
     {
         //
-        $library = Library::findOrFail($id);
-        $library->delete();
+        $library = $this->libService->getId($id);
+        if($library){
+            $this->libService->delete($id);
 
-        return redirect()->route('admin.libraries.index')->withSuccess(ucwords('info eleted successfully'));
+            return redirect()->route('admin.libraries.index')->withSuccess(ucwords($library->name." ".'info deleted successfully'));
+        }
     }
 }

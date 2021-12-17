@@ -5,60 +5,47 @@ namespace App\Http\Controllers\Admin;
 use Auth;
 use Illuminate\Support\Facades\Notification;
 use App\Models\PositionStudent;
-use App\Models\Student;
-use App\Models\MyParent;
+use App\Services\ParentService;
+use App\Services\StudentService;
 use App\Models\School;
-use App\Models\Stream;
+use App\Services\StreamService;
 use App\Models\Dormitory;
 use App\Models\Intake;
-use App\Models\Subject;
+use App\Services\SubjectService;
 use App\Models\Reward;
 use App\Models\Assignment;
 use App\Models\Meeting;
-use Illuminate\Validation\Rules\Password;
+use App\Models\BloodGroup;
+use App\Events\StudentRegistered;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Requests\StudentFormRequest as StoreRequest;
 use App\Http\Requests\StudentFormRequest as UpdateRequest;
 use Illuminate\Support\Facades\Storage;
-use App\Traits\ImageUploadTrait;
 use App\Notifications\SmsParentOnAdmissionNotification;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValdatesRequests;
 
 class StudentController extends Controller
 {
-    use ImageUploadTrait;
+    protected $studentService;
+    protected $streamService;
+    protected $parentService;
+    protected $subjectService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StudentService $studentService,StreamService $streamService,ParentService $parentService,SubjectService $subjectService)
     {
         $this->middleware('auth:admin');
+        $this->studentService = $studentService;
+        $this->streamService = $streamService;
+        $this->parentService = $parentService;
+        $this->subjectService = $subjectService;
     }
-
-    public function sendSms()
-    {
-        try{
-            $basic = new \Nexmo\Client\Credentials\Basic(getenv("NEXMO_KEY"),getenv("NEXMO_SECRET"));
-            $client = new \Nexmo\Client($basic);
-
-            $student = Student::first();
-            $receiverNumber = $student->parent->phone_no;
-            $school = auth()->user()->school->name;
-            $message = $student->full_name." ".'successfully admitted to'.$school->name;
-
-            $message = $client->message()->send([
-                        'to' => $receiverNumber,
-                        'from' =>$school,
-                        'text' => $message,
-                    ]);
-        } catch(Exception $e){
-            dd("Error".$e->getMessage());
-        }
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -67,7 +54,7 @@ class StudentController extends Controller
     public function index()
     {
         //
-        $students = Student::with('school','libraries','teachers','stream',)->get();
+        $students = $this->studentService->all();
 
         return view('admin.students.index',compact('students'));
     }
@@ -80,13 +67,14 @@ class StudentController extends Controller
     public function create()
     {
         //
-        $streams = Stream::all();
+        $streams = $this->streamService->all();
         $intakes = Intake::all();
         $dormitories = Dormitory::all();
-        $parents = MyParent::all();
+        $parents = $this->parentService->all();
         $studentRoles = PositionStudent::all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('admin.students.create',compact('streams','intakes','dormitories','parents','studentRoles'));
+        return view('admin.students.create',compact('streams','intakes','dormitories','parents','studentRoles','bloodGroups'));
     }
 
     /**
@@ -95,43 +83,13 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $request->validate([
-            'password'=>['required','string','confirmed',Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
-            'password_confirmation' => ['required'],
-        ]);
         //
-        $input = $request->all();
-        $input['school_id'] = auth()->user()->school->id;
-        $input['stream_id'] = $request->stream;
-        $input['intake_id'] = $request->intake;
-        $input['dormitory_id'] = $request->dormitory;
-        $input['admin_id'] = Auth::id();
-        $input['parent_id'] = $request->parent;
-        $input['position_student_id'] = $request->student_role;
-        $input['password'] = Hash::make($request->password);
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        $student = Student::create($input);
+        $student = $this->studentService->create($request);
+        event(new StudentRegistered($student));
 
-        try{
-            $basic = new \Nexmo\Client\Credentials\Basic(getenv("NEXMO_KEY"),getenv("NEXMO_SECRET"));
-            $client = new \Nexmo\Client($basic);
-
-            $receiverNumber = $student->parent->phone_no;
-            $school = auth()->user()->school->name;
-            $message = $student->full_name." ".'successfully admitted to'.$school->name;
-
-            $message = $client->message()->send([
-                        'to' => $receiverNumber,
-                        'from' =>$student->school->name,
-                        'text' => $message,
-                    ]);
-        } catch(Exception $e){
-            dd("Error".$e->getMessage());
-        }
-
-        return redirect()->route('admin.students.index')->withSuccess(ucwords($student->full_name." ".'info created successfully'));
+        return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info created successfully'));
     }
 
     /**
@@ -143,8 +101,8 @@ class StudentController extends Controller
     public function show($id)
     {
         //
-        $student = Student::findOrFail($id);
-        $subjects = Subject::all();
+        $student = $this->studentService->getId($id);
+        $subjects = $this->subjectService->all();
         $studentSubjects = $student->subjects;
         $rewards = Reward::all();
         $studentRewards = $student->rewards;
@@ -165,14 +123,15 @@ class StudentController extends Controller
     public function edit($id)
     {
         //
-        $student = Student::findOrFail($id);
-        $streams = Stream::all();
+        $student = $this->studentService->getId($id);
+        $streams = $this->streamService->all();
         $intakes = Intake::all();
         $dormitories = Dormitory::all();
-        $parents = MyParent::all();
+        $parents = $this->parentService->all();
         $studentRoles = PositionStudent::all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('admin.students.edit',compact('student','streams','intakes','dormitories','parents','studentRoles'));
+        return view('admin.students.edit',compact('student','streams','intakes','dormitories','parents','studentRoles','bloodGroups'));
     }
 
     /**
@@ -182,24 +141,15 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request,$id)
     {
         //
-        $student = Student::findOrFail($id);
+        $student = $this->studentService->getId($id);
         if($student){
             Storage::delete('public/storage/'.$student->image);
-            $input=$request->only('first_name','middle_name','last_name','admission_no','dob','doa','email','postal_address','title','phone_no');
-            $input['school_id'] = auth()->user()->school->id;
-            $input['stream_id'] = $request->stream;
-            $input['intake_id'] = $request->intake;
-            $input['dormitory_id'] = $request->dormitory;
-            $input['admin_id'] = Auth::id();
-            $input['parent_id'] = $request->parent;
-            $input['position_student_id'] = $request->student_role;
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $student->update($input);
+            $this->studentService->update($request,$id);
 
-            return redirect()->route('admin.students.index')->withSuccess(ucwords($student->full_name." ".'info updated successfully'));
+            return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info updated successfully'));
         }
     }
 
@@ -212,12 +162,12 @@ class StudentController extends Controller
     public function destroy($id)
     {
         //
-        $student = Student::findOrFail($id);
+        $student = $this->studentService->getId($id);
         if($student){
             Storage::delete('public/storage/'.$student->image);
-            $student->delete();
+            $this->studentService->delete($id);
 
-            return redirect()->route('admin.students.index')->withSuccess(ucwords($student->full_name." ".'info deleted successfully'));
+            return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info deleted successfully'));
         }
     }
 }

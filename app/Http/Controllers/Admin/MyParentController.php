@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
 use App\Http\Controllers\Controller;
-use App\Models\MyParent;
+use App\Services\ParentService;
+use App\Models\BloodGroup;
 use App\Models\School;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use App\Traits\ImageUploadTrait;
+use App\Http\Requests\ParentFormRequest as StoreRequest;
+use App\Http\Requests\ParentFormRequest as UpdateRequest;
 
 class MyParentController extends Controller
 {
-    use ImageUploadTrait;
-
+    protected $parentService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ParentService $parentService)
     {
         $this->middleware('auth:admin');
+        $this->parentService = $parentService;
     }
 
     /**
@@ -33,7 +33,7 @@ class MyParentController extends Controller
     public function index()
     {
         //
-        $parents = MyParent::with('school','students')->get();
+        $parents = $this->parentService->all();
 
         return view('admin.parents.index',compact('parents'));
     }
@@ -46,7 +46,9 @@ class MyParentController extends Controller
     public function create()
     {
         //
-        return view('admin.parents.create');
+        $bloodGroups = BloodGroup::all();
+
+        return view('admin.parents.create',compact('bloodGroups'));
     }
 
     /**
@@ -55,16 +57,14 @@ class MyParentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = auth()->user()->school->id;
-        $input['password'] = Hash::make($request->password);
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        $parent = MyParent::create($input);
-
-        return redirect()->route('admin.parents.index')->withSuccess(ucwords($parent->full_name." ".'info created successfully'));
+        $parent = $this->parentService->create($request);
+        if(!$parent){
+            return redirect()->route('admin.parents.index')->withErrors(ucwords('Oops!, An error occured. Please try again later'));
+        }
+            return redirect()->route('admin.parents.index')->withSuccess(ucwords($parent->name." ".'info created successfully'));
     }
 
     /**
@@ -73,9 +73,11 @@ class MyParentController extends Controller
      * @param  \App\Models\MyParent  $myParent
      * @return \Illuminate\Http\Response
      */
-    public function show(MyParent $parent)
+    public function show($id)
     {
         //
+        $parent = $this->parentService->getId($id);
+
         return view('admin.parents.show',compact('parent'));
     }
 
@@ -85,11 +87,13 @@ class MyParentController extends Controller
      * @param  \App\Models\MyParent  $myParent
      * @return \Illuminate\Http\Response
      */
-    public function edit(MyParent $parent)
+    public function edit($id)
     {
         //
+        $parent = $this->parentService->getId($id);
+        $bloodGroups = BloodGroup::all();
 
-        return view('admin.parents.edit',compact('parent'));
+        return view('admin.parents.edit',compact('parent','bloodGroups'));
     }
 
     /**
@@ -99,17 +103,15 @@ class MyParentController extends Controller
      * @param  \App\Models\MyParent  $myParent
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MyParent $parent)
+    public function update(UpdateRequest $request,$id)
     {
         //
+        $parent = $this->parentService->getId($id);
         if($parent){
             Storage::delete('public/storage/'.$parent->image);
-            $input=$request->only('title','first_name','middle_name','last_name','dob','email','current_address','permanent_address','phone_no','id_no','designation','emp_no');
-            $input['school_id'] = auth()->user()->school->id;
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $parent->update($input);
+            $this->parentService->update($request,$id);
 
-            return redirect()->route('admin.parents.index')->withSuccess(ucwords($parent->full_name." ".'info updated successfully'));
+            return redirect()->route('admin.parents.index')->withSuccess(ucwords($parent->name." ".'info updated successfully'));
         }
     }
 
@@ -119,14 +121,15 @@ class MyParentController extends Controller
      * @param  \App\Models\MyParent  $myParent
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MyParent $parent)
+    public function destroy($id)
     {
         //
+        $parent = $this->parentService->getId($id);
         if($parent){
             Storage::delete('public/storage/'.$parent->image);
-            $parent->delete();
+            $this->parentService->delete($id);
 
-            return redirect()->route('admin.parents.index')->withSuccess(ucwords($parent->full_name." ".'info deleted successfully'));
+            return redirect()->route('admin.parents.index')->withSuccess(ucwords($parent->name." ".'info deleted successfully'));
         }
     }
 }

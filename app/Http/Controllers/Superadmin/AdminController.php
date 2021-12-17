@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use Auth;
-use App\Models\Admin;
-use App\Models\School;
+use App\Services\AdminService;
+use App\Services\SchoolService;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use App\Traits\ImageUploadTrait;
+use App\Http\Requests\AdminFormRequest as StoreRequest;
+use App\Http\Requests\AdminFormRequest as UpdateRequest;
 
 class AdminController extends Controller
 {
-    use ImageUploadTrait;
+    protected $adminService;
+    protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(AdminService $adminService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->adminService = $adminService;
+        $this->schoolService = $schoolService;
     }
     /**
      * Display a listing of the resource.
@@ -31,7 +33,8 @@ class AdminController extends Controller
     public function index()
     {
         //
-        $admins = Admin::with('superadmin')->get();
+        $admins = $this->adminService->all();
+
         return view('superadmin.admins.index',['admins' => $admins]);
     }
 
@@ -42,7 +45,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        $schools = School::all();
+        $schools = $this->schoolService->all();
 
         return view('superadmin.admins.create',compact('schools'));
     }
@@ -53,16 +56,12 @@ class AdminController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['password'] = Hash::make($request->password);
-        $input['superadmin_id'] = Auth::user()->id;
-        $input['school_id'] = $request->school;
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        $admin = Admin::create($input);
-        return redirect()->route('superadmin.admins.index')->with('success','The admin created successfully');
+        $admin = $this->adminService->create($request);
+
+        return redirect()->route('superadmin.admins.index')->withSuccess(ucwords($admin->name." ".'info created successfully'));
     }
 
     /**
@@ -74,7 +73,7 @@ class AdminController extends Controller
     public function show($id)
     {
         //
-        $admin = Admin::findOrFail($id);
+        $admin =$this->adminService->getId($id);
 
         return view('superadmin.admins.show',['admin' => $admin]);
     }
@@ -88,8 +87,8 @@ class AdminController extends Controller
     public function edit($id)
     {
         //
-        $admin = Admin::findOrFail($id);
-        $schools = School::all();
+        $admin =$this->adminService->getId($id);
+        $schools = $this->schoolService->all();
 
         return view('superadmin.admins.edit',compact('admin','schools'));
     }
@@ -101,20 +100,15 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $admin = Admin::findOrFail($id);
+        $admin =$this->adminService->getId($id);
         if($admin){
             Storage::delete('public/storage/'.$admin->image);
-            $input = $request->only('first_name','middle_name','last_name','title','email','image','id_no','emp_no','dob','designation','postal_address','phone_no',);
-            $this->authorize('update',$admin);
-            $input['superadmin_id'] = Auth::user()->id;
-            $input['school_id'] = $request->school;
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $admin->update($input);
+            $this->adminService->update($request,$id);
 
-            return redirect()->route('superadmin.admins.index')->with('success','The admin updated successfully');
+            return redirect()->route('superadmin.admins.index')->withSuccess(ucwords($admin->name." ".'info updated successfully'));
         }
     }
 
@@ -127,13 +121,13 @@ class AdminController extends Controller
     public function destroy($id)
     {
         //
-        $admin = Admin::findOrFail($id);
+        $admin =$this->adminService->getId($id);
         if($admin){
             $this->authorize('delete',$admin);
-            Storage::delete('public/storage/'.$Admin->image);
-            $admin->delete();
+            Storage::delete('public/storage/'.$admin->image);
+            $this->adminService->delete($id);
 
-        return redirect()->route('superadmin.admins.index')->with('success','The admin deleted successfully');
+            return redirect()->route('superadmin.admins.index')->withSuccess(ucwords($admin->name." ".'info deleted successfully'));
         }    
     }
 }

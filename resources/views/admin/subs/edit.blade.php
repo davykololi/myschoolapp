@@ -7,8 +7,8 @@
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
+            <h2>EDIT STREAM SUBJECT</h2>
             <div class="panel-heading">
-                Edit
                 <a href="{{ route('admin.subs.index') }}" class="label label-primary pull-right">Back</a>
             </div>
             <div class="panel-body">

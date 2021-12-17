@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Models\Year;
+use App\Services\YearService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\YearFormRequest as StoreRequest;
+use App\Http\Requests\YearFormRequest as UpdateRequest;
 
 class YearController extends Controller
 {
+    protected $yearService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(YearService $yearService)
     {
         $this->middleware('auth:superadmin');
+        $this->yearService = $yearService;
     }
     
     /**
@@ -26,7 +30,7 @@ class YearController extends Controller
     public function index()
     {
         //
-        $years = Year::all();
+        $years = $this->yearService->all();
 
         return view('superadmin.years.index',compact('years'));
     }
@@ -48,11 +52,10 @@ class YearController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $year = Year::create($input);
+        $year = $this->yearService->create($request);
 
         return redirect()->route('superadmin.years.index')->withSuccess(ucwords($year->year." ".'info created successfully!!'));
     }
@@ -66,7 +69,7 @@ class YearController extends Controller
     public function show($id)
     {
         //
-        $year = Year::findOrFail($id);
+        $year = $this->yearService->getId($id);
 
         return view('superadmin.years.show',compact('year'));
     }
@@ -80,7 +83,7 @@ class YearController extends Controller
     public function edit($id)
     {
         //
-        $year = Year::findOrFail($id);
+        $year = $this->yearService->getId($id);
 
         return view('superadmin.years.edit',compact('year'));
     }
@@ -92,14 +95,15 @@ class YearController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $year = Year::findOrFail($id);
-        $input = $request->all();
-        $year->update($input);
+        $year = $this->yearService->getId($id);
+        if($year){
+            $this->yearService->update($request,$id);
 
-        return redirect()->route('superadmin.years.index')->withSuccess(ucwords($year->year." ".'info updated successfully!!'));
+            return redirect()->route('superadmin.years.index')->withSuccess(ucwords($year->year." ".'info updated successfully!!'));
+        }
     }
 
     /**
@@ -111,9 +115,9 @@ class YearController extends Controller
     public function destroy($id)
     {
         //
-        $year = Year::findOrFail($id);
+        $year = $this->yearService->getId($id);
         if($year){
-            $year->delete();
+            $this->yearService->delete($id);
 
             return redirect()->route('superadmin.years.index')->withSuccess(ucwords($year->year." ".'info deleted successfully!!'));
         }

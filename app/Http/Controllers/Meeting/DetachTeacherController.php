@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Meeting;
 
-use App\Models\Meeting;
-use App\Models\Teacher;
+use App\Repositories\MeetingRepository as MeetingRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class DetachTeacherController extends Controller
 {
+    protected $meetingRepo;
     /**
      * Create a new controller instance.
      *
@@ -17,11 +17,12 @@ class DetachTeacherController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->meetingRepo = $meetingRepo;
     }
 
     public function detachTeacher(Request $request,$id)
     {
-    	$meeting = Meeting::findOrFail($id);
+    	$meeting = $this->meetingRepo->getId($id);
     	$teacher = $request->teacher;
     	$meeting->teachers()->detach($teacher);
 

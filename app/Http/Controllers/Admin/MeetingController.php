@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Meeting;
-use App\Models\Teacher;
-use App\Models\Student;
-use App\Models\Staff;
-use App\Models\Stream;
-use App\Models\Club;
-use Illuminate\Support\Str;
+use App\Services\MeetingService;
+use App\Services\TeacherService;
+use App\Services\StudentService;
+use App\Services\StaffService;
+use App\Services\StreamService;
+use App\Services\ClubService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\MeetingFormRequest as StoreRequest;
+use App\Http\Requests\MeetingFormRequest as UpdateRequest;
 
 class MeetingController extends Controller
 {
+    protected $meetingService,$teacherService,$studentService,$staffService,$streamService,$clubService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MeetingService $meetingService,TeacherService $teacherService,StudentService $studentService,StaffService $staffService,StreamService $streamService,ClubService $clubService)
     {
         $this->middleware('auth:admin');
+        $this->meetingService = $meetingService;
+        $this->teacherService = $teacherService;
+        $this->studentService = $studentService;
+        $this->staffService = $staffService;
+        $this->streamService = $streamService;
+        $this->clubService = $clubService;
     }
 
     /**
@@ -32,7 +40,7 @@ class MeetingController extends Controller
     public function index()
     {
         //
-        $meetings = Meeting::with('teachers','students','schools','streams','clubs')->latest()->get();
+        $meetings = $this->meetingService->all();
 
         return view('admin.meetings.index',['meetings'=>$meetings]);
     }
@@ -45,11 +53,11 @@ class MeetingController extends Controller
     public function create()
     {
         //
-        $teachers = Teacher::all();
-        $students = Student::all();
-        $staffs = Staff::all();
-        $streams = Stream::all();
-        $clubs = Club::all();
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $staffs = $this->staffService->all();
+        $streams = $this->streamService->all();
+        $clubs = $this->clubService->all();
         
         return view('admin.meetings.create',compact('teachers','students','staffs','streams','clubs'));
     }
@@ -60,13 +68,10 @@ class MeetingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = auth()->user()->school->id;
-        $meeting = Meeting::create($input);
+        $meeting = $this->meetingService->create($request);
         $teacherId = $request->teacher;
         $meeting->teachers()->attach($teacherId);
         $studentId = $request->student;
@@ -90,14 +95,14 @@ class MeetingController extends Controller
     public function show($id)
     {
         //
-        $meeting = Meeting::findOrFail($id);
-        $teachers = Teacher::all();
+        $meeting = $this->meetingService->getId($id);
+        $teachers = $this->teacherService->all();
         $meetingTeachers = $meeting->teachers;
-        $students = Student::all();
+        $students = $this->studentService->all();
         $meetingStudents = $meeting->students;
-        $staffs = Staff::all();
+        $staffs = $this->staffService->all();
         $meetingStaffs = $meeting->staffs;
-        $streams = Stream::all();
+        $streams = $this->streamService->all();
         $meetingStreams = $meeting->streams;
 
         return view('admin.meetings.show',compact('meeting','teachers','meetingTeachers','students','meetingStudents','staffs','meetingStaffs','streams','meetingStreams'));
@@ -112,12 +117,12 @@ class MeetingController extends Controller
     public function edit($id)
     {
         //
-        $meeting = Meeting::findOrFail($id);
-        $teachers = Teacher::all();
-        $students = Student::all();
-        $staffs = Staff::all();
-        $streams = Stream::all();
-        $clubs = Club::all();
+        $meeting = $this->meetingService->getId($id);
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $staffs = $this->staffService->all();
+        $streams = $this->streamService->all();
+        $clubs = $this->clubService->all();
     
         return view('admin.meetings.edit',compact('meeting','teachers','students','staffs','streams','clubs'));
     }
@@ -129,25 +134,25 @@ class MeetingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $meeting = Meeting::findOrFail($id);
-        $input = $request->only(['name','agenda','date','venue']);
-        $input['school_id'] = auth()->user()->school->id;
-        $meeting->update($input);
-        $teacherId = $request->teacher;
-        $meeting->teachers()->sync($teacherId);
-        $studentId = $request->student;
-        $meeting ->students()->sync($studentId);
-        $staffId = $request->staff;
-        $meeting ->staffs()->sync($staffId);
-        $streamId = $request->stream;
-        $meeting ->streams()->sync($streamId);
-        $clubId = $request->club;
-        $meeting ->clubs()->sync($clubId);
+        $meeting = $this->meetingService->getId($id);
+        if($meeting){
+            $this->meetingService->update($request,$id);
+            $teacherId = $request->teacher;
+            $meeting->teachers()->sync($teacherId);
+            $studentId = $request->student;
+            $meeting ->students()->sync($studentId);
+            $staffId = $request->staff;
+            $meeting ->staffs()->sync($staffId);
+            $streamId = $request->stream;
+            $meeting ->streams()->sync($streamId);
+            $clubId = $request->club;
+            $meeting ->clubs()->sync($clubId);
 
-        return redirect()->route('admin.meetings.index')->withSuccess(ucwords($meeting->name." ".'info updated successfully'));
+            return redirect()->route('admin.meetings.index')->withSuccess(ucwords($meeting->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -159,14 +164,17 @@ class MeetingController extends Controller
     public function destroy($id)
     {
         //
-        $meeting = Meeting::findOrFail($id);
-        $meeting->delete();
-        $meeting->teachers()->detach();
-        $meeting ->students()->detach();
-        $meeting ->staffs()->detach();
-        $meeting ->streams()->detach();
-        $meeting ->clubs()->detach();
+        $meeting = $this->meetingService->getId($id);
+        if($meeting){
+            $this->meetingService->delete($id);
+            $meeting->teachers()->detach();
+            $meeting ->students()->detach();
+            $meeting ->staffs()->detach();
+            $meeting ->streams()->detach();
+            $meeting ->clubs()->detach();
+            $meeting ->departments()->detach();
 
         return redirect()->route('admin.meetings.index')->withSuccess(ucwords($meeting->name." ".'info deleted successfully'));
+        }
     }
 }

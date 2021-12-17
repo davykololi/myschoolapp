@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\CategoryHall;
+use App\Services\HallCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\HallCatFormRequest as StoreRequest;
+use App\Http\Requests\HallCatFormRequest as UpdateRequest;
 
 class CategoryHallController extends Controller
 {
+    protected $hallCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(HallCatService $hallCatService)
     {
         $this->middleware('auth:admin');
+        $this->hallCatService = $hallCatService;
     }
 
     /**
@@ -27,7 +30,7 @@ class CategoryHallController extends Controller
     public function index()
     {
         //
-        $categoryHalls = CategoryHall::get();
+        $categoryHalls = $this->hallCatService->all();
 
         return view('admin.category-halls.index',compact('categoryHalls'));
     }
@@ -49,14 +52,12 @@ class CategoryHallController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        CategoryHall::create($input);
+        $categoryHall = $this->hallCatService->create($request);
 
-        return redirect()->route('admin.category-halls.index')->withSuccess('The hall category created successfully!');
+        return redirect()->route('admin.category-halls.index')->withSuccess(ucwords($categoryHall->name." ".'category created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class CategoryHallController extends Controller
      * @param  \App\Models\CategoryHall  $categoryHall
      * @return \Illuminate\Http\Response
      */
-    public function show(CategoryHall $categoryHall)
+    public function show($id)
     {
         //
+        $categoryHall = $this->hallCatService->getId($id);
+
         return view('admin.category-halls.show',compact('categoryHall'));
     }
 
@@ -77,9 +80,11 @@ class CategoryHallController extends Controller
      * @param  \App\Models\CategoryHall  $categoryHall
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryHall $categoryHall)
+    public function edit($id)
     {
         //
+        $categoryHall = $this->hallCatService->getId($id);
+
         return view('admin.category-halls.edit',compact('categoryHall'));
     }
 
@@ -90,14 +95,15 @@ class CategoryHallController extends Controller
      * @param  \App\Models\CategoryHall  $categoryHall
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoryHall $categoryHall)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $categoryHall->update($input);
+        $categoryHall = $this->hallCatService->getId($id);
+        if($categoryHall){
+            $this->hallCatService->update($request,$id);
 
-        return redirect()->route('admin.category-halls.index')->withSuccess('The hall category updated successfully!');
+            return redirect()->route('admin.category-halls.index')->withSuccess(ucwords($categoryHall->name." ".'category updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class CategoryHallController extends Controller
      * @param  \App\Models\CategoryHall  $categoryHall
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryHall $categoryHall)
+    public function destroy($id)
     {
         //
-        $categoryHall->delete();
+        $categoryHall = $this->hallCatService->getId($id);
+        if($categoryHall){
+            $this->hallCatService->delete($id);
 
-        return redirect()->route('admin.category-halls.index')->withSuccess('The hall category deleted successfully!');
+            return redirect()->route('admin.category-halls.index')->withSuccess(ucwords($categoryHall->name." ".'category deleted successfully!'));
+        }
     }
 }

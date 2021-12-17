@@ -96,4 +96,9 @@ class Assignment extends Model
 
         return $new_deadline;
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school','teachers','departments','subjects','streams')->latest()->get();
+    }
 }

@@ -14,7 +14,7 @@
                     <h2>ACCOUNTANT ROLES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('superadmin.position-accountants.create')}}"> Create Accountant Role</a>
+                    <a class="btn btn-success" href="{{route('superadmin.position-accountants.create')}}">Create</a>
                 </div>
             </div>
         </div>

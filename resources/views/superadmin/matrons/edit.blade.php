@@ -7,8 +7,9 @@
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
+            <h2>EDIT MATRON</h2>
             <div class="panel-heading">
-                Edit Matron <a href="{{ route('superadmin.matrons.index') }}" class="label label-primary pull-right">Back</a>
+                <a href="{{ route('superadmin.matrons.index') }}" class="label label-primary pull-right">Back</a>
             </div>
             <div class="panel-body">
                 <form action="{{ route('superadmin.matrons.update', $matron->id) }}" method="post" class="form-horizontal" enctype="multipart/form-data">
@@ -21,21 +22,15 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >First Name</label>
+                        <label class="control-label col-sm-2" >Full Name</label>
                         <div class="col-sm-10">
-                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ $matron->first_name }}">
+                            <input type="text" name="name" id="name" class="form-control" value="{{ $matron->name }}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >Middle Name</label>
+                        <label class="control-label col-sm-2" >Gender Status</label>
                         <div class="col-sm-10">
-                            <input type="text" name="middle_name" id="middle_name" class="form-control" value="{{ $matron->middle_name }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Last Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ $matron->last_name }}">
+                            <input type="text" name="gender" id="gender" class="form-control" value="{{ $matron->gender }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -81,17 +76,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >Current Address</label>
+                        <label class="control-label col-sm-2" >Postal Address</label>
                         <div class="col-sm-10">
-                            <input type="text" name="current_address" id="current_address" class="form-control" value="{{ $matron->current_address }}">
+                            <input type="text" name="address" id="address" class="form-control" value="{{ $matron->address }}">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Permanent Address</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="permanent_address" id="permanent_address" class="form-control" value="{{ $matron->permanent_address }}">
-                        </div>
-                    </div>
+                    @include('ext._blood_group_div')
                     <div class="form-group">
                         <label class="control-label col-sm-2" >History</label>
                         <div class="col-sm-10">

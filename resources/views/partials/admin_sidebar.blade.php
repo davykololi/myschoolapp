@@ -4,7 +4,7 @@
 				<div class="sidebar-content">
 					<div class="user">
 						<div class="avatar-sm float-left mr-2">
-							<img src="/storage/storage/{{Auth::user()->image }}" alt="{{Auth::user()->full_name }}" class="avatar-img rounded-circle">
+							<img src="/storage/storage/{{Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{Auth::user()->full_name }}" class="avatar-img rounded-circle">
 						</div>
 						<div class="info">
 							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
@@ -424,23 +424,28 @@
 													</a>
 												</li>
 												<li>
-													<a href="{{ route('admin.reports.index') }}">
-														<span class="sub-item">REPORTS</span>
-													</a>
-												</li>
-												<li>
 													<a href="{{ route('admin.letters.index') }}">
 														<span class="sub-item">LETTERS</span>
 													</a>
 												</li>
 												<li>
-													<a href="{{ route('admin.classes.reportcardForm') }}">
+													<a href="{{ route('admin.streams.reportCardsForm') }}">
 														<span class="sub-item">REPORT CARDS</span>
 													</a>
 												</li>
 												<li>
-													<a href="{{ route('admin.classMarksheet.form') }}">
+													<a href="{{ route('admin.marksheet.importForm') }}">
 														<span class="sub-item">MARK SHEETS</span>
+													</a>
+												</li>
+												<li>
+													<a href="{{ route('admin.studentPdf.reportCardForm') }}">
+														<span class="sub-item">REPORT CARD</span>
+													</a>
+												</li>
+												<li>
+													<a href="{{ route('admin.sections.index') }}">
+														<span class="sub-item">SCHOOL SECTIONS</span>
 													</a>
 												</li>
 												<li>

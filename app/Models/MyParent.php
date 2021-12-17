@@ -13,16 +13,16 @@ use App\Notifications\ParentResetPasswordNotification;
 class MyParent extends Authenticatable implements Searchable
 {
     use HasFactory, Notifiable;
-    //
     protected $guard = 'parent';
-
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'parents';
-    protected $fillable = ['title','first_name','middle_name','last_name','email','image','id_no','emp_no','dob','designation','current_address','permanent_address','phone_no','school_id','password'];
-    protected $appends = ['full_name','age'];
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $fillable = ['title','name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','bg_id','school_id','password'];
+    protected $appends = ['age'];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -42,7 +42,7 @@ class MyParent extends Authenticatable implements Searchable
 
         return new SearchResult(
                 $this,
-                $this->full_name,
+                $this->name,
                 $url
             );
     }
@@ -50,6 +50,11 @@ class MyParent extends Authenticatable implements Searchable
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
+    }
+
+    public function blood_group()
+    {
+        return $this->belongsTo('App\Models\BloodGroup')->withDefault();
     }
 
     public function meetings()
@@ -67,11 +72,6 @@ class MyParent extends Authenticatable implements Searchable
         return $this->hasMany('App\Models\Student','parent_id','id');
     }
 
-    public function getFullNameAttribute()       
-    {        
-    return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
     public function getAgeAttribute()       
     { 
         $myDate = $this->dob;
@@ -80,19 +80,13 @@ class MyParent extends Authenticatable implements Searchable
         return $years;     
     }
 
-    public function setFirstNameAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['first_name'] = ucfirst($value);
+        $this->attributes['name'] = ucfirst($value);
     }
 
-    public function setMiddleNameAttribute($value)
+    public function scopeEagerLoaded($query)
     {
-        $this->attributes['middle_name'] = ucfirst($value);
+        return $query->with('school','students')->get();
     }
-
-    public function setLastNameAttribute($value)
-    {
-        $this->attributes['last_name'] = ucfirst($value);
-    }
-
 }

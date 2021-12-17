@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\School;
-use App\Models\Dormitory;
+use App\Services\DormitoryService as DormService;
 use App\Models\Meeting;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\DormFormRequest as StoreRequest;
+use App\Http\Requests\DormFormRequest as UpdateRequest;
 
 class DormitoryController extends Controller
 {
+    protected $dormService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(DormService $dormService)
     {
         $this->middleware('auth:admin');
+        $this->dormService = $dormService;
     }
 
     /**
@@ -29,7 +31,7 @@ class DormitoryController extends Controller
     public function index()
     {
         //
-        $dormitories = Dormitory::get();
+        $dormitories = $this->dormService->all();
 
         return view('admin.dormitories.index',compact('dormitories'));
     }
@@ -51,13 +53,10 @@ class DormitoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = auth()->user()->school->id;
-        $dormitory = Dormitory::create($input);
+        $dormitory = $this->dormService->create($request);
 
         return redirect()->route('admin.dormitories.index')->withSuccess(ucwords($dormitory->name." ".'info created successfully'));
     }
@@ -71,7 +70,7 @@ class DormitoryController extends Controller
     public function show($id)
     {
         //
-        $dormitory = Dormitory::findOrFail($id);
+        $dormitory = $this->dormService->getId($id);
         $meetings = Meeting::all();
         $dormitoryMeetings = $dormitory->meetings;
 
@@ -87,7 +86,7 @@ class DormitoryController extends Controller
     public function edit($id)
     {
         //
-        $dormitory = Dormitory::findOrFail($id);
+        $dormitory = $this->dormService->getId($id);
 
         return view('admin.dormitories.edit',compact('dormitory'));
     }
@@ -99,15 +98,15 @@ class DormitoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $dormitory = Dormitory::findOrFail($id);
-        $input = $request->only(['name','bed_no','dom_head']);
-        $input['school_id'] = auth()->user()->school->id;
-        $dormitory->update($input);
+        $dormitory = $this->dormService->getId($id);
+        if($dormitory && !$dormitory->isDirty()){
+            $this->dormService->update($request,$id);
 
-        return redirect()->route('admin.dormitories.index')->withSuccess(ucwords($dormitory->name." ".'info updated successfully'));
+            return redirect()->route('admin.dormitories.index')->withSuccess(ucwords($dormitory->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -119,8 +118,11 @@ class DormitoryController extends Controller
     public function destroy($id)
     {
         //
-        $dormitory = Dormitory::findOrFail($id)->delete();
+        $dormitory = $this->dormService->getId($id);
+        if($dormitory){
+            $this->dormService->delete($id);
 
-        return redirect()->route('admin.dormitories.index')->withSuccess(ucwords($dormitory->name." ".'info deleted successfully'));
+            return redirect()->route('admin.dormitories.index')->withSuccess(ucwords($dormitory->name." ".'info deleted successfully'));
+        }
     }
 }

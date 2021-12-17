@@ -3,23 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\School;
-use App\Models\Subject;
+use App\Services\SubjectService;
 use App\Models\Department;
 use App\Models\CategorySubject;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\SubjectFormRequest as StoreRequest;
+use App\Http\Requests\SubjectFormRequest as UpdateRequest;
 
 class SubjectController extends Controller
 {
+    protected $subjectService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SubjectService $subjectService)
     {
         $this->middleware('auth:admin');
+        $this->subjectService = $subjectService;
     }
     
     /**
@@ -30,7 +34,7 @@ class SubjectController extends Controller
     public function index()
     {
         //
-        $subjects = Subject::with('teachers','students','school','department','category_subject')->latest()->get();
+        $subjects = $this->subjectService->all();
 
         return view('admin.subjects.index',['subjects'=>$subjects]);
     }
@@ -55,17 +59,14 @@ class SubjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = auth()->user()->school->id;
-        $input['department_id'] = $request->department;
-        $input['category_subject_id'] = $request->subject_category;
-        $subject = Subject::create($input);
-
-        return redirect()->route('admin.subjects.index')->withSuccess(ucwords($subject->name." ".'info created successfully'));
+        $subject = $this->subjectService->create($request);
+        if(!$subject){
+            return redirect()->route('admin.subjects.index')->withErrors(ucwords('Oops!!, An error occured. Try again later!'));
+        }
+            return redirect()->route('admin.subjects.index')->withSuccess(ucwords($subject->name." ".'info created successfully'));
     }
 
     /**
@@ -77,7 +78,7 @@ class SubjectController extends Controller
     public function show($id)
     {
         //
-        $subject = Subject::findOrFail($id);
+        $subject = $this->subjectService->getId($id);
 
         return view('admin.subjects.show',['subject'=>$subject]);
     }
@@ -91,7 +92,7 @@ class SubjectController extends Controller
     public function edit($id)
     {
         //
-        $subject = Subject::findOrFail($id);
+        $subject = $this->subjectService->getId($id);
         $departments = Department::all();
         $subjectCategories = CategorySubject::all();
 
@@ -105,17 +106,15 @@ class SubjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $subject = Subject::findOrFail($id);
-        $input = $request->only(['name']);
-        $input['school_id'] = auth()->user()->school->id;
-        $input['department_id'] = $request->department;
-        $input['category_subject_id'] = $request->subject_category;
-        $subject->update($input);
+        $subject = $this->subjectService->getId($id);
+        if($subject){
+            $this->subjectService->update($request,$id);
 
-        return redirect()->route('admin.subjects.index')->withSuccess(ucwords($subject->name." ".'info updated successfully'));
+            return redirect()->route('admin.subjects.index')->withSuccess(ucwords($subject->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -127,9 +126,11 @@ class SubjectController extends Controller
     public function destroy($id)
     {
         //
-        $subject = Subject::findOrFail($id);
-        $subject->delete();
+        $subject = $this->subjectService->getId($id);
+        if($subject){
+            $this->subjectService->delete($id);
 
-        return redirect()->route('admin.subjects.index')->withSuccess(ucwords($subject->name." ".'info deleted successfully'));
+            return redirect()->route('admin.subjects.index')->withSuccess(ucwords($subject->name." ".'info deleted successfully'));
+        }
     }
 }

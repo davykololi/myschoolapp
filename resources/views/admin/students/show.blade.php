@@ -11,20 +11,20 @@
             <br/>
         </div>
         <div class="pull-right">
-            <a href="{{ route('admin.students.index') }}" class="btn btn-primary pull-right"> Back</a>
+            <a href="{{ url()->previous() }}" class="btn btn-primary pull-right"> Back</a>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $student->image }}">
+            <img style="width:15%" src="/storage/storage/{{ $student->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $student->title }} {{ $student->full_name }}
+            {{ $student->title }} {{ $student->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -90,38 +90,42 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Parent Info:</strong>
-            <span style="color: green">Name:</span> {{ $student->parent->title }} {{ $student->parent->full_name }} 
+            <span style="color: green">Name:</span> {{ $student->parent->title }} {{ $student->parent->name }} 
             <span style="color: green">Phone:</span> {{ $student->parent->phone_no }}
             <span style="color: green">Job:</span> {{ $student->parent->designation }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Subjects:</strong>
+            <strong>{{ $student->name }}'s Subjects:</strong>
             <ol>
             @forelse($student->subjects as $subject)
+            <a href="{{route('admin.subjects.show',$subject->id)}}">
                 <li>{{ $subject->name }}</li>
+            </a>
             @empty
-            <p>No subject(s) assigned to {{ $student->full_name }} yet.</p>
+            <p>No subject(s) assigned to {{ $student->name }} yet.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Awards:</strong>
+            <strong>{{ $student->name }}'s Awards:</strong>
             <ol>
             @forelse($student->rewards as $reward)
+            <a href="{{route('admin.rewards.show',$reward->id)}}">
                 <li>{{ $reward->name }} <span style="color: blue">Purpose:</span> {{ $reward->purpose }}.</li>
+            </a>
             @empty
-            <p>{{ $student->full_name }} notyet recieved any award.</p>
+                <p>{{ $student->name }} notyet recieved any award.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Assignments:</strong>
+            <strong>{{ $student->name }}'s Assignments:</strong>
             <ol>
             @forelse($student->assignments as $assignment)
                 <li>
@@ -130,41 +134,45 @@
                     {{ date("jS,F,Y,g:i a",strtotime($assignment->deadline)) }}.
                 </li>
             @empty
-            <p>{{ $student->full_name }} notyet been given any assignment(s).</p>
+                <p>{{ $student->name }} notyet been given any assignment(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Clubs:</strong>
+            <strong>{{ $student->name }}'s Clubs:</strong>
             <ol>
             @forelse($student->clubs as $club)
+            <a href="{{route('admin.clubs.show',$club->id)}}">
                 <li>{{ $club->name }}</li>
+            </a>
             @empty
-            <p>{{ $student->full_name }} notyet been assigned to any club.</p>
+                <p>{{ $student->name }} notyet been assigned to any club.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Meetings:</strong>
+            <strong>{{ $student->name }}'s Meetings:</strong>
             <ol>
             @forelse($student->meetings as $key => $meeting)
+            <a href="{{route('admin.meetings.show',$meeting->id)}}">
                 <li>
-                    {{ $meeting->name }} to be held on {{ date("jS,F,Y",strtotime($meeting->date)) }}.
-                    <span style="color: green"> Agenda:</span> {{ $meeting->agenda }}.
+                    {{$meeting->name}} to be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda will be 
+                     {{ $meeting->agenda }}.
                 </li>
+            </a>
             @empty
-            <p>{{ $student->full_name }} notyet been assigned to any meeting(s).</p>
+                <p>{{ $student->name }} notyet been assigned to any meeting(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>More:</strong>
+            <strong>More About {{ $student->name }}:</strong>
             {!! $student->history !!}
         </div>
     </div>

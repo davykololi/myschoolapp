@@ -23,7 +23,7 @@
             <form action="{{route('librarian.issuedbook.returnDate')}}" method="get" class="form-horizontal" style="margin-left: 40px">
                 {{ csrf_field() }}
                 <div class="form-group">
-                    <label>Issued Date</label>
+                    <label><b>Issued Books By Return Date</b></label>
                     <input type="date" name="return_date" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-primary">Get</button>

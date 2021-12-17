@@ -18,7 +18,7 @@
                         Departments PDF
                     </a>
                     <br/><br/>
-                    <a class="btn btn-success" href="{{route('admin.departments.create')}}"> Add Department</a>
+                    <a class="btn btn-success" href="{{route('admin.departments.create')}}">Create</a>
                 </div>
             </div>
         </div>

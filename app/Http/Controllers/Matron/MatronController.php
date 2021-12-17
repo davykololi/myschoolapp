@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Matron;
 
-use App\Models\School;
-use App\Models\Dormitory;
+use App\Repositories\SchoolRepository as SchRepo;
+use App\Repositories\DormitoryRepository as DormRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MatronController extends Controller
 {
-        /**
+    protected $schRepo,$dormRepo;
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SchRepo $schRepo,DormRepo $dormRepo)
     {
         $this->middleware('auth:matron');
+        $this->schRepo = $schRepo;
+        $this->dormRepo = $dormRepo;
     }
  
     /**
@@ -26,20 +29,20 @@ class MatronController extends Controller
      */
     public function index()
     {
-        
-
         return view('matron');
     }
 
-    public function dormitories(School $school)
+    public function dormitories($id)
     {
+        $school = $this->schRepo->getId($id);
     	$dormitories = $school->dormitories()->with('school','students')->get();
 
         return view('matron.dormitories',compact('school','dormitories'));
     }
 
-    public function dormitory(Dormitory $dormitory)
+    public function dormitory($id)
     {
+        $dormitory = $this->dormRepo->getId($id);
 
         return view('matron.dormitory',compact('dormitory'));
     }

@@ -38,19 +38,18 @@
                             <input type="number" name="to_mark" id="" class="form-control" placeholder="To Marks Eg. 75">
                         </div>
                     </div>
-                    @include('ext._attach_studentdiv')
-                    @include('ext._attach_streamdiv')
-                    @include('ext._attach_deptdiv')
-                    @include('ext._attach_teacherdiv')
-                    @include('ext._attach_staffdiv')
-                    @include('ext._attach_librariandiv')
-                    @include('ext._attach_matrondiv')
-                    @include('ext._attach_accountantdiv')
-                    @include('ext._attach_classdiv')
-                    @include('ext._attach_parentdiv')
-                    @include('ext._attach_dormitorydiv')
-                    @include('ext._attach_subjectdiv')
-                    @include('ext._attach_standard_subjectdiv')
+                    <div class="form-group">
+                        @include('ext._attach_classdiv')
+                    </div>
+                    <div class="form-group">
+                        @include('ext._attach_streamdiv')
+                    </div>
+                    <div class="form-group">
+                        @include('ext._attach_yeardiv')
+                    </div>
+                    <div class="form-group">
+                        @include('ext._attach_sectiondiv')
+                    </div>
                     @include('ext._submit_create_button')
                 </form>
             </div>

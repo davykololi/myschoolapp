@@ -14,7 +14,7 @@
                      <h2>FIELD LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.fields.create')}}"> Add Class</a>
+                    <a class="btn btn-success" href="{{route('admin.fields.create')}}">Create</a>
                 </div>
             </div>
         </div>

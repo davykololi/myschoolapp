@@ -1,12 +1,23 @@
-<!-- Scripts -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-<!-- Latest compiled Javascript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- CKEditor -->
-<script src="{{asset('ckeditor5/ckeditor.js')}}"></script>
+<!-- jQuery Frameworks
+    ============================================= -->
+    <script src="{{ asset('assets2/js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/equal-height.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/jquery.appear.js') }}"></script>
+    <script src="{{ asset('assets2/js/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/modernizr.custom.13711.js') }}"></script>
+    <script src="{{ asset('assets2/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/wow.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/progress-bar.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/imagesloaded.pkgd.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/count-to.js') }}"></script>
+    <script src="{{ asset('assets2/js/YTPlayer.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/loopcounter.js') }}"></script>
+    <script src="{{ asset('assets2/js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/bootsnav.js') }}"></script>
+    <script src="{{ asset('assets2/js/main.js') }}"></script>
 
 <script>
         ClassicEditor

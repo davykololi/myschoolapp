@@ -10,6 +10,8 @@ class MyClass extends Model
     use HasFactory;
 
     protected $table = 'classes';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['name','desc','slug','school_id'];
 
     public function school() {
@@ -27,6 +29,11 @@ class MyClass extends Model
         return $this->hasMany('App\Models\Stream','class_id','id');
     }
 
+    public function timetables() {
+
+        return $this->hasMany('App\Models\Timetable','class_id','id');
+    }
+
     public function fees() {
 
         return $this->belongsMany('App\Models\Fee')->withTimestamps();
@@ -40,5 +47,20 @@ class MyClass extends Model
     public function students() {
 
         return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','stream_id','id');
+    }
+
+    public function report_cards()
+    {
+        return $this->hasMany('App\Models\ReportCard','class_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('students','streams','school')->get();
+    }
+
+    public function grade_systems()
+    {
+        return $this->hasMany('App\Models\GradeSystem','class_id','id');
     }
 }

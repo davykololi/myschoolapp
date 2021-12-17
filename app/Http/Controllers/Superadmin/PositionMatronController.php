@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\PositionMatron;
+use App\Services\MatronRoleService as MatRolService;
 use Illuminate\Http\Request;
+use App\Http\Requests\MatRoleFormRequest as StoreRequest;
+use App\Http\Requests\MatRoleFormRequest as UpdateRequest;
 
 class PositionMatronController extends Controller
 {
+    protected $matRolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MatRolService $matRolService)
     {
         $this->middleware('auth:superadmin');
+        $this->matRolService = $matRolService;
     }
 
     /**
@@ -27,7 +30,7 @@ class PositionMatronController extends Controller
     public function index()
     {
         //
-        $positionMatrons = PositionMatron::get();
+        $positionMatrons = $this->matRolService->all();
 
         return view('superadmin.position-matrons.index',compact('positionMatrons'));
     }
@@ -49,14 +52,12 @@ class PositionMatronController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        PositionMatron::create($input);
+        $positionMatron = $this->matRolService->create($request);
 
-        return redirect()->route('superadmin.position-matrons.index')->withSuccess('The matron role created successfully!');
+        return redirect()->route('superadmin.position-matrons.index')->withSuccess(ucwords($positionMatron->name." ".'role created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class PositionMatronController extends Controller
      * @param  \App\Models\PositionMatron  $positionMatron
      * @return \Illuminate\Http\Response
      */
-    public function show(PositionMatron $positionMatron)
+    public function show($id)
     {
         //
+        $positionMatron = $this->matRolService->getId($id);
+
         return view('superadmin.position-matrons.show',compact('positionMatron'));
     }
 
@@ -77,9 +80,11 @@ class PositionMatronController extends Controller
      * @param  \App\Models\PositionMatron  $positionMatron
      * @return \Illuminate\Http\Response
      */
-    public function edit(PositionMatron $positionMatron)
+    public function edit($id)
     {
         //
+        $positionMatron = $this->matRolService->getId($id);
+
         return view('superadmin.position-matrons.edit',compact('positionMatron'));
     }
 
@@ -90,14 +95,15 @@ class PositionMatronController extends Controller
      * @param  \App\Models\PositionMatron  $positionMatron
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PositionMatron $positionMatron)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $positionMatron->update($input);
+        $positionMatron = $this->matRolService->getId($id);
+        if($positionMatron){
+            $this->matRolService->update($request,$id);
 
-        return redirect()->route('superadmin.position-matrons.index')->withSuccess('The matron role updated successfully!');
+            return redirect()->route('superadmin.position-matrons.index')->withSuccess(ucwords($positionMatron->name." ".'role updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class PositionMatronController extends Controller
      * @param  \App\Models\PositionMatron  $positionMatron
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PositionMatron $positionMatron)
+    public function destroy($id)
     {
         //
-        $positionMatron->delete();
+        $positionMatron = $this->matRolService->getId($id);
+        if($positionMatron){
+            $this->matRolService->delete($id);
 
-        return redirect()->route('superadmin.position-matrons.index')->withSuccess('The matron role deleted successfully!');
+            return redirect()->route('superadmin.position-matrons.index')->withSuccess(ucwords($positionMatron->name." ".'role deleted successfully!'));
+        }
     }
 }

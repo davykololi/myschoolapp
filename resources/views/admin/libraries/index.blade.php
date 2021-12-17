@@ -14,7 +14,7 @@
                     <h2>LIBRARIES LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.libraries.create')}}"> Add Library</a>
+                    <a class="btn btn-success" href="{{route('admin.libraries.create')}}">Create</a>
                 </div>
             </div>
         </div>

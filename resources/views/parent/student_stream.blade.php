@@ -20,8 +20,8 @@
             <ol>
             @forelse($stream->teachers as $teacher)
                 <li>
-                    <a href="{{route('admin.stream.teacher',[$teacher->id,$stream->id])}}">
-                        {{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}
+                    <a href="{{route('parent.show.teacher',$teacher->id)}}">
+                        {{ $teacher->title }} {{ $teacher->full_name }} - {{ $teacher->phone_no }}
                     </a>
                 </li>
             @empty
@@ -64,7 +64,7 @@
                     Start Date:{{ date("jS,F,Y",strtotime($exam->start_date)) }} End Date:{{ date("jS,F,Y",strtotime($exam->end_date)) }} 
                     {{ $exam->file }}
                     <span style="color: blue">Timetable:</span>
-                    @forelse($exam->exam_timetables as $timetable)
+                    @forelse($exam->timetables as $timetable)
                         {{$timetable->file}}
                     @empty
                         <span style="color: red">The Timetable Notyet Uploaded.</span>
@@ -115,7 +115,7 @@
                     {{$standardSubject->subject->name}}
                 </li>
             @empty
-                <p style="color: red"> The Facilitators Notyet Assigned to {{ $user->stream->name Subjects.</p>
+                <p style="color: red"> The Facilitators Notyet Assigned to {{ $stream->name }} Subjects.</p>
             @endforelse
             </ol>
             @endif

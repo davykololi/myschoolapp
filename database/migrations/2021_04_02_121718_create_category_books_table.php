@@ -17,7 +17,7 @@ class CreateCategoryBooksTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('desc');
-            $table->string('slug')->nullable()->unique();
+            $table->string('slug')->nullable();
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ class Meeting extends Model implements Searchable
 {
     //
     protected $table = 'meetings';
-    protected $fillable = ['name','agenda','date','venue','code','school_d'];
+    protected $fillable = ['name','agenda','date','venue','code','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -33,7 +33,7 @@ class Meeting extends Model implements Searchable
     	return $this->belongsToMany('App\Models\Teacher')->withTimestamps();
     }
 
-    public function schools()
+    public function school()
     {
         return $this->belongsTo('App\Models\School')->withDefault();
     }
@@ -79,5 +79,10 @@ class Meeting extends Model implements Searchable
         $new_date = date("jS,F,Y",strtotime($date));
 
         return $new_date;
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('teachers','students','school','streams','staffs','departments','dormitories','libraries','clubs')->get();
     }
 }

@@ -10,7 +10,7 @@ class Timetable extends Model implements Searchable
 {
     //
     protected $table = 'timetables';
-    protected $fillable = ['file','desc','class_id','stream_id','school_id','teacher_id'];
+    protected $fillable = ['file','desc','school_id','class_id','stream_id','exam_id','teacher_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -43,8 +43,13 @@ class Timetable extends Model implements Searchable
         return $this->belongsTo('App\Models\Teacher')->withDefault();
     }
 
-    public function exams()
+    public function exam()
     {
-        return $this->belongsToMany('App\Models\Exam')->withTimestamps();
+        return $this->belongsTo('App\Models\Exam')->withDefault();
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('class','stream','school','teacher','exam',)->get();
     }
 }

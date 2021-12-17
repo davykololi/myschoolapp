@@ -26,9 +26,9 @@ class ReportController extends Controller
     public function index()
     {
         //
-        $reports = ReportCard::all();
+        $reportCards = ReportCard::all();
 
-        return view('admin.reports.index',compact('reports'));
+        return view('admin.report_cards.index',compact('reportCards'));
     }
 
     /**
@@ -58,10 +58,10 @@ class ReportController extends Controller
      * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function show(ReportCard $report)
+    public function show(ReportCard $reportCard)
     {
         //
-        return view('admin.reports.show',compact('report'));
+        return view('admin.report-cards.show',compact('reportCard'));
     }
 
     /**
@@ -70,7 +70,7 @@ class ReportController extends Controller
      * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function edit(Report $report)
+    public function edit(ReportCard $reportCard)
     {
         //
     }
@@ -82,7 +82,7 @@ class ReportController extends Controller
      * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ReportCard $report)
+    public function update(Request $request, ReportCard $reportCard)
     {
         //
     }
@@ -93,7 +93,7 @@ class ReportController extends Controller
      * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Report $report)
+    public function destroy(ReportCard $reportCard)
     {
         //
     }

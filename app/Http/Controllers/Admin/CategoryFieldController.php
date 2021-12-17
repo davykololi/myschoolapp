@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\CategoryField;
+use App\Services\FieldCatService as FldCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\FieldCatFormRequest as StoreRequest;
+use App\Http\Requests\FieldCatFormRequest as UpdateRequest;
 
 class CategoryFieldController extends Controller
 {
+    protected $fldCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(FldCatService $fldCatService)
     {
         $this->middleware('auth:admin');
+        $this->fldCatService = $fldCatService;
     }
 
     /**
@@ -27,7 +30,7 @@ class CategoryFieldController extends Controller
     public function index()
     {
         //
-        $categoryFields = CategoryField::get();
+        $categoryFields = $this->fldCatService->all();
 
         return view('admin.category-fields.index',compact('categoryFields'));
     }
@@ -49,14 +52,12 @@ class CategoryFieldController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        CategoryField::create($input);
+        $categoryField = $this->fldCatService->create($request);
 
-        return redirect()->route('admin.category-fields.index')->withSuccess('The field category created successfully!');
+        return redirect()->route('admin.category-fields.index')->withSuccess(ucwords($categoryField->name." ".'category created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class CategoryFieldController extends Controller
      * @param  \App\Models\CategoryField  $categoryField
      * @return \Illuminate\Http\Response
      */
-    public function show(CategoryField $categoryField)
+    public function show($id)
     {
         //
+        $categoryField = $this->fldCatService->getId($id);
+
         return view('admin.category-fields.show',compact('categoryField'));
     }
 
@@ -77,9 +80,11 @@ class CategoryFieldController extends Controller
      * @param  \App\Models\CategoryField  $categoryField
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryField $categoryField)
+    public function edit($id)
     {
         //
+        $categoryField = $this->fldCatService->getId($id);
+
         return view('admin.category-fields.edit',compact('categoryField'));
     }
 
@@ -90,14 +95,15 @@ class CategoryFieldController extends Controller
      * @param  \App\Models\CategoryField  $categoryField
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoryField $categoryField)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $categoryField->update($input);
+        $categoryField = $this->fldCatService->getId($id);
+        if($categoryField){
+            $this->fldCatService->update($request,$id);
 
-        return redirect()->route('admin.category-fields.index')->withSuccess('The field category updated successfully!');
+            return redirect()->route('admin.category-fields.index')->withSuccess(ucwords($categoryField->name." ".'category updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class CategoryFieldController extends Controller
      * @param  \App\Models\CategoryField  $categoryField
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryField $categoryField)
+    public function destroy($id)
     {
         //
-        $categoryField->delete();
+        $categoryField = $this->fldCatService->getId($id);
+        if($categoryField){
+            $this->fldCatService->delete($id);
 
-        return redirect()->route('admin.category-fields.index')->withSuccess('The field category deleted successfully!');
+            return redirect()->route('admin.category-fields.index')->withSuccess(ucwords($categoryField->name." ".'category deleted successfully!'));
+        }
     }
 }

@@ -42,4 +42,9 @@ class Farm extends Model implements Searchable
     {
         return $this->belongsToMany('App\Models\Reward')->withTimestamps();
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school','category_farm')->get();
+    }
 }

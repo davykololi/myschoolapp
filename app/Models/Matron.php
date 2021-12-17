@@ -18,9 +18,8 @@ class Matron extends Authenticatable
     *@var array
     */
     protected $table = 'matrons';
-    protected $fillable = ['title','first_name','middle_name','last_name','email','image','id_no','emp_no','dob','designation','current_address','permanent_address','phone_no','history','school_id','position_matron_id','password'];
-    protected $appends = ['full_name','age'];
-
+    protected $fillable = ['title','name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history','bg_id','school_id','position_matron_id','password'];
+    protected $appends = ['age'];
     /**
     * The attributes that should be hidden for arrays.
     *
@@ -33,7 +32,6 @@ class Matron extends Authenticatable
         $this->notify(new MatronResetPasswordNotification($token));
     }
 
-
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
@@ -42,6 +40,11 @@ class Matron extends Authenticatable
     public function position_matron()
     {
         return $this->belongsTo('App\Models\PositionMatron')->withDefault();
+    }
+
+    public function blood_group()
+    {
+        return $this->belongsTo('App\Models\BloodGroup')->withDefault();
     }
 
     public function meetings()
@@ -54,11 +57,6 @@ class Matron extends Authenticatable
     	return $this->belongsToMany('App\Models\Reward')->withTimestamps();
     }
 
-    public function getFullNameAttribute()       
-    {        
-    return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
     public function getAgeAttribute()       
     { 
         $myDate = $this->dob;
@@ -67,18 +65,13 @@ class Matron extends Authenticatable
         return $years;     
     }
 
-    public function setFirstNameAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['first_name'] = ucfirst($value);
+        $this->attributes['name'] = ucfirst($value);
     }
 
-    public function setMiddleNameAttribute($value)
+    public function scopeEagerLoaded($query)
     {
-        $this->attributes['middle_name'] = ucfirst($value);
-    }
-
-    public function setLastNameAttribute($value)
-    {
-        $this->attributes['last_name'] = ucfirst($value);
+        return $query->with('school','position_matron','meetings','rewards')->get();
     }
 }

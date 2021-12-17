@@ -2,52 +2,74 @@
 @section('title', '| MarkSheets Upload & Download')
 
 @section('content')
-<div class="container" style="margin-top: 5rem;">
+<div class="container">
     @include('partials.messages')
     @include('partials.errors')
     {!! Session::forget('success') !!}
-    <h2 class="text-title">UPLOAD MARKSHEETS</h2>
-    <form id="marksheets_form" action="{{ route('admin.stream.marksheet') }}" class="form-horizontal" method="get">
+    <h2 class="text-title" style="text-align: center;"><b>UPLOAD MARKSHEETS</b></h2>
+    <form id="marksheets_form" action="{{ route('admin.stream.pdfMarksheet') }}" class="form-horizontal" method="get">
         {{ csrf_field() }}
         <div class="marksheets_title red">Stream Results Pdf</div>
-        @include('ext._attach_yeardiv')
-        @include('ext._attach_termdiv')
-        @include('ext._attach_streamdiv')
-        @include('ext._attach_examdiv')
-        <button class="btn btn-primary">Stream Results PDF</button>
+            @include('ext._stream_results_form')
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="number" name="pass_mark" class="form-control" placeholder="Enter Passmark">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-xs pull-right">Generate</button>
+            </div>
+        </div>
     </form>
-    <form id="marksheets_form" action="{{ route('admin.streams.marksheets') }}" class="form-horizontal" method="post" enctype="multipart/form-data">
+    <form id="marksheets_form" action="{{ route('admin.stream.excelMarksheet') }}" class="form-horizontal" method="get">
         {{ csrf_field() }}
-        <div class="marksheets_title red">Streams Excel Marksheets Upload</div>
-        @include('ext._attach_yeardiv')
-        @include('ext._attach_termdiv')
-        @include('ext._attach_classdiv')
-        @include('ext._attach_examdiv')
-        @include('ext._attach_teacherdiv')
-        <input type="file" name="file"/>
-        <button class="btn btn-primary">Upload Streams Marksheets</button>
+        <div class="marksheets_title red">Stream Results Ecxel</div>
+            @include('ext._stream_results_form')
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-xs pull-right">Generate</button>
+            </div>
+        </div>
     </form>
-
     <form id="marksheets_form" action="{{ route('admin.class.marksheet') }}" class="form-horizontal" method="get">
         {{ csrf_field() }}
         <div class="marksheets_title red">Class Results Pdf</div>
-        @include('ext._attach_yeardiv')
-        @include('ext._attach_termdiv')
-        @include('ext._attach_classdiv')
-        @include('ext._attach_examdiv')
-        <button class="btn btn-primary">Class Results PDF</button>
+            @include('ext._class_results_form')
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="number" name="pass_mark" class="form-control" placeholder="Enter Passmark">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-xs pull-right">Generate</button>
+            </div>
+        </div>
     </form>
-    
-    <form id="marksheets_form" action="{{ route('admin.classMarksheet.store') }}" class="form-horizontal" method="post" enctype="multipart/form-data">
+    <form id="marksheets_form" action="{{ route('admin.class.excelMarksheet') }}" class="form-horizontal" method="get">
         {{ csrf_field() }}
-        <div class="marksheets_title red">Class Excel Marksheet Upload</div>
-        @include('ext._attach_yeardiv')
-        @include('ext._attach_termdiv')
-        @include('ext._attach_classdiv')
-        @include('ext._attach_examdiv')
-        @include('ext._attach_teacherdiv')
-        <input type="file" name="file"/>
-        <button class="btn btn-primary">Upload Class Marksheet</button>
+        <div class="marksheets_title red">Class Results Ecxel</div>
+            @include('ext._class_results_form')
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-xs pull-right">Generate</button>
+            </div>
+        </div>
+    </form>
+    <form id="marksheets_form" action="{{ route('admin.streams.marksheetsImport') }}" class="form-horizontal" method="post" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        <div class="marksheets_title red">Upload Marksheets</div>
+            @include('ext._marksheet_upload_form')
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-xs pull-right">Upload</button>
+            </div>
+        </div>
     </form>
 </div>
 @endsection

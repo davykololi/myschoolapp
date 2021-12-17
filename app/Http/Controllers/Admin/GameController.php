@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\School;
-use App\Models\CategoryGame;
-use App\Models\Game;
+use App\Services\GameCatService;
+use App\Services\GameService;
 use Illuminate\Http\Request;
+use App\Http\Requests\GameFormRequest as StoreRequest;
+use App\Http\Requests\GameFormRequest as UpdateRequest;
 
 class GameController extends Controller
 {
+    protected $gameCatService,$gameService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(GameService $gameService,GameCatService $gameCatService)
     {
         $this->middleware('auth:admin');
+        $this->gameService = $gameService;
+        $this->gameCatService = $gameCatService;
     }
 
     /**
@@ -30,7 +32,7 @@ class GameController extends Controller
     public function index()
     {
         //
-        $games = Game::with('school','category_game')->get();
+        $games = $this->gameService->all();
 
         return view('admin.games.index',compact('games'));
     }
@@ -43,7 +45,7 @@ class GameController extends Controller
     public function create()
     {
         //
-        $categoryGames = CategoryGame::all();
+        $categoryGames = $this->gameCatService->all();
 
         return view('admin.games.create',compact('categoryGames'));
     }
@@ -54,14 +56,10 @@ class GameController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_game_id'] = $request->game_category;
-        $game = Game::create($input);
+        $game = $this->gameService->create($request);
 
         return redirect()->route('admin.games.index')->withSuccess(ucwords($game->name." ".'created successfully'));
     }
@@ -72,9 +70,11 @@ class GameController extends Controller
      * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
-    public function show(Game $game)
+    public function show($id)
     {
         //
+        $game = $this->gameService->getId($id);
+
         return view('admin.games.show',compact('game'));
     }
 
@@ -84,10 +84,11 @@ class GameController extends Controller
      * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
-    public function edit(Game $game)
+    public function edit($id)
     {
         //
-        $categoryGames = CategoryGame::all();
+        $game = $this->gameService->getId($id);
+        $categoryGames = $this->gameCatService->all();
 
         return view('admin.games.edit',compact('game','categoryGames'));
     }
@@ -99,15 +100,15 @@ class GameController extends Controller
      * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Game $game)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->only(['name']);
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_game_id'] = $request->game_category;
-        $game->update($input);
+        $game = $this->gameService->getId($id);
+        if($game){
+            $this->gameService->update($request,$id);
 
-        return redirect()->route('admin.games.index')->withSuccess(ucwords($game->name." ".'updated successfully'));
+            return redirect()->route('admin.games.index')->withSuccess(ucwords($game->name." ".'updated successfully'));
+        }
     }
 
     /**
@@ -116,11 +117,14 @@ class GameController extends Controller
      * @param  \App\Models\Game  $game
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Game $game)
+    public function destroy($id)
     {
         //
-        $game->delete();
+        $game = $this->gameService->getId($id);
+        if($game){
+            $this->gameService->delete($id);
 
-        return redirect()->route('admin.games.index')->withSuccess(ucwords($game->name." ".'deleted successfully'));
+            return redirect()->route('admin.games.index')->withSuccess(ucwords($game->name." ".'deleted successfully'));
+        }
     }
 }

@@ -2,22 +2,27 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use Illuminate\Support\Str;
-use App\Models\Term;
-use App\Models\School;
+use App\Services\TermService;
+use App\Services\SchoolService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\TermFormRequest as StoreRequest;
+use App\Http\Requests\TermFormRequest as UpdateRequest;
 
 class TermController extends Controller
 {
+    protected $termService;
+    protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(TermService $termService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->termService = $termService;
+        $this->schoolService = $schoolService;
     }
     
     /**
@@ -28,7 +33,7 @@ class TermController extends Controller
     public function index()
     {
         //
-        $terms = Term::with('school')->get();
+        $terms = $this->termService->all();
 
         return view('superadmin.terms.index',compact('terms'));
     }
@@ -41,7 +46,7 @@ class TermController extends Controller
     public function create()
     {
         //
-        $schools = School::all();
+        $schools = $this->schoolService->all();
 
         return view('superadmin.terms.create',compact('schools'));
     }
@@ -52,15 +57,10 @@ class TermController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = $request->school;
-        $schoolId = $request->school;
-        $school = School::whereId($schoolId)->first();
-        $input['code'] = strtoupper($school->initials."/".Str::random(5)."/".now()->year);
-        $term = Term::create($input);
+        $term = $this->termService->create($request);
 
         return redirect()->route('superadmin.terms.index')->withSuccess(ucwords($term->name." ".'info created successfully!!'));
     }
@@ -74,7 +74,7 @@ class TermController extends Controller
     public function show($id)
     {
         //
-        $term = Term::findOrFail($id);
+        $term = $this->termService->getId($id);
 
         return view('superadmin.terms.show',compact('term'));
     }
@@ -88,8 +88,8 @@ class TermController extends Controller
     public function edit($id)
     {
         //
-        $term = Term::findOrFail($id);
-        $schools = School::all();
+        $term = $this->termService->getId($id);
+        $schools = $this->schoolService->all();
 
         return view('superadmin.terms.edit',compact('term','schools'));
     }
@@ -101,18 +101,15 @@ class TermController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $term = Term::findOrFail($id);
-        $input = $request->only('name');
-        $input['school_id'] = $request->school;
-        $schoolId = $request->school;
-        $school = School::whereId($schoolId)->first();
-        $input['code'] = strtoupper($school->initials."/".Str::random(5)."/".now()->year);
-        $term->update($input);
+        $term = $this->termService->getId($id);
+        if($term){
+            $this->termService->update($request,$id);
 
-        return redirect()->route('superadmin.terms.index')->withSuccess(ucwords($term->name." ".'info updated successfully!!'));
+            return redirect()->route('superadmin.terms.index')->withSuccess(ucwords($term->name." ".'info updated successfully!!'));
+        }
     }
 
     /**
@@ -124,9 +121,9 @@ class TermController extends Controller
     public function destroy($id)
     {
         //
-        $term = Term::findOrFail($id);
+        $term = $this->termService->getId($id);
         if($term){
-        	$term->delete();
+        	$this->termService->delete($id);
 
         	return redirect()->route('superadmin.terms.index')->withSuccess(ucwords($term->name." ".'info deleted successfully!!'));
         }

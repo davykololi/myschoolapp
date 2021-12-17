@@ -21,21 +21,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >First Name</label>
+                        <label class="control-label col-sm-2" >Name</label>
                         <div class="col-sm-10">
-                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ $librarian->first_name }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Middle Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="middle_name" id="middle_name" class="form-control" value="{{ $librarian->middle_name }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Last Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ $librarian->last_name }}">
+                            <input type="text" name="name" id="name" class="form-control" value="{{ $librarian->name }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -81,19 +69,22 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >Current Address</label>
+                        <label class="control-label col-sm-2" >Postal Address</label>
                         <div class="col-sm-10">
-                            <input type="text" name="current_address" id="current_address" class="form-control" value="{{ $librarian->current_address }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Permanent Address</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="permanent_address" id="permanent_address" class="form-control" value="{{ $librarian->permanent_address }}">
+                            <input type="text" name="address" id="address" class="form-control" value="{{ $librarian->address }}">
                         </div>
                     </div>
                     @include('ext._attach_librarian_rolediv')
                     @include('ext._attach_schooldiv')
+                    @include('ext._blood_group_div')
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >History</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="summary-ckeditor" name="history">
+                                {!! $librarian->history !!}
+                            </textarea>
+                        </div>        
+                    </div>
                     @include('ext._submit_update_button')
                 </form>
             </div>

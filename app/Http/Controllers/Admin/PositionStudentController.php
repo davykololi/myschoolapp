@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\PositionStudent;
+use App\Services\StudentRoleService as StudRolService;
 use Illuminate\Http\Request;
+use App\Http\Requests\StudRoleFormRequest as StoreRequest;
+use App\Http\Requests\StudRoleFormRequest as UpdateRequest;
 
 class PositionStudentController extends Controller
 {
+    protected $studRolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StudRolService $studRolService)
     {
         $this->middleware('auth:admin');
+        $this->studRolService = $studRolService;
     }
     
     /**
@@ -27,7 +30,7 @@ class PositionStudentController extends Controller
     public function index()
     {
         //
-        $positionStudents = PositionStudent::get();
+        $positionStudents = $this->studRolService->all();
 
         return view('admin.position-students.index',compact('positionStudents'));
     }
@@ -49,14 +52,12 @@ class PositionStudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        PositionStudent::create($input);
+        $positionStudent = $this->studRolService->create($request);
 
-        return redirect()->route('admin.position-students.index')->withSuccess('The student role created successfully!');
+        return redirect()->route('admin.position-students.index')->withSuccess(ucwords($positionStudent->name." ".'role created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class PositionStudentController extends Controller
      * @param  \App\Models\PositionStudent  $positionStudent
      * @return \Illuminate\Http\Response
      */
-    public function show(PositionStudent $positionStudent)
+    public function show($id)
     {
         //
+        $positionStudent = $this->studRolService->getId($id);
+
         return view('admin.position-students.show',compact('positionStudent'));
     }
 
@@ -77,9 +80,11 @@ class PositionStudentController extends Controller
      * @param  \App\Models\PositionStudent  $positionStudent
      * @return \Illuminate\Http\Response
      */
-    public function edit(PositionStudent $positionStudent)
+    public function edit($id)
     {
         //
+        $positionStudent = $this->studRolService->getId($id);
+
         return view('admin.position-students.edit',compact('positionStudent'));
     }
 
@@ -90,14 +95,15 @@ class PositionStudentController extends Controller
      * @param  \App\Models\PositionStudent  $positionStudent
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PositionStudent $positionStudent)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $positionStudent->update($input);
+        $positionStudent = $this->studRolService->getId($id);
+        if($positionStudent){
+            $this->studRolService->update($request,$id);
 
-        return redirect()->route('admin.position-students.index')->withSuccess('The student role updated successfully!');
+            return redirect()->route('admin.position-students.index')->withSuccess(ucwords($positionStudent->name." ".'role updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class PositionStudentController extends Controller
      * @param  \App\Models\PositionStudent  $positionStudent
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PositionStudent $positionStudent)
+    public function destroy($id)
     {
         //
-        $positionStudent->delete();
+        $positionStudent = $this->studRolService->getId($id);
+        if($positionStudent){
+            $this->studRolService->delete($id);
 
-        return redirect()->route('admin.position-students.index')->withSuccess('The student role deleted successfully!');
+            return redirect()->route('admin.position-students.index')->withSuccess(ucwords($positionStudent->name." ".'role deleted successfully!'));
+        }
     }
 }

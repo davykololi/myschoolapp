@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Stream;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -14,7 +13,7 @@ class StreamTeachersExport implements FromCollection, WithHeadings, WithMapping 
     use Exportable;
     protected $stream;
 
-    public function __construct(Stream $stream)
+    public function __construct($stream)
     {
         $this->stream = $stream;
     }
@@ -24,7 +23,7 @@ class StreamTeachersExport implements FromCollection, WithHeadings, WithMapping 
     */
     public function collection()
     {
-        return $this->stream->teachers()->with('school','standard_subject')->get();
+        return $this->stream->standard_subjects()->with('school','teacher')->get();
     }
 
     public function headings(): array
@@ -37,13 +36,13 @@ class StreamTeachersExport implements FromCollection, WithHeadings, WithMapping 
             ];
     }
 
-    public function map($teacher): array
+    public function map($standardSubject): array
     {
         return [
-            $teacher->full_name,
-            $teacher->phone_no,
-            $teacher->email,
-            $teacher->standard_subject->subject->name,
+            $standardSubject->teacher->full_name,
+            $standardSubject->teacher->phone_no,
+            $standardSubject->teacher->email,
+            $standardSubject->subject->name,
          ];
     }
 }

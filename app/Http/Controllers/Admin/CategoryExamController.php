@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\CategoryExam;
+use App\Services\ExamCatService as ExamCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\ExamCatFormRequest as StoreRequest;
+use App\Http\Requests\ExamCatFormRequest as UpdateRequest;
 
 class CategoryExamController extends Controller
 {
+    protected $examCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ExamCatService $examCatService)
     {
         $this->middleware('auth:admin');
+        $this->examCatService = $examCatService;
     }
     
     /**
@@ -27,7 +30,7 @@ class CategoryExamController extends Controller
     public function index()
     {
         //
-        $categoryExams = CategoryExam::get();
+        $categoryExams = $this->examCatService->all();
 
         return view('admin.category-exams.index',compact('categoryExams'));
     }
@@ -49,14 +52,12 @@ class CategoryExamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        CategoryExam::create($input);
+        $categoryExam = $this->examCatService->create($request);
 
-        return redirect()->route('admin.category-exams.index')->withSuccess('The exam category created successfully!');
+        return redirect()->route('admin.category-exams.index')->withSuccess(ucwords($categoryExam->name." ".'category created successfully!'));
     }
 
     /**
@@ -65,9 +66,13 @@ class CategoryExamController extends Controller
      * @param  \App\Models\CategoryExam  $categoryExam
      * @return \Illuminate\Http\Response
      */
-    public function show(CategoryExam $categoryExam)
+    public function show($id)
     {
         //
+        $categoryExam = $this->examCatService->getId($id);
+        if(!$categoryExam){
+            return back()->with('error','Not Found');
+        }
         return view('admin.category-exams.show',compact('categoryExam'));
     }
 
@@ -77,9 +82,13 @@ class CategoryExamController extends Controller
      * @param  \App\Models\CategoryExam  $categoryExam
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryExam $categoryExam)
+    public function edit($id)
     {
         //
+        $categoryExam = $this->examCatService->getId($id);
+        if(!$categoryExam){
+            return back()->with('error','Not Found');
+        }
         return view('admin.category-exams.edit',compact('categoryExam'));
     }
 
@@ -90,14 +99,15 @@ class CategoryExamController extends Controller
      * @param  \App\Models\CategoryExam  $categoryExam
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoryExam $categoryExam)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $categoryExam->update($input);
+        $categoryExam = $this->examCatService->getId($id);
+        if($categoryExam){
+            $this->examCatService->update($request,$id);
 
-        return redirect()->route('admin.category-exams.index')->withSuccess('The exam category updated successfully!');
+            return redirect()->route('admin.category-exams.index')->withSuccess(ucwords($categoryExam->name." ".'category updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +116,14 @@ class CategoryExamController extends Controller
      * @param  \App\Models\CategoryExam  $categoryExam
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryExam $categoryExam)
+    public function destroy($id)
     {
         //
-        $categoryExam->delete();
+        $categoryExam = $this->examCatService->getId($id);
+        if($categoryExam){
+            $this->examCatService->delete($id);
 
-        return redirect()->route('admin.category-exams.index')->withSuccess('The exam category deleted successfully!');
+            return redirect()->route('admin.category-exams.index')->withSuccess(ucwords($categoryExam->name." ".'category deleted successfully!'));
+        }
     }
 }

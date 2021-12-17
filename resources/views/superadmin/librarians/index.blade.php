@@ -29,7 +29,7 @@
                     @foreach($librarians as $librarian)
                         <tr>
                             <td class="table-text">
-                                <div>{{$librarian->title}} {{$librarian->full_name}}</div>
+                                <div>{{$librarian->title}} {{$librarian->name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$librarian->email}}</div>

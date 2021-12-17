@@ -2,27 +2,34 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use App\Models\Exam;
-use App\Models\Subject;
-use App\Models\Stream;
-use App\Models\Year;
-use App\Models\Term;
-use App\Models\CategoryExam;
-use Illuminate\Support\Str;
+use App\Services\ExamService;
+use App\Services\SubjectService;
+use App\Services\StreamService;
+use App\Services\YearService;
+use App\Services\TermService;
+use App\Services\ExamCatService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\ExamFormRequest as StoreRequest;
+use App\Http\Requests\ExamFormRequest as UpdateRequest;
 
 class ExamController extends Controller
 {
+    protected $examService,$subjectService,$streamService,$yearService,$termService,$examCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ExamService $examService,SubjectService $subjectService,streamService $streamService,YearService $yearService,TermService $termService,ExamCatService $examCatService)
     {
         $this->middleware('auth:admin');
+        $this->examService = $examService;
+        $this->subjectService = $subjectService;
+        $this->streamService = $streamService;
+        $this->yearService = $yearService;
+        $this->termService = $termService;
+        $this->examCatService = $examCatService;
     }
     
     /**
@@ -33,7 +40,7 @@ class ExamController extends Controller
     public function index()
     {
         //
-        $exams = Exam::with('teachers','students','schools','streams','category_exam')->latest()->get();
+        $exams = $this->examService->all();
 
         return view('admin.exams.index',['exams'=>$exams]);
     }
@@ -46,11 +53,11 @@ class ExamController extends Controller
     public function create()
     {
         //
-        $subjects = Subject::pluck('name','id');
-        $streams = Stream::all();
-        $examCategories = CategoryExam::all();
-        $years = Year::all();
-        $terms = Term::all();
+        $subjects = $this->subjectService->all()->pluck('name','id');
+        $streams = $this->streamService->all();
+        $examCategories = $this->examCatService->all();
+        $years = $this->yearService->all();
+        $terms = $this->termService->all();
 
         return view('admin.exams.create',compact('subjects','streams','examCategories','years','terms')); 
     }
@@ -61,22 +68,16 @@ class ExamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['category_exam_id'] = $request->exam_category;
-        $input['school_id'] = Auth::user()->school->id;
-        $input['year_id'] = $request->year;
-        $input['term_id'] = $request->term;
-        $exam = Exam::create($input);
+        $exam = $this->examService->create($request);
         $subjectId = $request->subject;
         $exam->subjects()->sync($subjectId);
         $streamId = $request->stream;
         $exam->streams()->sync($streamId);
 
-        return redirect()->route('admin.exams.index')->withSuccess('The exam created successfully');
+        return redirect()->route('admin.exams.index')->withSuccess(ucwords($exam->name." ".'info created successfully'));
     }
 
     /**
@@ -88,8 +89,8 @@ class ExamController extends Controller
     public function show($id)
     {
         //
-        $exam = Exam::findOrFail($id);
-        $subjects = Subject::all();
+        $exam = $this->examService->getId($id);
+        $subjects = $this->subjectService->all();
         $examSubjects = $exam->subjects;
 
         return view('admin.exams.show',['exam'=>$exam,'subjects'=>$subjects,'examSubjects'=>$examSubjects]);
@@ -104,12 +105,12 @@ class ExamController extends Controller
     public function edit($id)
     {
         //
-        $exam = Exam::findOrFail($id);
-        $subjects = Subject::all();
-        $streams = Stream::all();
-        $examCategories = CategoryExam::all();
-        $years = Year::all();
-        $terms = Term::all();
+        $exam = $this->examService->getId($id);
+        $subjects = $this->subjectService->all();
+        $streams = $this->streamService->all();
+        $examCategories = $this->examCatService->all();
+        $years = $this->yearService->all();
+        $terms = $this->termService->all();
 
         return view('admin.exams.edit',compact('exam','subjects','streams','examCategories','years','terms'));
     }
@@ -121,22 +122,19 @@ class ExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $exam = Exam::findOrFail($id);
-        $input = $request->only(['name','start_date','end_date']);
-        $input['category_exam_id'] = $request->exam_category;
-        $input['school_id'] = Auth::user()->school->id;
-        $input['year_id'] = $request->year;
-        $input['term_id'] = $request->term;
-        $exam->update($input);
-        $subjectId = $request->subject;
-        $exam->subjects()->sync($subjectId);
-        $streamId = $request->stream;
-        $exam->streams()->sync($streamId);
+        $exam = $this->examService->getId($id);
+        if($exam){
+            $this->examService->update($request,$id);
+            $subjectId = $request->subject;
+            $exam->subjects()->sync($subjectId);
+            $streamId = $request->stream;
+            $exam->streams()->sync($streamId);
 
-        return redirect()->route('admin.exams.index')->withSuccess('The exam updated successfully');
+            return redirect()->route('admin.exams.index')->withSuccess(ucwords($exam->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -148,13 +146,16 @@ class ExamController extends Controller
     public function destroy($id)
     {
         //
-        $exam = Exam::findOrFail($id);
-        $exam->delete();
-        $exam->schools()->detach();
-        $exam->subjects()->detach();
-        $exam->streams()->detach();
-        $exam->subjects()->detach();
+        $exam = $this->examService->getId($id);
+        if($exam){
+            $this->examService->delete($id);
+            $exam->streams()->detach();
+            $exam->subjects()->detach();
+            $exam->students()->detach();
+            $exam->departments()->detach();
+            $exam->teachers()->detach();
 
-        return redirect()->route('admin.exams.index')->withSuccess('The exam deleted successfully');
+            return redirect()->route('admin.exams.index')->withSuccess(ucwords($exam->name." ".'info deleted successfully'));
+        }
     }
 }

@@ -4,12 +4,13 @@ namespace App\Imports;
 
 use App\Models\Mark;
 use App\Models\Stream;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class NorthStreamMarkSheetImport implements ToModel,WithHeadingRow
+class NorthStreamMarkSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
 {
     protected $yearId;
     protected $termId;
@@ -32,6 +33,11 @@ class NorthStreamMarkSheetImport implements ToModel,WithHeadingRow
         $this->northId = $northId;
     }
 
+    public function uniqueBy()
+    {
+        return 'index_no';
+    }
+
     /**
     * @param array $row
     *
@@ -39,13 +45,12 @@ class NorthStreamMarkSheetImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        $classId = $this->classId;
-        $northId = $this->northId;
-        $stream = Stream::where(['stream_section_id' =>$northId,'class_id'=>$classId])->first();
-        $streamId = $stream->id;
+        $stream = Stream::where(['stream_section_id' =>$this->northId,'class_id'=>$this->classId])->first();
+
         return new Mark([
             //
             'name' => $row['name'],
+            'index_no' => $row['index_no'],
             'mathematics' => $row['maths'],
             'english' => $row['eng'],
             'kiswahili' => $row['kisw'],
@@ -55,7 +60,7 @@ class NorthStreamMarkSheetImport implements ToModel,WithHeadingRow
             'term_id' => $this->termId,
             'exam_id' => $this->examId,
             'teacher_id' => $this->teacherId,
-            'stream_id' => $streamId,
+            'stream_id' => $stream->id,
             'class_id' => $this->classId,
         ]);
     }

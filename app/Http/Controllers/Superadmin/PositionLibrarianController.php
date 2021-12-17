@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\PositionLibrarian;
+use App\Services\LibrarianRoleService as LibrRolService;
 use Illuminate\Http\Request;
+use App\Http\Requests\LibrarianRoleFormRequest as StoreRequest;
+use App\Http\Requests\LibrarianRoleFormRequest as UpdateRequest;
 
 class PositionLibrarianController extends Controller
 {
+    protected $librRolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(LibrRolService $librRolService)
     {
         $this->middleware('auth:superadmin');
+        $this->librRolService = $librRolService;
     }
     
     /**
@@ -27,7 +30,7 @@ class PositionLibrarianController extends Controller
     public function index()
     {
         //
-        $positionLibrarians = PositionLibrarian::get();
+        $positionLibrarians = $this->librRolService->all();
 
         return view('superadmin.position-librarians.index',compact('positionLibrarians'));
     }
@@ -49,14 +52,12 @@ class PositionLibrarianController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        PositionLibrarian::create($input);
+        $positionLibrarian = $this->librRolService->create($request);
 
-        return redirect()->route('superadmin.position-librarians.index')->withSuccess('The librarian role created successfully!');
+        return redirect()->route('superadmin.position-librarians.index')->withSuccess(ucwords($positionLibrarian->name." ".'role created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class PositionLibrarianController extends Controller
      * @param  \App\Models\PositionLibrarian  $positionLibrarian
      * @return \Illuminate\Http\Response
      */
-    public function show(PositionLibrarian $positionLibrarian)
+    public function show($id)
     {
         //
+        $positionLibrarian = $this->librRolService->getId($id);
+
         return view('superadmin.position-librarians.show',compact('positionLibrarian'));
     }
 
@@ -77,9 +80,11 @@ class PositionLibrarianController extends Controller
      * @param  \App\Models\PositionLibrarian  $positionLibrarian
      * @return \Illuminate\Http\Response
      */
-    public function edit(PositionLibrarian $positionLibrarian)
+    public function edit($id)
     {
         //
+        $positionLibrarian = $this->librRolService->getId($id);
+
         return view('superadmin.position-librarians.edit',compact('positionLibrarian'));
     }
 
@@ -90,14 +95,15 @@ class PositionLibrarianController extends Controller
      * @param  \App\Models\PositionLibrarian  $positionLibrarian
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PositionLibrarian $positionLibrarian)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $positionLibrarian->update($input);
+        $positionLibrarian = $this->librRolService->getId($id);
+        if($positionLibrarian){
+            $this->librRolService->update($request,$id);
 
-        return redirect()->route('superadmin.position-librarians.index')->withSuccess('The librarian role updated successfully!');
+            return redirect()->route('superadmin.position-librarians.index')->withSuccess(ucwords($positionLibrarian->name." ".'role updated successfully!'));
+        } 
     }
 
     /**
@@ -106,11 +112,14 @@ class PositionLibrarianController extends Controller
      * @param  \App\Models\PositionLibrarian  $positionLibrarian
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PositionLibrarian $positionLibrarian)
+    public function destroy($id)
     {
         //
-        $positionLibrarian->delete();
+        $positionLibrarian = $this->librRolService->getId($id);
+        if($positionLibrarian){
+            $this->librRolService->delete($id);
 
-        return redirect()->route('superadmin.position-librarians.index')->withSuccess('The librarian role deleted successfully!');
+            return redirect()->route('superadmin.position-librarians.index')->withSuccess(ucwords($positionLibrarian->name." ".'role deleted successfully!'));
+        }
     }
 }

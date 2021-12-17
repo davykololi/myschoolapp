@@ -4,19 +4,23 @@ namespace App\Http\Controllers\Superadmin;
 
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\PositionAccountant;
+use App\Services\AccountantRoleService as AccRolService;
 use Illuminate\Http\Request;
+use App\Http\Requests\AccRoleFormRequest as StoreRequest;
+use App\Http\Requests\AccRoleFormRequest as UpdateRequest;
 
 class PositionAccountantController extends Controller
 {
+    protected $accRolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(AccRolService $accRolService)
     {
         $this->middleware('auth:superadmin');
+        $this->accRolService = $accRolService;
     }
 
     /**
@@ -27,7 +31,7 @@ class PositionAccountantController extends Controller
     public function index()
     {
         //
-        $positionAccountants = PositionAccountant::get();
+        $positionAccountants = $this->accRolService->all();
 
         return view('superadmin.position-accountants.index',compact('positionAccountants'));
     }
@@ -49,14 +53,12 @@ class PositionAccountantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        PositionAccountant::create($input);
+        $positionAccountant = $this->accRolService->create($request);
 
-        return redirect()->route('superadmin.position-accountants.index')->withSuccess('The accountant role created successfully!');
+        return redirect()->route('superadmin.position-accountants.index')->withSuccess(ucwords($positionAccountant->name." ".'role created successfully!'));
     }
 
     /**
@@ -65,9 +67,11 @@ class PositionAccountantController extends Controller
      * @param  \App\Models\PositionAccountant  $positionAccountant
      * @return \Illuminate\Http\Response
      */
-    public function show(PositionAccountant $positionAccountant)
+    public function show($id)
     {
         //
+        $positionAccountant = $this->accRolService->getId($id);
+
         return view('superadmin.position-accountants.show',compact('positionAccountant'));
     }
 
@@ -77,9 +81,11 @@ class PositionAccountantController extends Controller
      * @param  \App\Models\PositionAccountant  $positionAccountant
      * @return \Illuminate\Http\Response
      */
-    public function edit(PositionAccountant $positionAccountant)
+    public function edit($id)
     {
         //
+        $positionAccountant = $this->accRolService->getId($id);
+
         return view('superadmin.position-accountants.edit',compact('positionAccountant'));
     }
 
@@ -90,14 +96,15 @@ class PositionAccountantController extends Controller
      * @param  \App\Models\PositionAccountant  $positionAccountant
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PositionAccountant $positionAccountant)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $positionAccountant->update($input);
+        $positionAccountant = $this->accRolService->getId($id);
+        if($positionAccountant){
+            $this->accRolService->update($request,$id);
 
-        return redirect()->route('superadmin.position-accountants.index')->withSuccess('The accountant role updated successfully!');
+            return redirect()->route('superadmin.position-accountants.index')->withSuccess(ucwords($positionAccountant->name." ".'role updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +113,14 @@ class PositionAccountantController extends Controller
      * @param  \App\Models\PositionAccountant  $positionAccountant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PositionAccountant $positionAccountant)
+    public function destroy($id)
     {
         //
-        $positionAccountant->delete();
+        $positionAccountant = $this->accRolService->getId($id);
+        if($positionAccountant){
+            $this->accRolService->delete($id);
 
-        return redirect()->route('superadmin.position-accountants.index')->withSuccess('The accountant role deleted successfully!');
+            return redirect()->route('superadmin.position-accountants.index')->withSuccess(ucwords($positionAccountant->name." ".'role deleted successfully!'));
+        }
     }
 }

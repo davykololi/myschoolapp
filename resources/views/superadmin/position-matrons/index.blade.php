@@ -14,7 +14,7 @@
                     <h2>MATRONS ROLES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('superadmin.position-matrons.create')}}"> Create Matron Role</a>
+                    <a class="btn btn-success" href="{{route('superadmin.position-matrons.create')}}">Create</a>
                 </div>
             </div>
         </div>

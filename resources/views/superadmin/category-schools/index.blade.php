@@ -14,7 +14,7 @@
                     <h2>SCHOOL CATEGORIES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('superadmin.category-schools.create')}}"> Create School Category</a>
+                    <a class="btn btn-success" href="{{route('superadmin.category-schools.create')}}">Create</a>
                 </div>
             </div>
         </div>

@@ -32,7 +32,7 @@
                     @foreach($staffs as $staff)
                         <tr>
                             <td class="table-text">
-                                <div>{{$staff->title}} {{$staff->full_name}}</div>
+                                <div>{{$staff->title}} {{$staff->name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$staff->email}}</div>

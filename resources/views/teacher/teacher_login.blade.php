@@ -1,73 +1,85 @@
-@extends('layouts.app')
- 
+@extends('layouts.frontend')
 @section('title', '| Teacher Login')
+
 @section('content')
-<main role="main" class="container"  id="main">
-    <br/>
-    <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Teacher Login</div>
-                    <div class="panel-body">
-                        <form class="form-horizontal" role="form" method="POST" action="{{ route('teacher.login.submit') }}">
-                            @csrf
-                            <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+    <!-- Start Login 
+    ============================================= -->
+    <div class="login-area default-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <form method="POST" action="{{ route('teacher.login.submit') }}" id="login-form" class="white-popup-block">
+                        {{ csrf_field() }}
+                        <div class="login-custom">
+                            <div class="heading">
+                                <h4><i class="fas fa-sign-in-alt"></i> Teacher Login</h4>
                             </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <input name="email" value="{{ old('email') }}" class="form-control" placeholder="Email*" type="email">
+                                        @if ($errors->has('email'))
+                                        <span class="help-block">
+                                            <span class="text-danger">{{ $errors->first('email') }}</span>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <input name="password" value="{{ old('password') }}" class="form-control" placeholder="Password*" type="password">
+                                        @if ($errors->has('password'))
+                                        <span class="help-block">
+                                            <span class="text-danger">{{ $errors->first('password') }}</span>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <label for="login-remember">
+                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : ''}}>Remember Me
                                     </label>
+                                    <a title="Lost Password" href="{{ route('teacher.password.request') }}" class="lost-pass-link">
+                                        Forgot Your Password?
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <button type="submit">
+                                        Login
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('teacher.password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
+                        <div class="login-social">
+                            <h4>Login with social</h4>
+                            <ul>
+                                <li class="facebook">
+                                    <a href="#">
+                                        <i class="fab fa-facebook-f"></i>
                                     </a>
-                                @endif
-                            </div>
+                                </li>
+                                <li class="twitter">
+                                    <a href="#">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                </li>
+                                <li class="linkedin">
+                                    <a href="#">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+    <!-- End Login Area -->
 @endsection

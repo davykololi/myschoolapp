@@ -21,4 +21,9 @@ class PageController extends Controller
 
         return redirect()->route('contact.us')->withSuccess('Thank you for contacting us. We will get back to you soon');
     }
+
+    public function aboutUs()
+    {
+    	return view('user.pages.about');
+    }
 }

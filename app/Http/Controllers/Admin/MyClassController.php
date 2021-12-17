@@ -5,20 +5,24 @@ namespace App\Http\Controllers\Admin;
 use Auth;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\MyClass;
+use App\Services\ClassService;
 use App\Models\School;
 use Illuminate\Http\Request;
+use App\Http\Requests\ClassFormRequest as StoreRequest;
+use App\Http\Requests\ClassFormRequest as UpdateRequest;
 
 class MyClassController extends Controller
 {
+    protected $classService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ClassService $classService)
     {
         $this->middleware('auth:admin');
+        $this->classService = $classService;
     }
 
     /**
@@ -28,7 +32,7 @@ class MyClassController extends Controller
      */
     public function index()
     {
-        $classes = MyClass::get();
+        $classes = $this->classService->all();
 
         return view('admin.classes.index',compact('classes'));
     }
@@ -49,12 +53,9 @@ class MyClassController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $input = $request->all();
-        $input['school_id'] = Auth::user()->school->id;
-        $input['slug'] = Str::slug($request->name,'-');
-        $class = MyClass::create($input);
+        $class = $this->classService->create($request);
 
         return redirect()->route('admin.classes.index')->withSuccess(ucwords($class->name." ".'class info created successfully!'));
     }
@@ -65,9 +66,11 @@ class MyClassController extends Controller
      * @param  \App\Models\MyClass  $myClass
      * @return \Illuminate\Http\Response
      */
-    public function show(MyClass $class)
+    public function show($id)
     {
         //
+        $class = $this->classService->getId($id);
+
         return view('admin.classes.show',compact('class'));
     }
 
@@ -77,9 +80,11 @@ class MyClassController extends Controller
      * @param  \App\Models\MyClass  $myClass
      * @return \Illuminate\Http\Response
      */
-    public function edit(MyClass $class)
+    public function edit($id)
     {
         //
+        $class = $this->classService->getId($id);
+
         return view('admin.classes.edit',compact('class'));
     }
 
@@ -90,14 +95,14 @@ class MyClassController extends Controller
      * @param  \App\Models\MyClass  $myClass
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MyClass $class)
+    public function update(UpdateRequest $request,$id)
     {
-        $input = $request->all();
-        $input['school_id'] = Auth::user()->school->id;
-        $input['slug'] = Str::slug($request->name,'-');
-        $class->update($input);
+        $class = $this->classService->getId($id);
+        if($class){
+            $this->classService->update($request,$id);
 
-        return redirect()->route('admin.classes.index')->withSuccess(ucwords($class->name." ".'class info updated successfully!'));
+            return redirect()->route('admin.classes.index')->withSuccess(ucwords($class->name." ".'class info updated successfully!'));
+        }
     }
 
     /**
@@ -106,10 +111,13 @@ class MyClassController extends Controller
      * @param  \App\Models\MyClass  $myClass
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MyClass $class)
+    public function destroy($id)
     {
-        $class->delete();
+        $class = $this->classService->getId($id);
+        if($class){
+            $this->classService->delete($id);
 
-        return redirect()->route('admin.classes.index')->withSuccess(ucwords($class->name." ".'class info deleted successfully!'));
+            return redirect()->route('admin.classes.index')->withSuccess(ucwords($class->name." ".'class info deleted successfully!'));
+        }
     }
 }

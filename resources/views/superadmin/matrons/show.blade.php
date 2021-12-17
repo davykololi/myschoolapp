@@ -24,7 +24,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $matron->title }} {{ $matron->full_name }}
+            {{ $matron->title }} {{ $matron->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -41,14 +41,14 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Current Address</strong>
-            {{ $matron->current_address }}
+            <strong>Postal Address</strong>
+            {{ $matron->address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Permanent Address</strong>
-            {{ $matron->permanent_address }}
+            <strong>Blood Group</strong>
+            {{ $matron->blood_group->type }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

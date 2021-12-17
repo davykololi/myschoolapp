@@ -18,7 +18,7 @@
                 {{ $club->name }} Teachers PDF
             </a>
             <br/>
-            <a href="{{ route('admin.clubs.index') }}" class="label label-primary pull-right"> Back</a>
+            <a href="{{ url()->previous() }}" class="label label-primary pull-right">Back</a>
         </div>
     </div>
 </div>
@@ -38,7 +38,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Registration Date:</strong>
-            {{ $club->reg_date }}
+            {{ $club->regDate() }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -46,9 +46,11 @@
             <strong>{{ $club->name }} Teachers:</strong>
             <ol>
             @forelse($club->teachers as $teacher)
+            <a href="{{route('admin.teachers.show',$teacher->id)}}">
                 <li>{{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
+            </a>
             @empty
-            <p>No teachers(s) assigned to this club yet.</p>
+            <p>No teachers(s) assigned to {{ $club->name }} yet.</p>
             @endforelse
             </ol>
         </div>
@@ -58,9 +60,11 @@
             <strong>{{ $club->name }} Substaffs:</strong>
             <ol>
             @forelse($club->staffs as $staff)
-                <li>{{ $staff->title }} {{ $staff->full_name }} {{ $staff->phone_no }}</li>
+            <a href="{{route('admin.staffs.show',$staff->id)}}">
+                <li>{{ $staff->title }} {{ $staff->full_name }} - {{ $staff->phone_no }}</li>
+            </a>
             @empty
-            <p>No substaff(s) assigned to this club yet.</p>
+            <p>No substaff(s) assigned to {{ $club->name }} yet.</p>
             @endforelse
             </ol>
         </div>
@@ -70,9 +74,11 @@
             <strong>{{ $club->name }} Students:</strong>
             <ol>
             @forelse($club->students as $student)
-                <li>{{ $student->full_name }} {{ $student->standard->name }}</li>
+            <a href="{{route('admin.students.show',$student->id)}}">
+                <li>{{ $student->full_name }} {{ $student->stream->name }}</li>
+            </a>
             @empty
-            <p>No student(s) assigned to this club yet.</p>
+            <p>No student(s) assigned to {{ $club->name }} yet.</p>
             @endforelse
             </ol>
         </div>
@@ -82,9 +88,13 @@
             <strong>{{ $club->name }} Meetings:</strong>
             <ol>
             @forelse($club->meetings as $meeting)
-                <li>{{ $meeting->name }} Date: {{ $meeting->date }} Agenda: {{ $meeting->agenda }}</li>
+            <a href="{{route('admin.meetings.show',$meeting->id)}}">
+                <li>
+                    {{ $meeting->name }} will be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda will be {{ $meeting->agenda }}
+                </li>
+            </a>
             @empty
-            <p>No meeting(s) assigned to this club yet.</p>
+            <p>No meeting(s) assigned to {{ $club->name }} yet.</p>
             @endforelse
             </ol>
         </div>

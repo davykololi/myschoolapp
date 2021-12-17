@@ -21,27 +21,27 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >First Name</label>
+                        <label class="control-label col-sm-2" >Full Name</label>
                         <div class="col-sm-10">
-                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ $accountant->first_name }}">
+                            <input type="text" name="name" id="name" class="form-control" value="{{ $accountant->name }}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >Middle Name</label>
+                        <label class="control-label col-sm-2" >Gender Status</label>
                         <div class="col-sm-10">
-                            <input type="text" name="middle_name" id="middle_name" class="form-control" value="{{ $accountant->middle_name }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Last Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ $accountant->last_name }}">
+                            <input type="text" name="gender" id="gender" class="form-control" value="{{ $accountant->gender }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Image</label>
                         <div class="col-sm-10">
                             <input type="file" name="image" id="image" class="form-control" value="{{ $accountant->image }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Blood Group</label>
+                        <div class="col-sm-10">
+                            @include('ext._blood_group_div')
                         </div>
                     </div>
                     <div class="form-group">
@@ -81,17 +81,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" >Current Address</label>
+                        <label class="control-label col-sm-2" >Postal Address</label>
                         <div class="col-sm-10">
-                            <input type="text" name="current_address" id="current_address" class="form-control" value="{{ $accountant->current_address }}">
+                            <input type="text" name="address" id="address" class="form-control" value="{{ $accountant->address }}">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Permanent Address</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="permanent_address" id="permanent_address" class="form-control" value="{{ $accountant->permanent_address }}">
-                        </div>
-                    </div>
+                    @include('ext._blood_group_div')
                     @include('ext._attach_schooldiv')
                     @include('ext._attach_accountant_rolediv')
                     <div class="form-group">

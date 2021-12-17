@@ -5,25 +5,31 @@ namespace App\Http\Controllers\Student;
 use Auth;
 use Carbon\Carbon;
 use App\Models\Book;
-use App\Models\Club;
-use App\Models\Teacher;
-use App\Models\Stream;
-use App\Models\Subject;
-use App\Models\StandardSubject;
+use App\Repositories\ClubRepository as ClubRepo;
+use App\Repositories\TeacherRepository as TeacherRepo;
+use App\Repositories\StreamRepository as StreamRepo;
+use App\Repositories\SubjectRepository as SubjectRepo;
+use App\Repositories\StdSubjectRepository as ClassSubjectRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Facades\jpmurray\LaravelCountdown\Countdown;
 
 class StudentController extends Controller
 {
+    protected $clubRepo,$teacherRepo,$streamRepo,$subjectRepo,$classSubjectRepo;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct( ClubRepo $clubRepo,TeacherRepo $teacherRepo,StreamRepo $streamRepo,SubjectRepo $subjectRepo,ClassSubjectRepo $classSubjectRepo)
     {
         $this->middleware('auth:student');
+        $this->clubRepo = $clubRepo;
+        $this->teacherRepo = $teacherRepo;
+        $this->streamRepo = $streamRepo;
+        $this->subjectRepo = $subjectRepo;
+        $this->classSubjectRepo = $classSubjectRepo;
     }
 
     public function index()
@@ -61,8 +67,9 @@ class StudentController extends Controller
         return view('student.stream_exams',['user'=>$user,'streamExams'=>$streamExams]);
     }
 
-    public function showClub(Club $club)
+    public function showClub($id)
     {
+        $club = $this->clubRepo->getId($id);
         $user = Auth::user();
 
         return view('student.student_club',['user'=>$user,'club'=>$club]);
@@ -90,15 +97,18 @@ class StudentController extends Controller
         return view('student.stream_subjects',['user'=>$user,'standardSubjects'=>$standardSubjects]);
     }
 
-    public function teacherDetails(Teacher $teacher,Stream $stream)
+    public function teacherDetails($id)
     {
+        $teacher = $this->teacherRepo->getId($id);
+        $stream = $this->streamRepo->getId($id);
 
         return view('student.teacher_details',compact('teacher','stream'));
     }
 
-    public function subjectNotes(StandardSubject $standardSubject)
+    public function subjectNotes($id)
     {
          $user = Auth::user();
+         $standardSubject = $this->classSubjectRepo->getId($id);
         
         return view('student.subject_notes',compact('user','standardSubject'));
     }
@@ -131,17 +141,7 @@ class StudentController extends Controller
     {
         $user = Auth::user();
         $borrowedBooks = $user->issued_books;
-        foreach($borrowedBooks as $borrowedBook){
-            $issuedDate = $borrowedBook->issued_date;
-            $returnDate = $borrowedBook->return_date;
-        }
 
-            $timeNow = Carbon::today();
-            $diff_days = $timeNow->diffInDays($returnDate);
-            
-            $countdown = Countdown::from(now())->to(now()->addDays($diff_days))->get();
-            $days = $countdown->toHuman();
-
-        return view('student.library_borrowedbooks',compact('user','borrowedBooks','days')); 
+        return view('student.library_borrowedbooks',compact('user','borrowedBooks',));
     }
 }

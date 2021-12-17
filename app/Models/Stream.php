@@ -15,6 +15,8 @@ class Stream extends Model implements Searchable
 {
     use HasFactory;
     protected $table = 'streams';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['name','code','stream_section_id','school_id','class_id'];
 
     public function getSearchResult(): SearchResult
@@ -36,6 +38,11 @@ class Stream extends Model implements Searchable
     public function class()
     {
         return $this->belongsTo('App\Models\MyClass')->withDefault();
+    }
+
+    public function marks()
+    {
+        return $this->hasMany('App\Models\Mark','stream_id','id');
     }
 
     public function stream_section()
@@ -98,14 +105,9 @@ class Stream extends Model implements Searchable
         return $this->belongsToMany('App\Models\Game')->withTimestamps();
     }
 
-    public function timetable()
+    public function timetables()
     {
-        return $this->hasOne('App\Models\Timetable','stream_id','id');
-    }
-
-    public function exam_timetable()
-    {
-        return $this->hasOne('App\Models\ExamTimetable','stream_id','id');
+        return $this->hasMany('App\Models\Timetable','stream_id','id');
     }
 
     public function standard_subjects()
@@ -126,5 +128,20 @@ class Stream extends Model implements Searchable
     public function syllabues()
     {
         return $this->hasMany(Syllabus::class,'stream_id','id');
+    }
+
+    public function report_cards()
+    {
+        return $this->hasMany('App\Models\ReportCard','stream_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('teachers','students','school','class')->get();
+    }
+
+    public function grade_systems()
+    {
+        return $this->hasMany('App\Models\GradeSystem','stream_id','id');
     }
 }

@@ -7,8 +7,9 @@
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
+            <h2>EDIT SCHOOL</h2>
             <div class="panel-heading">
-                Edit Student<a href="{{ route('superadmin.schools.index') }}" class="label label-primary pull-right">Back</a>
+                <a href="{{ route('superadmin.schools.index') }}" class="label label-primary pull-right">Back</a>
             </div>
             <div class="panel-body">
                 <form action="{{ route('superadmin.schools.update', $school->id) }}" method="post" class="form-horizontal" enctype="multipart/form-data">

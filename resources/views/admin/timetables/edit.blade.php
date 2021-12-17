@@ -19,6 +19,9 @@
                         <label class="control-label col-sm-2" >File</label>
                         <div class="col-sm-10">
                             <input type="file" name="file" id="file" class="form-control" value="{{ $timetable->file }}">
+                            @error('file')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
@@ -28,6 +31,9 @@
                         </div>
                     </div>
                     @include('ext._attach_streamdiv')
+                    @include('ext._attach_classdiv')
+                    @include('ext._attach_examdiv')
+                    @include('ext._attach_teacherdiv')
                     @include('ext._submit_update_button')
                 </form>
             </div>

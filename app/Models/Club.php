@@ -66,4 +66,9 @@ class Club extends Model implements Searchable
 
         return $new_reg_date;
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school','teachers','streams','staffs','students','assignments','meetings')->get();
+    }
 }

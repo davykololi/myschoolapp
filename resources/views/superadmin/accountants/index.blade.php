@@ -28,7 +28,7 @@
                     @foreach($accountants as $accountant)
                         <tr>
                             <td class="table-text">
-                                <div>{{$accountant->title}} {{$accountant->full_name}}</div>
+                                <div>{{$accountant->title}} {{$accountant->name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$accountant->email}}</div>

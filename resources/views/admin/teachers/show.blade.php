@@ -11,7 +11,7 @@
             <br/>
         </div>
         <div class="pull-right">
-            <a href="{{ route('admin.teachers.index') }}" class="label label-primary pull-right"> Back</a>
+            <a href="{{ url()->previous() }}" class="label label-primary pull-right"> Back</a>
         </div>
     </div>
 </div>
@@ -24,7 +24,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $teacher->title }} {{ $teacher->full_name }}
+            {{ $teacher->title }} {{ $teacher->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -72,7 +72,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Postal Address:</strong>
-            {{ $teacher->postal_address }}
+            {{ $teacher->address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -95,54 +95,58 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $teacher->title }} {{ $teacher->last_name }}'s Classes:</strong>
+            <strong>{{ $teacher->title }} {{ $teacher->name }}'s Classes:</strong>
             <ol>
             @forelse($teacher->streams as $stream)
+            <a href="{{route('admin.streams.show',$stream->id)}}">
                 <li>{{ $stream->class->name }} {{ $stream->name }}</li>
+            </a>
             @empty
-            <p style="color: red">{{ $teacher->title }} {{ $teacher->full_name }} notyet assigned to any class.</p>
+            <p style="color: red">{{ $teacher->title }} {{ $teacher->name }} notyet assigned to any class.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $teacher->title }} {{ $teacher->last_name }}'s Subjects:</strong>
+            <strong>{{ $teacher->title }} {{ $teacher->name }}'s Subjects:</strong>
             <ol>
             @forelse($teacher->subjects as $subject)
                 <li>{{ $subject->name }} {{ $subject->code }}</li>
             @empty
-            <p style="color: red">No subject(s) assigned to {{ $teacher->title }} {{ $teacher->full_name }}.</p>
+            <p style="color: red">No subject(s) assigned to {{ $teacher->title }} {{ $teacher->name }}.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $teacher->title }} {{ $teacher->last_name }}'s Assignments:</strong>
+            <strong>{{ $teacher->title }} {{ $teacher->name }}'s Assignments:</strong>
             <ol>
             @forelse($teacher->assignments as $assignment)
                 <li>
                     {{ $assignment->name }} Published: {{ date("jS,F,Y,g:i a",strtotime($assignment->date)) }} 
                     Deadline: {{ date("jS,F,Y",strtotime($assignment->deadline)) }} {{ $assignment->file }}
-                    @foreach($assignment->standards as $standard)
-                        {{$standard->name}}.
+                    @foreach($assignment->streams as $stream)
+                        {{$stream->name}}.
                     @endforeach
                 </li>
             @empty
-            <p style="color: red">No assignment(s) by {{ $teacher->title }} {{ $teacher->full_name }}.</p>
+            <p style="color: red">No assignment(s) by {{ $teacher->title }} {{ $teacher->name }}.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $teacher->title }} {{ $teacher->last_name }}'s Awards:</strong>
+            <strong>{{ $teacher->title }} {{ $teacher->name }}'s Awards:</strong>
             <ol>
             @forelse($teacher->rewards as $reward)
+            <a href="{{route('admin.rewards.show',$reward->id)}}">
                 <li>{{ $reward->name }} Purpose: {{ $reward->purpose }}</li>
+            </a>
             @empty
-            <p style="color: red">{{ $teacher->title }} {{ $teacher->full_name }} has notyet recieved any award.</p>
+            <p style="color: red">{{ $teacher->title }} {{ $teacher->name }} has notyet recieved any award.</p>
             @endforelse
             </ol>
         </div>

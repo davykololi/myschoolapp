@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use App\Models\Intake;
-use App\Models\School;
+use App\Services\IntakeService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\IntakeFormRequest as StoreRequest;
+use App\Http\Requests\IntakeFormRequest as UpdateRequest;
 
 class IntakeController extends Controller
 {
+    protected $intakeService;
      /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct( IntakeService $intakeService)
     {
         $this->middleware('auth:admin');
+        $this->intakeService = $intakeService;
     }
 
     /**
@@ -28,7 +30,7 @@ class IntakeController extends Controller
     public function index()
     {
         //
-        $intakes = Intake::get();
+        $intakes = $this->intakeService->all();
 
         return view('admin.intakes.index',compact('intakes'));
     }
@@ -50,12 +52,10 @@ class IntakeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = Auth::user()->school->id;
-        $intake = Intake::create($input);
+        $intake = $this->intakeService->create($request);
 
         return redirect()->route('admin.intakes.index')->withSuccess(ucwords($intake->name." ".'info created successfully'));
     }
@@ -69,7 +69,7 @@ class IntakeController extends Controller
     public function show($id)
     {
         //
-        $intake = Intake::findOrFail($id);
+        $intake = $this->intakeService->getId($id);
 
         return view('admin.intakes.show',['intake'=>$intake]);
     }
@@ -83,7 +83,7 @@ class IntakeController extends Controller
     public function edit($id)
     {
         //
-        $intake = Intake::findOrFail($id);
+        $intake = $this->intakeService->getId($id);
 
         return view('admin.intakes.edit',compact('intake'));
     }
@@ -95,15 +95,15 @@ class IntakeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $intake = Intake::findOrFail($id);
-        $input = $request->all();
-        $input['school_id'] = Auth::user()->school->id;
-        $intake->update($input);
+        $intake = $this->intakeService->getId($id);
+        if($intake){
+            $this->intakeService->update($request,$id);
 
-        return redirect()->route('admin.intakes.index')->withSuccess(ucwords($intake->name." ".'info updated successfully'));
+            return redirect()->route('admin.intakes.index')->withSuccess(ucwords($intake->name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -115,8 +115,11 @@ class IntakeController extends Controller
     public function destroy($id)
     {
         //
-        $intake = Intake::findOrFail($id)->delete();
-
-        return redirect()->route('admin.intakes.index')->withSuccess(ucwords($intake->name." ".'info deleted successfully'));
+        $intake = $this->intakeService->getId($id);
+        if($intake){
+            $this->intakeService->delete($id);
+            
+            return redirect()->route('admin.intakes.index')->withSuccess(ucwords($intake->name." ".'info deleted successfully'));
+        }
     }
 }

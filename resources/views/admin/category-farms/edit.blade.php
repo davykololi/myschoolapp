@@ -7,8 +7,9 @@
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
+            <h2>EDIT FARM CATEGORY</h2>
             <div class="panel-heading">
-                Edit Farm Category<a href="{{ route('admin.category-farms.index') }}" class="label label-primary pull-right">Back</a>
+                <a href="{{ route('admin.category-farms.index') }}" class="label label-primary pull-right">Back</a>
             </div>
             <div class="panel-body">
                 <form action="{{ route('admin.category-farms.update', $categoryFarm->id) }}" method="post" class="form-horizontal" enctype="multipart/form-data">

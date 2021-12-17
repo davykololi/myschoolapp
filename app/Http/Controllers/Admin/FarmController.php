@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\Farm;
-use App\Models\School;
-use App\Models\CategoryFarm;
+use App\Services\FarmService;
+use App\Services\FarmCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\FarmFormRequest as StoreRequest;
+use App\Http\Requests\FarmFormRequest as UpdateRequest;
 
 class FarmController extends Controller
 {
+    protected $farmService,$farmCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(FarmService $farmService,FarmCatService $farmCatService)
     {
         $this->middleware('auth:admin');
+        $this->farmService = $farmService;
+        $this->farmCatService = $farmCatService;
     }
 
     /**
@@ -30,7 +32,7 @@ class FarmController extends Controller
     public function index()
     {
         //
-        $farms = Farm::with('school','category_farm')->get();
+        $farms = $this->farmService->all();
 
         return view('admin.farms.index',compact('farms'));
     }
@@ -43,7 +45,7 @@ class FarmController extends Controller
     public function create()
     {
         //
-        $categoryFarms = CategoryFarm::all();
+        $categoryFarms = $this->farmCatService->all();
 
         return view('admin.farms.create',compact('categoryFarms'));
     }
@@ -54,14 +56,10 @@ class FarmController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_farm_id'] = $request->farm_category;
-        $farm = Farm::create($input);
+        $farm = $this->farmService->create($request);
 
         return redirect()->route('admin.farms.index')->withSuccess(ucwords($farm->name." ".'created successfully'));
     }
@@ -72,9 +70,11 @@ class FarmController extends Controller
      * @param  \App\Models\Farm  $farm
      * @return \Illuminate\Http\Response
      */
-    public function show(Farm $farm)
+    public function show($id)
     {
         //
+        $farm = $this->farmService->getId($id);
+
         return view('admin.farms.show',compact('farm'));
     }
 
@@ -84,10 +84,11 @@ class FarmController extends Controller
      * @param  \App\Models\Farm  $farm
      * @return \Illuminate\Http\Response
      */
-    public function edit(Farm $farm)
+    public function edit($id)
     {
         //
-        $categoryFarms = CategoryFarm::all();
+        $farm = $this->farmService->getId($id);
+        $categoryFarms = $this->farmCatService->all();
 
         return view('admin.farms.edit',compact('farm','categoryFarms'));
     }
@@ -99,15 +100,15 @@ class FarmController extends Controller
      * @param  \App\Models\Farm  $farm
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Farm $farm)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->only(['name']);
-        $input['school_id'] = Auth::user()->school->id;
-        $input['category_farm_id'] = $request->farm_category;
-        $farm->update($input);
+        $farm = $this->farmService->getId($id);
+        if($farm){
+            $this->farmService->update($request,$id);
 
-        return redirect()->route('admin.farms.index')->withSuccess(ucwords($farm->name." ".'updated successfully'));
+            return redirect()->route('admin.farms.index')->withSuccess(ucwords($farm->name." ".'updated successfully'));
+        }
     }
 
     /**
@@ -116,11 +117,14 @@ class FarmController extends Controller
      * @param  \App\Models\Farm  $farm
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Farm $farm)
+    public function destroy($id)
     {
         //
-        $farm->delete();
+        $farm = $this->farmService->getId($id);
+        if($farm){
+            $this->farmService->delete($id);
 
-        return redirect()->route('admin.farms.index')->withSuccess(ucwords($farm->name." ".'deleted successfully'));
+            return redirect()->route('admin.farms.index')->withSuccess(ucwords($farm->name." ".'deleted successfully'));
+        }
     }
 }

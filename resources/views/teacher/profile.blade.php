@@ -119,6 +119,12 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>Subjects:</strong>
+            
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <strong>Meetings:</strong>
             <ol>
             @forelse($teacher->meetings as $meeting)

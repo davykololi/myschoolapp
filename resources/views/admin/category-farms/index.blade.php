@@ -14,7 +14,7 @@
                     <h2>FARMS CATEGORIES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.category-farms.create')}}"> Create Farm Category</a>
+                    <a class="btn btn-success" href="{{route('admin.category-farms.create')}}">Create</a>
                 </div>
             </div>
         </div>

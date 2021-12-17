@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Imports\ReportsImport;
-use App\Exports\ReportsExport;
+use App\Imports\ReportCardsImport;
+use App\Exports\ReportCardsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportExcelController extends Controller
@@ -33,18 +33,18 @@ class ReportExcelController extends Controller
     * @return \Illuminate\Support\Collection
     */
 
-    public function exportReport($type)
+    public function exportReportCards($type)
     {
-    	return \Excel::download(new ReportsExport,'reports.'.$type);
+    	return \Excel::download(new ReportCardsExport,'reports.'.$type);
     }
 
     /**
     * @return \Illuminate\Support\Collection
     */
 
-    public function importReport(Request $request)
+    public function importReportCards(Request $request)
     {
-    	\Excel::import(new ReportsImport,request()->file('file'));
+    	\Excel::import(new ReportCardsImport,request()->file('file'));
 
         \Session::put('success', 'Your file is imported successfully in database.');
 

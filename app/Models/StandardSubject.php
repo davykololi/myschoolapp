@@ -60,4 +60,9 @@ class StandardSubject extends Model implements Searchable
     {
         return $this->hasMany(Mark::class,'standard_subject_id','id');
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('teacher','stream','school','subject','notes')->get();
+    }
 }

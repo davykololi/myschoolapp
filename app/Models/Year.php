@@ -9,6 +9,8 @@ class Year extends Model
 {
     use HasFactory;
     protected $table = 'years';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['year','desc'];
 
     public function marks()
@@ -19,5 +21,10 @@ class Year extends Model
     public function exams()
     {
         return $this->hasMany('App\Models\Exam','year_id','id');
+    }
+
+    public function grade_systems()
+    {
+        return $this->hasMany('App\Models\GradeSystem','year_id','id');
     }
 }

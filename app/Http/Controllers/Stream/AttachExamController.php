@@ -20,7 +20,7 @@ class AttachExamController extends Controller
     }
     public function attachExam(Request $request,$id)
     {
-    	$stream = stream::findOrFail($id);
+    	$stream = Stream::findOrFail($id);
     	$exam = $request->exam;
     	$stream->exams()->attach($exam);
 

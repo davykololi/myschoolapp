@@ -18,24 +18,36 @@
                         <label class="control-label col-sm-2" >Name</label>
                         <div class="col-sm-10">
                             <input type="text" name="name" id="name" class="form-control" placeholder="Meeting Name">
+                            @error('name')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Date</label>
                         <div class="col-sm-10">
                             <input type="date" name="date" id="date" class="form-control" placeholder="Meeting Date">
+                            @error('date')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Venue</label>
                         <div class="col-sm-10">
                             <input type="text" name="venue" id="venue" class="form-control" placeholder="Meeting Venue">
+                            @error('venue')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Agenda</label>
                         <div class="col-sm-10">
                             <input type="text" name="agenda" id="agenda" class="form-control" placeholder="Meeting Agenda">
+                            @error('agenda')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     @include('ext._attach_teacherdiv')

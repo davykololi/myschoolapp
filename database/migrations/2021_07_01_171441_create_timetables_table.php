@@ -23,6 +23,10 @@ class CreateTimetablesTable extends Migration
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
             $table->bigInteger('stream_id')->unsigned()->nullable();
             $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
+            $table->bigInteger('exam_id')->unsigned()->nullable();
+            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
+            $table->bigInteger('teacher_id')->unsigned()->nullable();
+            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
             $table->timestamps();
         });
     }

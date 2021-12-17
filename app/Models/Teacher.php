@@ -13,16 +13,14 @@ use App\Notifications\TeacherResetPasswordNotification;
 class Teacher extends Authenticatable implements Searchable
 {
     use Notifiable;
-    //
     protected $guard = 'teacher';
-
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'teachers';
-    protected $fillable = ['first_name','middle_name','last_name','title','email','image','id_no','emp_no','dob','designation','postal_address','phone_no','history','school_id','position_teacher_id','password'];
-    protected $appends = ['full_name','age'];
+    protected $fillable = ['title','name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history','bg_id','school_id','position_teacher_id','password'];
+    protected $appends = ['age'];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -42,7 +40,7 @@ class Teacher extends Authenticatable implements Searchable
 
         return new SearchResult(
                 $this,
-                $this->full_name,
+                $this->name,
                 $url
             );
     }
@@ -52,9 +50,19 @@ class Teacher extends Authenticatable implements Searchable
     	return $this->belongsToMany('App\Models\Student')->withTimestamps();
     }
 
+    public function timetables()
+    {
+        return $this->hasMany('App\Models\Timetable','teacher_id','id');
+    }
+
     public function position_teacher()
     {
         return $this->belongsTo('App\Models\PositionTeacher')->withDefault();
+    }
+
+    public function blood_group()
+    {
+        return $this->belongsTo('App\Models\BloodGroup')->withDefault();
     }
 
     public function streams()
@@ -112,11 +120,6 @@ class Teacher extends Authenticatable implements Searchable
         return $this->belongsTo('App\Models\Admin')->withDefault();
     }
 
-    public function getFullNameAttribute()       
-    {        
-    return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
     public function getAgeAttribute()       
     { 
         $myDate = $this->dob;
@@ -125,19 +128,9 @@ class Teacher extends Authenticatable implements Searchable
         return $years;     
     }
 
-    public function setFirstNameAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['first_name'] = ucfirst($value);
-    }
-
-    public function setMiddleNameAttribute($value)
-    {
-        $this->attributes['middle_name'] = ucfirst($value);
-    }
-
-    public function setLastNameAttribute($value)
-    {
-        $this->attributes['last_name'] = ucfirst($value);
+        $this->attributes['name'] = ucfirst($value);
     }
 
     public function standard_subject()
@@ -161,5 +154,15 @@ class Teacher extends Authenticatable implements Searchable
     public function marks()
     {
         return $this->hasMany('App\Models\Mark','teacher_id','id');
+    }
+
+    public function report_cards()
+    {
+        return $this->hasMany('App\Models\ReportCard','teacher_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('streams','school','students','position_teacher','departments')->get();
     }
 }

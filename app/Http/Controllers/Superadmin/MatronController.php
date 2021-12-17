@@ -2,28 +2,32 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use Auth;
 use App\Http\Controllers\Controller;
-use App\Models\School;
-use App\Models\Matron;
-use App\Models\PositionMatron;
+use App\Services\SchoolService;
+use App\Models\BloodGroup;
+use App\Services\MatronService as MatService;
+use App\Services\MatronRoleService as MatRolService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use App\Traits\ImageUploadTrait;
+use App\Http\Requests\MatronFormRequest as StoreRequest;
+use App\Http\Requests\MatronFormRequest as UpdateRequest;
 
 class MatronController extends Controller
 {
-    use ImageUploadTrait;
-
+    protected $matService;
+    protected $matRolService;
+    protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MatService $matService,MatRolService $matRolService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->matService = $matService;
+        $this->matRolService = $matRolService;
+        $this->schoolService = $schoolService;
     }
 
     /**
@@ -34,7 +38,7 @@ class MatronController extends Controller
     public function index()
     {
         //
-        $matrons = Matron::with('school','position_matron')->get();
+        $matrons = $this->matService->all();
 
         return view('superadmin.matrons.index',compact('matrons'));
     }
@@ -47,10 +51,11 @@ class MatronController extends Controller
     public function create()
     {
         //
-        $schools = School::all();
-        $matronRoles = PositionMatron::all();
+        $schools = $this->schoolService->all();
+        $matronRoles = $this->matRolService->all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.matrons.create',compact('schools','matronRoles'));
+        return view('superadmin.matrons.create',compact('schools','matronRoles','bloodGroups'));
     }
 
     /**
@@ -59,17 +64,12 @@ class MatronController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = $request->school;
-        $input['position_matron_id'] = $request->matron_role;
-        $input['password'] = Hash::make($request->password);
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        Matron::create($input);
+        $matron = $this->matService->create($request);
 
-        return redirect()->route('superadmin.matrons.index')->withSuccess('The matron info created successfully');
+        return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->name." ".'info created successfully'));
     }
 
     /**
@@ -78,9 +78,11 @@ class MatronController extends Controller
      * @param  \App\Models\Matron  $matron
      * @return \Illuminate\Http\Response
      */
-    public function show(Matron $matron)
+    public function show($id)
     {
         //
+        $matron = $this->matService->getId($id);
+
         return view('superadmin.matrons.show',compact('matron'));
     }
 
@@ -90,13 +92,15 @@ class MatronController extends Controller
      * @param  \App\Models\Matron  $matron
      * @return \Illuminate\Http\Response
      */
-    public function edit(Matron $matron)
+    public function edit($id)
     {
         //
-        $schools = School::all();
-        $matronRoles = PositionMatron::all();
+        $matron = $this->matService->getId($id);
+        $schools = $this->schoolService->all();
+        $matronRoles = $this->matRolService->all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.matrons.edit',compact('matron','schools','matronRoles'));
+        return view('superadmin.matrons.edit',compact('matron','schools','matronRoles','bloodGroups'));
     }
 
     /**
@@ -106,18 +110,15 @@ class MatronController extends Controller
      * @param  \App\Models\Matron  $matron
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Matron $matron)
+    public function update(UpdateRequest $request, $id)
     {
         //
+        $matron = $this->matService->getId($id);
         if($matron){
             Storage::delete('public/storage/'.$matron->image);
-            $input=$request->only('title','first_name','middle_name','last_name','dob','email','current_address','permanent_address','phone_no','id_no','designation','emp_no');
-            $input['school_id'] = $request->school;
-            $input['position_matron_id'] = $request->matron_role;
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $matron->update($input);
+            $this->matService->update($request,$id);
 
-            return redirect()->route('superadmin.matrons.index')->withSuccess('The matron info updated successfully');
+            return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->name." ".'info updated successfully'));
         }
     }
 
@@ -127,14 +128,15 @@ class MatronController extends Controller
      * @param  \App\Models\Matron  $matron
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Matron $matron)
+    public function destroy($id)
     {
         //
+        $matron = $this->matService->getId($id);
         if($matron){
             Storage::delete('public/storage/'.$matron->image);
-            $matron->delete();
+            $this->matService->delete($id);
 
-            return redirect()->route('superadmin.matrons.index')->withSuccess('The matron info deleted successfully');
+            return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->name." ".'info deleted successfully'));
         }
     }
 }

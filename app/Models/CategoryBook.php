@@ -10,6 +10,8 @@ class CategoryBook extends Model
     use HasFactory;
 
     protected $table = 'category_books';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = ['name','desc','slug'];
 
     public function books() {

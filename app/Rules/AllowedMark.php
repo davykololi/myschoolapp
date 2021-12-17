@@ -27,9 +27,7 @@ class AllowedMark implements Rule
     public function passes($attribute, $value)
     {
         //
-        
-        GradeSystem::where('to_mark','=',$value)->where('from_mark','=',$value)->where('to_mark','>','from_mark')->get();
-
+        GradeSystem::where('to_mark',$value)->where('from_mark','<=','to_mark')->doesntExist();
     }
 
     /**

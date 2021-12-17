@@ -14,7 +14,7 @@
                     <h2>SUBJECT CATEGORIES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.category-subjects.create')}}"> Create Subject Category</a>
+                    <a class="btn btn-success" href="{{route('admin.category-subjects.create')}}">Create</a>
                 </div>
             </div>
         </div>

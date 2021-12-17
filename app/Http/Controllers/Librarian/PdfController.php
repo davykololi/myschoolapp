@@ -47,10 +47,7 @@ class PdfController extends Controller
     public function borrowedBooks()
     {
         $issuedBooks = Issuedbook::with('student','book')->get();
-
-        foreach($issuedBooks as $issuedBook){
-            $school = $issuedBook->book->school;
-        }
+        $school = auth()->user()->school;
         $title = 'Library Issued Books';
         $pdf = PDF::loadView('librarian.library.borrowed_books',['issuedBooks'=>$issuedBooks,'title'=>$title,'school'=>$school])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
 

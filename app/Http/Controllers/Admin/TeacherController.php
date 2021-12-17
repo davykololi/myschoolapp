@@ -6,28 +6,30 @@ use Auth;
 use App\Models\Stream;
 use App\Models\PositionTeacher;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Teacher;
+use App\Services\TeacherService;
 use App\Models\School;
 use App\Models\Subject;
 use App\Models\Assignment;
 use App\Models\Reward;
 use App\Models\Meeting;
+use App\Models\BloodGroup;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use App\Traits\ImageUploadTrait;
+use App\Http\Requests\TeacherFormRequest as StoreRequest;
+use App\Http\Requests\TeacherFormRequest as UpdateRequest;
 
 class TeacherController extends Controller
 {
-    use ImageUploadTrait;
+    protected $teacherService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(TeacherService $teacherService)
     {
         $this->middleware('auth:admin');
+        $this->teacherService = $teacherService;
     }
     
     /**
@@ -38,7 +40,7 @@ class TeacherController extends Controller
     public function index()
     {
         //
-        $teachers = Teacher::with('streams','school','students','position_teacher')->get();
+        $teachers = $this->teacherService->all();
 
         return view('admin.teachers.index',['teachers' => $teachers]);
     }
@@ -51,8 +53,9 @@ class TeacherController extends Controller
     public function create()
     {
         $teacherRoles = PositionTeacher::all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('admin.teachers.create',compact('teacherRoles'));
+        return view('admin.teachers.create',compact('teacherRoles','bloodGroups'));
     }
 
     /**
@@ -61,16 +64,13 @@ class TeacherController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $input = $request->all();
-        $input['school_id'] = auth()->user()->school->id;
-        $input['position_teacher_id'] = $request->teacher_role;
-        $input['password'] = Hash::make($request->password);
-        $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        $teacher=Teacher::create($input);
-
-        return redirect()->route('admin.teachers.index')->withSuccess(ucwords($teacher->full_name." ".'info created successfully'));
+        $teacher = $this->teacherService->create($request);
+        if(!$teacher){
+            return redirect()->route('admin.teachers.index')->withErrors(ucwords('Oops!!, An error occured. Please try again later!'));
+        }
+            return redirect()->route('admin.teachers.index')->withSuccess(ucwords($teacher->name." ".'info created successfully'));
     }
 
     /**
@@ -79,10 +79,10 @@ class TeacherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id,Request $request)
+    public function show($id)
     {
         //
-        $teacher = Teacher::findOrFail($id);
+        $teacher = $this->teacherService->getId($id);
         $streams = Stream::all();
         $teacherStreams = $teacher->streams;
         $subjects = Subject::all();
@@ -104,10 +104,11 @@ class TeacherController extends Controller
     public function edit($id)
     {
         //
-        $teacher = Teacher::findOrFail($id);
+        $teacher = $this->teacherService->getId($id);
         $teacherRoles = PositionTeacher::all();
+        $bloodGroups = BloodGroup::all();
 
-        return view('admin.teachers.edit',compact('teacher','teacherRoles'));
+        return view('admin.teachers.edit',compact('teacher','teacherRoles','bloodGroups'));
     }
 
     /**
@@ -117,18 +118,14 @@ class TeacherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        $teacher = Teacher::findOrFail($id);
+        $teacher = $this->teacherService->getId($id);
         if($teacher){
             Storage::delete('public/storage/'.$teacher->image);
-            $input = $request->only('first_name','middle_name','last_name','title','email','image','id_no','emp_no','dob','designation','postal_address','phone_no','history');
-            $input['school_id'] = auth()->user()->school->id;
-            $input['position_teacher_id'] = $request->teacher_role;
-            $input['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-            $teacher->update($input);
+            $this->teacherService->update($request,$id);
 
-            return redirect()->route('admin.teachers.index')->withSuccess(ucwords($teacher->full_name." ".'info updated successfully'));
+            return redirect()->route('admin.teachers.index')->withSuccess(ucwords($teacher->name." ".'info updated successfully'));
         }
     }
 
@@ -141,12 +138,12 @@ class TeacherController extends Controller
     public function destroy($id)
     {
         //
-        $teacher = Teacher::findOrFail($id);
+        $teacher = $this->teacherService->getId($id);
         if($teacher){
             Storage::delete('public/storage/'.$teacher->image);
-            $teacher->delete();
+            $this->teacherService->delete($id);
 
-        return redirect()->route('admin.teachers.index')->withSuccess(ucwords($teacher->full_name." ".'info deleted successfully'));
+            return redirect()->route('admin.teachers.index')->withSuccess(ucwords($teacher->name." ".'info deleted successfully'));
         }
     }
 }

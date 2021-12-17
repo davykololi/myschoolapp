@@ -14,7 +14,7 @@
                     <h2>TEACHERS ROLES</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('superadmin.position-teachers.create')}}"> Create Teacher Role</a>
+                    <a class="btn btn-success" href="{{route('superadmin.position-teachers.create')}}">Create</a>
                 </div>
             </div>
         </div>

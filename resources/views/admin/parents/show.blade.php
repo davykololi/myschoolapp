@@ -24,7 +24,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $parent->title }} {{ $parent->full_name }}
+            {{ $parent->title }} {{ $parent->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -35,14 +35,14 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Current Address</strong>
-            {{ $parent->current_address }}
+            <strong>Postal Address</strong>
+            {{ $parent->address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Permanent Address</strong>
-            {{ $parent->permanent_address }}
+            <strong>Blood Group</strong>
+            {{ $parent->blood_group->type }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -87,7 +87,9 @@
             <ol>
                 @foreach($parent->students as $student)
                 <li>
-                    {{$student->full_name}} <span style="color: green">Class</span> {{$student->standard->name}}
+                    <a href="{{route('admin.students.show',$student->id)}}">
+                        {{$student->full_name}} <span style="color: green">Class</span> {{$student->stream->name}}
+                    </a>
                 </li>
                 @endforeach
             </ol>

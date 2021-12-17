@@ -7,8 +7,8 @@
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
+            <h2>CREATE TEACHER ROLE</h2>
             <div class="panel-heading">
-                Create Teacher Role 
                 <a href="{{ route('superadmin.position-teachers.index') }}" class="label label-primary pull-right">Back</a>
             </div>
             <div class="panel-body">

@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\CategorySchool;
+use App\Services\SchCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\SchCatFormRequest as StoreRequest;
+use App\Http\Requests\SchCatFormRequest as UpdateRequest;
 
 class CategorySchoolController extends Controller
 {
+    protected $schCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SchCatService $schCatService)
     {
         $this->middleware('auth:superadmin');
+        $this->schCatService = $schCatService;
     }
     
     /**
@@ -27,7 +30,7 @@ class CategorySchoolController extends Controller
     public function index()
     {
         //
-        $categorySchools = CategorySchool::get();
+        $categorySchools = $this->schCatService->all();
 
         return view('superadmin.category-schools.index',compact('categorySchools'));
     }
@@ -49,14 +52,12 @@ class CategorySchoolController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        CategorySchool::create($input);
+        $categorySchool = $this->schCatService->create($request);
 
-        return redirect()->route('superadmin.category-schools.index')->withSuccess('The school category created successfully!');
+        return redirect()->route('superadmin.category-schools.index')->withSuccess(ucwords($categorySchool->name." ".'info created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class CategorySchoolController extends Controller
      * @param  \App\Models\CategorySchool  $categorySchool
      * @return \Illuminate\Http\Response
      */
-    public function show(CategorySchool $categorySchool)
+    public function show($id)
     {
         //
+        $categorySchool = $this->schCatService->getId($id);
+
         return view('superadmin.category-schools.show',compact('categorySchool'));
     }
 
@@ -77,9 +80,11 @@ class CategorySchoolController extends Controller
      * @param  \App\Models\CategorySchool  $categorySchool
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategorySchool $categorySchool)
+    public function edit($id)
     {
         //
+        $categorySchool = $this->schCatService->getId($id);
+
         return view('superadmin.category-schools.edit',compact('categorySchool'));
     }
 
@@ -90,14 +95,15 @@ class CategorySchoolController extends Controller
      * @param  \App\Models\CategorySchool  $categorySchool
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategorySchool $categorySchool)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $categorySchool->update($input);
+        $categorySchool = $this->schCatService->getId($id);
+        if($categorySchool){
+            $this->schCatService->update($request,$id);
 
-        return redirect()->route('superadmin.category-schools.index')->withSuccess('The school category updated successfully!');
+        return redirect()->route('superadmin.category-schools.index')->withSuccess(ucwords($categorySchool->name." ".'info updated successfully!'));
+        }
     }
 
     /**
@@ -106,14 +112,14 @@ class CategorySchoolController extends Controller
      * @param  \App\Models\CategorySchool  $categorySchool
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategorySchool $categorySchool)
+    public function destroy($id)
     {
         //
+        $categorySchool = $this->schCatService->getId($id);
         if($categorySchool){
-            $categorySchool->schools()->delete();
-        }
-        $categorySchool->delete();
+            $this->SchCatService->delete($id);
 
-        return redirect()->route('superadmin.category-schools.index')->withSuccess('The school category deleted successfully!');
+            return redirect()->route('superadmin.category-schools.index')->withSuccess(ucwords($categorySchool->name." ".'info deleted successfully!'));
+        }
     }
 }

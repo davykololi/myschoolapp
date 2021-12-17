@@ -33,15 +33,15 @@
                         </div>
                     </div>
                     @include('ext._attach_exam_categorydiv')
+                    @include('ext._attach_yeardiv')
+                    @include('ext._attach_termdiv')
+                    @include('ext._attach_streamdiv')
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Subjects</label>
                         <div class="col-sm-10">
                             {!! Form::select('subjects[]',$subjects,old('subjects'),['class'=>'form-control','multiple'=>'multiple']) !!}
                         </div>
                     </div>
-                    @include('ext._attach_yeardiv')
-                    @include('ext._attach_termdiv')
-                    @include('ext._attach_streamdiv')
                     @include('ext._submit_create_button')
                 </form>
             </div>

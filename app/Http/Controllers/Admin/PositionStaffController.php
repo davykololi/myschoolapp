@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\PositionStaff;
+use App\Services\StaffRoleService as SubStService;
 use Illuminate\Http\Request;
+use App\Http\Requests\StaffRolFormRequest as StoreRequest;
+use App\Http\Requests\StaffRolFormRequest as UpdateRequest;
 
 class PositionStaffController extends Controller
 {
+    protected $subStService;
      /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SubStService $subStService)
     {
         $this->middleware('auth:admin');
+        $this->subStService = $subStService;
     }
 
     /**
@@ -27,7 +30,7 @@ class PositionStaffController extends Controller
     public function index()
     {
         //
-        $positionStaffs = PositionStaff::get();
+        $positionStaffs = $this->subStService->all();
 
         return view('admin.position-staffs.index',compact('positionStaffs'));
     }
@@ -49,14 +52,12 @@ class PositionStaffController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        PositionStaff::create($input);
+        $positionStaff = $this->subStService->create($request);
 
-        return redirect()->route('admin.position-staffs.index')->withSuccess('The subordinade staff role created successfully!');
+        return redirect()->route('admin.position-staffs.index')->withSuccess(ucwords($positionStaff->name." ".'role created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class PositionStaffController extends Controller
      * @param  \App\Models\PositionStaff  $positionStaff
      * @return \Illuminate\Http\Response
      */
-    public function show(PositionStaff $positionStaff)
+    public function show($id)
     {
         //
+        $positionStaff = $this->subStService->getId($id);
+
         return view('admin.position-staffs.show',compact('positionStaff'));
     }
 
@@ -77,9 +80,11 @@ class PositionStaffController extends Controller
      * @param  \App\Models\PositionStaff  $positionStaff
      * @return \Illuminate\Http\Response
      */
-    public function edit(PositionStaff $positionStaff)
+    public function edit($id)
     {
         //
+        $positionStaff = $this->subStService->getId($id);
+
         return view('admin.position-staffs.edit',compact('positionStaff'));
     }
 
@@ -90,14 +95,15 @@ class PositionStaffController extends Controller
      * @param  \App\Models\PositionStaff  $positionStaff
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PositionStaff $positionStaff)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $positionStaff->update($input);
+        $positionStaff = $this->subStService->getId($id);
+        if($positionStaff){
+            $this->subStService->update($request,$id);
 
-        return redirect()->route('admin.position-staffs.index')->withSuccess('The subordinade staff role updated successfully!');
+            return redirect()->route('admin.position-staffs.index')->withSuccess(ucwords($positionStaff->name." ".'role updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class PositionStaffController extends Controller
      * @param  \App\Models\PositionStaff  $positionStaff
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PositionStaff $positionStaff)
+    public function destroy($id)
     {
         //
-        $positionStaff->delete();
+        $positionStaff = $this->subStService->getId($id);
+        if($positionStaff){
+            $this->subStService->delete($id);
 
-        return redirect()->route('admin.position-staffs.index')->withSuccess('The subordinade staff role deleted successfully!');
+            return redirect()->route('admin.position-staffs.index')->withSuccess(ucwords($positionStaff->name." ".'role deleted successfully!'));
+        }
     }
 }

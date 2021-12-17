@@ -28,8 +28,8 @@ class CreateSchoolsTable extends Migration
             $table->bigInteger('students_no')->nullable();
             $table->text('core_values');
             $table->string('image')->nullable();
-            $table->bigInteger('category_school_id')->unsigned();
-            $table->foreign('category_school_id')->references('id')->on('category_schools')->onDelete('cascade');
+            $table->bigInteger('catsch_id')->unsigned();
+            $table->foreign('catsch_id')->references('id')->on('category_schools')->onDelete('cascade');
             $table->timestamps();
         });
     }

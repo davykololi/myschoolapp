@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Models\CategoryFarm;
+use App\Services\FarmCatService;
 use Illuminate\Http\Request;
+use App\Http\Requests\FarmCatFormRequest as StoreRequest;
+use App\Http\Requests\FarmCatFormRequest as UpdateRequest;
 
 class CategoryFarmController extends Controller
 {
+    protected $farmCatService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(FarmCatService $farmCatService)
     {
         $this->middleware('auth:admin');
+        $this->farmCatService = $farmCatService;
     }
 
     /**
@@ -27,7 +30,7 @@ class CategoryFarmController extends Controller
     public function index()
     {
         //
-        $categoryFarms = CategoryFarm::get();
+        $categoryFarms = $this->farmCatService->all();
 
         return view('admin.category-farms.index',compact('categoryFarms'));
     }
@@ -49,14 +52,12 @@ class CategoryFarmController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        CategoryFarm::create($input);
+        $categoryFarm = $this->farmCatService->create($request);
 
-        return redirect()->route('admin.category-farms.index')->withSuccess('The farm category created successfully!');
+        return redirect()->route('admin.category-farms.index')->withSuccess(ucwords($categoryFarm->name." ".'category created successfully!'));
     }
 
     /**
@@ -65,9 +66,11 @@ class CategoryFarmController extends Controller
      * @param  \App\Models\CategoryFarm  $categoryFarm
      * @return \Illuminate\Http\Response
      */
-    public function show(CategoryFarm $categoryFarm)
+    public function show($id)
     {
         //
+        $categoryFarm = $this->farmCatService->getId($id);
+
         return view('admin.category-farms.show',compact('categoryFarm'));
     }
 
@@ -77,9 +80,11 @@ class CategoryFarmController extends Controller
      * @param  \App\Models\CategoryFarm  $categoryFarm
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryFarm $categoryFarm)
+    public function edit($id)
     {
         //
+        $categoryFarm = $this->farmCatService->getId($id);
+
         return view('admin.category-farms.edit',compact('categoryFarm'));
     }
 
@@ -90,14 +95,15 @@ class CategoryFarmController extends Controller
      * @param  \App\Models\CategoryFarm  $categoryFarm
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoryFarm $categoryFarm)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['slug'] = Str::slug($request->name,'-');
-        $categoryFarm->update($input);
+        $categoryFarm = $this->farmCatService->getId($id);
+        if($categoryFarm){
+            $this->farmCatService->update($request,$id);
 
-        return redirect()->route('admin.category-farms.index')->withSuccess('The farm category updated successfully!');
+            return redirect()->route('admin.category-farms.index')->withSuccess(ucwords($categoryFarm->name." ".'category updated successfully!'));
+        }
     }
 
     /**
@@ -106,11 +112,14 @@ class CategoryFarmController extends Controller
      * @param  \App\Models\CategoryFarm  $categoryFarm
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoryFarm $categoryFarm)
+    public function destroy($id)
     {
         //
-        $categoryFarm->delete();
+        $categoryFarm = $this->farmCatService->getId($id);
+        if($categoryFarm){
+            $this->farmCatService->delete($id);
 
-        return redirect()->route('admin.category-farms.index')->withSuccess('The farm category deleted successfully!');
+            return redirect()->route('admin.category-farms.index')->withSuccess(ucwords($categoryFarm->name." ".'category deleted successfully!'));
+        }
     }
 }

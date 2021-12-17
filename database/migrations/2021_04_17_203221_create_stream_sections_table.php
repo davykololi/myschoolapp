@@ -17,6 +17,7 @@ class CreateStreamSectionsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('desc');
+            $table->string('initials');
             $table->bigInteger('school_id')->unsigned();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->timestamps();

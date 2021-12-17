@@ -2,24 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\School;
-use App\Models\Stream;
-use App\Models\Teacher;
-use App\Models\Subject;
+use App\Services\StreamService;
+use App\Services\TeacherService;
+use App\Services\SubjectService;
 use App\Http\Controllers\Controller;
-use App\Models\StandardSubject;
+use App\Services\StdSubjectService;
 use Illuminate\Http\Request;
+use App\Http\Requests\StdSubjectFormRequest as StoreRequest;
+use App\Http\Requests\StdSubjectFormRequest as UpdateRequest;
 
 class StandardSubjectController extends Controller
 {
+    protected $stdSubjectService,$streamService,$teacherService,$subjectService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StdSubjectService $stdSubjectService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService)
     {
         $this->middleware('auth:admin');
+        $this->stdSubjectService = $stdSubjectService;
+        $this->streamService = $streamService;
+        $this->teacherService = $teacherService;
+        $this->subjectService = $subjectService;
     }
     
     /**
@@ -30,7 +36,7 @@ class StandardSubjectController extends Controller
     public function index()
     {
         //
-        $subs = StandardSubject::with('school','teacher','subject','stream',)->latest()->get();
+        $subs = $this->stdSubjectService->all();
 
         return view('admin.subs.index',compact('subs'));
     }
@@ -43,9 +49,9 @@ class StandardSubjectController extends Controller
     public function create()
     {
         //
-        $subjects = Subject::all();
-        $streams = Stream::all();
-        $teachers = Teacher::all();
+        $subjects = $this->subjectService->all();
+        $streams = $this->streamService->all();
+        $teachers = $this->teacherService->all();
 
         return view('admin.subs.create',compact('subjects','streams','teachers'));
     }
@@ -56,15 +62,10 @@ class StandardSubjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['subject_id'] = $request->subject;
-        $input['school_id'] = auth()->user()->school->id;
-        $input['stream_id'] = $request->stream;
-        $input['teacher_id'] = $request->teacher;
-        $sub = StandardSubject::create($input);
+        $sub = $this->stdSubjectService->create($request);
 
         return redirect()->route('admin.subs.index')->withSuccess(ucwords($sub->desc." ".'subject created successfully'));
     }
@@ -75,9 +76,11 @@ class StandardSubjectController extends Controller
      * @param  \App\Models\StandardSubject  $standardSubject
      * @return \Illuminate\Http\Response
      */
-    public function show(StandardSubject $sub)
+    public function show($id)
     {
         //
+        $sub = $this->stdSubjectService->getId($id);
+
         return view('admin.subs.show',compact('sub'));
     }
 
@@ -87,12 +90,13 @@ class StandardSubjectController extends Controller
      * @param  \App\Models\StandardSubject  $standardSubject
      * @return \Illuminate\Http\Response
      */
-    public function edit(StandardSubject $sub)
+    public function edit($id)
     {
         //
-        $subjects = Subject::all();
-        $streams = Stream::all();
-        $teachers = Teacher::all();
+        $sub = $this->stdSubjectService->getId($id);
+        $subjects = $this->subjectService->all();
+        $streams = $this->streamService->all();
+        $teachers = $this->teacherService->all();
 
         return view('admin.subs.edit',compact('sub','subjects','streams','teachers'));
     }
@@ -104,17 +108,15 @@ class StandardSubjectController extends Controller
      * @param  \App\Models\StandardSubject  $standardSubject
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StandardSubject $sub)
+    public function update(UpdateRequest $request,  $id)
     {
         //
-        $input = $request->all();
-        $input['subject_id'] = $request->subject;
-        $input['school_id'] = auth()->user()->school->id;
-        $input['stream_id'] = $request->stream;
-        $input['teacher_id'] = $request->teacher;
-        $sub->update($input);
+        $sub = $this->stdSubjectService->getId($id);
+        if($sub){
+            $this->stdSubjectService->update($request,$id);
 
-        return redirect()->route('admin.subs.index')->withSuccess(ucwords($sub->desc." ".'subject updated successfully'));
+            return redirect()->route('admin.subs.index')->withSuccess(ucwords($sub->desc." ".'subject updated successfully'));
+        }
     }
 
     /**
@@ -123,11 +125,14 @@ class StandardSubjectController extends Controller
      * @param  \App\Models\StandardSubject  $standardSubject
      * @return \Illuminate\Http\Response
      */
-    public function destroy(StandardSubject $sub)
+    public function destroy($id)
     {
         //
-        $sub->delete();
+        $sub = $this->stdSubjectService->getId($id);
+        if($sub){
+            $this->stdSubjectService->delete($id);
 
-        return redirect()->route('admin.subs.index')->withSuccess(ucwords($sub->desc." ".'subject deleted successfully'));
+            return redirect()->route('admin.subs.index')->withSuccess(ucwords($sub->desc." ".'subject deleted successfully'));
+        }
     }
 }

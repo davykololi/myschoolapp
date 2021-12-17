@@ -22,8 +22,8 @@ class Student extends Authenticatable implements Searchable
     *@var array
     */
     protected $table = 'students';
-    protected $fillable = ['first_name','middle_name','last_name','title','image','phone_no','admission_no','dob','doa','email','postal_address','history','school_id','stream_id','intake_id','dormitory_id','admin_id','parent_id','position_student_id','password'];
-    protected $appends = ['full_name','age'];
+    protected $fillable = ['title','name','adm_mark','image','gender','phone_no','admission_no','dob','doa','email','address','history','bg_id','school_id','stream_id','intake_id','dormitory_id','admin_id','parent_id','position_student_id','password'];
+    protected $appends = ['age'];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -43,7 +43,7 @@ class Student extends Authenticatable implements Searchable
 
         return new SearchResult(
                 $this,
-                $this->full_name,
+                $this->name,
                 $url
             );
     }
@@ -56,6 +56,11 @@ class Student extends Authenticatable implements Searchable
     public function position_student()
     {
         return $this->belongsTo('App\Models\PositionStudent')->withDefault();
+    }
+
+    public function blood_group()
+    {
+        return $this->belongsTo('App\Models\BloodGroup')->withDefault();
     }
 
     public function teachers()
@@ -148,12 +153,6 @@ class Student extends Authenticatable implements Searchable
         return $this->hasMany('App\Models\Record','student_id','id');
     }
 
-
-    public function getFullNameAttribute()       
-    {        
-        return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
     public function getAgeAttribute()       
     { 
     	$myDate = $this->attributes['dob'];
@@ -162,19 +161,9 @@ class Student extends Authenticatable implements Searchable
         return $years;     
     }
 
-    public function setFirstNameAttribute($value)
+    public function setNameAttribute($value)
     {
-    	$this->attributes['first_name'] = ucfirst($value);
-    }
-
-    public function setMiddleNameAttribute($value)
-    {
-    	$this->attributes['middle_name'] = ucfirst($value);
-    }
-
-    public function setLastNameAttribute($value)
-    {
-    	$this->attributes['last_name'] = ucfirst($value);
+    	$this->attributes['name'] = ucfirst($value);
     }
 
     public function getDob()
@@ -196,5 +185,10 @@ class Student extends Authenticatable implements Searchable
     public function marks()
     {
         return $this->hasMany(Mark::class,'student_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school','libraries','teachers','class','stream','clubs','parent')->get();
     }
 }

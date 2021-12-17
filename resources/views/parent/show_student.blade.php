@@ -17,7 +17,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $student->image }}">
+            <img style="width:15%" src="/storage/storage/{{ $student->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

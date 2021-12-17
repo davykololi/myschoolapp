@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Meeting;
 
-use App\Models\Meeting;
-use App\Models\Staff;
+use App\Repositories\MeetingRepository as MeetingRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class AttachStaffController extends Controller
 {
+    protected $meetingRepo;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MeetingRepo $meetingRepo)
     {
         $this->middleware('auth:admin');
+        $this->meetingRepo = $meetingRepo;
     }
 
     public function attachStaff(Request $request,$id)
     {
-    	$meeting = Meeting::findOrFail($id);
+    	$meeting = $this->meetingRepo->getId($id);
     	$staff = $request->staff;
     	$meeting->staffs()->attach($staff);
 

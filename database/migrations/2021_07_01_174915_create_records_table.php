@@ -37,8 +37,6 @@ class CreateRecordsTable extends Migration
             $table->foreign('accountant_id')->references('id')->on('accountants')->onDelete('cascade');
             $table->bigInteger('admin_id')->unsigned()->nullable();
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
-            $table->bigInteger('bog_id')->unsigned()->nullable();
-            $table->foreign('bog_id')->references('id')->on('bogs')->onDelete('cascade');
             $table->bigInteger('class_id')->unsigned()->nullable();
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
             $table->bigInteger('parent_id')->unsigned()->nullable();

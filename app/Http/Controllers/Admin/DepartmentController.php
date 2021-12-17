@@ -2,25 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\School;
-use App\Models\Teacher;
+use App\Services\TeacherService;
 use App\Models\Staff;
-use App\Models\Department;
+use App\Services\DepartmentService;
 use App\Models\Meeting;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\DeptFormRequest as StoreRequest;
+use App\Http\Requests\DeptFormRequest as UpdateRequest;
 
 class DepartmentController extends Controller
 {
+    protected $deptService;
+    protected $teacherService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(DepartmentService $deptService,TeacherService $teacherService)
     {
         $this->middleware('auth:admin');
+        $this->deptService = $deptService;
+        $this->teacherService = $teacherService;
     }
     
     /**
@@ -31,7 +35,7 @@ class DepartmentController extends Controller
     public function index()
     {
         //
-        $departments = Department::with('teachers','school',)->latest()->get();
+        $departments = $this->deptService->all();
 
         return view('admin.departments.index',['departments'=>$departments]);
     }
@@ -44,7 +48,7 @@ class DepartmentController extends Controller
     public function create()
     {
         //
-        $teachers = Teacher::all();
+        $teachers = $this->teacherService->all();
         $staffs = Staff::all();
         $meetings = Meeting::all();
 
@@ -57,13 +61,13 @@ class DepartmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['code'] = strtoupper(Str::random(15));
-        $input['school_id'] = auth()->user()->school->id;
-        $department = Department::create($input);
+        $department = $this->deptService->create($request);
+        if(!$department){
+            return redirect()->route('admin.departments.index')->withErrors(ucwords('Oops!, An error occured. Please try again later!'));
+        }
         $teacherId = $request->teacher;
         $department->teachers()->attach($teacherId);
         $staffId = $request->staff;
@@ -83,15 +87,15 @@ class DepartmentController extends Controller
     public function show($id)
     {
         //
-        $department = Department::findOrFail($id);
-        $teachers = Teacher::all();
+        $department = $this->deptService->getId($id);
+        $teachers = $this->teacherService->all();
         $deptTeachers = $department->teachers;
         $staffs = Staff::all();
         $deptStaffs = $department->staffs;
         $meetings = Meeting::all();
         $deptMeetings = $department->meetings;
 
-        return view('admin.departments.show',['department'=>$department,'teachers'=>$teachers,'deptTeachers'=>$deptTeachers,'staffs'=>$staffs,'deptStaffs'=>$deptStaffs,'meetings'=>$meetings,'deptMeetings'=>$deptMeetings]);
+        return view('admin.departments.show',compact('department','teachers','deptTeachers','staffs','deptStaffs','meetings','deptMeetings'));
     }
 
     /**
@@ -103,7 +107,7 @@ class DepartmentController extends Controller
     public function edit($id)
     {
         //
-        $department = Department::findOrFail($id);
+        $department = $this->deptService->getId($id);
 
         return view('admin.departments.edit',compact('department'));
     }
@@ -115,15 +119,15 @@ class DepartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request,$id)
     {
         //
-        $department = Department::findOrFail($id);
-        $input = $request->only('name','phone_no','head_name','asshead_name','motto','vision');
-        $input['school_id'] = auth()->user()->school->id;
-        $department->update($input);
+        $department = $this->deptService->getId($id);
+        if($department){
+            $this->deptService->update($request,$id);
 
-        return redirect()->route('admin.departments.index')->withSuccess(ucwords($department->name." ".'details updated successfully'));
+            return redirect()->route('admin.departments.index')->withSuccess(ucwords($department->name." ".'details updated successfully'));
+        }
     }
 
     /**
@@ -135,9 +139,11 @@ class DepartmentController extends Controller
     public function destroy($id)
     {
         //
-        $department = Department::findOrFail($id);
-        $department->delete();
+        $department = $this->deptService->getId($id);
+        if($department){
+            $this->deptService->delete($id);
 
-        return redirect()->route('admin.departments.index')->withSuccess(ucwords($department->name." ".'deleted successfully'));
+            return redirect()->route('admin.departments.index')->withSuccess(ucwords($department->name." ".'deleted successfully'));
+        }
     }
 }

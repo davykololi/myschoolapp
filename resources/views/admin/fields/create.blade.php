@@ -18,6 +18,9 @@
                         <label class="control-label col-sm-2" >Field Name</label>
                         <div class="col-sm-10">
                             <input type="text" name="name" id="name" class="form-control" placeholder="Field Name">
+                            @error('name')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                     </div>
                     @include('ext._category_fielddiv')

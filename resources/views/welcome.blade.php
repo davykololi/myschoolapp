@@ -1,20 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.frontend')
+@section('title', '| Home')
 
 @section('content')
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-            </div>
+    @include('shared.start_banner')
+    @include('shared.about')
+    @include('shared.categories')
+    @include('shared.popular_courses')
+    @include('shared.campus_story')
+    @include('shared.portifolio')
+    @include('shared.testimonials')
+    @include('shared.events')
+    @include('shared.registration')
+    @include('shared.blog')
 @endsection

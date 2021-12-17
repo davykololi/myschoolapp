@@ -37,7 +37,7 @@
         <div class="form-group">
             <strong>Student Info:</strong>
             <b style="color: green">Name:</b> {{ $booker->student->full_name }} 
-            <b style="color: green">Class:</b> {{ $booker->student->standard->name }}
+            <b style="color: green">Class:</b> {{ $booker->student->stream->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

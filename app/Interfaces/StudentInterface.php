@@ -4,9 +4,7 @@ namespace App\Interfaces;
 
 interface StudentInterface
 {
-	public function eagerLoaded();
-
-	public function authPosts();
+	public function all();
 
 	public function create(array $data);
 

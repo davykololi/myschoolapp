@@ -13,7 +13,9 @@ class School extends Model
 {
     //
     protected $table = 'schools';
-    protected $fillable = ['name','initials','code','head','ass_head','motto','vision','mission','email','postal_address','core_values','image','category_school_id'];
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $fillable = ['name','initials','code','head','ass_head','motto','vision','mission','email','postal_address','core_values','image','catsch_id'];
 
     public function category_school()
     {
@@ -127,7 +129,7 @@ class School extends Model
 
     public function timetables()
     {
-        return $this->hasManyThrough('App\Models\Timetable','App\Models\Standard','school_id','id');
+        return $this->hasMany('App\Models\Timetable','school_id','id');
     }
 
     public function standard_subjects()
@@ -183,5 +185,20 @@ class School extends Model
     public function attendances()
     {
         return $this->hasMany('App\Models\Attendance','school_id','id');
+    }
+
+    public function report_cards()
+    {
+        return $this->hasMany('App\Models\ReportCard','school_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('teachers','students','category_school','departments','clubs','streams')->get();
+    }
+
+    public function grade_systems()
+    {
+        return $this->hasMany('App\Models\GradeSystem','school_id','id');
     }
 }

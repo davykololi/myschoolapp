@@ -14,7 +14,7 @@
                     <h2>HALLS LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.halls.create')}}"> Add A Hall</a>
+                    <a class="btn btn-success" href="{{route('admin.halls.create')}}">Create</a>
                 </div>
             </div>
         </div>

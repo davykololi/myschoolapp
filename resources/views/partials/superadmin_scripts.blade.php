@@ -48,7 +48,6 @@
 <!-- Atlantis JS -->
 <script src="{{asset('assets/js/atlantis.min.js')}}"></script>
 
-
 <!-- CKEditor -->
 <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
 
@@ -56,3 +55,17 @@
 CKEDITOR.replace( 'summary-ckeditor');
 </script>
 
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!-- Bootsrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootststrap Datepicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$('#datetimepicker').datetimepicker();
+	})
+</script>
+<!-- Page Script -->
+<script src="assets/js/scripts.js"></script>

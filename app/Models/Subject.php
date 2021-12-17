@@ -88,4 +88,9 @@ class Subject extends Model implements Searchable
     {
         return $this->hasManyThrough(Note::class,StandardSubject::class,'subject_id','standard_subject_id','id');
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('teachers','students','school','department','category_subject')->latest()->get();
+    }
 }

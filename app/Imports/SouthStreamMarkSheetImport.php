@@ -4,12 +4,13 @@ namespace App\Imports;
 
 use App\Models\Mark;
 use App\Models\Stream;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class SouthStreamMarkSheetImport implements ToModel,WithHeadingRow
+class SouthStreamMarkSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
 {
     protected $yearId;
     protected $termId;
@@ -17,7 +18,6 @@ class SouthStreamMarkSheetImport implements ToModel,WithHeadingRow
     protected $classId;
     protected $teacherId;
     protected $southId;
-
     /**
      * Create a new controller instance.
      *
@@ -33,6 +33,11 @@ class SouthStreamMarkSheetImport implements ToModel,WithHeadingRow
         $this->southId = $southId;
     }
 
+    public function uniqueBy()
+    {
+        return 'index_no';
+    }
+
     /**
     * @param array $row
     *
@@ -40,13 +45,12 @@ class SouthStreamMarkSheetImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        $classId = $this->classId;
-        $southId = $this->southId;
-        $stream = Stream::where(['stream_section_id'=>$southId,'class_id'=>$classId])->first();
-        $streamId = $stream->id;
+        $stream = Stream::where(['stream_section_id'=>$this->southId,'class_id'=>$this->classId])->first();
+
         return new Mark([
             //
             'name' => $row['name'],
+            'index_no' => $row['index_no'],
             'mathematics' => $row['maths'],
             'english' => $row['eng'],
             'kiswahili' => $row['kisw'],
@@ -56,7 +60,7 @@ class SouthStreamMarkSheetImport implements ToModel,WithHeadingRow
             'term_id' => $this->termId,
             'exam_id' => $this->examId,
             'teacher_id' => $this->teacherId,
-            'stream_id' => $streamId,
+            'stream_id' => $stream->id,
             'class_id' => $this->classId,
         ]);
     }
