@@ -9,7 +9,7 @@ class Record extends Model
 {
     use HasFactory;
 
-    protected $table = 'progress';
+    protected $table = 'records';
     protected $fillable = ['content','student_id','school_id','stream_id','department_id','teacher_id','staff_id','librarian_id','matron_id','accountant_id','admin_id','bog_id','class_id','parent_id','dormitory_id','intake_id','subject_id','event_id','standard_subject_id'];
 
     public function student()

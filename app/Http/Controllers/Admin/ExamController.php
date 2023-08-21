@@ -7,7 +7,6 @@ use App\Services\SubjectService;
 use App\Services\StreamService;
 use App\Services\YearService;
 use App\Services\TermService;
-use App\Services\ExamCatService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\ExamFormRequest as StoreRequest;
@@ -21,15 +20,15 @@ class ExamController extends Controller
      *
      * @return void
      */
-    public function __construct(ExamService $examService,SubjectService $subjectService,streamService $streamService,YearService $yearService,TermService $termService,ExamCatService $examCatService)
+    public function __construct(ExamService $examService,SubjectService $subjectService,streamService $streamService,YearService $yearService,TermService $termService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('admin2fa');
         $this->examService = $examService;
         $this->subjectService = $subjectService;
         $this->streamService = $streamService;
         $this->yearService = $yearService;
         $this->termService = $termService;
-        $this->examCatService = $examCatService;
     }
     
     /**
@@ -54,12 +53,11 @@ class ExamController extends Controller
     {
         //
         $subjects = $this->subjectService->all()->pluck('name','id');
-        $streams = $this->streamService->all();
-        $examCategories = $this->examCatService->all();
+        $streams = $this->streamService->all()->pluck('name','id');
         $years = $this->yearService->all();
         $terms = $this->termService->all();
 
-        return view('admin.exams.create',compact('subjects','streams','examCategories','years','terms')); 
+        return view('admin.exams.create',compact('subjects','streams','years','terms')); 
     }
 
     /**
@@ -72,10 +70,10 @@ class ExamController extends Controller
     {
         //
         $exam = $this->examService->create($request);
-        $subjectId = $request->subject;
-        $exam->subjects()->sync($subjectId);
-        $streamId = $request->stream;
-        $exam->streams()->sync($streamId);
+        $subjects = $request->subjects;
+        $exam->subjects()->sync($subjects);
+        $streams = $request->streams;
+        $exam->streams()->sync($streams);
 
         return redirect()->route('admin.exams.index')->withSuccess(ucwords($exam->name." ".'info created successfully'));
     }
@@ -90,7 +88,7 @@ class ExamController extends Controller
     {
         //
         $exam = $this->examService->getId($id);
-        $subjects = $this->subjectService->all();
+        $subjects = $this->subjectService->all()->pluck('name','id');
         $examSubjects = $exam->subjects;
 
         return view('admin.exams.show',['exam'=>$exam,'subjects'=>$subjects,'examSubjects'=>$examSubjects]);
@@ -106,13 +104,12 @@ class ExamController extends Controller
     {
         //
         $exam = $this->examService->getId($id);
-        $subjects = $this->subjectService->all();
-        $streams = $this->streamService->all();
-        $examCategories = $this->examCatService->all();
+        $subjects = $this->subjectService->all()->pluck('name','id');
+        $streams = $this->streamService->all()->pluck('name','id');
         $years = $this->yearService->all();
         $terms = $this->termService->all();
 
-        return view('admin.exams.edit',compact('exam','subjects','streams','examCategories','years','terms'));
+        return view('admin.exams.edit',compact('exam','subjects','streams','years','terms'));
     }
 
     /**
@@ -128,10 +125,10 @@ class ExamController extends Controller
         $exam = $this->examService->getId($id);
         if($exam){
             $this->examService->update($request,$id);
-            $subjectId = $request->subject;
-            $exam->subjects()->sync($subjectId);
-            $streamId = $request->stream;
-            $exam->streams()->sync($streamId);
+            $subjects = $request->subjects;
+            $exam->subjects()->sync($subjects);
+            $streams = $request->streams;
+            $exam->streams()->sync($streams);
 
             return redirect()->route('admin.exams.index')->withSuccess(ucwords($exam->name." ".'info updated successfully'));
         }

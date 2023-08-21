@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Services\SchoolService;
-use App\Models\BloodGroup;
 use App\Services\AccountantService as AccService;
-use App\Services\AccountantRoleService as AccRolService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\AccFormRequest as StoreRequest;
@@ -15,18 +13,17 @@ use App\Http\Requests\AccFormRequest as UpdateRequest;
 class AccountantController extends Controller
 {
     protected $accService;
-    protected $accRolService;
     protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(AccService $accService,AccRolService $accRolService,SchoolService $schoolService)
+    public function __construct(AccService $accService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('superadmin2fa');
         $this->accService = $accService;
-        $this->accRolService = $accRolService;
         $this->schoolService = $schoolService;
     }
 
@@ -51,11 +48,8 @@ class AccountantController extends Controller
     public function create()
     {
         //
-        $schools = $this->schoolService->all();
-        $accountantRoles = $this->accRolService->all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.accountants.create',compact('schools','accountantRoles','bloodGroups'));
+        return view('superadmin.accountants.create');
     }
 
     /**
@@ -96,11 +90,8 @@ class AccountantController extends Controller
     {
         //
         $accountant = $this->accService->getId($id);
-        $schools = $this->schoolService->all();
-        $accountantRoles = $this->accRolService->all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.accountants.edit',compact('accountant','schools','accountantRoles','bloodGroups'));
+        return view('superadmin.accountants.edit',compact('accountant'));
     }
 
     /**

@@ -2,33 +2,67 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Attendance extends Model
 {
     //
     protected $table = 'attendances';
     protected $fillable = [
-        'school_id'
+        'date',
+        'time',
+        'school_id',
         'stream_id',
         'teacher_id',
         'student_id',
-        'attendence_date',
-        'attendence_status'
+        'attendence_status',
     ];
+
+    /**
+     * @return BelongsToMany
+     */
+    public function students(): BelongsToMany
+    {
+        return $this->belongsToMany(Student::class, 'attendance_student', 'attendance_id','student_id')->withPivot('status');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'teacher_id');
+    }
 
     public function school()
     {
         return $this->belongsTo('App\Models\School')->withDefault();
     }
 
-    public function teachers()
+    //scopes --------------------------------------------------
+    public function scopeWhereSubject($query, $search)
     {
-    	return $this->hasMany('App\Models\Teacher','attendance_id','id');
-    }
+        return $query->when($search, function ($q) use ($search) {
+            return $q->where('subject_id', "$search");
+        });
+    }// end of scopeWhenSearch
 
-    public function rewards()
+    //scopes --------------------------------------------------
+    public function scopeWhereDateIs($query, $search)
     {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
-    }
+        return $query->when($search, function ($q) use ($search) {
+            return $q->where('date', Carbon::parse($search)->format('Y-m-d'));
+        });
+    }// end of scopeWhenSearch
 }

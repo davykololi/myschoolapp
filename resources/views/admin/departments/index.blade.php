@@ -1,72 +1,82 @@
-@extends('layouts.admin')
-@section('title', '| All Departments')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
-    <div class="col-lg-12">
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
+<div class="max-w-full container">
+    <div class="w-full">
     @include('partials.messages')
     <!-- Posts list -->
     @if(!empty($departments))
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>DEPARMENTS LIST</h2>
+        <div class="max-w-full mb-8">
+            <div class="w-full md:w-full ">
+                <div class="text-center">
+                    <h2 class="uppercase text-2xl font-bold underline">DEPARMENTS LIST</h2>
                 </div>
-                <div class="pull-right">
-                    <a href="{{route('admin.school.depts', Auth::user()->school->id)}}" class="btn btn-primary btn-border">
-                        Departments PDF
+                <div>
+                    <a type="button" href="{{route('admin.school.depts', Auth::user()->school->id)}}" class="bg-orange-500 text-white px-2 py-1 rounded shadow-lg" style="float: right;">
+                        PDF
                     </a>
-                    <br/><br/>
-                    <a class="btn btn-success" href="{{route('admin.departments.create')}}">Create</a>
+                </div>
+                <div class="w-full text-center mt-12">
+                    @include('partials.errors')
                 </div>
             </div>
         </div>
-        <br/>
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-bordered table-head-bg-info table-bordered-bd-info">
-                    <!-- Table Headings -->
-                    @include('partials.departmenthead')
-                    <!-- Table Body -->
-                    <tbody>
-                    @foreach($departments as $key => $department)
-                        <tr>
-                            <td class="table-text">
-                                <div>{{$department->name}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$department->phone_no}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$department->head_name}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$department->asshead_name}}</div>
-                            </td>
-                            <td>
-                                <form action="{{route('admin.departments.destroy',$department->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <a href="{{ route('admin.departments.show', $department->id) }}" class="btn btn-success btn-xs">
-                                        Details
-                                    </a>
-                                    <a href="{{ route('admin.departments.edit', $department->id) }}" class="btn btn-warning btn-xs">
-                                        Edit
-                                    </a>
-                                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete {{$department->name}}?')">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+        <div class="flex flex-col overflow-x-auto mt-16">
+            <div class="sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                    <div class="overflow-x-auto">
+                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                            <!-- Table Headings -->
+                            <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
+                                <tr>
+                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">PHONE NO</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">HEAD</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">ASSISTANT</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">TEACHERS</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">SUBSTAFF</th>
+                                </tr>
+                            </thead>
+                            <!-- Table Body -->
+                            <tbody>
+                                @foreach($departments as $key => $department)
+                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-900">
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$loop->iteration}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>
+                                            <a href="{{ route('admin.departments.show', $department->id) }}">
+                                                {{$department->name}}
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$department->phone_no}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$department->head_name}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$department->asshead_name}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{ $department->teachers->count() }}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{ $department->staffs->count() }}</div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     @endif
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

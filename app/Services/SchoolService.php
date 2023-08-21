@@ -47,15 +47,15 @@ class SchoolService
 		$data = $request->all();
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
         $data['code'] = strtoupper(Str::random(15));
-        $data['catsch_id'] = $request->school_category;
+        $data['type'] = $request->school_type;
 
         return $data;
 	}
 
 	public function updateData(UpdateRequest $request)
 	{
-		$data = $request->only('name','head','ass_head','motto','vision','email','postal_address','mission','core_values');
-        $data['catsch_id'] = $request->school_category;
+		$data = $request->only('name','initials','head','ass_head','motto','vision','email','postal_address','mission','core_values');
+        $data['type'] = $request->school_type;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;

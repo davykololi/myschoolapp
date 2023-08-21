@@ -24,6 +24,7 @@ class SuperadminTableSeeder extends Seeder
         			'title' => 'Engineer',
         			'address' => '688 Bungoma, Kenya',
         			'password' => Hash::make('kenyayangu17'),
+                    'school_id' => 1,
         			]); 
     }
 }

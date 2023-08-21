@@ -28,12 +28,12 @@ class HallFormRequest extends FormRequest
             return [
                 //
                 'name' => 'required|string|max:100',
-                'hall_category' => 'required|exists:category_halls,id',
+                'hall_type' => 'required|string',
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
-                'hall_category' => 'required|exists:category_halls,id',
+                'hall_type' => 'required|string',
             ];
         }
     }
@@ -45,13 +45,13 @@ class HallFormRequest extends FormRequest
             return [
                 //
                 'name.required' => 'The name of the hall is required',
-                'hall_category.required' => 'The category the hall belongs to is required',
+                'hall_type.required' => 'The category the hall belongs to is required',
             ];
         } else {
             return [
                 //
                 'name.required' => 'The name of the hall is required',
-                'hall_category.required' => 'The category the hall belongs to is required',  
+                'hall_type.required' => 'The category the hall belongs to is required',  
             ];
         }
     }

@@ -15,10 +15,13 @@ class CreateAttendancesTable extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->date('name');
-            $table->date('date');
-            $table->datetime('time');
+            $table->string('date');
+            $table->string('time');
+            $table->boolean('attendence_status');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignId('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
+            $table->foreignId('student_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

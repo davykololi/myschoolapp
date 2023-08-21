@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Show Club')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -46,8 +44,8 @@
             <strong>{{ $club->name }} Teachers:</strong>
             <ol>
             @forelse($club->teachers as $teacher)
-            <a href="{{route('admin.teachers.show',$teacher->id)}}">
-                <li>{{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
+            <a href="{{route('superadmin.teachers.show',$teacher->id)}}">
+                <li>{{ $teacher->salutation }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
             </a>
             @empty
             <p>No teachers(s) assigned to {{ $club->name }} yet.</p>
@@ -60,8 +58,8 @@
             <strong>{{ $club->name }} Substaffs:</strong>
             <ol>
             @forelse($club->staffs as $staff)
-            <a href="{{route('admin.staffs.show',$staff->id)}}">
-                <li>{{ $staff->title }} {{ $staff->full_name }} - {{ $staff->phone_no }}</li>
+            <a href="{{route('superadmin.staffs.show',$staff->id)}}">
+                <li>{{ $staff->salutation }} {{ $staff->full_name }} - {{ $staff->phone_no }}</li>
             </a>
             @empty
             <p>No substaff(s) assigned to {{ $club->name }} yet.</p>
@@ -106,13 +104,9 @@
         </div>
     </div>
     @include('club.attachstudentform')
-    @include('club.detachstudentform')
     @include('club.attachteacherform')
-    @include('club.detachteacherform')
     @include('club.attachstaffform')
-    @include('club.detachstaffform')
     @include('club.attachmeetingform')
-    @include('club.detachmeetingform')
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

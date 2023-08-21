@@ -29,8 +29,10 @@ class AccFormRequest extends FormRequest
 
             return [
                 //
-                'title' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
+                'salutation' => 'required|string|max:100',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
                 'gender' => 'required|string|max:100',
                 'phone_no' => 'required|string',
@@ -39,18 +41,19 @@ class AccFormRequest extends FormRequest
                 'dob' => 'required',
                 'email' => 'required|email',
                 'address'   => 'required',
-                'blood_group' => 'required|exists:blood_groups,id',
                 'designation'   => 'required',
                 'history' => 'required',
+                'blood_group' => 'required',
                 'accountant_role' => 'required',
-                'school' => 'required|exists:schools,id',
                 'password'=>['required','string','confirmed',Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
                 'password_confirmation' => ['required'],
             ];
         } else {
             return [
-                'title' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
+                'salutation' => 'required|string|max:100',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
                 'gender' => 'required|string|max:100',
                 'phone_no' => 'required|string',
@@ -59,11 +62,10 @@ class AccFormRequest extends FormRequest
                 'dob' => 'required',
                 'email' => 'required|email',
                 'address'   => 'required',
-                'blood_group' => 'required|exists:blood_groups,id',
                 'designation'   => 'required',
                 'history' => 'required',
+                'blood_group' => 'required',
                 'accountant_role' => 'required',
-                'school' => 'required|exists:schools,id',
             ];
         }
     }
@@ -74,8 +76,10 @@ class AccFormRequest extends FormRequest
 
             return [
                 //
-                'title.required' => 'The title is required',
-                'name.required' => 'The full name is required',
+                'salutation.required' => 'The salutation is required',
+                'first_name.required' => 'The fisrt name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
                 'image.required' => 'The image is required',
                 'gender.required' => 'The gender status is required',
                 'phone_no.required'   => 'The phone number is required',
@@ -87,14 +91,14 @@ class AccFormRequest extends FormRequest
                 'blood_group.required'   => 'The blood group is required',
                 'designation.required'   => 'The accountant profession is required',
                 'history.required'   => 'More information about the accountant is required',
-                'accountant_role.required'   => 'The role is required',
-                'school.required' => 'The school is required',
             ];
         } else {
             return [
                 //
-                'title.required' => 'The title is required',
-                'name.required' => 'The full name is required',
+                'salutation.required' => 'The salutation is required',
+                'first_name.required' => 'The fisrt name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
                 'image.required' => 'The image is required',
                 'gender.required' => 'The gender status is required',
                 'phone_no.required'   => 'The phone number is required',
@@ -106,8 +110,6 @@ class AccFormRequest extends FormRequest
                 'blood_group.required'   => 'The blood group is required',
                 'designation.required'   => 'The accountant profession is required',
                 'history.required'   => 'More information about the accountant is required',
-                'accountant_role.required'   => 'The role is required',
-                'school.required' => 'The school is required',
             ];
         }
     }

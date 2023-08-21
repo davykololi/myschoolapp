@@ -1,8 +1,5 @@
-                            <select id="exam" type="exam" value="{{old('exam')}}" class="form-control" name="exam">
-                                <option value="">Select Exam</option>
-                                @foreach ($exams as $exam)
-                                    <option value="{{$exam->id}}">{{$exam->name}}</option>
-                                @endforeach
-                            </select>
-                            @include('ext._errors_exam')
-                        
+                                    {!! html()->multiselect('exams[]',$exams,old('exams'),['class'=>'flex-grow','multiple'=>'multiple']) !!}
+                                    @error('exams')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                

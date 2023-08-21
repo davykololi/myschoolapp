@@ -19,7 +19,13 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Year</label>
                         <div class="col-sm-10">
-                            {!! Form::selectYear('year',2020,8080) !!}
+                            <select name="year">
+                            @for ($year = date('Y'); $year > date('Y') - 100; $year--)
+                                <option value="{{$year}}">
+                                    {{$year}}
+                                </option>
+                            @endfor
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">

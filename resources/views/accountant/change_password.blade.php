@@ -1,7 +1,6 @@
-@extends('layouts.accountant')
-@section('title', '| Accountant Change Password')
-
-@section('content')
+<x-accountant>
+<!-- frontend-main view -->
+<x-change-password-main>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -16,4 +15,5 @@
         </div>
     </div>
 </div>
-@endsection
+</x-change-password-main>
+</x-accountant>

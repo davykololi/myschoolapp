@@ -19,6 +19,7 @@ class YearController extends Controller
     public function __construct(YearService $yearService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('superadmin2fa');
         $this->yearService = $yearService;
     }
     

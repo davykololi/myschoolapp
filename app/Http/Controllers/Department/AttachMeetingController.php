@@ -23,9 +23,9 @@ class AttachMeetingController extends Controller
     public function attachMeeting(Request $request,$id)
     {
     	$department = $this->deptRepo->getId($id);
-    	$meeting = $request->meeting;
-    	$department->meetings()->attach($meeting);
+    	$meetings = $request->meetings;
+    	$department->meetings()->sync($meetings);
 
-    	return back()->withSuccess('The meeting attached to the department successfully');
+    	return back()->withSuccess('The meetings attached to the department successfully');
     }
 }

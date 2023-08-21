@@ -2,7 +2,7 @@
 
 @section('content')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
-    <div class="row">
+<div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
@@ -10,75 +10,75 @@
             <br/>
         </div>
         <div class="pull-right">
-            <a href="{{ route('parent.students') }}" class="label label-primary pull-right"> Back</a>
+            <a href="{{ url()->previous() }}" class="label label-primary pull-right"> Back</a>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $student->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
+            <img style="width:15%" src="{{ $child->image_url }}">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $student->title }} {{ $student->full_name }}
+            {{ $child->salutation }} {{ $child->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Admission No.:</strong>
-            {{ $student->admission_no }}
+            {{ $child->admission_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Phone No.:</strong>
-            {{ $student->phone_no }}
+            {{ $child->phone_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>DOB:</strong>
-            {{ date("jS,F,Y",strtotime($student->dob)) }}
+            {{ date("jS,F,Y",strtotime($child->dob)) }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Age:</strong>
-            {{ $student->age }} years
+            {{ $child->age }} years
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Class:</strong>
-            {{ $student->stream->name }}
+            {{ $child->stream->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Intake:</strong>
-            {{ $student->intake->name }} {{ date('d-m-Y',strtotime($student->intake->date)) }}
+            {{ $child->intake->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Dormitory:</strong>
-            {{ $student->dormitory->name }}
+            {{ $child->dormitory->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $student->email }}
+            {{ $child->email }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Student Progress:</strong>
-            @if(!empty($student->progress))
-            @forelse($student->progress as $key => $p)
+            @if(!empty($child->progress))
+            @forelse($child->progress as $key => $p)
             {!! $p->content !!}
             @empty
             <p>No ducumentation about the student's progress done yet.</p>
@@ -89,78 +89,105 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Parent Info:</strong>
-            <span style="color: green">Name:</span> {{ $student->parent->title }} {{ $student->parent->full_name }} 
-            <span style="color: green">Phone:</span> {{ $student->parent->phone_no }}
-            <span style="color: green">Job:</span> {{ $student->parent->designation }}
+            <span style="color: green">Name:</span> {{ $child->parent->salutation }} {{ $child->parent->full_name }} 
+            <span style="color: green">Phone:</span> {{ $child->parent->phone_no }}
+            <span style="color: green">Job:</span> {{ $child->parent->designation }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Subjects:</strong>
+            <strong>{{ $child->last_name }}'s Subjects:</strong>
             <ol>
-            @forelse($student->subjects as $subject)
-                <li>{{ $subject->name }}</li>
-            @empty
-            <p>No subject(s) assigned to {{ $student->full_name }} yet.</p>
-            @endforelse
+                @if(!empty($streamSubjects))
+                <li>
+                    {!! \Arr::join($streamSubjects, ', ', ', and ') !!}.
+                </li>
+                @else
+                    <span style="color: red">No subjects assigned to your class at the moment.</span>
+                @endif
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Awards:</strong>
+            <strong>Fee Balance:</strong>
+            Kshs: <span class="text-[red]">{{ number_format($child->fee_balance,2) }}</span>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>{{ $child->last_name }}'s Awards:</strong>
             <ol>
-            @forelse($student->rewards as $reward)
+            @forelse($child->rewards as $reward)
                 <li>{{ $reward->name }} <span style="color: blue">Purpose:</span> {{ $reward->purpose }}.</li>
             @empty
-            <p>{{ $student->full_name }} has notyet recieved any award.</p>
+            <p>{{ $child->full_name }} has notyet recieved any award.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Assignments:</strong>
+            <strong>{{ $child->last_name }}'s Assignments:</strong>
             <ol>
-            @forelse($student->assignments as $assignment)
+            @forelse($child->assignments as $assignment)
                 <li>
                     {{ $assignment->name }} {{ $assignment->file}} <span style="color: blue">Given:</span> 
                     {{ date("jS,F,Y,g:i a",strtotime($assignment->date)) }} <span style="color: red">Deadline:</span> 
                     {{ date("jS,F,Y,g:i a",strtotime($assignment->deadline)) }}.
                 </li>
             @empty
-            <p>{{ $student->full_name }} has notyet been given any assignment(s).</p>
+            <p>{{ $child->full_name }} has notyet been given any assignment(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Clubs:</strong>
+            <strong>{{ $child->last_name }}'s Clubs:</strong>
             <ol>
-            @forelse($student->clubs as $club)
+            @forelse($child->clubs as $club)
                 <li>{{ $club->name }}</li>
             @empty
-            <p>{{ $student->full_name }} has notyet been assigned to any club.</p>
+            <p>{{ $child->full_name }} has notyet been assigned to any club.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->last_name }}'s Meetings:</strong>
+            <strong>{{ $child->last_name }}'s Meetings:</strong>
             <ol>
-            @forelse($student->meetings as $key => $meeting)
+            @forelse($child->meetings as $key => $meeting)
                 <li>
                     {{ $meeting->name }} to be held on {{ date("jS,F,Y",strtotime($meeting->date)) }}.
                     <span style="color: green"> Agenda:</span> {{ $meeting->agenda }}.
                 </li>
             @empty
-            <p>{{ $student->full_name }} has notyet been assigned to any meeting(s).</p>
+            <p>{{ $child->full_name }} has notyet been assigned to any meeting(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
+
+    <div class="mt-4">
+    @if(!is_null($currentExam))
+    <form id="marksheets_form" action="{{ route('parent.download.results') }}" class="form-horizontal" method="get">
+        {{ csrf_field() }}
+        <div>
+            <input type="hidden" name="stream_id" value="{{ $child->stream->id }}"/>
+            <input type="hidden" name="child_name" value="{{ $child->full_name }}"/>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div><label>{{ $results }}</label></div>
+                <button type="submit" class="bg-green-800 border-2 border-white text-white px-2 rounded-md">Download</button>
+            </div>
+        </div>
+    </form>
+    @else
+    @endif
+</div>
 </div>
 </main>
 @endsection

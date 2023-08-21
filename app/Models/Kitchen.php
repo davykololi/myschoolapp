@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Kitchen extends Model implements Searchable
 {
     //
     protected $table = 'kitchens';
-    protected $fillable = ['name','code','school_id'];
+    protected $fillable = ['name','type','code','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -21,6 +21,21 @@ class Kitchen extends Model implements Searchable
                 $this->name,
                 $url
             );
+    }
+
+    public function studentsKitchen()
+    {
+        return $this->type === 'Students Kitchen';
+    }
+
+    public function teachersKichen()
+    {
+        return $this->type === 'Teachers Kitchen';
+    }
+
+    public function visitorsKitchen()
+    {
+        return $this->type === 'Visitors Kitchen';
     }
 
     public function school()

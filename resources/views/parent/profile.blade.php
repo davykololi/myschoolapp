@@ -6,7 +6,7 @@
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
-            <h2 style="text-transform: uppercase;">{{$parent->school->name}} Parent Profile</h2>
+            <h2 style="text-transform: uppercase;">My Profile</h2>
             <br/>
         </div>
     </div>
@@ -14,13 +14,13 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
+            <img style="width:15%" src="/storage/storage/{{ Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" class="border-4 border-yellow-800 p-4" alt="{{ Auth::user()->full_name }}">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{$parent->full_name}}
+            {{$parent->name}}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -31,39 +31,9 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>DOB:</strong>
-            {{ date("jS,F,Y",strtotime($parent->dob)) }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Age:</strong>
-            {{ $parent->age }} years.
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Current Address:</strong>
-            {{ $parent->current_address }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Permanent Address:</strong>
-            {{ $parent->permanent_address }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>School</strong>
-            {{ $parent->school->name }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Parent Student's:</strong>
+            <strong>My Children at {{ $parent->school->name }}</strong>
             <ol>
-                @foreach($parent->students as $student)
+                @foreach($parentStudents as $student)
                 <li>
                     {{$student->full_name}} <span style="color: green">Class</span> {{$student->stream->name}}
                 </li>

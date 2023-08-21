@@ -1,17 +1,11 @@
-                    <div class="form-group">
-                        <label class="control-label col-sm-2">Department</label>
-                        <div class="col-md-10">
-                            <select id="department" type="department" class="form-control" name="department">
-                                <option value="">Select Department</option>
-                                @foreach ($departments as $department)
-                                    <option value="{{$department->id}}">{{$department->name}}</option>
-                                @endforeach
-                            </select>
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label for="title">{{ __('Attach Departments:') }}</label>
+                                    {!! html()->multiselect('departments[]',$departments,old('departments'),['class'=>'form-control','multiple'=>'multiple']) !!}
+                                    @error('departments')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                </div>
+                            </div>
 
-                            @if($errors->has('department'))
-                                <span class="help-block">
-                                    <strong>{{$errors->first('department')}}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
+                        

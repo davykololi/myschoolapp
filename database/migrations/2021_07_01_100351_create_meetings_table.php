@@ -18,7 +18,9 @@ class CreateMeetingsTable extends Migration
             $table->string('name');
             $table->string('agenda');
             $table->string('venue');
-            $table->date('date');
+            $table->string('date');
+            $table->string('start_at');
+            $table->string('end_at');
             $table->string('code');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();

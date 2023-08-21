@@ -261,11 +261,6 @@
 										<div class="collapse" id="subnav1">
 											<ul class="nav nav-collapse subnav">
 												<li>
-													<a href="{{ route('superadmin.category-schools.index') }}">
-														<span class="sub-item">SCHOOL CATEGORY</span>
-													</a>
-												</li>
-												<li>
 													<a href="{{ route('superadmin.schools.index') }}">
 														<span class="sub-item">SCHOOLS</span>
 													</a>
@@ -283,31 +278,6 @@
 												<li>
 													<a href="{{ route('superadmin.terms.index') }}">
 														<span class="sub-item">TERMS</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('superadmin.blood-groups.index') }}">
-														<span class="sub-item">BLOOD GROUP</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('superadmin.position-teachers.index') }}">
-														<span class="sub-item">TEACHERS ROLES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('superadmin.position-librarians.index') }}">
-														<span class="sub-item">LIBRARIAN ROLES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('superadmin.position-accountants.index') }}">
-														<span class="sub-item">ACCOUNTANT ROLES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('superadmin.position-matrons.index') }}">
-														<span class="sub-item">MATRON ROLES</span>
 													</a>
 												</li>
 												<li>

@@ -23,9 +23,9 @@ class AttachMeetingController extends Controller
     public function attachMeeting(Request $request,$id)
     {
     	$dormitory = $this->dormRepo->getId($id);
-    	$meeting = $request->meeting;
-    	$dormitory->meetings()->attach($meeting);
+    	$meetings = $request->meetings;
+    	$dormitory->meetings()->sync($meetings);
 
-    	return back()->withSuccess('The meeting attached to the dormitory successfully');
+    	return back()->withSuccess('The meetings attached to the'." ".$dormitory->name." ".'successfully');
     }
 }

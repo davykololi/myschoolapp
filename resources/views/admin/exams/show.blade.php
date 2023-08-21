@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Show An Exam')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -25,7 +23,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Category:</strong>
-            {{$exam->category_exam->name}}
+            {{$exam->type}}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -36,14 +34,24 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>Status:</strong>
+            @if($exam->status === 1)
+                {{ __('Current Exam') }}
+            @else
+                {{ __('Reserved Exam') }}
+            @endif
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <strong>Start Date:</strong>
-            {{ date('d-m-Y',strtotime($exam->start_date)) }}
+            {{ $exam->start_date }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>End Date:</strong>
-            {{ date('d-m-Y',strtotime($exam->end_date)) }}
+            {{ $exam->end_date }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -64,11 +72,20 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>Contains Marks:</strong>
+            @if($exam->marks->isNotEmpty())
+                <span class="text-green-800">Yes</span>
+            @else
+                <span class="text-red-700">No</span>
+            @endif
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <span><strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($exam->created_at)) }}</span>
         </div>
     </div>
     @include('exam.attachsubjectform')
-    @include('exam.detachsubjectform')
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

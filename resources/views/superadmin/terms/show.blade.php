@@ -30,6 +30,16 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>Status:</strong>
+            @if($term->status === 1)
+            {{ __('Current Term') }}
+            @else
+            {{ __('Reserved Term') }}
+            @endif
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <span>
                 <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($term->created_at)) }}
             </span>

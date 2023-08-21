@@ -1,62 +1,73 @@
-@extends('layouts.admin')
-@section('title', '| All Clubs')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
+<div class="max-w-full container">
     <div class="col-lg-12">
     @include('partials.messages')
     <!-- Posts list -->
     @if(!empty($clubs))
-        <div class="row">
+        <div class="max-w-full mb-8">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>CLUBS LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.clubs.create')}}"> Add Club</a>
-                    <a href="{{route('admin.school.clubs', Auth::user()->school->id)}}" class="btn btn-primary btn-border">Clubs PDF</a>
+                    @if(Auth::user()->school->clubs->isNotEmpty())
+                    <a href="{{route('admin.school.clubs', Auth::user()->school->id)}}" class="btn btn-primary btn-border">CLUBS PDF</a>
+                    @else
+                    <a href="#" class="text-[red]" style="float:right">NO CLUBS</a>
+                    @endif
                 </div>
             </div>
         </div>
-        <br/>
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-bordered table-head-bg-info table-bordered-bd-info">
-                    <!-- Table Headings -->
-                    @include('partials.clubhead')
-                    <!-- Table Body -->
-                    <tbody>
-                    @foreach($clubs as $club)
-                        <tr>
-                            <td class="table-text">
-                                <div>{{$club->name}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$club->code}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$club->regDate()}}</div>
-                            </td>
-                            <td>
-                                <form action="{{route('admin.clubs.destroy',$club->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <a href="{{ route('admin.clubs.show', $club->id) }}" class="btn btn-success btn-xs">Details</a>
-                                    <a href="{{ route('admin.clubs.edit', $club->id) }}" class="btn btn-warning btn-xs">Edit</a>
-                                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete {{$club->name}}?')">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+        <div class="flex flex-col overflow-x-auto mt-12">
+            <div class="sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                    <div class="overflow-x-auto">
+                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                            <!-- Table Headings -->
+                            <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
+                                <tr>
+                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="25%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">CLUB STUDENTS</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">CLUB TEACHERS</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">REG. DATE</th>
+                                    <th scope="col" class="px-2 py-4" width="25%">ACTION</th>
+                                </tr>
+                            </thead>
+                            <!-- Table Body -->
+                            <tbody>
+                            @foreach($clubs as $club)
+                                <tr class="border-b dark:border-neutral-500">
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$loop->iteration}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$club->name}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$club->students->count()}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$club->teachers->count()}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$club->regDate()}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <a href="{{ route('admin.clubs.show', $club->id) }}" class="bg-[green] px-2 py-1 items-center justify-center text-white rounded md:hover:bg-green-400 text-black">Details</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     @endif
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

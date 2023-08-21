@@ -1,8 +1,6 @@
-@extends('layouts.teacher')
-@section('title', '| Teacher All Notes')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-teacher>
+    <!-- frontend-main view -->
+    <x-frontend-main>
 <div class="row">
     <div class="col-lg-12">
     @include('partials.messages')
@@ -11,7 +9,7 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>NOTES LIST</h2>
+                    <h2>MY NOTES </h2>
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-success" href="{{route('teacher.notes.create')}}">Create</a>
@@ -28,13 +26,10 @@
                     @forelse($notes as $note)
                         <tr>
                             <td class="table-text">
-                                <div>{{$note->teacher->title}} {{$note->teacher->full_name}}</div>
+                                <div>{{$note->stream->name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$note->subject->name}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$note->stream->class->name}} {{$note->stream->name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$note->desc}}</div>
@@ -58,7 +53,7 @@
                             @empty
                             <td colspan="10">
                                 <p style="color: red;text-transform: uppercase;">
-                                    No Notes by {{ Auth::user()->title }} {{ Auth::user()->full_name }}
+                                    So far no notes given to any class.
                                 </p>
                             </td>
                         </tr>
@@ -70,5 +65,5 @@
     @endif
     </div>
 </div>
-</main>
-@endsection
+</x-frontend-main>
+</x-teacher>

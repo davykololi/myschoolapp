@@ -23,9 +23,9 @@ class AttachStreamController extends Controller
     public function attachStream(Request $request,$id)
     {
     	$meeting = $this->meetingRepo->getId($id);
-    	$streamId = $request->stream;
-    	$meeting->streams()->attach($streamId);
+    	$streams = $request->streams;
+    	$meeting->streams()->sync($streams);
 
-    	return back()->withSuccess('The class stream attached to the meeting successfully');
+    	return back()->withSuccess('The streams attached to the meeting successfully');
     }
 }

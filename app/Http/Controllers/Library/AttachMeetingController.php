@@ -23,9 +23,9 @@ class AttachMeetingController extends Controller
     public function attachMeeting(Request $request,$id)
     {
     	$library = $this->libRepo->getId($id);
-    	$meeting = $request->meeting;
-    	$library->meetings()->attach($meeting);
+    	$meetings = $request->meetings;
+    	$library->meetings()->sync($meetings);
 
-    	return back()->withSuccess('The meeting attached to the library successfully');
+    	return back()->withSuccess('The meetings attached to the'." ".$library->name." ".'successfully');
     }
 }

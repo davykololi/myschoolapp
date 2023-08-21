@@ -1,14 +1,14 @@
-@extends('layouts.admin')
-@section('title', '| Show A Timetable')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-    @include('partials.messages')
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
             <h2>TIMETABLE DETAILS</h2>
             <br/>
+        </div>
+        <div class="text-center uppercase text-2xl">
+            @include('partials.messages')
         </div>
         <div class="pull-right">
             <a href="{{ route('admin.timetables.index') }}" class="label label-primary pull-right"> Back</a>
@@ -36,8 +36,10 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Class:</strong>
-            {{ $timetable->stream->class->name }} {{ $timetable->stream->name }}
+            <strong>Stream:</strong>
+            @foreach($timetable->streams as $stream)
+                {{ $stream->name }}
+            @endforeach
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -47,5 +49,5 @@
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

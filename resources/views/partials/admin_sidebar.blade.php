@@ -4,13 +4,14 @@
 				<div class="sidebar-content">
 					<div class="user">
 						<div class="avatar-sm float-left mr-2">
-							<img src="/storage/storage/{{Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{Auth::user()->full_name }}" class="avatar-img rounded-circle">
+							<img src="/storage/storage/{{Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{Auth::user()->name }}" class="avatar-img rounded-circle">
 						</div>
 						<div class="info">
 							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 								<span>
-									{{Auth::user()->title }} {{Auth::user()->first_name }} {{Auth::user()->last_name }}
-									<span class="user-level">Administrator</span>
+									<span class="user-level" style="text-transform: uppercase;color:darkgreen;">
+										<b>{{Auth::user()->role}}</b>
+									</span>
 									<span class="caret"></span>
 								</span>
 							</a>
@@ -289,46 +290,6 @@
 													</a>
 												</li>
 												<li>
-													<a href="{{ route('admin.position-students.index') }}">
-														<span class="sub-item">STUDENT ROLES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.position-staffs.index') }}">
-														<span class="sub-item">SUB STAFF ROLES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.category-subjects.index') }}">
-														<span class="sub-item">SUBJECT CATEGORIES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.category-exams.index') }}">
-														<span class="sub-item">EXAM CATEGORIES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.category-fields.index') }}">
-														<span class="sub-item">FIELD CATEGORIES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.category-halls.index') }}">
-														<span class="sub-item">HALL CATEGORIES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.category-games.index') }}">
-														<span class="sub-item">GAME CATEGORIES</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.category-farms.index') }}">
-														<span class="sub-item">FARM CATEGORIES</span>
-													</a>
-												</li>
-												<li>
 													<a href="{{ route('admin.fields.index') }}">
 														<span class="sub-item">FIELDS</span>
 													</a>
@@ -344,11 +305,6 @@
 													</a>
 												</li>
 												<li>
-													<a href="{{ route('admin.parents.index') }}">
-														<span class="sub-item">PARENTS</span>
-													</a>
-												</li>
-												<li>
 													<a href="{{ route('admin.students.index') }}">
 														<span class="sub-item">STUDENTS</span>
 													</a>
@@ -361,11 +317,6 @@
 												<li>
 													<a href="{{ route('admin.subjects.index') }}">
 														<span class="sub-item">SUBJECTS</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.subs.index') }}">
-														<span class="sub-item">CLASS SUBJECTS</span>
 													</a>
 												</li>
 												<li>
@@ -419,18 +370,8 @@
 													</a>
 												</li>
 												<li>
-													<a href="{{ route('admin.report_view') }}">
-														<span class="sub-item">REPORT</span>
-													</a>
-												</li>
-												<li>
 													<a href="{{ route('admin.letters.index') }}">
 														<span class="sub-item">LETTERS</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.streams.reportCardsForm') }}">
-														<span class="sub-item">REPORT CARDS</span>
 													</a>
 												</li>
 												<li>
@@ -446,11 +387,6 @@
 												<li>
 													<a href="{{ route('admin.sections.index') }}">
 														<span class="sub-item">SCHOOL SECTIONS</span>
-													</a>
-												</li>
-												<li>
-													<a href="{{ route('admin.grade-systems.index') }}">
-														<span class="sub-item">GRADING SYSTEM</span>
 													</a>
 												</li>
 					</ul>

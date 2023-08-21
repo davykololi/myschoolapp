@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Add A Letter')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -16,16 +14,15 @@
                     @include('ext._csrfdiv')
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Content</label>
-                        <div class="col-sm-10">
-                            <textarea name="content" rows="5" cols="40" value="{!! old('content') !!}" id="summary-ckeditor"></textarea>
+                        <div class="col-sm-12">
+                            <textarea name="content" rows="5" cols="60" value="{!! old('content') !!}" id="summary-ckeditor"></textarea>
                         </div>
                     </div>
-                    @include('ext._attach_schooldiv')
                     @include('ext._submit_create_button')
                 </form>
             </div>
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

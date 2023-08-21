@@ -45,7 +45,7 @@ class RewardService
 	{
 		$data = $request->validated();
         $data['school_id'] = auth()->user()->school->id;
-        $data['category_reward_id'] = $request->reward_category;
+        $data['type'] = $request->type;
 
         return $data;
 	}

@@ -13,4 +13,6 @@ interface StudentInterface
 	public function update(array $data,$id);
 
 	public function delete($id);
+
+	public function paginate();
 }

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\MyParent;
+use App\Models\Student;
 use Mail;
 
 class ParentsSendEmailJob implements ShouldQueue
@@ -36,7 +36,7 @@ class ParentsSendEmailJob implements ShouldQueue
     public function handle()
     {
         //
-        $data = MyParent::all();
+        $data = Student::all();
         $input['subject'] = $this->detais['subject'];
 
         foreach($data as $key => $value){

@@ -27,13 +27,13 @@ class SubjectFormRequest extends FormRequest
 
             return [
                 //
-                'name' => 'required|string|max:100',
+                'name' => 'required|string|max:100|unique:subjects',
                 'department' => 'required|exists:departments,id',
                 'subject_category' => 'required|exists:category_subjects,id',
             ];
         } else {
             return [
-                'name' => 'required|string|max:100',
+                'name' => 'required|string|max:100|unique:subjects',
                 'department' => 'required|exists:departments,id',
                 'subject_category' => 'required|exists:category_subjects,id',
             ];

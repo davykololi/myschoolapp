@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Auth;
 use App\Repositories\StreamSecRepository as StrSecRepo;
 use App\Http\Requests\StreamSecFormRequest as StoreRequest;
 use App\Http\Requests\StreamSecFormRequest as UpdateRequest;
@@ -42,7 +43,7 @@ class StreamSecService
 	public function data(StoreRequest $request)
 	{
 		$data = $request->validated();
-        $data['school_id'] = $request->school;
+        $data['school_id'] = Auth::user()->school->id;
 
         return $data;
 	}

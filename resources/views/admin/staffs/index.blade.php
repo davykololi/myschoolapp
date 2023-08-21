@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| All Subordnade Staffs')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
 <div class="row">
     <div class="col-lg-12">
     @include('partials.messages')
@@ -17,7 +15,6 @@
                     <a href="{{route('admin.school.staffs', Auth::user()->school->id)}}" class="btn btn-primary btn-border">
                         Sub Staff Pdf
                     </a>
-                    <a class="btn btn-success" href="{{route('admin.staffs.create')}}"> Add Sub Staff</a>
                 </div>
             </div>
         </div>
@@ -26,13 +23,19 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-head-bg-info table-bordered-bd-info">
                     <!-- Table Headings -->
-                    @include('partials.staffhead')
+                    <thead>
+                        <th width="25%">NAME</th>
+                        <th width="20%">EMAIL</th>
+                        <th width="15%">EMP NO.</th>
+                        <th width="20%">ID</th>
+                        <th width="20%">PHONE NO.</th>
+                    </thead>
                     <!-- Table Body -->
                     <tbody>
                     @foreach($staffs as $staff)
                         <tr>
                             <td class="table-text">
-                                <div>{{$staff->title}} {{$staff->name}}</div>
+                                <div>{{$staff->title}} {{$staff->full_name}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$staff->email}}</div>
@@ -46,17 +49,6 @@
                             <td class="table-text">
                                 <div>{{$staff->phone_no}}</div>
                             </td>
-                            <td>
-                                <form action="{{route('admin.staffs.destroy',$staff->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <a href="{{ route('admin.staffs.show', $staff->id) }}" class="btn btn-success btn-xs">Details</a>
-                                    <a href="{{ route('admin.staffs.edit', $staff->id) }}" class="btn btn-warning btn-xs">Edit</a>
-                                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete {{$staff->full_name}}?')">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -66,5 +58,5 @@
     @endif
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

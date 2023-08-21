@@ -2,93 +2,164 @@
 @section('title', '| Issued Books')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
-    <div class="col-lg-12">
-    @include('partials.messages')
-    @include('partials.errors')
+<x-frontend-main>
+<div class="max-w-full">
+    <div class="w-full">
     <!-- Posts list -->
     @if(!empty($bookers))
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>ISSUED BOOKS</h2>
+        <div class="max-w-full">
+            <div class="">
+                <div class="items-center justify-center mb-4">
+                    <h2 class="text-center font-bold uppercase text-2xl">ISSUED BOOKS</h2>
                 </div>
-                <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('librarian.bookers.create')}}">Create</a>
-                    <a href="{{route('librarian.borrowed.excel')}}" class="btn btn-success">Issued Books Excel</a>
-                    <a href="{{route('librarian.borrowed.pdf')}}" class="btn btn-success">Issued Books PDF</a>
+                <div class="text-center mt-8">
+                    @include('partials.messages')
+                    @include('partials.errors')
                 </div>
             </div>
-            <form action="{{route('librarian.issuedbook.returnDate')}}" method="get" class="form-horizontal" style="margin-left: 40px">
-                {{ csrf_field() }}
-                <div class="form-group">
-                    <label><b>Issued Books By Return Date</b></label>
-                    <input type="date" name="return_date" class="form-control">
+            <div style="float:right;">
+                <a type="button" class="transition bg-blue-500 text-white p-2 rounded md:hover:text-blue-500 md:hover:bg-white dark:bg-black dark:text-slate-400 dark:hover:text-black mx-2 tracking-tight" href="{{route('librarian.bookers.create')}}">
+                    ISSUE
+                </a>
+                <a href="{{route('librarian.borrowed.excel')}}" class="transition bg-green-800 text-white p-2 rounded mx-2 tracking-tight">
+                    EXCEL
+                </a>
+                <a href="{{route('librarian.borrowed.pdf')}}" class="transition bg-orange-700 text-white p-2 rounded mx-2 tracking-tight">
+                    PDF
+                </a>
+            </div>
+            <div class="mt-12 border-2 border-white py-4 mt-24 md:mt-20 dark:border-slate-600 dark:text-slate-400">
+                <div class="w-full flex flex-col md:flex-row">
+                <form action="{{route('librarian.issuedbook.returnDate')}}" method="get" class="flex-grow" style="margin-left: 40px">
+                    {{ csrf_field() }}
+                    <div class="w-full md:w-1/2 lg:w-1/2">
+                        <label for="return_date" class="uppercase font-bold">Issued Books By Return Date pdf</label>
+                        <div class=" mt-2">
+                            <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                                <input type="text" id="return_date" name="return_date" class="relative m-0 -mr-0.5 block min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary" placeholder="Select Date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <x-get-button/>
+                    </div>
+                </form>
+
+
+                <form action="{{route('librarian.issuedbook.issuedDate')}}" method="get" class="flex-grow" style="margin-left: 40px">
+                    {{ csrf_field() }}
+                    <div class="w-full md:w-1/2 lg:w-1/2">
+                        <label for="issued_date" class="uppercase font-bold">Issued Books By Date of Issue pdf</label>
+                        <div class="flex-1 mt-2">
+                            <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                                <input type="text" id="issued_date" name="issued_date" class="relative m-0 -mr-0.5 block w-[200px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary" placeholder="Select Date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <x-get-button/>
+                    </div>
+                </form>
                 </div>
-                <button type="submit" class="btn btn-primary">Get</button>
-            </form>
+            </div>
         </div>
-        <br/><br/><hr style="border: solid grey 5px"/>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <table class="table table-striped task-table">
-                    <!-- Table Headings -->
-                    @include('partials.issuedbookhead')
-                    <!-- Table Body -->
-                    <tbody>
-                    @foreach($bookers as $key => $booker)
-                        <tr>
-                            <td class="table-text">
-                                <div>{{$booker->student->full_name}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$booker->book->title}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$booker->serial_no}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{ \Carbon\Carbon::parse($booker->issued_date)->format('d-m-Y') }}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{ \Carbon\Carbon::parse($booker->return_date)->format('d-m-Y') }}</div>
-                            </td>
-                            <td class="table-text">
-                                @if($booker->returned == 0)
-                                <div><button class="label label-danger">{{$booker->returned ? 'YES':'NO'}}</button></div>
-                                @else
-                                <div><button class="label label-success">{{$booker->returned ? 'YES':'NO'}}</button></div>
-                                @endif
-                            </td>
-                            <td class="table-text">
-                                @if($booker->returned_status == 1)
-                                <div><button class="label label-success">{{$booker->returned_status ? 'GOOD':'POOR'}}</button></div>
-                                @else
-                                <div><button class="label label-danger">{{$booker->returned_status ? 'GOOD':'POOR'}}</button></div>
-                                @endif
-                            </td>
-                            <td>
-                                <form action="{{route('librarian.bookers.destroy',$booker->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <a href="{{ route('librarian.bookers.show', $booker->id) }}" class="label label-success">
-                                        Details
-                                    </a>
-                                    <a href="{{ route('librarian.bookers.edit', $booker->id) }}" class="label label-warning">Edit</a>
-                                    <button type="submit" class="label label-danger" onclick="return confirm('Are you sure to delete {{$booker->book->title}}?')">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+        <hr class="mt-2" style="border: double grey"/>
+        <div class="flex flex-col overflow-x-auto mt-4">
+            <div class="sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                    <div class="overflow-x-auto">
+                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                            <!-- Table Headings -->
+                            <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
+                                <tr>
+                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">ISSUED TO</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">TITLE</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">SERIAL</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">ISSUED</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">RETURN</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">RETURNED</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">STATUS</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
+                                </tr>
+                            </thead>
+                            <!-- Table Body -->
+                            <tbody>
+                            @forelse($bookers as $key => $booker)
+                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-900">
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{ $loop->iteration}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$booker->student->full_name}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$booker->book->title}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$booker->serial_no}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{ $booker->issued_date }}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{ $booker->return_date }}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        @if($booker->returned == 0)
+                                        <div>
+                                            <p type="button" class="bg-[red] text-white w-fit px-2 rounded">
+                                                {{$booker->returned ? 'YES':'NO'}}
+                                            </p>
+                                        </div>
+                                        @else
+                                        <div>
+                                            <p type="button" class="bg-[green] text-white w-fit px-2 rounded">
+                                                {{$booker->returned ? 'YES':'NO'}}
+                                            </p>
+                                        </div>
+                                        @endif
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        @if($booker->returned_status == 1)
+                                        <div>
+                                            {{$booker->returned_status ? 'GOOD' : 'POOR' }}
+                                        </div>
+                                        @else
+                                        <div>
+                                            {{$booker->returned_status ? 'GOOD':'POOR'}}
+                                        </div>
+                                        @endif
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <form action="{{route('librarian.bookers.destroy',$booker->id)}}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a href="{{ route('librarian.bookers.show', $booker->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
+                                                Details
+                                            </a>
+                                            <a href="{{ route('librarian.bookers.edit', $booker->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
+                                                Edit
+                                            </a>
+                                            <button type="submit" class="transition bg-red-700 text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete {{$booker->book->title}}?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                            @empty
+                                    <td colspan="10" class="w-full text-center text-white bg-blue-900 uppercase tracking-tighter h-12 dark:bg-gray-800 dark:text-slate-400">
+                                        No books issued at the moment.
+                                    </td>
+                                </tr>
+                            @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     @endif
     </div>
 </div>
-</main>
+</x-frontend-main>
 @endsection

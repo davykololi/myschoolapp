@@ -6,6 +6,8 @@ interface ParentInterface
 {
 	public function all();
 
+	public function eagerLoaded();
+
 	public function create(array $data);
 
 	public function getId($id);

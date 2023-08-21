@@ -27,11 +27,11 @@ class MatronLoginController extends Controller
         ]);
         //attempt to login the admins in
         if (Auth::guard('matron')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)){
-            //if successful redirect to admin dashboard
-            return redirect()->intended(route('matron.dashboard'));
+            //if credentials are true, then redirect to 2fa view to provide the generated code
+            return redirect()->route('matron.2fa.index');
         }
         //if unsuccessfull redirect back to the login for with form data
-        return redirect()->back()->withInput($request->only('email','remember'));
+        return redirect()->back()->withInput($request->only('email','remember'))->withErrors('Oppes! You have entered invalid credentials');
     }
  
     public function logout()

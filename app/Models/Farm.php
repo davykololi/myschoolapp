@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Farm extends Model implements Searchable
 {
     //
     protected $table = 'farms';
-    protected $fillable = ['name','code','school_id','category_farm_id'];
+    protected $fillable = ['name','code','type','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -23,14 +23,24 @@ class Farm extends Model implements Searchable
             );
     }
 
+    public function westEndFarm()
+    {
+        return $this->type === 'West End Farm';
+    }
+
+    public function eastEndFarm()
+    {
+        return $this->type === 'East End Farm';
+    }
+
+    public function lakisamaFarm()
+    {
+        return $this->type === 'Lakisama Farm';
+    }
+
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
-    }
-
-    public function category_farm()
-    {
-        return $this->belongsTo('App\Models\CategoryFarm')->withDefault();
     }
 
     public function assignments()
@@ -45,6 +55,6 @@ class Farm extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','category_farm')->get();
+        return $query->with('school')->get();
     }
 }

@@ -17,7 +17,7 @@ class CreateStreamTotalsTable extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedBigInteger('mark_total');
-            $table->string('index_no')->unique();
+            $table->string('admission_no')->unique();
             $table->timestamps();
         });
     }

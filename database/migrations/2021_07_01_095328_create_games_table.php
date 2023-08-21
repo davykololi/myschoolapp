@@ -16,9 +16,9 @@ class CreateGamesTable extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type')->default('Soccer');
             $table->string('code');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_game_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

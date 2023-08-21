@@ -36,7 +36,7 @@ class StaffForgotPasswordController extends Controller
         return view('auth.passwords.staff-email');
     }
  
-    //defining which password broker to use, in our case its the admins
+    //defining which password broker to use, in our case its the staffs
     protected function broker() {
         return Password::broker('staffs');
     }

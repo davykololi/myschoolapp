@@ -21,9 +21,9 @@ class AttachExamController extends Controller
     public function attachExam(Request $request,$id)
     {
     	$stream = Stream::findOrFail($id);
-    	$exam = $request->exam;
-    	$stream->exams()->attach($exam);
+    	$exams = $request->exams;
+    	$stream->exams()->attach($exams);
 
-    	return back()->withSuccess('The exam attached to the class successfully');
+    	return back()->withSuccess('The exams attached to the class successfully');
     }
 }

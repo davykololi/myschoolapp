@@ -21,9 +21,9 @@ class AttachAssignmentController extends Controller
     public function attachAssignment(Request $request,$id)
     {
     	$student = Student::findOrFail($id);
-    	$assignment = $request->assignment;
-    	$student->assignments()->attach($assignment);
+    	$assignments = $request->assignments;
+    	$student->assignments()->sync($assignments);
 
-    	return back()->withSuccess('The assignment attached to the student successfully');
+    	return back()->withSuccess('The assignments attached to the student successfully');
     }
 }

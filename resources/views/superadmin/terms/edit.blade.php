@@ -21,7 +21,12 @@
                             <input type="text" name="name" id="name" class="form-control" value="{{ $term->name }}">
                         </div>
                     </div>
-                    @include('ext._attach_schooldiv')
+                    <div>
+                        <select id="status" type="text" value="{{old('status')}}" class="form-control" name="status">
+                            <option value="0">{{__('RESERVED')}}</option>
+                            <option value="1">{{__('CURRENT')}}</option>
+                        </select>
+                    </div>
                     @include('ext._submit_update_button')
                 </form>
             </div>

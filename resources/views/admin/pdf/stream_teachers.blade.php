@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    @include('partials.pdf_head')
-</head>
-<body>
-    @include('partials.pdf_header')
-    @include('partials.pdf_school_footer')
-    <br/><br/>
+@extends('layouts.pdf_landscape')
+@section('title', '| Stream Teachers')
+
+@section('content')
+<div class="container-fluid box"> 
+    <h1 class="title"><u>{{$title}}</u></h1> 
+    <div>
     <table class="table table-bordered" id="table_style">
-        <caption class="table_caption">
-            <h2><u>{{ $title}}</u></h2>
-        </caption>
-        <br/>
         <thead>
             <tr>
                 <td><b>NO</b></td>
@@ -22,14 +16,14 @@
             </tr>
         </thead>
         <tbody>
-            @if(!empty($streamSubjects))
-            @forelse($streamSubjects as $streamSubject)
+            @if(!empty($streamSubjectTeachers))
+            @forelse($streamSubjectTeachers as $streamSubjectTeacher)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $streamSubject->teacher->title}} {{ $streamSubject->teacher->full_name}}</td>
-                <td>{{ $streamSubject->subject->name}}</td>
-                <td>{{ $streamSubject->teacher->phone_no}}</td>
-                <td>{{ $streamSubject->teacher->email}}</td>
+                <td>{{ $streamSubjectTeacher->teacher->title}} {{ $streamSubjectTeacher->teacher->full_name}}</td>
+                <td>{{ $streamSubjectTeacher->subject->name}}</td>
+                <td>{{ $streamSubjectTeacher->teacher->phone_no}}</td>
+                <td>{{ $streamSubjectTeacher->teacher->email}}</td>
             @empty
                 <td colspan="10" style="color: red">
                     Teachers notyet assigned to {{$stream->name}}.
@@ -38,6 +32,7 @@
             @endforelse
             @endif
         </tbody>
-    </table>         
-</body>
-</html>
+    </table> 
+    </div>
+</div        
+@endsection

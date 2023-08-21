@@ -5,9 +5,12 @@ namespace App\Models;
 use App\Models\Subject;
 use App\Models\StandardSubject;
 use App\Models\Book;
+use App\Models\Student;
 use App\Models\Syllabus;
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,6 +21,7 @@ class Stream extends Model implements Searchable
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $fillable = ['name','code','stream_section_id','school_id','class_id'];
+    protected $append = ['balances'];
 
     public function getSearchResult(): SearchResult
     {
@@ -75,14 +79,19 @@ class Stream extends Model implements Searchable
         return $this->belongsToMany('App\Models\Subject')->withTimestamps();
     }
 
+    public function stream_subject_teachers()
+    {
+        return $this->hasMany('App\Models\StreamSubjectTeacher','stream_id','id');
+    }
+
+    public function stream_subjects_number()
+    {
+        return $this->belongsToMany('App\Models\Subject')->withTimestamps()->count();
+    }
+
     public function intakes()
     {
         return $this->belongsToMany('App\Models\Intake')->withTimestamps();
-    }
-
-    public function fee()
-    {
-        return $this->hasOne('App\Models\Fee','stream_id','id');
     }
 
     public function meetings()
@@ -110,11 +119,6 @@ class Stream extends Model implements Searchable
         return $this->hasMany('App\Models\Timetable','stream_id','id');
     }
 
-    public function standard_subjects()
-    {
-        return $this->hasMany(StandardSubject::class,'stream_id','id');
-    }
-
     public function books()
     {
         return $this->hasMany(Book::class,'stream_id','id');
@@ -122,7 +126,7 @@ class Stream extends Model implements Searchable
 
     public function notes()
     {
-        return $this->hasManyThrough('App\Models\Note','App\Models\MyClass','stream_id','class_id','id');
+        return $this->hasMany('App\Models\Note','stream_id','id');
     }
 
     public function syllabues()
@@ -137,11 +141,29 @@ class Stream extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','school','class')->get();
+        return $query->with('teachers','students','school','class','stream_subject_teachers','stream_section');
     }
 
-    public function grade_systems()
+    public function grades()
     {
-        return $this->hasMany('App\Models\GradeSystem','stream_id','id');
+        return $this->hasManyThrough('App\Models\Grade','App\Models\MyClass','stream_id','class_id','id');
+    }
+
+    public function males()
+    {
+        return $this->hasMany('App\Models\Student','stream_id','id')->where(['gender'=>'Male'])->count();
+    }
+
+    public function females()
+    {
+        return $this->hasMany('App\Models\Student','stream_id','id')->where(['gender'=>'Female'])->count();
+    }
+
+    public function getBalancesAttribute()
+    {
+        $vv = Student::with('school','libraries','teachers','class','stream','clubs','payments','payment_records')->get()->sortBy('fee_balance')->toArray();
+        $streamStudentsBalance = $vv->sum();
+
+        return $streamStudentsBalance;
     }
 }

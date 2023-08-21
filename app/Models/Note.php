@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +11,7 @@ class Note extends Model implements Searchable
 {
     use HasFactory;
     protected $table = 'notes';
-    protected $fillable = ['file','desc','school_id','class_id','stream_id','department_id','teacher_id','subject_id','standard_subject_id'];
+    protected $fillable = ['file','desc','stream_id','teacher_id','subject_id','school_id','department_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -54,13 +54,8 @@ class Note extends Model implements Searchable
         return $this->belongsTo('App\Models\Subject')->withDefault();
     }
 
-    public function standard_subject()
-    {
-        return $this->belongsTo('App\Models\StandardSubject')->withDefault();
-    }
-
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','class','stream','department','teacher','subject','standard_subject')->get();
+        return $query->with('school','class','stream','department','teacher','subject')->get();
     }
 }

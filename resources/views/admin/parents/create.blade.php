@@ -2,7 +2,7 @@
 @section('title', '| Add Parent')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -14,24 +14,48 @@
             <div class="card-body">
                 <form action="{{ route('admin.parents.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
                     @include('ext._csrfdiv')
-                    @include('ext._first_common_detailsdiv')
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Blood Group: <span class="text-danger">*</span></label>
-                                @include('ext._blood_group_div')
-                            </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Salutation</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="salutation" id="salutation" value="{{old('salutation')}}" class="form-control" placeholder="Mr./Mrs./Miss./Pstr./Dr./Rev.">
                         </div>
                     </div>
-                    @include('ext._second_common_detailsdiv')
-                    <div class="row">
-                        @include('ext._passworddiv')
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" id="name" value="{{old('name')}}" class="form-control" placeholder="Enter Name">
+                        </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Email</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="email" id="email" value="{{old('email')}}" class="form-control" placeholder="Email Address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Image</label>
+                        <div class="col-sm-10">
+                            <input type="file" name="image" id="image" value="{{old('image')}}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >ID NO.</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="id_no" id="id_no" class="form-control" placeholder="ID No.">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Phone No.</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="phone_no" id="phone_no" class="form-control" placeholder="Phone Number.">
+                        </div>
+                    </div>
+                    @include('ext._passworddiv')
                     @include('ext._submit_register_button')
                 </form>
             </div>
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

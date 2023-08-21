@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Exception;
+use Mail;
+use App\Models\UserEmailCode;
+use App\Mail\SendEmailCode;
 use App\Models\Admin;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,7 +23,7 @@ class Superadmin extends Authenticatable
     protected $table = 'superadmins';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $fillable = ['name','title','email','address','password'];
+    protected $fillable = ['name','title','email','address','school_id','password'];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -28,11 +32,44 @@ class Superadmin extends Authenticatable
     */
     protected $hidden = ['password','remember_token',];
 
+    /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function generateCode()
+    {
+        $code = rand(100000,999999);
+  
+        UserEmailCode::updateOrCreate(
+            [ 'superadmin_id' => auth()->user()->id ],
+            [ 'code' => $code ]
+        );
+    
+        try {
+  
+            $details = [
+                'title' => 'Mail Sent from'." ".auth()->user()->school->name,
+                'code' => $code,
+                'school' => auth()->user()->school->name,
+            ];
+             
+            Mail::to(auth()->user()->email)->send(new SendEmailCode($details));
+    
+        } catch (Exception $e) {
+            info("Error: ". $e->getMessage());
+        }
+    }
+
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new SuperadminResetPasswordNotification($token));
     }
 
+    public function school()
+    {
+        return $this->belongsTo('App\Models\School')->withDefault();
+    }
 
     public function admins()
     {

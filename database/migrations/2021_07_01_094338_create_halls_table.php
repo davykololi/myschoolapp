@@ -16,9 +16,9 @@ class CreateHallsTable extends Migration
         Schema::create('halls', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type')->default('Madiba Hall');
             $table->string('code');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_hall_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -21,9 +21,9 @@ class AttachMeetingController extends Controller
     public function attachMeeting(Request $request,$id)
     {
     	$stream = Stream::findOrFail($id);
-    	$meeting = $request->meeting;
-    	$stream->meetings()->attach($meeting);
+    	$meetings = $request->meetings;
+    	$stream->meetings()->attach($meetings);
 
-    	return back()->withSuccess('The meeting attached to the class successfully');
+    	return back()->withSuccess('The meetings attached to the class successfully');
     }
 }

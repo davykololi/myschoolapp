@@ -45,7 +45,7 @@ class ExamService
 	{
 		$data = $request->all();
         $data['code'] = strtoupper(Str::random(15));
-        $data['category_exam_id'] = $request->exam_category;
+        $data['type'] = $request->exam_type;
         $data['school_id'] = Auth::user()->school->id;
         $data['year_id'] = $request->year;
         $data['term_id'] = $request->term;
@@ -56,10 +56,11 @@ class ExamService
 	public function updateData(UpdateRequest $request)
 	{
 		$data = $request->only(['name','start_date','end_date']);
-        $data['category_exam_id'] = $request->exam_category;
+        $data['type'] = $request->exam_type;
         $data['school_id'] = Auth::user()->school->id;
         $data['year_id'] = $request->year;
         $data['term_id'] = $request->term;
+        $data['status'] = $request->status;
 
         return $data;
 	}

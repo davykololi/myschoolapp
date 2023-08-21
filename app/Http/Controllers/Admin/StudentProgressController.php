@@ -6,7 +6,7 @@ use App\Models\Record;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class StudentRecordController extends Controller
+class StudentProgressController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -16,6 +16,7 @@ class StudentRecordController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('admin2fa');
     }
     
     public function studentRecord(Request $request)

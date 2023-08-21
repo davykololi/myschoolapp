@@ -16,10 +16,10 @@ class CreateRewardsTable extends Migration
         Schema::create('rewards', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type')->default('Class Overal Performance Award');
             $table->string('purpose');
             $table->date('date');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_reward_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

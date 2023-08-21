@@ -24,6 +24,7 @@ class AssignmentController extends Controller
     public function __construct()
     {
         $this->middleware('auth:teacher');
+        $this->middleware('teacher2fa');
     }
 
     /**
@@ -47,9 +48,9 @@ class AssignmentController extends Controller
     public function create()
     {
         //
-        $streams = Stream::all();
-        $students = Student::all();
-        $staffs = Staff::all();
+        $streams = Stream::all()->pluck('name','id');
+        $students = Student::all()->pluck('full_name','id');
+        $staffs = Staff::all()->pluck('full_name','id');
 
         return view('teacher.assignments.create',compact('streams','students','staffs'));
     }
@@ -74,14 +75,14 @@ class AssignmentController extends Controller
         $input['school_id'] = auth()->user()->school->id;
         $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
         $assignment = Assignment::create($input);
-        $teacherId = Auth::id();
-        $assignment->teachers()->attach($teacherId);
-        $streamId = $request->stream;
-        $assignment->streams()->attach($streamId);
-        $studentId = $request->student;
-        $assignment->students()->attach($studentId);
-        $staffId = $request->staff;
-        $assignment->staffs()->attach($staffId);
+        $teacher = Auth::id();
+        $assignment->teachers()->sync($teacher);
+        $streams = $request->streams;
+        $assignment->streams()->sync($streams);
+        $students = $request->students;
+        $assignment->students()->sync($students);
+        $staffs = $request->staffs;
+        $assignment->staffs()->sync($staffs);
 
         return redirect()->route('teacher.assignments.index')->withSuccess('The assignment created successfully');
 
@@ -109,9 +110,9 @@ class AssignmentController extends Controller
     public function edit(Assignment $assignment)
     {
         //
-        $streams = Stream::all();
-        $students = Student::all();
-        $staffs = Staff::all();
+        $streams = Stream::all()->pluck('name','id');
+        $students = Student::all()->pluck('full_name','id');
+        $staffs = Staff::all()->pluck('full_name','id');
 
         return view('teacher.assignments.edit',compact('assignment','streams','students','staffs'));
     }
@@ -140,12 +141,12 @@ class AssignmentController extends Controller
             $assignment->update($input);
             $teacherId = Auth::id();
             $assignment->teachers()->sync($teacherId);
-            $streamId = $request->stream;
-        	$assignment->streams()->sync($streamId);
-            $studentId = $request->student;
-            $assignment->students()->sync($studentId);
-            $staffId = $request->staff;
-            $assignment->staffs()->sync($staffId);
+            $streams = $request->streams;
+        	$assignment->streams()->sync($streams);
+            $students = $request->students;
+            $assignment->students()->sync($students);
+            $staffs = $request->staffs;
+            $assignment->staffs()->sync($staffs);
 
             return redirect()->route('teacher.assignments.index')->withSuccess('The assignment updated successfully');
         }

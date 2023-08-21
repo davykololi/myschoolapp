@@ -1,8 +1,6 @@
-@extends('layouts.teacher')
-@section('title', '| Teacher Show Assignment')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-teacher>
+    <!-- frontend-main view -->
+    <x-frontend-main>
     @include('partials.messages')
     <div class="row">
     <div class="col-md-12 margin-tb">
@@ -26,7 +24,7 @@
         <div class="form-group">
             <strong>Given To:</strong>
             @foreach($assignment->streams as $stream)
-                <span style="color: green"><b>Class(s):</b></span> {{$stream->class->name}} {{$stream->name}},
+                <span style="color: green"><b>Class(s):</b></span> {{$stream->name}}
             @endforeach
             @forelse($assignment->students as $student)
                 <span style="color: green"><b>Student(s):</b></span> {{$student->full_name}},
@@ -50,12 +48,6 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>School:</strong>
-            {{ $assignment->school->name }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
             <strong>File:</strong>
             <a href="{{route('teacher.assignment.download',$assignment->id)}}" class="btn btn-outline-warning">
                 Download
@@ -69,5 +61,5 @@
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-frontend-main>
+</x-teacher>

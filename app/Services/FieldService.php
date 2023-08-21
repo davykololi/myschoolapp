@@ -46,7 +46,7 @@ class FieldService
 		$data = $request->all();
         $data['code'] = strtoupper(Str::random(15));
         $data['school_id'] = Auth::user()->school->id;
-        $data['category_field_id'] = $request->field_category;
+        $data['type'] = $request->type;
 
         return $data;
 	}
@@ -55,7 +55,7 @@ class FieldService
 	{
 		$data = $request->only(['name']);
         $data['school_id'] = Auth::user()->school->id;
-        $data['category_field_id'] = $request->field_category;
+        $data['type'] = $request->type;
 
         return $data;
 	}

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Timetable extends Model implements Searchable

@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\CategoryExam;
 use App\Models\Student;
 use App\Models\School;
 use App\Models\Department;
@@ -17,12 +13,20 @@ use App\Models\Timetable;
 use App\Models\Mark;
 use App\Models\Term;
 use App\Models\Year;
+use App\Models\Grade;
+use App\Models\GeneralGrade;
+use App\Models\ReportComment;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 
 class Exam extends Model implements Searchable
 {
     //
     protected $table = 'exams';
-    protected $fillable = ['name','code','start_date','end_date','school_id','year_id','term_id','category_exam_id'];
+    protected $fillable = ['name','code','type','start_date','end_date','status','results_published','school_id','year_id','term_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -35,9 +39,19 @@ class Exam extends Model implements Searchable
             );
     }
 
-    public function category_exam()
+    public function midTermExam()
     {
-    	return $this->belongsTo(CategoryExam::class)->withDefault();
+        return $this->type === 'Mid Term Enaminations';
+    }
+
+    public function endTermExam()
+    {
+        return $this->type === 'End Term Enaminations';
+    }
+
+    public function mockExam()
+    {
+        return $this->type === 'Mock Enaminations';
     }
 
     public function students()
@@ -45,7 +59,7 @@ class Exam extends Model implements Searchable
         return $this->belongsToMany(Student::class)->withTimestamps();
     }
 
-    public function schools()
+    public function school()
     {
     	return $this->belongsTo(School::class)->withDefault();
     }
@@ -98,6 +112,28 @@ class Exam extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','schools','streams','category_exam')->latest()->get();
+        return $query->with('teachers','students','school','streams','year','term','marks','grades','general_grades')->latest()->get();
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class,'exam_id','id');
+    }
+
+    public function general_grades()
+    {
+        return $this->hasMany(GeneralGrade::class,'exam_id','id');
+    }
+
+    public function report_comments()
+    {
+        return $this->hasMany(ReportComment::class,'exam_id','id');
+    }
+
+    public function name(): Attribute 
+    {               
+        return  new Attribute(                                                           
+            get: fn ($value) => ucfirst($value),                
+        ); 
     }
 }

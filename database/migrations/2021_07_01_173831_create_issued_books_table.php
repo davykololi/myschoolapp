@@ -15,8 +15,8 @@ class CreateIssuedBooksTable extends Migration
     {
         Schema::create('issued_books', function (Blueprint $table) {
             $table->id();
-            $table->date('issued_date');
-            $table->date('return_date');
+            $table->string('issued_date');
+            $table->string('return_date');
             $table->string('serial_no');
             $table->boolean('returned')->default(false);
             $table->boolean('returned_status')->default(true);

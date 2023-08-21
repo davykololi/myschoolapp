@@ -2,7 +2,7 @@
 @section('title', '| Add A Book')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-frontend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -28,17 +28,22 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Units</label>
                         <div class="col-sm-10">
-                            <input type="number" name="units" id="units" class="form-control" placeholder="Units">
+                            <input type="number" min="0" name="units" id="units" class="form-control" placeholder="Units">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Rack No.</label>
                         <div class="col-sm-10">
-                            <input type="number" name="rack_no" id="rack_no" class="form-control" placeholder="Rack Number">
+                            <input type="number" min="0" name="rack_no" id="rack_no" class="form-control" placeholder="Rack Number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Row No.</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" name="row_no" id="row_no" class="form-control" placeholder="Row Number">
                         </div>
                     </div>
                     @include('ext._attach_book_catdiv')
-                    @include('ext._attach_schooldiv')
                     @include('ext._attach_librarydiv')
                     @include('ext._submit_create_button')
                 </form>
@@ -46,5 +51,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-frontend-main>
 @endsection

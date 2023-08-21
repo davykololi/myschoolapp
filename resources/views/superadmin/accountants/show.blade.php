@@ -2,7 +2,7 @@
 @section('title', '| Show Accountant')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -24,19 +24,23 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $accountant->title }} {{ $accountant->name }}
+            {{ $accountant->salutation }} {{ $accountant->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Position:</strong>
-            {{ $accountant->position_accountant->name }}, {{ $accountant->school->name }}
+            @if(!is_null($accountant->role))
+            {{ $accountant->role }}
+            @else
+            <span class="text[red]">{{ __('Ordinary Accountant') }}</span>
+            @endif
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Blood Group:</strong>
-            {{ $accountant->blood_group->id }}
+            {{ $accountant->blood_group }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -66,7 +70,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Age:</strong>
-            {{ $accountant->age }} years
+             {{ $accountant->age }} years
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -94,5 +98,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

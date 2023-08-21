@@ -1,15 +1,15 @@
-@extends('layouts.admin')
-@section('title', '| Add Notes')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
 <div class="row">
     <div class="col-lg-12">
-        @include('partials.errors')
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title">CREATE NOTES</h5> 
                 <a href="{{ route('admin.notes.index') }}" class="btn btn-primary pull-right">Back</a>
+            </div>
+            <div class="max-w-full leading-tight items-center mt-8">
+                @include('partials.errors')
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.notes.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
@@ -26,16 +26,15 @@
                             <input type="text" name="desc" id="desc" class="form-control" placeholder="Description">
                         </div>
                     </div>
-                    @include('ext._attach_departmentdiv')
-                    @include('ext._attach_streamdiv')
-                    @include('ext._attach_teacherdiv')
-                    @include('ext._attach_subjectdiv')
-                    @include('ext._attach_standard_subjectdiv')
+                    @include('ext._get_departments_ids')
+                    @include('ext._get_streams_ids')
+                    @include('ext._get_teachers_ids')
+                    @include('ext._get_stream_subjects_ids')
                     @include('ext._submit_create_button')
                 </form>
             </div>
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

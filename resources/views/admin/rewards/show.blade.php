@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Show Award')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
@@ -63,5 +61,5 @@
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

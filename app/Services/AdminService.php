@@ -48,7 +48,9 @@ class AdminService
 		$data = $request->validated();
         $data['password'] = Hash::make($request->password);
         $data['superadmin_id'] = Auth::user()->id;
-        $data['school_id'] = $request->school;
+		$data['school_id'] = Auth::user()->school->id;
+		$data['blood_group'] = $request->blood_group;
+        $data['role'] = $request->admin_role;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;
@@ -56,9 +58,11 @@ class AdminService
 
 	public function updateData(UpdateRequest $request)
 	{
-        $data = $request->only('title','name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history');
+        $data = $request->only('salutation','first_name','middle_name','last_name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history');
         $data['superadmin_id'] = Auth::user()->id;
-        $data['school_id'] = $request->school;
+		$data['school_id'] = Auth::user()->school->id;
+		$data['blood_group'] = $request->blood_group;
+        $data['role'] = $request->admin_role;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;

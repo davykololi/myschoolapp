@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use PDF;
 use Auth;
+use Illuminate\Support\Str;
+use HiFolks\Statistics\Freq;
 use App\Models\Club;
 use App\Models\School;
 use App\Models\Student;
 use App\Models\Stream;
 use App\Models\Department;
-use App\Models\StandardSubject;
+use App\Models\StreamSubjectTeacher;
 use App\Models\ReportCard;
 use App\Models\Letter;
 use App\Models\MyClass;
@@ -19,71 +21,64 @@ use App\Models\Term;
 use App\Models\Year;
 use App\Models\ClassTotal;
 use App\Models\StreamTotal;
+use App\Models\Grade;
+use App\Models\GeneralGrade;
+use App\Models\ReportComment;
+use App\Enums\GradeTypeEnum;
 use App\Charts\MarksChart;
+use App\Events\ExamRecords;
+use App\Services\StudentService;
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Statistics;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class PdfController extends Controller
 {
+    protected $studentService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StudentService $studentService)
     {
         $this->middleware('auth:admin');
-    }
-
-    public function schoolTeachers(School $school)
-    {
-        $schoolTeachers = $school->teachers()->with('school','position_teacher')->get();
-        $title = $school->name." ".'Teachers';
-        $pdf = PDF::loadView('admin.pdf.school_teachers',['school'=>$school,'schoolTeachers'=>$schoolTeachers,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
-        $pdf->output();
-        $canvas = $pdf->getDomPDF()->getCanvas();
-        $height = $canvas->get_height();
-        $width = $canvas->get_width();
-        $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/3);
-        $x = (($width-$imageWidth)/2);
-        $canvas->set_opacity(.2,"Multiply");
-        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
-        $canvas->page_text($width/5, $height/2,strtoupper($title),null,30, array(0,0,0),2,2,-30);
-        
-        return $pdf->download($title.'.pdf');
+        $this->middleware('admin2fa');
     }
 
     public function schoolStudents(School $school)
     {
-        $students = $school->students()->with('stream','school','dormitory')->get();
-        $title = $school->name." ".'Students';
-        $pdf = PDF::loadView('admin.pdf.school_students',['school'=>$school,'students'=>$students,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $students = $school->students()->with('stream','school','dormitory')->inRandomOrder()->get();
+        $males = $school->males();
+        $females = $school->females();
+        $title = 'School Students List';
+        $pdf = PDF::loadView('admin.pdf.school_students',compact('school','students','title','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
-        $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/3);
-        $x = (($width-$imageWidth)/2);
         $canvas->set_opacity(.2,"Multiply");
-        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
-        $canvas->page_text($width/5, $height/2,strtoupper($title),null,25, array(0,0,0),2,2,-30);
+        $canvas->page_text($width/5, $height/2,strtoupper($title),null,40, array(0,0,0),2,2,-30);
         
         return $pdf->download($title.'.pdf');
     }
 
     public function streamStudents(Stream $stream)
     {
-        $streamStudents = $stream->students;
+        $streamStudents = $stream->students()->with('stream','school','dormitory')->inRandomOrder()->get();
         $title = $stream->name." ".'Students';
+        $males = $stream->males();
+        $females = $stream->females();
         $school = $stream->school;
-        $pdf = PDF::loadView('admin.pdf.stream_students',['stream'=>$stream,'streamStudents'=>$streamStudents,'title'=>$title,'school'=>$school,])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+
+        if($streamStudents->isEmpty()){
+            return back()->with('error','This class has no students at the moment!');
+        }
+
+        $pdf = PDF::loadView('admin.pdf.stream_students',compact('stream','streamStudents','title','school','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -103,10 +98,15 @@ class PdfController extends Controller
     public function streamTeachers(Stream $stream)
     {
         $teachers = $stream->teachers;
-        $streamSubjects = $stream->standard_subjects;
+        $streamTeachers = $stream->teachers;
         $title = $stream->name." ".'Teachers';
-        $school = $stream->school;
-        $pdf = PDF::loadView('admin.pdf.stream_teachers',['stream'=>$stream,'teachers'=>$teachers,'title'=>$title,'streamSubjects'=>$streamSubjects])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $school = Auth::user()->school;
+
+        if(empty($streamteachers)){
+            return back()->withErrors('The teachers notyet assigned to this class!');
+        }
+
+        $pdf = PDF::loadView('admin.pdf.stream_teachers',compact('stream','teachers','streamSubjectTeachers','title','school'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -123,44 +123,17 @@ class PdfController extends Controller
         return $pdf->download($title.'.pdf');
     }
 
-    public function reportCard(ReportCard $report)
-    {
-        $user = Auth::user();
-        $school = $user->school;
-        $title = $report->name." ".'Report Card';
-        $pdf = PDF::loadView('admin.pdf.initialReport_card',['report'=>$report,'school'=>$school,'title'=>$title,'user'=>$user])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
-        $pdf->output();
-        $canvas = $pdf->getDomPDF()->getCanvas();
-        $height = $canvas->get_height();
-        $width = $canvas->get_width();
-        $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/3);
-        $x = (($width-$imageWidth)/2);
-        $canvas->set_opacity(.2,"Multiply");
-        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
-        $canvas->page_text($width/5, $height/2,strtoupper($title),null,40, array(0,0,0),2,2,-30);
-        
-        return $pdf->download($title.'.pdf',array("Attachment" => 0));
-    }
-
     public function schoolClubs(School $school)
     {
         $clubs = $school->clubs()->with('school','teachers','staffs','students')->get();
         $title = $school->name." ".'Clubs';
+
         $pdf = PDF::loadView('admin.pdf.school_clubs',['school'=>$school,'clubs'=>$clubs,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
-        $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/3);
-        $x = (($width-$imageWidth)/2);
         $canvas->set_opacity(.2,"Multiply");
-        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,25, array(0,0,0),2,2,-30);
         
         return $pdf->download($title.'.pdf');
@@ -233,6 +206,10 @@ class PdfController extends Controller
 
     public function deptTeachers(Department $department)
     {
+        if($department->teachers->isEmpty()){
+            return back()->withErrors("Teachers notyet assigned to"." ".$department->name);
+        }
+
         $deptTeachers = $department->teachers;
         $school = $department->school;
         $title = $department->name." ".'Teachers';
@@ -257,9 +234,11 @@ class PdfController extends Controller
     {
         $school = $letter->school;
         $title = $school->name." ".'Letter';
-        $pdf = PDF::loadView('admin.pdf.letters',['letter'=>$letter,'school'=>$school,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.letters',['letter'=>$letter,'school'=>$school,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true,'isPhpEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
+        $canvas->page_script('$pdf->set_opacity(.2, "Multiply");');
+        $text = strtoupper('Original Copy');
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $imageUrl = public_path('/storage/storage/'.$school->image);
@@ -267,9 +246,9 @@ class PdfController extends Controller
         $imageHeight = 250;
         $y = (($height-$imageHeight)/3);
         $x = (($width-$imageWidth)/2);
-        $canvas->set_opacity(.2,"Multiply");
+        
         $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
-        $canvas->page_text($width/5, $height/2,strtoupper('Original Copy'),null,70, array(0,0,0),2,2,-30);
+        $canvas->page_text($width/5, $height/2,$text,null,70, array(0,0,0),2,2,-30);
         
         return $pdf->download($title.'.pdf');
     }
@@ -289,6 +268,21 @@ class PdfController extends Controller
         $x = (($width-$imageWidth)/2);
         $canvas->set_opacity(.2,"Multiply");
         $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
+        $canvas->page_text($width/5, $height/2,strtoupper('Original Copy'),null,70, array(0,0,0),2,2,-30);
+        
+        return $pdf->download($title.'.pdf');
+    }
+
+    public function instantDownload(School $school,Request $request)
+    {
+        $content = $request->content;
+        $title = $school->name;
+        $pdf = PDF::loadView('admin.pdf.instant_download',['school'=>$school,'title'=>$title,'content'=>$content])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf->output();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        $height = $canvas->get_height();
+        $width = $canvas->get_width();
+        $canvas->set_opacity(.2,"Multiply");
         $canvas->page_text($width/5, $height/2,strtoupper('Original Copy'),null,70, array(0,0,0),2,2,-30);
         
         return $pdf->download($title.'.pdf');
@@ -320,8 +314,8 @@ class PdfController extends Controller
         $user = auth()->user();
         $school = $user->school;
         $title = 'Stream Subjects Facilitators';
-        $classSubjects = $school->standard_subjects()->inRandomOrder()->get();
-        $pdf = PDF::loadView('admin.pdf.stream_facilitators',['school'=>$school,'title'=>$title,'classSubjects'=>$classSubjects])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $strmSubjectTeachers = $school->stream_subject_teachers()->inRandomOrder()->get();
+        $pdf = PDF::loadView('admin.pdf.stream_facilitators',['school'=>$school,'title'=>$title,'strmSubjectTeachers'=>$strmSubjectTeachers])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -338,6 +332,36 @@ class PdfController extends Controller
         return $pdf->download($title.'pdf',array("Attachment" => 0));
     }
 
+    public function studentDetails(Student $student)
+    {
+        if($student->image === "image.png"){
+            toastr()->error(ucwords('Please upload the student passport first!!!'));
+            return back()->withErrors('Please upload the student passport first!!!');
+        }
+        
+        $user = Auth::user();
+        $school = $student->school;
+        $title = 'Student Details';
+        $vv = collect($student->stream->subjects()->pluck('name'));
+        $streamSubjects = $vv->toArray();
+
+        $pdf = PDF::loadView('admin.pdf.student_details',['student'=>$student,'school'=>$school,'title'=>$title,'streamSubjects'=>$streamSubjects])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf->output();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        $height = $canvas->get_height();
+        $width = $canvas->get_width();
+        $imageUrl = public_path('/storage/storage/'.$school->image);
+        $imageWidth = 250;
+        $imageHeight = 250;
+        $y = (($height-$imageHeight)/3);
+        $x = (($width-$imageWidth)/2);
+        $canvas->set_opacity(.2,"Multiply");
+        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
+        $canvas->page_text($width/5, $height/2,strtoupper($title),null,50, array(0,0,0),2,2,-30);
+        
+        return $pdf->download($title.'pdf',array("Attachment" => 0)); 
+    }
+
     public function classMarkSheet(Request $request)
     {
         $yearId = $request->year;
@@ -345,12 +369,37 @@ class PdfController extends Controller
         $examId = $request->exam;
         $classId = $request->class;
         $passMark = $request->pass_mark;
-        $marks = Mark::where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$classId,'year_id'=>$yearId])->get()->sortByDesc('total');
+        $marks= classMarks($yearId,$termId,$examId,$classId);
+
+        $year = Year::where('id',$yearId)->first();
+        $term = Term::where('id',$termId)->first();
+        $exam = Exam::where('id',$examId)->first();
+        $class = MyClass::where('id',$classId)->first();
+        $stream = Stream::where('class_id',$classId)->first();
+        $school = auth()->user()->school;
+        
+        if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null) || ($exam->year->id != $yearId) || ($exam->term->id != $termId) || ($examId != $exam->id) || ($marks->isEmpty())){
+            return back()->withErrors('Please ensure you have filled in the required details!');
+        } 
+
+        $examGrades = Grade::with('class','year','term','subject','exam','teacher')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$classId,'year_id'=>$yearId])->get();
+        $generalGrades = GeneralGrade::with('class','year','term','exam')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$classId,'year_id'=>$yearId])->get();
+        // Male students count
+        $males = $class->males();
+        // Female students count
+        $females = $class->females();
 
         //Start of general subjects mean scores calculations
         $maths = $marks->pluck('mathematics','name');
         $english = $marks->pluck('english','name');
         $kiswahili = $marks->pluck('kiswahili','name');
+        $chemistry = $marks->pluck('chemistry','name');
+        $biology = $marks->pluck('biology','name');
+        $physics = $marks->pluck('physics','name');
+        $cre = $marks->pluck('cre','name');
+        $islam = $marks->pluck('islam','name');
+        $history = $marks->pluck('history','name');
+        $ghc = $marks->pluck('ghc','name');
         //End of mean subjects mean score calculations
 
         $totals = $marks->pluck('total','name');
@@ -378,29 +427,25 @@ class PdfController extends Controller
             $rank++;
         }
         $rankings;// End Marksheet Ranking
-        
-        $year = Year::where('id',$yearId)->first();
-        $term = Term::where('id',$termId)->first();
-        $exam = Exam::where('id',$examId)->first();
-        $class = MyClass::where('id',$classId)->first();
-        $school = auth()->user()->school;
-        $title = $year->year." ".$term->name." ".$class->name." ".$exam->name." ".'Results';
+        $title = $term->name." ".$class->name." ".$exam->name." ".'Results';
+        $classMinscore = $marks->avg('student_minscore');//Average of class minscore
+        //Total Marks Frequencies
+        $totalMarks = $marks->pluck('total','name');
+        $x = $totalMarks->toArray();
+        $totalMarksFrequencies = Statistics::make($x);
 
-        $pdf = PDF::loadView('admin.pdf.class_marksheet',compact('marks','exam','class','school','title','rankings','passMark','totals','maths','english','kiswahili'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a3','landscape');
+        // call the event
+        event(new ExamRecords($yearId,$termId,$examId,$classId,$school,$marks));
+
+        $pdf = PDF::loadView('admin.pdf.class_marksheet',compact('marks','examGrades','generalGrades','exam','class','school','year','term','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','ghc','classMinscore','females','males','totalMarksFrequencies'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true,'isPhpEnabled'=>true])->setPaper('a3','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
-        $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/3);
-        $x = (($width-$imageWidth)/2);
-        $canvas->set_opacity(.2,"Multiply");
-        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
-        $canvas->page_text($width/5, $height/2,strtoupper($title),null,25, array(0,0,0),2,2,-30);
+        $canvas->page_script('$pdf->set_opacity(.2, "Multiply");');
+        $canvas->page_text($width/5, $height/2,strtoupper($title),null,30, array(0,0,0),2,2,-30);
         
-        return $pdf->download($title.'.pdf',array("Attachment" => 0));
+        return $pdf->download(Str::slug($title).'.pdf',array("Attachment" => 0));
     }
 
     public function streamMarkSheet(Request $request)
@@ -410,7 +455,22 @@ class PdfController extends Controller
         $examId = $request->exam;
         $streamId = $request->stream;
         $passMark = $request->pass_mark;
-        $marks = Mark::where(['term_id'=>$termId,'exam_id'=>$examId,'stream_id'=>$streamId,'year_id'=>$yearId])->get()->sortByDesc('total');
+        $marks = streamMarks($yearId,$termId,$examId,$streamId);
+
+        $year = Year::where('id',$yearId)->firstOrFail();
+        $term = Term::where('id',$termId)->firstOrFail();
+        $exam = Exam::where('id',$examId)->firstOrFail();
+        $stream = Stream::where('id',$streamId)->firstOrFail();
+        $school = auth()->user()->school;
+
+        if(($yearId === null) || ($termId === null) || ($examId === null) || ($streamId === null) || ($exam->year->id != $yearId) || ($exam->term->id != $termId) || ($examId != $exam->id) || ($marks->isEmpty())){
+            return back()->withErrors('Please ensure you have filled in the required details!');
+        } 
+
+        // Male students count
+        $males = $stream->students()->where(['gender'=>'Male'])->count();
+        // Female students count
+        $females = $stream->students()->where(['gender'=>'Female'])->count();
 
         //Start of stream subjects mean scores calculations
         $maths = $marks->pluck('mathematics','name');
@@ -456,23 +516,16 @@ class PdfController extends Controller
         $exam = Exam::where('id',$examId)->first();
         $stream = Stream::where('id',$streamId)->first();
         $school = auth()->user()->school;
-        $streamStudents = $stream->students;
+        $streamStudents = $stream->students()->with('class','school')->get();
 
-        $title = $year->year." ".$term->name." ".$stream->name." ".$exam->name." ".'Results';
-        $pdf = PDF::loadView('admin.pdf.stream_marksheet',compact('marks','exam','stream','school','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','ghc','streamStudents'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a3','landscape');
+        $title = $term->name." ".$stream->name." ".$exam->name." ".'Results';
+        $pdf = PDF::loadView('admin.pdf.stream_marksheet',compact('marks','exam','stream','school','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','ghc','streamStudents','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a3','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
-        $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/3);
-        $x = (($width-$imageWidth)/2);
         $canvas->set_opacity(.2,"Multiply");
-        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,25, array(0,0,0),2,2,-30);
-        
         return $pdf->download($title.'.pdf',array("Attachment" => 0));
     }
 
@@ -482,67 +535,65 @@ class PdfController extends Controller
         $terms = Term::all();
         $classes = MyClass::all();
         $streams = Stream::all();
-        $exams = Exam::all();
+        $exams = Exam::all()->pluck('name','id');
         $terms = Term::all();
+        $students = Student::with('school','libraries','teachers','class','stream','clubs')->get();
 
-        return view('admin.pdf.report_card',compact('years','terms','classes','streams','exams'));
+        return view('admin.pdf.report_card',compact('years','terms','classes','streams','exams','students'));
     }
 
     public function studentReportCard(Request $request)
     {
         $yearId = $request->year;
         $termId = $request->term;
-        $classId = $request->class;
         $streamId = $request->stream;
-        $name = $request->name;
+        $name = Str::lower($request->name);
         $closingDate = $request->closing_date;
         $openingDate = $request->opening_date;
-        $examOneId = $request->exam_one;
-        $examTwoId = $request->exam_two;
-        $examThreeId = $request->exam_three;
-        $class = MyClass::where('id',$classId)->first();
+
+        $examIds = $request->exams;
+        if(is_null($examIds)){
+            return back()->withErrors('Exam Ids Not Provided!');
+        }
+        
+        $obtainedIds = Exam::whereIn('id',$examIds)->get();
+        $array = $obtainedIds->toArray();
+
+        $examOneId = $array[0];
+        $examTwoId  = $array[1];
+        $examThreeId = $array[2];
+
         $term = Term::where('id',$termId)->first();
         $year = Year::where('id',$yearId)->first();
-        $stream = Stream::where(['id'=>$streamId,'class_id'=>$classId])->first();
-        $student = Student::where('name',$name)->first();
+        $stream = Stream::where(['id'=>$streamId])->first();
+        $examOne = Exam::where(['id'=>$examOneId,'term_id'=>$termId,'year_id'=>$yearId])->firstOrFail();
+        $examTwo = Exam::where(['id'=>$examTwoId,'term_id'=>$termId,'year_id'=>$yearId])->firstOrFail();
+        $examThree = Exam::where(['id'=>$examThreeId,'term_id'=>$termId,'year_id'=>$yearId])->firstOrFail(); 
 
-        $mark = Mark::when($yearId,function($query,$yearId){
-            return $query->where('year_id',$yearId);
-        })->when($termId,function($query,$termId){
-            return $query->where('term_id',$termId);
-        })->when($classId,function($query,$classId){
-            return $query->where('class_id',$classId);
-        })->when($streamId,function($query,$streamId){
-            return $query->where('stream_id',$streamId);
-        })->when($name,function($query,$name){
-            return $query->where('name','like',"%$name%");
-        })->firstOrFail();
+        $mark = mark($yearId,$termId,$streamId,$name);
+        $markName = $mark->name;
 
-        $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$stream->id,'exam_id'=>$examOneId])->first();
-        $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$stream->id,'exam_id'=>$examTwoId])->first();
-        $examThreeMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$stream->id,'exam_id'=>$examThreeId])->first();
+        if(($yearId === null) || ($termId === null) || ($examOneId === null) || ($examTwoId === null) || ($examThreeId === null) || empty($name) || (Auth::user()->school->image === null) || ($streamId === null) || ($markName === null)){
+            return back()->withErrors('Please ensure you have filled in the required details!');
+        }
+ 
+        $examOneMark = Mark::where(['name'=>$markName,'stream_id'=>$stream->id,'exam_id'=>$examOneId])->first();
+        $examTwoMark = Mark::where(['name'=>$markName,'stream_id'=>$stream->id,'exam_id'=>$examTwoId])->first();
+        $examThreeMark = Mark::where(['name'=>$markName,'stream_id'=>$stream->id,'exam_id'=>$examThreeId])->first();
 
-        $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics,$examThreeMark->mathematics]);
-        $mathsAvg = $maths->avg();
-        $eng = collect([$examOneMark->english,$examTwoMark->english,$examThreeMark->english]);
-        $engAvg = $eng->avg();
-        $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili,$examThreeMark->kiswahili]);
-        $kiswAvg = $kisw->avg();
-        $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry,$examThreeMark->chemistry]);
-        $chemAvg = $chem->avg();
-        $bio = collect([$examOneMark->biology,$examTwoMark->biology,$examThreeMark->biology]);
-        $bioAvg = $bio->avg();
-        $physics = collect([$examOneMark->physics,$examTwoMark->physics,$examThreeMark->physics]);
-        $physicsAvg = $physics->avg();
-        $cre = collect([$examOneMark->cre,$examTwoMark->cre,$examThreeMark->cre]);
-        $creAvg = $cre->avg();
-        $islam = collect([$examOneMark->islam,$examTwoMark->islam,$examThreeMark->islam]);
-        $islamAvg = $islam->avg();
-        $hist = collect([$examOneMark->history,$examTwoMark->history,$examThreeMark->history]);
-        $histAvg = $hist->avg();
-        $ghc = collect([$examOneMark->ghc,$examTwoMark->ghc,$examThreeMark->ghc]);
-        $ghcAvg = $ghc->avg();
+        $mathsAvg = Stat::mean([$examOneMark->mathematics,$examTwoMark->mathematics,$examThreeMark->mathematics]);
+        $engAvg = Stat::mean([$examOneMark->english,$examTwoMark->english,$examThreeMark->english]);
+        $kiswAvg = Stat::mean([$examOneMark->kiswahili,$examTwoMark->kiswahili,$examThreeMark->kiswahili]);
+        $chemAvg = Stat::mean([$examOneMark->chemistry,$examTwoMark->chemistry,$examThreeMark->chemistry]);
+        $bioAvg = Stat::mean([$examOneMark->biology,$examTwoMark->biology,$examThreeMark->biology]);
+        $physicsAvg = Stat::mean([$examOneMark->physics,$examTwoMark->physics,$examThreeMark->physics]);
+        $creAvg = Stat::mean([$examOneMark->cre,$examTwoMark->cre,$examThreeMark->cre]);
+        $islamAvg = Stat::mean([$examOneMark->islam,$examTwoMark->islam,$examThreeMark->islam]);
+        $histAvg = Stat::mean([$examOneMark->history,$examTwoMark->history,$examThreeMark->history]);
+        $ghcAvg = Stat::mean([$examOneMark->ghc,$examTwoMark->ghc,$examThreeMark->ghc]);
+        
 
+        //Exams Totals
         $examOneTotal = $examOneMark->total;
         $examTwoTotal = $examTwoMark->total;
         $examThreeTotal = $examThreeMark->total;
@@ -575,8 +626,9 @@ class PdfController extends Controller
             $rank++;
         }
         $classRankings; 
-        $clasPositions = collect($classRankings);
-        //End of Overal Class Ranking
+        $clasPositions = collect($classRankings); //End of Overal Class Ranking
+        //Get Overal Position
+        $overalPosition = overalPosition($classRankings,$markName);
 
         //Start of Stream ranking
         $stTotals = StreamTotal::all();
@@ -604,12 +656,118 @@ class PdfController extends Controller
             $rank++;
         }
         $streamRankings; 
-        $strmPositions = collect($streamRankings);
-        //End of Stream Ranking
-
+        $strmPositions = collect($streamRankings); //End of Stream Ranking
+        //Get Stream Position
+        $streamPosition = streamPosition($streamRankings,$markName);
+        
         $school = auth()->user()->school;
         $title = 'Student Report Card';
-        $pdf = PDF::loadView('admin.pdf.student_reportcard',compact('mark','school','title','examOneMark','examTwoMark','examThreeMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','ghcAvg','class','year','term','overalTotalAvg','openingDate','closingDate','classRankings','streamRankings','clasPositions','strmPositions','stream','student','examOneTotal','examTwoTotal','examThreeTotal'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+
+        // Exam One Subject Grades
+        $examOneMathsGrade = examOneMathsGrade($examOneMark,$markName);
+        $examOneEnglishGrade = examOneEnglishGrade($examOneMark,$markName);
+        $examOneKiswGrade = examOneKiswahiliGrade($examOneMark,$markName);
+        $examOneChemGrade = examOneChemistryGrade($examOneMark,$markName);
+        $examOneBioGrade = examOneBiologyGrade($examOneMark,$markName);
+        $examOnePhysicsGrade = examOnePhysicsGrade($examOneMark,$markName);
+        $examOneCREGrade = examOneCREGrade($examOneMark,$markName);
+        $examOneIslamGrade = examOneIslamGrade($examOneMark,$markName);
+        $examOneHistGrade = examOneHistoryGrade($examOneMark,$markName);
+        $examOneGHCGrade = examOneGHCGrade($examOneMark,$markName);
+
+        // Exam Two Subject Grades
+        $examTwoMathsGrade = examTwoMathsGrade($examTwoMark,$markName);
+        $examTwoEnglishGrade = examTwoEnglishGrade($examTwoMark,$markName);
+        $examTwoKiswGrade = examTwoKiswahiliGrade($examTwoMark,$markName);
+        $examTwoChemGrade = examTwoChemistryGrade($examTwoMark,$markName);
+        $examTwoBioGrade = examTwoBiologyGrade($examTwoMark,$markName);
+        $examTwoPhysicsGrade = examTwoPhysicsGrade($examTwoMark,$markName);
+        $examTwoCREGrade = examTwoCREGrade($examTwoMark,$markName);
+        $examTwoIslamGrade = examTwoIslamGrade($examTwoMark,$markName);
+        $examTwoHistGrade = examTwoHistoryGrade($examTwoMark,$markName);
+        $examTwoGHCGrade = examTwoGHCGrade($examTwoMark,$markName);
+
+        // Exam Three Subject Grades
+        $examThreeMathsGrade = examThreeMathsGrade($examThreeMark,$markName);
+        $examThreeEnglishGrade = examThreeEnglishGrade($examThreeMark,$markName);
+        $examThreeKiswGrade = examThreeKiswahiliGrade($examThreeMark,$markName);
+        $examThreeChemGrade = examThreeChemistryGrade($examThreeMark,$markName);
+        $examThreeBioGrade = examThreeBiologyGrade($examThreeMark,$markName);
+        $examThreePhysicsGrade = examThreePhysicsGrade($examThreeMark,$markName);
+        $examThreeCREGrade = examThreeCREGrade($examThreeMark,$markName);
+        $examThreeIslamGrade = examThreeIslamGrade($examThreeMark,$markName);
+        $examThreeHistGrade = examThreeHistoryGrade($examThreeMark,$markName);
+        $examThreeGHCGrade = examThreeGHCGrade($examThreeMark,$markName);
+
+        //Perform Cumulative Subjects Grade Points
+        //Get Maths GPA 
+        $examOneMathsGradePoints = examOneMathsGradePoints($examOneMark,$markName);
+        $examTwoMathsGradePoints = examTwoMathsGradePoints($examTwoMark,$markName);
+        $examThreeMathsGradePoints = examThreeMathsGradePoints($examThreeMark,$markName);
+        $mathsCumulativePoints = Stat::mean([$examOneMathsGradePoints,$examTwoMathsGradePoints,$examThreeMathsGradePoints]);
+        //Get English GPA 
+        $examOneEnglishGradePoints = examOneEnglishGradePoints($examOneMark,$markName);
+        $examTwoEnglishGradePoints = examTwoEnglishGradePoints($examTwoMark,$markName);
+        $examThreeEnglishGradePoints = examThreeEnglishGradePoints($examThreeMark,$markName);
+        $englishCumulativePoints = Stat::mean([$examOneEnglishGradePoints,$examTwoEnglishGradePoints,$examThreeEnglishGradePoints]);
+        //Get Kiswahili GPA 
+        $examOneKiswahiliGradePoints = examOneKiswahiliGradePoints($examOneMark,$markName);
+        $examTwoKiswahiliGradePoints = examTwoKiswahiliGradePoints($examTwoMark,$markName);
+        $examThreeKiswahiliGradePoints = examThreeKiswahiliGradePoints($examThreeMark,$markName);
+        $kiswCumulativePoints = Stat::mean([$examOneKiswahiliGradePoints,$examTwoKiswahiliGradePoints,$examThreeKiswahiliGradePoints]);
+        //Get Chemistry GPA 
+        $examOneChemGradePoints = examOneChemistryGradePoints($examOneMark,$markName);
+        $examTwoChemGradePoints = examTwoChemistryGradePoints($examTwoMark,$markName);
+        $examThreeChemGradePoints = examThreeChemistryGradePoints($examThreeMark,$markName);
+        $chemCumulativePoints = Stat::mean([$examOneChemGradePoints,$examTwoChemGradePoints,$examThreeChemGradePoints]);
+        //Get Biology GPA 
+        $examOneBioGradePoints = examOneBiologyGradePoints($examOneMark,$markName);
+        $examTwoBioGradePoints = examTwoBiologyGradePoints($examTwoMark,$markName);
+        $examThreeBioGradePoints = examThreeBiologyGradePoints($examThreeMark,$markName);
+        $bioCumulativePoints = Stat::mean([$examOneBioGradePoints,$examTwoBioGradePoints,$examThreeBioGradePoints]);
+        //Get Physics GPA 
+        $examOnePhysicsGradePoints = examOnePhysicsGradePoints($examOneMark,$markName);
+        $examTwoPhysicsGradePoints = examTwoPhysicsGradePoints($examTwoMark,$markName);
+        $examThreePhysicsGradePoints = examThreePhysicsGradePoints($examThreeMark,$markName);
+        $physicsCumulativePoints = Stat::mean([$examOnePhysicsGradePoints,$examTwoPhysicsGradePoints,$examThreePhysicsGradePoints]);
+        //Get CRE GPA 
+        $examOneCREGradePoints = examOneCREGradePoints($examOneMark,$markName);
+        $examTwoCREGradePoints = examTwoCREGradePoints($examTwoMark,$markName);
+        $examThreeCREGradePoints = examThreeCREGradePoints($examThreeMark,$markName);
+        $creCumulativePoints = Stat::mean([$examOneCREGradePoints,$examTwoCREGradePoints,$examThreeCREGradePoints]);
+        //Get Islam GPA 
+        $examOneIslamGradePoints = examOneIslamGradePoints($examOneMark,$markName);
+        $examTwoIslamGradePoints = examTwoIslamGradePoints($examTwoMark,$markName);
+        $examThreeIslamGradePoints = examThreeIslamGradePoints($examThreeMark,$markName);
+        $islamCumulativePoints = Stat::mean([$examOneIslamGradePoints,$examTwoIslamGradePoints,$examThreeIslamGradePoints]);
+        //Get History GPA 
+        $examOneHistGradePoints = examOneHistoryGradePoints($examOneMark,$markName);
+        $examTwoHistGradePoints = examTwoHistoryGradePoints($examTwoMark,$markName);
+        $examThreeHistGradePoints = examThreeHistoryGradePoints($examThreeMark,$markName);
+        $histCumulativePoints = Stat::mean([$examOneHistGradePoints,$examTwoHistGradePoints,$examThreeHistGradePoints]);
+        //Get GHC GPA 
+        $examOneGHCGradePoints = examOneGHCGradePoints($examOneMark,$markName);
+        $examTwoGHCGradePoints = examTwoGHCGradePoints($examTwoMark,$markName);
+        $examThreeGHCGradePoints = examThreeGHCGradePoints($examThreeMark,$markName);
+        $ghcCumulativePoints = Stat::mean([$examOneGHCGradePoints,$examTwoGHCGradePoints,$examThreeGHCGradePoints]);
+
+        $totalCumulativePoints = collect([$mathsCumulativePoints,$englishCumulativePoints,$kiswCumulativePoints,$chemCumulativePoints,$bioCumulativePoints,$physicsCumulativePoints,$creCumulativePoints,$islamCumulativePoints,$histCumulativePoints,$ghcCumulativePoints])->sum();
+        
+        $cumulativePointsAvg = $totalCumulativePoints/5;
+        
+        //Overal GPA (Addition of all Cumulative Points Devide by Number of Units/Subjects Taken by the Student)
+        $overalGPA = round($cumulativePointsAvg,1);
+
+        //General Grade Each Exam
+        $examOneGenGrade = examOneGeneralGrade($examOneMark,$examOne,$examOneTotal);
+        $examTwoGenGrade = examTwoGeneralGrade($examTwoMark,$examTwo,$examTwoTotal);
+        $examThreeGenGrade = examThreeGeneralGrade($examThreeMark,$examThree,$examThreeTotal);
+        //General Report Card Comment
+        $reportCardComment = reportCardComment($yearId,$termId,$stream,$year,$term,$overalTotalAvg);
+        $streamStudents = $stream->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','marks')->get();
+
+        $pdf = PDF::loadView('admin.pdf.student_reportcard',compact('school','title','examOne','examTwo','examThree','examOneMark','examTwoMark','examThreeMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','ghcAvg','year','term','overalTotalAvg','openingDate','closingDate','overalPosition','streamPosition','stream','examOneTotal','examTwoTotal','examThreeTotal','name','markName','examOneMathsGrade','examOneEnglishGrade','examOneKiswGrade','examOneChemGrade','examOneBioGrade','examOnePhysicsGrade','examOneCREGrade','examOneIslamGrade','examOneHistGrade','examOneGHCGrade','examTwoMathsGrade','examTwoEnglishGrade','examTwoKiswGrade','examTwoChemGrade','examTwoBioGrade','examTwoPhysicsGrade','examTwoCREGrade','examTwoIslamGrade','examTwoHistGrade','examTwoGHCGrade','examThreeMathsGrade','examThreeEnglishGrade','examThreeKiswGrade','examThreeChemGrade','examThreeBioGrade','examThreePhysicsGrade','examThreeCREGrade','examThreeIslamGrade','examThreeHistGrade','examThreeGHCGrade','examOneGenGrade','examTwoGenGrade','examThreeGenGrade','overalGPA','reportCardComment','mark','streamStudents'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -625,4 +783,24 @@ class PdfController extends Controller
         
         return $pdf->download($title.'.pdf',array("Attachment" => 0));
     } 
+
+    public function marks(Request $request)
+    {
+        $yearId = $request->year;
+        $termId = $request->term;
+        $examId = $request->exam;
+        $classId = $request->class;
+
+        $marks = Mark::with('exam.grades')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$classId,'year_id'=>$yearId])->get();
+        $studentMarks = collect($marks)->map(function($mark){
+            $grade = Grade::where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$classId,'year_id'=>$yearId],function($query) use($mark){
+                $query->where('from_mark','>=',$mark->mathematics);
+                $query->where('to_mark','<=',$mark->mathematics);
+            })->get();
+
+            return [
+                'grade'=>$grade,
+            ];
+        });
+    }
 }

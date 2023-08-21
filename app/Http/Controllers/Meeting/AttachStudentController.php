@@ -23,9 +23,9 @@ class AttachStudentController extends Controller
     public function attachStudent(Request $request,$id)
     {
     	$meeting = $this->meetingRepo->getId($id);
-    	$student = $request->student;
-    	$meeting->students()->attach($student);
+    	$students = $request->students;
+    	$meeting->students()->sync($students);
 
-    	return back()->withSuccess('The student attached to the meeting successfully');
+    	return back()->withSuccess('The students attached to the meeting successfully');
     }
 }

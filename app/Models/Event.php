@@ -7,8 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-	protected $table = 'events';
     use HasFactory;
+
+    protected $table = 'events';
+    protected $fillable = [
+        'title', 
+        'start', 
+        'end'
+    ];    
 
     /**
      * Get the school record associated with the user.

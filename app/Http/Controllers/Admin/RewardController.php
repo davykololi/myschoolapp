@@ -24,6 +24,7 @@ class RewardController extends Controller
     public function __construct(StreamService $streamService,DeptService $deptService,RewardService $rewardService,TeacherService $teacherService,StudentService $studentService,StaffService $staffService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('admin2fa');
         $this->streamService = $streamService;
         $this->deptService = $deptService;
         $this->rewardService = $rewardService;
@@ -53,10 +54,10 @@ class RewardController extends Controller
     public function create()
     {
         //
-        $teachers = $this->teacherService->all();
-        $students = $this->studentService->all();
-        $staffs = $this->staffService->all();
-        $streams = $this->streamService->all();
+        $teachers = $this->teacherService->all()->pluck('full_name','id');
+        $students = $this->studentService->all()->pluck('full_name','id');
+        $staffs = $this->staffService->all()->pluck('full_name','id');
+        $streams = $this->streamService->all()->pluck('name','id');
 
         return view('admin.rewards.create',compact('teachers','students','staffs','streams'));
     }
@@ -71,14 +72,14 @@ class RewardController extends Controller
     {
         //
         $reward = $this->rewardService->create($request);
-        $teacherId = $request->teacher;
-        $reward->teachers()->attach($teacherId);
-        $studentId = $request->student;
-        $reward->students()->attach($studentId);
-        $staffId = $request->staff;
-        $reward->staffs()->attach($staffId);
-        $streamId = $request->stream;
-        $reward->streams()->attach($streamId);
+        $teachers = $request->teachers;
+        $reward->teachers()->sync($teachers);
+        $students = $request->students;
+        $reward->students()->sync($students);
+        $staffs = $request->staffs;
+        $reward->staffs()->sync($staffs);
+        $streams = $request->streams;
+        $reward->streams()->attach($streams);
 
         return redirect()->route('admin.rewards.index')->withSuccess(($reward->name." ".'info created successfully'));
     }
@@ -107,10 +108,10 @@ class RewardController extends Controller
     {
         //
         $reward = $this->rewardService->getId($id);
-        $teachers = $this->teacherService->all();
-        $students = $this->studentService->all();
-        $staffs = $this->staffService->all();
-        $streams = $this->streamService->all();
+        $teachers = $this->teacherService->all()->pluck('full_name','id');
+        $students = $this->studentService->all()->pluck('full_name','id');
+        $staffs = $this->staffService->all()->pluck('full_name','id');
+        $streams = $this->streamService->all()->pluck('name','id');
 
         return view('admin.rewards.edit',compact('reward','teachers','students','staffs','streams'));
     }
@@ -128,14 +129,14 @@ class RewardController extends Controller
         $reward = $this->rewardService->getId($id);
         if($reward){
         	$this->rewardService->update($request,$id);
-        	$teacherId = $request->teacher;
-        	$reward->teachers()->sync($teacherId);
-        	$studentId = $request->student;
-        	$reward->students()->sync($studentId);
-        	$staffId = $request->staff;
-        	$reward->staffs()->sync($staffId);
-        	$streamId = $request->stream;
-        	$reward->streams()->sync($streamId);
+        	$teachers = $request->teachers;
+        	$reward->teachers()->sync($teachers);
+        	$students = $request->students;
+        	$reward->students()->sync($students);
+        	$staffs = $request->staffs;
+        	$reward->staffs()->sync($staffs);
+        	$streams = $request->streams;
+        	$reward->streams()->sync($streams);
 
         	return redirect()->route('admin.rewards.index')->withSuccess(($reward->name." ".'info updated successfully'));
         }

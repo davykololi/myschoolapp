@@ -18,6 +18,7 @@ class MatronController extends Controller
     public function __construct(SchRepo $schRepo,DormRepo $dormRepo)
     {
         $this->middleware('auth:matron');
+        $this->middleware('matron2fa');
         $this->schRepo = $schRepo;
         $this->dormRepo = $dormRepo;
     }
@@ -29,7 +30,7 @@ class MatronController extends Controller
      */
     public function index()
     {
-        return view('matron');
+        return view('matron.matron');
     }
 
     public function dormitories($id)

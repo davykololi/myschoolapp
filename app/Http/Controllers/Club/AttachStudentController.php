@@ -23,9 +23,9 @@ class AttachStudentController extends Controller
     public function attachStudent(Request $request,$id)
     {
     	$club = $this->clubRepo->getId($id);
-    	$student = $request->student;
-    	$club->students()->attach($student);
+    	$students = $request->students;
+    	$club->students()->attach($students);
 
-    	return back()->withSuccess('The student attached to the club successfully');
+    	return back()->withSuccess('The students attached to the club successfully');
     }
 }

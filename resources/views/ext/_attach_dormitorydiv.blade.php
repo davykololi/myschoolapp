@@ -1,7 +1,9 @@
-                            <select id="dormitory" type="text" value="{{old('dormitory')}}" class="form-control" name="dormitory">
+                            <select id="dormitory" type="text" value="{{old('dormitory',)}}" class="leading-tight" name="dormitory">
                                 <option value="">Select Dormitory</option>
                                 @foreach ($dormitories as $dormitory)
-                            <option value="{{$dormitory->id}}">{{$dormitory->name}}</option>
+                                <option value="{{ $dormitory->id }}">
+                                    {{$dormitory->name}}
+                                </option>
                                 @endforeach
                             </select>
 

@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    @include('partials.head')
-<body>
-    <div id="app">
-      @include('partials.teacher_navbar')
-      @include('partials.multi_header')
-        <main class="py-4">
-            @yield('content')
-        </main>
-      @include('partials.scripts')
+    <x-general-head/>
+<body class="font-sans antialiased bg-gray-200">
+    <x-teacher-navbar/>
+    <x-teacher-header/>
+    <x-general-layouts-container> <!-- the container -->
+        @yield('content')
+    </x-general-layouts-container>
+    <x-general-footer/>
+      @include('partials.frontend_scripts')
     </div>
 </body>
 </html>

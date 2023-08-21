@@ -22,9 +22,9 @@ class AttachTeacherController extends Controller
     public function attachTeacher(Request $request,$id)
     {
     	$club = $this->clubRepo->getId($id);
-    	$teacher = $request->teacher;
-    	$club->teachers()->attach($teacher);
+    	$teachers = $request->teachers;
+    	$club->teachers()->attach($teachers);
 
-    	return back()->withSuccess('The teacher attached to the club successfully.');
+    	return back()->withSuccess('The teachers attached to the club successfully.');
     }
 }

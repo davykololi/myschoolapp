@@ -1,77 +1,127 @@
-@extends('layouts.admin')
-@section('title', '| All Assignments')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
-    <div class="col-lg-12">
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
+    <div class="max-w-screen">
     @include('partials.messages')
     <!-- Posts list -->
     @if(!empty($assignments))
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>ASSIGNMENT LIST</h2>
+        <div class="w-full mt-4">
+            <div class="px-2">
+                <div>
+                    <h2 class="uppercase text-center text-2xl font-2xl font-hairline">ASSIGNMENT LIST</h2>
                 </div>
-                <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.assignments.create')}}">Create</a>
+                <div class="text-right">
+                    <a type="button" class="bg-blue-700 text-white px-2 py-1 rounded md:hover:bg-blue-500" href="{{route('admin.assignments.create')}}">
+                        Create
+                    </a>
                 </div>
             </div>
         </div>
-        <br/>
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-bordered table-head-bg-info table-bordered-bd-info">
-                    <!-- Table Headings -->
-                    @include('partials.assignmenthead')
-                    <!-- Table Body -->
-                    <tbody>
-                    @foreach($assignments as $assignment)
-                        <tr>
-                            <td class="table-text">
-                                <div>{{$assignment->name}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>
-                                    @foreach($assignment->teachers as $teacher)
-                                        {{$teacher->full_name}}
-                                    @endforeach
-                                </div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{\Carbon\Carbon::parse($assignment->date)->format('d-m-Y')}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{\Carbon\Carbon::parse($assignment->deadline)->format('d-m-Y')}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>
-                                    <a href="{{route('admin.assignment.download',$assignment->id)}}" class="btn btn-outline-warning">
-                                        Download
-                                    </a>
-                                </div>
-                            </td>
-                            <td>
-                                <form action="{{route('admin.assignments.destroy',$assignment->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <a href="{{ route('admin.assignments.show', $assignment->id) }}" class="btn btn-success btn-xs">
-                                        Details
-                                    </a>
-                                    <a href="{{ route('admin.assignments.edit', $assignment->id) }}" class="btn btn-warning btn-xs">Edit</a>
-                                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete {{$assignment->name}}?')">
-                                        Delete
-                                    </button>
-                                </form> 
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+        <div class="flex flex-col overflow-x-auto mt-12">
+            <div class="sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                    <div class="overflow-x-auto">
+                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                            <!-- Table Headings -->
+                            <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
+                                <tr>
+                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ASSIGNMENT</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">FROM</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">TO</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">PUBLISHED</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">DEADLINE</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">FILE</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">ACTION</th>
+                                </tr>
+                            </thead>
+                            <!-- Table Body -->
+                            <tbody>
+                            @foreach($assignments as $assignment)
+                                <tr class="border-b dark:border-neutral-500">
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$loop->iteration}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$assignment->name}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>
+                                            @if($assignment->teachers->isNotEmpty())
+                                            @foreach($assignment->teachers as $teacher)
+                                                {{$teacher->full_name}}
+                                            @endforeach
+                                            @elseif($assignment->students->isNotEmpty())
+                                            @foreach($assignment->students as $student)
+                                                {{$student->full_name}}
+                                            @endforeach
+                                            @elseif($assignment->staffs->isNotEmpty())
+                                            @foreach($assignment->staffs as $staff)
+                                                {{$staff->full_name}}
+                                            @endforeach
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>
+                                            @if($assignment->streams->isNotEmpty())
+                                            @foreach($assignment->streams as $stream)
+                                                {{$stream->name}}
+                                            @endforeach
+                                            @elseif($assignment->students->isNotEmpty())
+                                            @foreach($assignment->students as $student)
+                                                {{$student->full_name}}
+                                            @endforeach
+                                            @elseif($assignment->staffs->isNotEmpty())
+                                            @foreach($assignment->staffs as $staff)
+                                                {{$staff->full_name}}
+                                            @endforeach
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{\Carbon\Carbon::parse($assignment->date)->format('d-m-Y')}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{\Carbon\Carbon::parse($assignment->deadline)->format('d-m-Y')}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <a href="{{route('admin.assignment.download',$assignment->id)}}" class="bg-yellow-500 hover:bg-yellow-700 text-white text-center py-2 px-4 rounded">
+                                            Download
+                                        </a>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <form action="{{route('admin.assignments.destroy',$assignment->id)}}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a href="{{ route('admin.assignments.show', $assignment->id) }}" class="bg-green-500 hover:bg-green-700 text-white text-center py-2 px-4 rounded mx-0.5">
+                                                Details
+                                            </a>
+                                            <a href="{{ route('admin.assignments.edit', $assignment->id) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white text-center py-2 px-4 rounded mx-0.5">
+                                                Edit
+                                            </a>
+                                            <button type="submit"  class="bg-red-500 hover:bg-red-700 text-white text-center py-1.5 px-4 rounded mx-0.5"onclick="return confirm('Are you sure to delete {{$assignment->name}}?')">
+                                                Delete
+                                            </button>
+                                        </form> 
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     @endif
     </div>
-</div>
-</main>
-@endsection
+  </x-backend-main>
+</x-admin>
+
+
+
+
+
+
+
+

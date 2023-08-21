@@ -16,6 +16,7 @@ class DownloadNotesController extends Controller
     public function __construct()
     {
         $this->middleware('auth:teacher');
+        $this->middleware('teacher2fa');
     }
     
     public function dowmloadNotes($noteId)

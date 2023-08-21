@@ -16,15 +16,16 @@ class AttachTeacherController extends Controller
      */
     public function __construct(DeptRepo $deptRepo)
     {
-        $this->middleware('auth:admin');
+        $this->middleware('auth:superadmin');
+        $this->middleware('superadmin2fa');
         $this->deptRepo = $deptRepo;
     }
     public function attachTeacher(Request $request,$id)
     {
     	$department = $this->deptRepo->getId($id);
-    	$teacher = $request->teacher;
-    	$department->teachers()->attach($teacher);
+    	$teachers = $request->teachers;
+    	$department->teachers()->sync($teachers);
 
-    	return back()->withSuccess('The teacher attached to the department successfully');
+    	return back()->withSuccess('The teachers attached to the department successfully');
     }
 }

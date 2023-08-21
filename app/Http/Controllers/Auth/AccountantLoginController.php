@@ -16,7 +16,8 @@ class AccountantLoginController extends Controller
  
     //function to show admin login form
     public function showLoginForm() {
-        return view('accountant.accountant_login');
+        $title = "Student Login";
+        return view('accountant.accountant_login',compact('title'));
     }
     //function to login admins
     public function login(Request $request) {
@@ -27,11 +28,11 @@ class AccountantLoginController extends Controller
         ]);
         //attempt to login the admins in
         if (Auth::guard('accountant')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)){
-            //if successful redirect to admin dashboard
-            return redirect()->intended(route('accountant.dashboard'));
+            //if credentials are true, then redirect to 2fa view to provide the generated code
+            return redirect()->route('accountant.2fa.index');
         }
         //if unsuccessfull redirect back to the login for with form data
-        return redirect()->back()->withInput($request->only('email','remember'));
+        return redirect()->back()->withInput($request->only('email','remember'))->withErrors('Oppes! You have entered invalid credentials');
     }
  
     public function logout()

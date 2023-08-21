@@ -7,9 +7,11 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use App\Events\MarksPublished;
+use App\Events\ExamRecords;
 use App\Listeners\NotifyStudents;
 use App\Events\StudentRegistered;
 use App\Listeners\NotifyStudent;
+use App\Listeners\StoreExamRecords;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,10 @@ class EventServiceProvider extends ServiceProvider
 
         StudentRegistered::class => [
             NotifyStudent::class,
+        ],
+
+        ExamRecords::class => [
+            StoreExamRecords::class,
         ],
     ];
 

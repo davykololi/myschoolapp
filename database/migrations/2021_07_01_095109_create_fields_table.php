@@ -16,9 +16,9 @@ class CreateFieldsTable extends Migration
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type')->default('Kipchoge Keino Field');
             $table->string('code');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_field_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

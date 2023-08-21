@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use Exception;
+use Mail;
+use App\Models\UserEmailCode;
+use App\Mail\SendEmailCode;
+use	Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 use App\Notifications\MatronResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -18,7 +24,7 @@ class Matron extends Authenticatable
     *@var array
     */
     protected $table = 'matrons';
-    protected $fillable = ['title','name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history','bg_id','school_id','position_matron_id','password'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','role','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password'];
     protected $appends = ['age'];
     /**
     * The attributes that should be hidden for arrays.
@@ -26,6 +32,35 @@ class Matron extends Authenticatable
     *@var array
     */
     protected $hidden = ['password','remember_token',];
+
+    /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function generateCode()
+    {
+        $code = rand(100000,999999);
+  
+        UserEmailCode::updateOrCreate(
+            [ 'matron_id' => auth()->user()->id ],
+            [ 'code' => $code ]
+        );
+    
+        try {
+  
+            $details = [
+                'title' => 'Mail Sent from'." ".auth()->user()->school->name,
+                'code' => $code,
+                'school' => auth()->user()->school->name,
+            ];
+             
+            Mail::to(auth()->user()->email)->send(new SendEmailCode($details));
+    
+        } catch (Exception $e) {
+            info("Error: ". $e->getMessage());
+        }
+    }
 
     public function sendPasswordResetNotification($token)
     {
@@ -35,16 +70,6 @@ class Matron extends Authenticatable
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
-    }
-
-    public function position_matron()
-    {
-        return $this->belongsTo('App\Models\PositionMatron')->withDefault();
-    }
-
-    public function blood_group()
-    {
-        return $this->belongsTo('App\Models\BloodGroup')->withDefault();
     }
 
     public function meetings()
@@ -60,18 +85,40 @@ class Matron extends Authenticatable
     public function getAgeAttribute()       
     { 
         $myDate = $this->dob;
-        $years = \Carbon\Carbon::parse($myDate)->age;
+        $change = Carbon::createFromFormat('d/m/Y',$myDate)->format('d-m-Y H:i');
+        $years = Carbon::parse($change)->age;
 
         return $years;     
     }
 
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = ucfirst($value);
+    public function getFullNameAttribute()       
+    {        
+        return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
+    }
+
+    public function	firstName(): Attribute 
+    {				
+        return	new	Attribute(								                             
+            set: fn	($value) =>	ucfirst($value),				
+        ); 
+    }
+
+    public function	middleName(): Attribute 
+    {				
+        return	new	Attribute(								                             
+            set: fn	($value) =>	ucfirst($value),				
+        ); 
+    }
+
+    public function	lastName(): Attribute 
+    {				
+        return	new	Attribute(								                             
+            set: fn	($value) =>	ucfirst($value),				
+        ); 
     }
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','position_matron','meetings','rewards')->get();
+        return $query->with('school','meetings','rewards')->get();
     }
 }

@@ -11,61 +11,65 @@ use App\Http\Requests\ParentFormRequest as UpdateRequest;
 
 class ParentService
 {
-	use ImageUploadTrait;
-	protected $parentRepository;
+    use ImageUploadTrait;
+    protected $parentRepo;
 
-	public function __construct(ParentRepository $parentRepository)
-	{
-		$this->parentRepository = $parentRepository;
-	}
+    public function __construct(ParentRepository $parentRepo)
+    {
+        $this->parentRepo = $parentRepo;
+    }
 
-	public function all()
-	{
-		return $this->parentRepository->all();
-	}
+    public function all()
+    {
+        return $this->parentRepo->all();
+    }
 
-	public function create(StoreRequest $request)
-	{
-		$data = $this->createData($request);
+    public function eagerLoaded()
+    {
+        return $this->parentRepo->eagerLoaded();
+    }
 
-		return $this->parentRepository->create($data);
-	}
+    public function create(StoreRequest $request)
+    {
+        $data = $this->createData($request);
 
-	public function update(UpdateRequest $request,$id)
-	{
-		$data = $this->updateData($request);
+        return $this->parentRepo->create($data);
+    }
 
-		return $this->parentRepository->update($data,$id);
-	}
+    public function update(UpdateRequest $request,$id)
+    {
+        $data = $this->updateData($request);
 
-	public function getId($id)
-	{
-		return $this->parentRepository->getId($id);
-	}
+        return $this->parentRepo->update($data,$id);
+    }
 
-	public function createData(StoreRequest $request)
-	{
-		$data = $request->validated();
-        $data['school_id'] = auth()->user()->school->id;
-        $data['bg_id'] = $request->blood_group;
+    public function getId($id)
+    {
+        return $this->parentRepo->getId($id);
+    }
+
+    public function createData(StoreRequest $request)
+    {
+        $data = $request->validated();
+        $data['school_id'] = Auth::user()->school->id;
         $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;
-	}
+    }
 
-	public function updateData(UpdateRequest $request)
-	{
-        $data=$request->only('title','name','dob','email','gender','address','phone_no','id_no','designation','emp_no');
-        $data['school_id'] = auth()->user()->school->id;
-        $data['bg_id'] = $request->blood_group;
+    public function updateData(UpdateRequest $request)
+    {
+        $data=$request->only('salutation','name','email','address','phone_no','id_no');
+        $data['school_id'] = Auth::user()->school->id;
+        $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;
-	}
+    }
 
-	public function delete($id)
-	{
-		return $this->parentRepository->delete($id);
-	}
+    public function delete($id)
+    {
+        return $this->parentRepo->delete($id);
+    }
 }

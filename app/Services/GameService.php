@@ -46,7 +46,7 @@ class GameService
 		$data = $request->all();
         $data['code'] = strtoupper(Str::random(15));
         $data['school_id'] = Auth::user()->school->id;
-        $data['category_game_id'] = $request->game_category;
+        $data['type'] = $request->type;
 
         return $data;
 	}
@@ -55,7 +55,7 @@ class GameService
 	{
 		$data = $request->only(['name']);
         $data['school_id'] = Auth::user()->school->id;
-        $data['category_game_id'] = $request->game_category;
+        $data['type'] = $request->type;
 
         return $data;
 	}

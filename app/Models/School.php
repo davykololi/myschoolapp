@@ -4,9 +4,12 @@ namespace App\Models;
 
 use App\Models\Letter;
 use App\Models\Subject;
-use App\Models\StandardSubject;
+use App\Models\StreamSubjectTeacher;
 use App\Models\Mark;
+use App\Models\Exam;
 use App\Models\MyClass;
+use App\Models\Gallery;
+use App\Models\ReportComment;
 use Illuminate\Database\Eloquent\Model;
 
 class School extends Model
@@ -15,16 +18,36 @@ class School extends Model
     protected $table = 'schools';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $fillable = ['name','initials','code','head','ass_head','motto','vision','mission','email','postal_address','core_values','image','catsch_id'];
+    protected $fillable = ['name','initials','code','head','ass_head','motto','vision','mission','email','postal_address','core_values','image','type'];
 
-    public function category_school()
+    public function nationalSchool()
     {
-        return $this->belongsTo('App\Models\CategorySchool')->withDefault();
+        return $this->type === "National School";
+    }
+
+    public function countySchool()
+    {
+        return $this->type === "County School";
+    }
+
+    public function extraCountySchool()
+    {
+        return $this->type === "Extra County School";
+    }
+
+    public function privateSchool()
+    {
+        return $this->type === "Private School";
+    }
+
+    public function superadmin()
+    {
+    	return $this->hasOne('App\Models\Superadmin','school_id','id');
     }
 
     public function admins()
     {
-    	return $this->hasMany('App\Models\Admin','school_id','id');
+        return $this->hasMany('App\Models\Admin','school_id','id');
     }
 
     public function classes()
@@ -87,9 +110,9 @@ class School extends Model
         return $this->hasMany('App\Models\Library','school_id','id');
     }
 
-    public function fees()
+    public function payments()
     {
-        return $this->hasMany('App\Models\Fee','school_id','id');
+        return $this->hasMany('App\Models\Payment','school_id','id');
     }
 
     public function meetings()
@@ -132,9 +155,9 @@ class School extends Model
         return $this->hasMany('App\Models\Timetable','school_id','id');
     }
 
-    public function standard_subjects()
+    public function stream_subject_teachers()
     {
-        return $this->hasManyThrough(StandardSubject::class,Subject::class,'school_id','subject_id','id');
+        return $this->hasManyThrough(StreamSubjectTeacher::class,Subject::class,'school_id','subject_id','id');
     }
 
     public function notes()
@@ -179,7 +202,7 @@ class School extends Model
 
     public function marks()
     {
-        return $this->hasMany(Mark::class,'school_id','id');
+        return $this->hasManyThrough(Mark::class,Exam::class,'school_id','exam_id','id');
     }
 
     public function attendances()
@@ -194,11 +217,31 @@ class School extends Model
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','category_school','departments','clubs','streams')->get();
+        return $query->with('teachers','students','departments','clubs','streams')->get();
     }
 
-    public function grade_systems()
+    public function grades()
     {
-        return $this->hasMany('App\Models\GradeSystem','school_id','id');
+        return $this->hasMany('App\Models\Grade','school_id','id');
+    }
+
+    public function report_comments()
+    {
+        return $this->hasMany(ReportComment::class,'school_id','id');
+    }
+
+    public function males()
+    {
+        return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','school_id','id')->where(['gender'=>'Male'])->count();
+    }
+
+    public function females()
+    {
+        return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','school_id','id')->where(['gender'=>'Female'])->count();
+    }
+
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class,'school_id','id');
     }
 }

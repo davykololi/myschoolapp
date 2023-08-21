@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Meeting extends Model implements Searchable
 {
     //
     protected $table = 'meetings';
-    protected $fillable = ['name','agenda','date','venue','code','school_id'];
+    protected $fillable = ['name','agenda','date','venue','start_at','end_at','code','school_id'];
 
     public function getSearchResult(): SearchResult
     {

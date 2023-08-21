@@ -20,7 +20,7 @@ class StreamRepository implements StreamInterface
 
     public function all()
     {
-        return $this->stream->eagerLoaded();
+        return $this->stream->eagerLoaded()->get();
     }
 
     public function create(array $data)

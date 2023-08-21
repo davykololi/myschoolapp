@@ -16,9 +16,9 @@ class CreateFarmsTable extends Migration
         Schema::create('farms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type')->default('West End Farm');
             $table->string('code');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_farm_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

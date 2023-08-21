@@ -3,48 +3,47 @@
 namespace App\Http\Controllers\Teacher;
 
 use Auth;
+use SEOMeta;
+use OpenGraph;
+use Twitter;
+use JsonLd;
 use App\Models\Teacher;
-use App\Models\Stream;
+use App\Services\StreamService;
 use App\Models\Student;
-use App\Models\Department;
-use App\Models\PositionTeacher;
+use App\Services\DepartmentService;
+use App\Models\Subject;
+use App\Models\Stream;
+use App\Models\StreamSubjectTeacher;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
+    protected $streamService, $deptService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request, StreamService $streamService, DepartmentService $deptService)
     {
         $this->middleware('auth:teacher');
+        $this->middleware('teacher2fa');
+        $this->request = $request;
+        $this->streamService = $streamService;
+        $this->deptService = $deptService;
     }
 
     public function index()
     {
-    	return view('teacher');
+    	return view('teacher.teacher');
     }
 
     public function schoolTeachers()
     {
         $user = Auth::user();
-        $principal = PositionTeacher::whereName('The Principal')->first();
-        $headTeachers = $principal->teachers()->with('position_teacher')->get();
-
-        $deputy = PositionTeacher::whereName('The Deputy Principal')->first();
-        $deputyHeadTeachers = $deputy->teachers()->with('position_teacher')->get();
-
-        $scienceDept = Department::whereName('Science Department')->first();
-        $scienceDeptHead = PositionTeacher::whereName('The Head Science Department')->first();
-        $scienceDeptHeadTeachers = $scienceDeptHead->teachers()->with('position_teacher')->get();
-        $scienceDeptAssHead = PositionTeacher::whereName('The Assistant Head Science Department')->first();
-        $scienceDeptAssHeadTeachers = $scienceDeptAssHead->teachers()->with('position_teacher')->get();
-        $scienceDeptTeachers = $scienceDept->teachers()->with('position_teacher')->get();
         
-        return view('teacher.school_teachers',['user'=>$user,'headTeachers'=>$headTeachers,'deputyHeadTeachers'=>$deputyHeadTeachers,'scienceDept'=>$scienceDept,'scienceDeptHeadTeachers'=>$scienceDeptHeadTeachers,'scienceDeptAssHeadTeachers'=>$scienceDeptAssHeadTeachers,'scienceDeptTeachers'=>$scienceDeptTeachers]);
+        return view('teacher.school_teachers',['user'=>$user]);
     }
 
     public function showTeacher(Teacher $teacher)
@@ -56,14 +55,24 @@ class TeacherController extends Controller
     public function streams(Request $request)
     {
         $user = Auth::user();
-        $streams = Stream::all();
+        $streams = $this->streamService->all();
+        $streamSubjectTeacher = StreamSubjectTeacher::where(['teacher_id'=>$user->id])->first();
         
-        return view('teacher.streams',['user'=>$user,'streams'=>$streams]);
+        return view('teacher.streams',['user'=>$user,'streams'=>$streams,'streamSubjectTeacher'=>$streamSubjectTeacher]);
     }
 
     public function showStream(Stream $stream)
     {
-        return view('teacher.show_stream',compact('stream'));
+        $user = Auth::user();
+        $strmSubjectTeachers = $stream->stream_subject_teachers()->with('teacher.streams','stream','school','subject')->get();
+        $streamSubjectTeacher = StreamSubjectTeacher::with('teacher.streams','stream','school','subject')->where(['teacher_id'=>$user->id,'stream_id'=>$stream->id])->first();
+
+        if($streamSubjectTeacher === null){
+            return redirect()->route('teacher.streams')->withErrors("Not Authorized");
+        }
+        $subjects = Subject::with('teachers','students','school','department')->get();
+        
+        return view('teacher.show_stream',compact('user','strmSubjectTeachers','streamSubjectTeacher','stream','subjects')); 
     }
 
     public function showStudent(Student $student)
@@ -74,20 +83,15 @@ class TeacherController extends Controller
     public function departments()
     {
         $user = Auth::user();
-        $departments = Department::all();
+        $departments = $this->deptService->all();
         
         return view('teacher.departments',compact('user','departments'));
     }
 
-    public function showDepartment(Department $department)
-    {
-        return view('teacher.show_department',compact('department'));
-    }
-
-    public function teacherRewards()
-    {
-        $user = auth()->user();
+    public function showDepartment($id)
+    {  
+        $department = $this->deptService->getId($id);
         
-        return view('teacher.teacher_rewards',['user'=>$user]);
+        return view('teacher.show_department',compact('department'));
     }
 }

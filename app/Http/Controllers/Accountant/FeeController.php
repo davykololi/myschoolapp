@@ -9,6 +9,17 @@ use Illuminate\Http\Request;
 class FeeController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:accountant');
+        $this->middleware('accountant2fa');
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

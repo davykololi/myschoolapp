@@ -20,7 +20,12 @@ class StudentRepository implements StudentInterface
 
     public function all()
     {
-        return $this->student->eagerLoaded();
+        return $this->student->eagerLoaded()->get();
+    }
+
+    public function paginate()
+    {
+        return $this->student->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

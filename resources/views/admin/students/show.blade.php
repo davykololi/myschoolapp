@@ -1,13 +1,11 @@
-@extends('layouts.admin')
-@section('title', '| Show Student')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-    <div class="row">
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
+<div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
-            <h2>STUDENT DETAILS</h2>
+            <h2 class="uppercase">{{ $student->full_name }} Profile</h2>
             <br/>
         </div>
         <div class="pull-right">
@@ -15,22 +13,33 @@
         </div>
     </div>
 </div>
+
+
+<div class="block md:w-1/3 mx-auto rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+  <div
+    class="relative overflow-hidden bg-cover bg-no-repeat"
+    data-te-ripple-init
+    data-te-ripple-color="light">
+    <img class="rounded-t-lg h-64 w-64 mx-auto pt-8" src="{{ $student->image_url }}" alt="" onerror="this.src='{{asset('static/avatar.png')}}'"/>
+    <a href="#!">
+      <div
+        class="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"></div>
+    </a>
+  </div>
+  <div class="p-6">
+    <h5 class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50">
+      {{ $student->full_name }}
+    </h5>
+  </div>
+</div>
+
+
+
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $student->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Name:</strong>
-            {{ $student->title }} {{ $student->name }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Position:</strong>
-            {{ $student->position_student->name }}, {{ $student->school->name }}
+            <strong>Role:</strong>
+            {{ $student->role->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -72,7 +81,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Intake:</strong>
-            {{ $student->intake->name }}
+            {{ $student->getAdmissionMonth() }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -89,73 +98,133 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Parent Info:</strong>
-            <span style="color: green">Name:</span> {{ $student->parent->title }} {{ $student->parent->name }} 
-            <span style="color: green">Phone:</span> {{ $student->parent->phone_no }}
-            <span style="color: green">Job:</span> {{ $student->parent->designation }}
+            <strong>Admission Marks:</strong>
+            {{ $student->adm_mark }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->name }}'s Subjects:</strong>
-            <ol>
-            @forelse($student->subjects as $subject)
-            <a href="{{route('admin.subjects.show',$subject->id)}}">
-                <li>{{ $subject->name }}</li>
-            </a>
-            @empty
-            <p>No subject(s) assigned to {{ $student->name }} yet.</p>
-            @endforelse
-            </ol>
+            <strong>Parents Info:</strong>
+            @if($student->student_info != null)
+            @if($student->student_info->fathers_name != null)
+            <li>
+                <span style="color: green">Father's Name:</span> {{ $student->student_info->fathers_name }}
+            </li>
+            @else
+            @endif
+
+            @if($student->student_info->fathers_occupation != null)
+            <li>
+                <span style="color: green">Father's Occupation:</span> {{ $student->student_info->fathers_occupation }} 
+            </li>
+            @else
+            @endif
+
+            @if($student->student_info->mothers_name != null)
+            <li>
+                <span style="color: green">Mothers's Name:</span> {{$student->student_info->mothers_name }}
+            </li>
+            @else
+            @endif
+
+            @if($student->student_info->mothers_occupation != null)
+            <li>
+                <span style="color: green">Mothers's Occupation:</span> {{ $student->student_info->mothers_occupation }}
+            </li>
+            @else
+            @endif
+
+            @if($student->student_info->mothers_annual_income != null)
+            <li>
+                <span style="color: green">Mothers's Annual Income:</span> {{ $student->student_info->mothers_annual_income }}
+            </li>
+            @else
+            @endif
+
+            @if($student->student_info->guardian_name != null)
+            <li>
+                <span style="color: green">Guardian Name:</span> {{ $student->guardian_name }}
+            </li>
+            @else
+            @endif
+
+            @if($student->student_info->guardian_occupation != null)
+            <li>
+                <span style="color: green">Guardian Occupation:</span> {{ $student->guardian_occupation }}
+            </li>
+            @else
+            @endif
+            
+            @else
+            <li>
+                <span class="text-[red]" > {{ __('No Information') }} </span>
+            </li>
+            @endif
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->name }}'s Awards:</strong>
+            <strong>{{ $student->stream->name }}'s Subjects:</strong>
+            <p>
+            @if(!empty($streamSubjects))
+                {!! \Arr::join($streamSubjects, ', ', ', and ') !!}.
+            @else
+                <span style="color: red">No subjects assigned to your class at the moment.</span>
+            @endif
+            </p>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>{{ $student->first_name }}'s Awards:</strong>
             <ol>
             @forelse($student->rewards as $reward)
             <a href="{{route('admin.rewards.show',$reward->id)}}">
                 <li>{{ $reward->name }} <span style="color: blue">Purpose:</span> {{ $reward->purpose }}.</li>
             </a>
             @empty
-                <p>{{ $student->name }} notyet recieved any award.</p>
+                <p class="text-[red]">{{ $student->first_name }} notyet recieved any award.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->name }}'s Assignments:</strong>
+            <strong>{{ $student->first_name }}'s Assignments:</strong>
             <ol>
             @forelse($student->assignments as $assignment)
                 <li>
-                    {{ $assignment->name }} {{ $assignment->file}} <span style="color: blue">Given:</span> 
+                    {{ $assignment->name }}  <span style="color: blue">Given:</span> 
                     {{ date("jS,F,Y,g:i a",strtotime($assignment->date_given)) }} <span style="color: red">Deadline:</span> 
-                    {{ date("jS,F,Y,g:i a",strtotime($assignment->deadline)) }}.
+                    {{ date("jS,F,Y,g:i a",strtotime($assignment->deadline)) }}
+                    @foreach($assignment->teachers as $teacher)
+                    By: {{$teacher->title}} {{$teacher->name}} {{$teacher->phone_no}} - 
+                    @endforeach
+                    {{ $assignment->file}}
                 </li>
             @empty
-                <p>{{ $student->name }} notyet been given any assignment(s).</p>
+                <p class="text-[red]">{{ $student->first_name }} notyet been given any assignment(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->name }}'s Clubs:</strong>
+            <strong>{{ $student->first_name }}'s Clubs:</strong>
             <ol>
             @forelse($student->clubs as $club)
             <a href="{{route('admin.clubs.show',$club->id)}}">
                 <li>{{ $club->name }}</li>
             </a>
             @empty
-                <p>{{ $student->name }} notyet been assigned to any club.</p>
+                <p class="text-[red]">{{ $student->first_name }} notyet been assigned to any club.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->name }}'s Meetings:</strong>
+            <strong>{{ $student->first_name }}'s Meetings:</strong>
             <ol>
             @forelse($student->meetings as $key => $meeting)
             <a href="{{route('admin.meetings.show',$meeting->id)}}">
@@ -165,14 +234,14 @@
                 </li>
             </a>
             @empty
-                <p>{{ $student->name }} notyet been assigned to any meeting(s).</p>
+                <p class="text-[red]">{{ $student->first_name }} notyet been assigned to any meeting(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>More About {{ $student->name }}:</strong>
+            <strong>More About {{ $student->first_name }}:</strong>
             {!! $student->history !!}
         </div>
     </div>
@@ -182,14 +251,30 @@
                 <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($student->created_at)) }}</span>
         </div>
     </div>
-    @include('student.attachsubjectform')
-    @include('student.detachsubjectform')
-    @include('student.attachrewardform')
-    @include('student.detachrewardform')
-    @include('student.attachassignmentform')
-    @include('student.detachassignmentform')
-    @include('student.attachmeetingform')
-    @include('student.detachmeetingform')
 </div>
-</main>
-@endsection
+<br/>
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('student.attachsubjectform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('student.attachrewardform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('student.attachassignmentform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('student.attachmeetingform')
+    </div>
+</div>
+</x-backend-main>
+</x-admin>

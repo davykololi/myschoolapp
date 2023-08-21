@@ -21,9 +21,9 @@ class AttachAssignmentController extends Controller
     public function attachAssignment(Request $request,$id)
     {
     	$stream = Stream::findOrFail($id);
-    	$assignment = $request->assignment;
-    	$stream->assignments()->attach($assignment);
+    	$assignments = $request->assignments;
+    	$stream->assignments()->attach($assignments);
 
-    	return back()->withSuccess('The assignment attached to the class successfully');
+    	return back()->withSuccess('The assignments attached to the class successfully');
     }
 }

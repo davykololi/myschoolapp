@@ -2,7 +2,7 @@
 @section('title', '| Show Parent')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -18,89 +18,47 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $parent->image }}">
+            <img style="width:15%" src="/storage/storage/{{ $myParent->image }}" alt="{{$myParent->name }}">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $parent->title }} {{ $parent->name }}
+            {{ $myParent->salutation }} {{ $myParent->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Phone No.:</strong>
-            {{ $parent->phone_no }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Postal Address</strong>
-            {{ $parent->address }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Blood Group</strong>
-            {{ $parent->blood_group->type }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Designation</strong>
-            {{ $parent->designation }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>DOB:</strong>
-            {{ date("jS,F,Y",strtotime($parent->dob)) }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Age:</strong>
-            {{ $parent->age }} years
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Parent At:</strong>
-            {{ $parent->school->name }}
+            {{ $myParent->phone_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $parent->email }} 
+            {{ $myParent->email }} 
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Emp. No.</strong>
-            {{ $parent->emp_no }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Parent Student's:</strong>
+            <strong>Children To {{ $myParent->salutation }} {{ $myParent->name }}</strong>
             <ol>
-                @foreach($parent->students as $student)
+                @if(!is_null($parentChildren))
+                @foreach($parentChildren as $child)
                 <li>
-                    <a href="{{route('admin.students.show',$student->id)}}">
-                        {{$student->full_name}} <span style="color: green">Class</span> {{$student->stream->name}}
-                    </a>
+                    {{$child->full_name}} <span style="color: green">Class</span> {{$child->stream->name}}
                 </li>
                 @endforeach
+                @endif
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <span>
-                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($parent->created_at)) }}</span>
+                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($myParent->created_at)) }}</span>
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

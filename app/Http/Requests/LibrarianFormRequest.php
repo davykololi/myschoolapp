@@ -29,39 +29,41 @@ class LibrarianFormRequest extends FormRequest
 
             return [
                 //
-                'title' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
+                'salutation' => 'required|string|max:100',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
-                'phone_no' => 'required|string',
+                'phone_no' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
                 'id_no' => 'required|string',
                 'emp_no' => 'required|string',
                 'dob' => 'required',
                 'email' => 'required|email',
                 'address'   => 'required',
-                'blood_group'   => 'required',
+                'blood_group'   => 'required|string',
                 'designation'   => 'required',
                 'history' => 'required',
                 'librarian_role' => 'required',
-                'school' => 'required|exists:schools,id',
                 'password'=>['required','string','confirmed',Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
                 'password_confirmation' => ['required'],
             ];
         } else {
             return [
-                'title' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
+                'salutation' => 'required|string|max:100',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
-                'phone_no' => 'required|string',
+                'phone_no' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
                 'id_no' => 'required|string',
                 'emp_no' => 'required|string',
                 'dob' => 'required',
                 'email' => 'required|email',
                 'address'   => 'required',
-                'blood_group'   => 'required',
+                'blood_group'   => 'required|string',
                 'designation'   => 'required',
                 'history' => 'required',
-                'librarian_role' => 'required',
-                'school' => 'required|exists:schools,id',
+                'librarian_role' => 'required|string',
             ];
         }
     }
@@ -72,8 +74,10 @@ class LibrarianFormRequest extends FormRequest
 
             return [
                 //
-                'title.required' => 'The title is required',
-                'name.required' => 'The name is required',
+                'salutation.required' => 'The title is required',
+                'first_name.required' => 'The fisrt name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
                 'image.required' => 'The image is required',
                 'phone_no.required'   => 'The phone number is required',
                 'id_no.required'   => 'The id number is required',
@@ -84,14 +88,15 @@ class LibrarianFormRequest extends FormRequest
                 'blood_group.required'   => 'The blood group is required',
                 'designation.required'   => 'The profession is required',
                 'history.required'   => 'More information about the librarian is required',
-                'librarian_role.required'   => 'The role of the librarian at school is required',
-                'school.required'   => 'The school the librarian belongs to is required',
+                'librarian_role.required'   => 'The role of the librarian is required',
             ];
         } else {
             return [
                 //
-                'title.required' => 'The title is required',
-                'name.required' => 'The first name is required',
+                'salutation.required' => 'The title is required',
+                'first_name.required' => 'The fisrt name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
                 'image.required' => 'The image is required',
                 'phone_no.required'   => 'The phone number is required',
                 'id_no.required'   => 'The id number is required',
@@ -102,8 +107,7 @@ class LibrarianFormRequest extends FormRequest
                 'blood_group.required'   => 'The blood group is required',
                 'designation.required'   => 'The profession is required',
                 'history.required'   => 'More information about the librarian is required',
-                'librarian_role.required'   => 'The role of the librarian at school is required',
-                'school.required'   => 'The school the librarian belongs to is required',
+                'librarian_role.required'   => 'The role of the librarian is required',
             ];
         }
     }

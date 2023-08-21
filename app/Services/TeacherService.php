@@ -47,8 +47,7 @@ class TeacherService
 	{
 		$data = $request->validated();
         $data['school_id'] = auth()->user()->school->id;
-        $data['bg_id'] = $request->blood_group;
-        $data['position_teacher_id'] = $request->teacher_role;
+        $data['blood_group'] = $request->blood_group;
         $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
@@ -57,10 +56,9 @@ class TeacherService
 
 	public function updateData(UpdateRequest $request)
 	{
-        $data = $request->only('title','name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history');
+        $data = $request->only('salutation','first_name','middle_name','last_name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history');
         $data['school_id'] = auth()->user()->school->id;
-        $data['bg_id'] = $request->blood_group;
-        $data['position_teacher_id'] = $request->teacher_role;
+        $data['blood_group'] = $request->blood_group;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;

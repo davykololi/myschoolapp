@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\ReportComment;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,11 +37,6 @@ class MyClass extends Model
         return $this->hasMany('App\Models\Timetable','class_id','id');
     }
 
-    public function fees() {
-
-        return $this->belongsMany('App\Models\Fee')->withTimestamps();
-    }
-
     public function notes() {
 
         return $this->hasManyThrough('App\Models\Note','App\Models\Stream','class_id','stream_id','id');
@@ -59,8 +57,28 @@ class MyClass extends Model
         return $query->with('students','streams','school')->get();
     }
 
-    public function grade_systems()
+    public function grades()
     {
-        return $this->hasMany('App\Models\GradeSystem','class_id','id');
+        return $this->hasMany('App\Models\Grade','class_id','id');
+    }
+
+    public function general_grades()
+    {
+        return $this->hasMany('App\Models\GeneralGrade','class_id','id');
+    }
+
+    public function report_comments()
+    {
+        return $this->hasMany(ReportComment::class,'class_id','id');
+    }
+
+    public function males()
+    {
+        return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','stream_id','id')->where(['gender'=>'Male'])->count();
+    }
+
+    public function females()
+    {
+        return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','stream_id','id')->where(['gender'=>'Female'])->count();
     }
 }

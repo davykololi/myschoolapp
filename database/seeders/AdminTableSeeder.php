@@ -21,8 +21,11 @@ class AdminTableSeeder extends Seeder
 
         $admins = [
         	[
-        		'title' => 'School Administrator',
-        		'name' => 'Jack Kioko Kamau',
+        		'salutation' => 'Mr',
+				'first_name' => 'Jack',
+				'middle_name' => 'Kioko',
+				'last_name' => 'Kamau',
+				'blood_group' => 'B',
         		'email' => 'jack@gmail.com',
         		'image' => 'image.png',
         		'gender' => 'Male',
@@ -32,6 +35,7 @@ class AdminTableSeeder extends Seeder
         		'designation' => 'Engineer',
         		'address' => 'P.P Box 9678, Bungoma',
         		'phone_no' => '0743267890',
+                'role' => 'studentregistrar',
         		'history' => 'N/A',
         		'school_id' => 1,
         		'superadmin_id' => 1,

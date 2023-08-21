@@ -8,6 +8,7 @@ use App\Services\StudentService;
 use App\Services\StreamService;
 use App\Services\StaffService;
 use App\Services\TeacherService;
+use App\Models\Teacher;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -25,6 +26,7 @@ class AssignmentController extends Controller
     public function __construct(AssignmentService $assignmentService,SchoolService $schoolService,StudentService $studentService,StreamService $streamService,StaffService $staffService,TeacherService $teacherService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('admin2fa');
         $this->assignmentService = $assignmentService;
         $this->schoolService = $schoolService;
         $this->studentService = $studentService;
@@ -38,7 +40,7 @@ class AssignmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         $assignments = $this->assignmentService->all();
@@ -54,10 +56,10 @@ class AssignmentController extends Controller
     public function create()
     {
         //
-        $streams = $this->streamService->all();
+        $streams = $this->streamService->all()->pluck('name','id');
         $teachers = $this->teacherService->all();
-        $students = $this->studentService->all();
-        $staffs = $this->staffService->all();
+        $students = $this->studentService->all()->pluck('full_name','id');
+        $staffs = $this->staffService->all()->pluck('full_name','id');
 
         return view('admin.assignments.create',compact('streams','teachers','students','staffs'));
     }
@@ -71,14 +73,14 @@ class AssignmentController extends Controller
     public function store(StoreRequest $request)
     {
         $assignment = $this->assignmentService->create($request);
+        $streams = $request->streams;
+        $assignment->streams()->sync($streams);
         $teacherId = $request->teacher;
-        $assignment->teachers()->attach($teacherId);
-        $streamId = $request->stream;
-        $assignment->streams()->attach($streamId);
-        $studentId = $request->student;
-        $assignment->students()->attach($studentId);
-        $staffId = $request->staff;
-        $assignment->staffs()->attach($staffId);
+        $assignment->teachers()->sync($teacherId);
+        $students = $request->students;
+        $assignment->students()->sync($students);
+        $staffs = $request->staffs;
+        $assignment->staffs()->sync($staffs);
 
 
         return redirect()->route('admin.assignments.index')->withSuccess(ucwords($assignment->name." ".'info created successfully'));
@@ -110,10 +112,10 @@ class AssignmentController extends Controller
     {
         //
         $assignment = $this->assignmentService->getId($id);
-        $streams = $this->streamService->all();
+        $streams = $this->streamService->all()->pluck('name','id');
         $teachers = $this->teacherService->all();
-        $students = $this->studentService->all();
-        $staffs = $this->staffService->all();
+        $students = $this->studentService->all()->pluck('full_name','id');
+        $staffs = $this->staffService->all()->pluck('full_name','id');
 
         return view('admin.assignments.edit',compact('assignment','streams','teachers','students','staffs'));
     }
@@ -134,12 +136,12 @@ class AssignmentController extends Controller
             $this->assignmentService->update($request,$id);
             $teacherId = $request->teacher;
             $assignment->teachers()->sync($teacherId);
-            $streamId = $request->stream;
-            $assignment->standards()->sync($standardId);
-            $studentId = $request->student;
-            $assignment->students()->sync($studentId);
-            $staffId = $request->staff;
-            $assignment->staffs()->sync($staffId);
+            $streams = $request->streams;
+            $assignment->streams()->sync($streams);
+            $students = $request->students;
+            $assignment->students()->sync($students);
+            $staffs = $request->staffs;
+            $assignment->staffs()->sync($staffs);
 
             return redirect()->route('admin.assignments.index')->withSuccess(ucwords($assignment->name." ".'info updated successfully'));
         }

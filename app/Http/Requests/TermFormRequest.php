@@ -28,12 +28,10 @@ class TermFormRequest extends FormRequest
             return [
                 //
                 'name' => 'required|string|max:100',
-                'school' => 'required|exists:schools,id',
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
-                'school' => 'required|exists:schools,id',
             ];
         }
     }
@@ -45,13 +43,11 @@ class TermFormRequest extends FormRequest
             return [
                 //
                 'name.required' => 'The name of the class is required',
-                'school.required' => 'The name of the school is required',
             ];
         } else {
             return [
                 //
-                'name.required' => 'The name of the class is required',
-                'school.required' => 'The name of the school is required',  
+                'name.required' => 'The name of the class is required', 
             ];
         }
     }

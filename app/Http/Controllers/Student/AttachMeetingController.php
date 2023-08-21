@@ -21,9 +21,9 @@ class AttachMeetingController extends Controller
     public function attachMeeting(Request $request,$id)
     {
     	$student = Student::findOrFail($id);
-    	$meeting = $request->meeting;
-    	$student->meetings()->attach($meeting);
+    	$meetings = $request->meetings;
+    	$student->meetings()->attach($meetings);
 
-    	return back()->withSuccess('The meeting attached to the student successfully');
+    	return back()->withSuccess('The meetings attached to the student successfully');
     }
 }

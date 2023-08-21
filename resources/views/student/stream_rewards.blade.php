@@ -1,26 +1,27 @@
 @extends('layouts.student')
  
+@section('title')
+    {{ $title }}
+@endsection
+
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h1 style="text-transform: uppercase;">{{$user->stream->name}} Awards</h1>
+  <!-- frontend-main view -->
+  <x-frontend-main>
+                    <div>
+                        <h1 class="uppercase">{{$user->stream->name}} Awards</h1>
                     </div>
-                    <div class="panel-body">
+                    <div>
                         <ol>
                             @forelse($user->stream->rewards as $reward)
                             <li>
-                                {{ $reward->name }}. <span style="color: green">Purpose:</span> {{ $reward->purpose }}.
+                                {{ $reward->name }}. <span class="text-[green]">Purpose:</span> {{ $reward->purpose }}.
                             @empty
-                            <p style="color: red">{{$user->stream->name}} has notyet recieved any award. Work hard!!</p>
+                            <p class="text-[red]">{{$user->stream->name}} has notyet recieved any award. Work hard!!</p>
                             </li>
                             @endforelse
                         </ol>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  </x-frontend-main>
 @endsection
+
+

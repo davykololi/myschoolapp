@@ -17,13 +17,14 @@ class AttachAssignmentController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('teacher2fa');
     }
     public function attachAssignment(Request $request,$id)
     {
     	$teacher = Teacher::findOrFail($id);
-    	$assignment = $request->assignment;
-    	$teacher->assignments()->attach($assignment);
+    	$assignments = $request->assignments;
+    	$teacher->assignments()->sync($assignments);
 
-    	return back()->withSuccess('The assignment attached to the teacher successfully');
+    	return back()->withSuccess('The assignments attached to the teacher successfully');
     }
 }

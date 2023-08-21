@@ -21,7 +21,8 @@ class ParentProfileController extends Controller
     public function parentProfile()
     {
         $parent = Auth::user();
+        $parentStudents = $parent->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records')->get();
 
-    	return view('parent.profile',compact('parent'));
+    	return view('parent.profile',compact('parent','parentStudents'));
     }
 }

@@ -18,7 +18,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>School Category:</strong>
-            {{ $school->category_school->name }}
+            {{ $school->type }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -94,8 +94,7 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <span>
-                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($school->created_at)) }}</span>
+            <span><strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($school->created_at)) }}</span>
         </div>
     </div>
 </div>

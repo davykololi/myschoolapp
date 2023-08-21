@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-    @include('partials.pdf_head')
-</head>
-<body>
-    @include('partials.pdf_header')
-    @include('partials.pdf_school_footer')
-    <br/><br/>
+@extends('layouts.pdf')
+@section('title', '| School Subordinade Staffs')
+
+@section('content')
     <table class="table table-bordered" id="table_style">
         <caption class="table_caption">
-            <h2 class="title">
-                <u>{{$title}}</u>
-            </h2>
+            <h2 class="title"><u>{{$title}}</u></h2>
         </caption>
         <thead>
             <tr>
@@ -40,5 +33,4 @@
             @endif
         </tbody>
     </table>        
-</body>
-</html>
+@endsection

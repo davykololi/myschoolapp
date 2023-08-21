@@ -21,9 +21,9 @@ class AttachRewardController extends Controller
     public function attachReward(Request $request,$id)
     {
     	$stream = Stream::findOrFail($id);
-    	$reward = $request->reward;
-    	$stream->rewards()->attach($reward);
+    	$rewards = $request->rewards;
+    	$stream->rewards()->attach($rewards);
 
-    	return back()->withSuccess('The reward attached to the {{$stream->class->name}} {{$stream->name}} successfully');
+    	return back()->withSuccess('The awards attached to the'." ".$stream->name." ".'successfully');
     }
 }

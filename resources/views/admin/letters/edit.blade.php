@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Edit Letter')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin> 
+  <!-- frontend-main view -->
+  <x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -17,18 +15,17 @@
                     <input type="hidden" name="_method" value="PUT">
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Content</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-12">
                             <textarea class="form-control" id="summary-ckeditor" name="content" rows="5" cols="40">
                                 {!! $letter->content !!}
                             </textarea>
                         </div>
                     </div>
-                    @include('ext._attach_schooldiv')
                     @include('ext._submit_update_button')
                 </form>
             </div>
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

@@ -22,9 +22,9 @@ class AttachTeacherController extends Controller
     public function attachTeacher(Request $request,$id)
     {
     	$meeting = $this->meetingRepo->getId($id);
-    	$teacher = $request->teacher;
-    	$meeting->teachers()->attach($teacher);
+    	$teachers = $request->teachers;
+    	$meeting->teachers()->sync($teachers);
 
-    	return back()->withSuccess('The teacher attached to the meeting successfully');
+    	return back()->withSuccess('The teachers attached to the meeting successfully');
     }
 }

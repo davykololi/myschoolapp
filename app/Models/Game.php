@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Game extends Model implements Searchable
 {
     //
     protected $table = 'games';
-    protected $fillable = ['name','code','school_id','category_game_id'];
+    protected $fillable = ['name','code','type','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -23,14 +23,34 @@ class Game extends Model implements Searchable
             );
     }
 
+    public function soccer()
+    {
+        return $this->type === 'Soccer';
+    }
+
+    public function netball()
+    {
+        return $this->type === 'Netball';
+    }
+
+    public function handball()
+    {
+        return $this->type === 'Handball';
+    }
+
+    public function rugby()
+    {
+        return $this->type === 'Rugby';
+    }
+
+    public function tableTennis()
+    {
+        return $this->type === 'Table Tennis';
+    }
+
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
-    }
-
-    public function category_game()
-    {
-        return $this->belongsTo('App\Models\CategoryGame')->withDefault();
     }
 
     public function streams()

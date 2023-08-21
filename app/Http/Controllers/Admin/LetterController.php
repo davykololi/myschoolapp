@@ -17,6 +17,7 @@ class LetterController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('admin2fa');
     }
     
     /**
@@ -27,7 +28,7 @@ class LetterController extends Controller
     public function index()
     {
         //
-        $letters = Letter::all();
+        $letters = Letter::with('school')->latest('id')->get();
 
         return view('admin.letters.index',compact('letters'));
     }
@@ -40,9 +41,7 @@ class LetterController extends Controller
     public function create()
     {
         //
-        $schools = School::all();
-
-        return view('admin.letters.create',compact('schools'));
+        return view('admin.letters.create');
     }
 
     /**
@@ -55,7 +54,7 @@ class LetterController extends Controller
     {
         //
         $input = $request->all();
-        $input['school_id'] = $request->school;
+        $input['school_id'] = auth()->user()->school->id;
         $letter = Letter::create($input);
 
         return redirect()->route('admin.letters.index')->withSuccess(ucwords('The letter created successfully'));
@@ -85,9 +84,8 @@ class LetterController extends Controller
     {
         //
         $letter = Letter::findOrFail($id);
-        $schools = School::all();
 
-        return view('admin.letters.edit',compact('letter','schools'));
+        return view('admin.letters.edit',compact('letter'));
     }
 
     /**
@@ -102,7 +100,7 @@ class LetterController extends Controller
         //
         $letter = Letter::findOrFail($id);
         $input = $request->all();
-        $input['school_id'] = $request->school;
+        $input['school_id'] = auth()->user()->school->id;
         $letter->update($input);
 
         return redirect()->route('admin.letters.index')->withSuccess(ucwords('The letter updated successfully'));

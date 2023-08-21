@@ -21,9 +21,9 @@ class AttachRewardController extends Controller
     public function attachReward(Request $request,$id)
     {
     	$student = Student::findOrFail($id);
-    	$reward = $request->reward;
-    	$student->rewards()->attach($reward);
+    	$rewards = $request->rewards;
+    	$student->rewards()->sync($rewards);
 
-    	return back()->withSuccess('The reward attached to the student successfully');
+    	return back()->withSuccess('The rewards attached to the student successfully');
     }
 }

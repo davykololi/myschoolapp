@@ -4,10 +4,21 @@ namespace App\Http\ViewComposers;
 
 use Auth;
 use App\Models\School;
+use App\Services\StudentService;
 use Illuminate\View\View;
 
 class AppComposer 
 {
+    protected $studentService;
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(StudentService $studentService)
+    {
+        $this->studentService = $studentService;
+    }
     /**
      * Bind data to the view.
      *
@@ -15,9 +26,11 @@ class AppComposer
      * @return void
      */
 
-    public function compose(View $view){
+    public function compose(View $view)
+    {
         $user = Auth::user();
+        $students = $this->studentService->all();
 
-        $view->with(['user'=>$user]); 
+        $view->with(['user'=>$user,'students'=>$students]); 
     }
 }

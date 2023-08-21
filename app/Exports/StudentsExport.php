@@ -29,7 +29,6 @@ class StudentsExport implements FromCollection, WithHeadings, WithMapping, Shoul
     			'PHONE',
     			'DORMITORY',
     			'EMAIL',
-                'PARENT PHONE'
     		];
     }
 
@@ -42,7 +41,6 @@ class StudentsExport implements FromCollection, WithHeadings, WithMapping, Shoul
             $student->phone_no,
             $student->dormitory->name,
             $student->email,
-            $student->parent->phone_no,
          ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Auth;
 use App\Models\School;
 use App\Repositories\TermRepository;
 use Illuminate\Support\Str;
@@ -44,8 +45,8 @@ class TermService
 	public function createData(StoreRequest $request)
 	{
 		$data = $request->all();
-        $data['school_id'] = $request->school;
-        $schoolId = $request->school;
+        $data['school_id'] = Auth::user()->school->id;
+        $schoolId = Auth::user()->school->id;
         $school = School::whereId($schoolId)->first();
         $data['code'] = strtoupper($school->initials."/".Str::random(5)."/".now()->year);
 
@@ -55,8 +56,9 @@ class TermService
 	public function updateData(UpdateRequest $request)
 	{
 		$data = $request->only('name');
-        $data['school_id'] = $request->school;
-        $schoolId = $request->school;
+        $data['school_id'] = Auth::user()->school->id;
+        $data['status'] = $request->status;
+        $schoolId = Auth::user()->school->id;
         $school = School::whereId($schoolId)->first();
         $data['code'] = strtoupper($school->initials."/".Str::random(5)."/".now()->year);
 

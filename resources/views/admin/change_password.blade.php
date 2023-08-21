@@ -2,18 +2,15 @@
 @section('title', '| Admin Change Password')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Change Password</div>
-                <div class="card-body">
-                    <form method="POST" action="{{ route('admin.change-password.save') }}">
-                        @include('ext._change_password')
-                    </form>
-                </div>
-            </div>
-        </div>
+<x-change-password-main>
+    <div class="pt-2 px-4 text-center">
+      <h1 class="font-extrabold text-white justify-center">CHANGE PASSWORD</h1>
+      @include('partials.errors')
     </div>
-</div>
+    <div class="flex w-auto justify-center py-10 items-center">
+      <form method="POST" action="{{ route('admin.change-password.save') }}">
+        <x-change-password/>
+      </form>
+    </div>
+  </x-change-password-main>
 @endsection

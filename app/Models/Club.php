@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Club extends Model implements Searchable

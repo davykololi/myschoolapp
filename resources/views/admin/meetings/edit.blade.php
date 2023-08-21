@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Edit Meeting')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin>  
+  <!-- frontend-main view -->
+  <x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -50,5 +48,5 @@
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

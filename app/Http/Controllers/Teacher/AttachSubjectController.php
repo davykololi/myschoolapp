@@ -17,13 +17,14 @@ class AttachSubjectController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('teacher2fa');
     }
     public function attachSubject(Request $request,$id)
     {
     	$teacher = Teacher::findOrFail($id);
-    	$subject = $request->subject;
-    	$teacher->subjects()->attach($subject);
+    	$subjects = $request->subjects;
+    	$teacher->subjects()->sync($subjects);
 
-    	return back()->withSuccess('The subject attached to the teacher successfully');
+    	return back()->withSuccess('The subjects attached to the teacher successfully');
     }
 }

@@ -2,7 +2,7 @@
 @section('title', '| Show Librarian')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -11,7 +11,7 @@
             <br/>
         </div>
         <div class="pull-right">
-            <a href="{{ route('superadmin.librarians.index') }}" class="label label-primary pull-right"> Back</a>
+            <a href="{{ \URL::previous() }}" class="label label-primary pull-right">Back</a>
         </div>
     </div>
 </div>
@@ -24,13 +24,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $librarian->title }} {{ $librarian->name }}
+            {{ $librarian->title }} {{ $librarian->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Role:</strong>
-            {{ $librarian->position_librarian->name }}, {{ $librarian->school->name }}
+            {{ $librarian->role->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -41,14 +41,8 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Current Address</strong>
-            {{ $librarian->current_address }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Permanent Address</strong>
-            {{ $librarian->permanent_address }}
+            <strong>Postal Address</strong>
+            {{ $librarian->address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -94,5 +88,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

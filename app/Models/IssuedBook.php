@@ -27,16 +27,14 @@ class IssuedBook extends Model
     public function issuedDate()
     {
         $issuedDate = $this->issued_date;
-        $new_issued_date = Carbon::parse($issuedDate)->format('d-m-Y');
 
-        return $new_issued_date;
+        return $issuedDate;
     }
 
     public function returnDate()
     {
         $returnDate = $this->return_date;
-        $new_return_date = Carbon::parse($returnDate)->format('d-m-Y');
 
-        return $new_return_date;
+        return $returnDate;
     }
 }

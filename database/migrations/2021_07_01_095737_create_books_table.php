@@ -19,6 +19,7 @@ class CreateBooksTable extends Migration
             $table->string('author');
             $table->bigInteger('units')->unsigned();
             $table->string('rack_no');
+            $table->integer('row_no');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
             $table->foreignId('library_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_book_id')->constrained()->onDelete('cascade');

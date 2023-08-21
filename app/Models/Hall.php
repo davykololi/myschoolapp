@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Hall extends Model implements Searchable
 {
     //
     protected $table = 'halls';
-    protected $fillable = ['name','code','school_id','category_hall_id'];
+    protected $fillable = ['name','type','code','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -23,14 +23,24 @@ class Hall extends Model implements Searchable
             );
     }
 
+    public function madibaHall()
+    {
+        return $this->type === 'Madiba Hall';
+    }
+
+    public function magufuliHall()
+    {
+        return $this->type === 'Magufuli Hall';
+    }
+
+    public function theatreHall()
+    {
+        return $this->type === 'Theatre Hall';
+    }
+
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
-    }
-
-    public function category_hall()
-    {
-        return $this->belongsTo('App\Models\CategoryHall')->withDefault();
     }
 
     public function students()
@@ -50,6 +60,6 @@ class Hall extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','category_hall')->get();
+        return $query->with('school')->get();
     }
 }

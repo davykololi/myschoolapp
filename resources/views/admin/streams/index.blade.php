@@ -1,8 +1,9 @@
 @extends('layouts.admin')
 @section('title', '| Class Streams')
 
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+@section('content') 
+  <!-- frontend-main view -->
+  <x-backend-main>
 <div class="row">
     <div class="col-lg-12">
     @include('partials.messages')
@@ -13,9 +14,6 @@
                 <div class="pull-left">
                     <h2>STREAMS</h2>
                 </div>
-                <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('admin.streams.create')}}">Create Stream</a>
-                </div>
             </div>
         </div>
         <br/>
@@ -23,27 +21,31 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-head-bg-info table-bordered-bd-info">
                     <!-- Table Headings -->
-                    @include('partials.streamhead')
+                    <thead>
+                        <th width="20%">STREAM</th>
+                        <th width="20%">STUDENTS</th>
+                        <th width="20%">MALES</th>
+                        <th width="20%">FEMALES</th>
+                        <th width="20%">ACTION</th>
+                    </thead>
                     <!-- Table Body -->
                     <tbody>
                     @foreach($streams as $stream)
                         <tr>
                             <td class="table-text">
-                                <div>{{$stream->name}}</div>
+                                <div>{{ $stream->name }}</div>
                             </td>
                             <td class="table-text">
-                                <div>{{$stream->stream_section->name}}</div>
+                                <div>{{ $stream->students->count() }}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>{{ $stream->males() }}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>{{ $stream->females() }}</div>
                             </td>
                             <td>
-                                <form action="{{route('admin.streams.destroy',$stream->id)}}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <a href="{{ route('admin.streams.show',$stream->id) }}" class="btn btn-success btn-xs">Details</a>
-                                    <a href="{{ route('admin.streams.edit',$stream->id) }}" class="btn btn-warning btn-xs">Edit</a>
-                                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete?')">
-                                        Delete
-                                    </button>
-                                </form>
+                                <a type="button" class="bg-[blue] text-white px-2 mx-0.5 rounded text-center" href="{{ route('admin.stream.details',$stream->id) }}">Details</a>
                             </td>
                         </tr>
                     @endforeach
@@ -54,5 +56,5 @@
     @endif
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

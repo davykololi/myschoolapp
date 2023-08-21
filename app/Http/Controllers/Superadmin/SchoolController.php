@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Models\CategorySchool;
 use App\Services\SchoolService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,6 +20,7 @@ class SchoolController extends Controller
     public function __construct(SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('superadmin2fa');
         $this->schoolService = $schoolService;
     }
     
@@ -45,9 +45,7 @@ class SchoolController extends Controller
     public function create()
     {
         //
-        $schoolCategories = CategorySchool::all();
-
-        return view('superadmin.schools.create',compact('schoolCategories'));
+        return view('superadmin.schools.create');
     }
 
     /**
@@ -88,9 +86,8 @@ class SchoolController extends Controller
     {
         //
         $school = $this->schoolService->getId($id);
-        $schoolCategories = CategorySchool::all();
 
-        return view('superadmin.schools.edit',compact('school','schoolCategories'));
+        return view('superadmin.schools.edit',compact('school'));
     }
 
     /**

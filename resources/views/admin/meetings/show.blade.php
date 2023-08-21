@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Show Meeting')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -113,13 +111,9 @@
         </div>
     </div>
     @include('meeting.attachteacherform')
-    @include('meeting.detachteacherform')
     @include('meeting.attachstudentform')
-    @include('meeting.detachstudentform')
     @include('meeting.attachstaffform')
-    @include('meeting.detachstaffform')
     @include('meeting.attachstreamform')
-    @include('meeting.detachstreamform')
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

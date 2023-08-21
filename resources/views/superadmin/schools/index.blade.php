@@ -14,7 +14,7 @@
                     <h2>SCHOOLS LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('superadmin.schools.create')}}"> Add School</a>
+                    <a class="btn btn-success" href="{{ \URL::previous() }}"> Add School</a>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                                 <div>{{$school->name}}</div>
                             </td>
                             <td class="table-text">
-                                <div>{{$school->category_school->name}}</div>
+                                <div>{{$school->type}}</div>
                             </td>
                             <td class="table-text">
                                 <div>{{$school->email}}</div>

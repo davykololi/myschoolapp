@@ -3,23 +3,29 @@
 namespace App\Http\Controllers\Librarian;
 
 use Auth;
-use App\Models\Book;
-use App\Models\School;
-use App\Models\Library;
+use App\Services\BookService;
+use App\Services\SchoolService;
+use App\Services\LibraryService;
 use App\Models\CategoryBook;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Book\BookStoreRequest;
+use App\Http\Requests\Book\BookUpdateRequest;
 
 class BookController extends Controller
 {
+    protected $schoolService, $bookService, $libraryService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SchoolService $schoolService, BookService $bookService, LibraryService $libraryService)
     {
         $this->middleware('auth:librarian');
+        $this->middleware('librarian2fa');
+        $this->bookService = $bookService;
+        $this->libraryService = $libraryService;
     }
 
     /**
@@ -31,7 +37,7 @@ class BookController extends Controller
     {
         $user = Auth::user();
         $school = $user->school;
-        $books = $school->books()->with('library','school')->get();
+        $books = $this->bookService->all();
 
         return view('librarian.books.index',compact('user','books'));
     }
@@ -45,11 +51,10 @@ class BookController extends Controller
     {
         //
         $user = Auth::user();
-        $schools = School::all();
-        $libraries = Library::all();
+        $libraries = $this->libraryService->all();
         $bookCategories = CategoryBook::all();
 
-        return view('librarian.books.create',compact('user','schools','libraries','bookCategories'));
+        return view('librarian.books.create',compact('user','libraries','bookCategories'));
     }
 
     /**
@@ -58,14 +63,10 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BookStoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = $request->school;
-        $input['library_id'] = $request->library;
-        $input['category_book_id'] = $request->book_category;
-        Book::create($input);
+        $book = $this->bookService->create($request);
 
         return redirect()->route('librarian.books.index')->withSuccess('The Book info created successfully');
     }
@@ -76,9 +77,10 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Book $book)
+    public function show($id)
     {
         //
+        $book = $this->bookService->getId($id);
         $user = Auth::user();
 
         return view('librarian.books.show',compact('book','user'));
@@ -90,15 +92,15 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Book $book)
+    public function edit($id)
     {
         //
+        $book = $this->bookService->getId($id);
         $user = Auth::user();
-        $schools = School::all();
-        $libraries = Library::all();
+        $libraries = $this->libraryService->all();
         $bookCategories = CategoryBook::all();
 
-        return view('librarian.books.edit',compact('book','user','schools','libraries','bookCategories'));
+        return view('librarian.books.edit',compact('book','user','libraries','bookCategories'));
     }
 
     /**
@@ -108,16 +110,15 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(BookUpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['school_id'] = $request->school;
-        $input['library_id'] = $request->library;
-        $input['category_book_id'] = $request->book_category;
-        $book->update($input);
+        $book = $this->bookService->getId($id);
+        if($book){
+            $this->bookService->update($request,$id);
 
-        return redirect()->route('librarian.books.index')->withSuccess('The Book info updated successfully');
+            return redirect()->route('librarian.books.index')->withSuccess('The Book info updated successfully');
+        }
     }
 
     /**
@@ -126,11 +127,14 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Book $book)
+    public function destroy($id)
     {
         //
-        $book->delete();
+        $book = $this->bookService->getId($id);
+        if($book){
+            $this->bookService->delete($id);
 
-        return redirect()->route('librarian.books.index')->withSuccess('The Book info deleted successfully'); 
+            return redirect()->route('librarian.books.index')->withSuccess('The Book info deleted successfully'); 
+        } 
     }
 }

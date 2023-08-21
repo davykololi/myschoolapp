@@ -47,7 +47,7 @@ class SubjectService
         $data['code'] = strtoupper(Str::random(15));
         $data['school_id'] = auth()->user()->school->id;
         $data['department_id'] = $request->department;
-        $data['category_subject_id'] = $request->subject_category;
+        $data['type'] = $request->type;
 
         return $data;
 	}
@@ -57,7 +57,7 @@ class SubjectService
         $data = $request->only(['name']);
         $data['school_id'] = auth()->user()->school->id;
         $data['department_id'] = $request->department;
-        $data['category_subject_id'] = $request->subject_category;
+        $data['type'] = $request->type;
 
         return $data;
 	}

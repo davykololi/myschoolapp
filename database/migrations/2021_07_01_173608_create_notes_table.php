@@ -17,12 +17,11 @@ class CreateNotesTable extends Migration
             $table->id();
             $table->string('file');
             $table->string('desc');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
             $table->foreignId('stream_id')->constrained()->onDelete('cascade');
-            $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
-            $table->foreignId('standard_subject_id')->constrained()->onDelete('cascade');
+            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -1,8 +1,6 @@
-                        <div class="col-sm-6">
-                            <label for="password">{{ __('Password') }}</label>
-                            <div class="form-group">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
+                        <div class="w-full md:w-1/3 lg:w-1/3">
+                            <div class="flex flex-col">
+                                <input id="password" type="password" class="leading-tight @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Password">
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -10,10 +8,8 @@
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="col-sm-6">
-                            <label for="password-confirm">{{ __('Confirm Password') }}</label>
-                            <div class="form-group">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                        <div class="w-full md:w-1/3 lg:w-1/3">
+                            <div class="flex flex-col">
+                                <input id="password-confirm" type="password" class="leading-tight" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm Password">
                             </div>
                         </div>

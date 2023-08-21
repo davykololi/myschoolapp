@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Services\SchoolService;
-use App\Models\BloodGroup;
-use App\Services\LibrarianRoleService as LibrRolSerive;
 use App\Services\LibrarianService as LibrnService;
 use App\Models\Library;
 use Illuminate\Http\Request;
@@ -17,18 +15,17 @@ class LibrarianController extends Controller
 {
     protected $librnService; 
     protected $schoolService;
-    protected $librRolService;
 	/**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(LibrnService $librnService,SchoolService $schoolService,LibrRolSerive $librRolService)
+    public function __construct(LibrnService $librnService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('superadmin2fa');
         $this->librnService = $librnService;
         $this->schoolService = $schoolService;
-        $this->librRolService = $librRolService;
     }
 
     /**
@@ -54,10 +51,8 @@ class LibrarianController extends Controller
         //
         $schools = $this->schoolService->all();
         $libraries = Library::all();
-        $librarianRoles = $this->librRolService->all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.librarians.create',compact('schools','libraries','librarianRoles','bloodGroups'));
+        return view('superadmin.librarians.create',compact('schools','libraries'));
     }
 
     /**
@@ -102,10 +97,8 @@ class LibrarianController extends Controller
         $librarian = $this->librnService->getId($id);
         $schools = $this->schoolService->all();
         $libraries = Library::all();
-        $librarianRoles = $this->librRolService->all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.librarians.edit',compact('librarian','schools','libraries','librarianRoles','bloodGroups'));
+        return view('superadmin.librarians.edit',compact('librarian','schools','libraries'));
     }
 
     /**

@@ -39,8 +39,6 @@ class CreateRecordsTable extends Migration
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->bigInteger('class_id')->unsigned()->nullable();
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
-            $table->bigInteger('parent_id')->unsigned()->nullable();
-            $table->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade');
             $table->bigInteger('dormitory_id')->unsigned()->nullable();
             $table->foreign('dormitory_id')->references('id')->on('dormitories')->onDelete('cascade');
             $table->bigInteger('intake_id')->unsigned()->nullable();
@@ -49,8 +47,6 @@ class CreateRecordsTable extends Migration
             $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
             $table->bigInteger('event_id')->unsigned()->nullable();
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->bigInteger('standard_subject_id')->unsigned();
-            $table->foreign('standard_subject_id')->references('id')->on('standard_subjects')->onDelete('cascade');
             $table->timestamps();
         });
     }

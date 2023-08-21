@@ -1,12 +1,5 @@
-                <select id="teacher" type="teacher" value="{{old('teacher')}}" class="form-control" name="teacher">
-                    <option value="">Select Teacher</option>
-                    @foreach ($teachers as $teacher)
-                        <option value="{{$teacher->id}}">{{$teacher->name}}</option>
-                    @endforeach
-                </select>
+                                    {!! html()->multiselect('teachers[]',$teachers,old('teachers'),['class'=>'','multiple'=>'multiple']) !!}
+                                    @error('teachers')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
 
-                @if($errors->has('teacher'))
-                <span class="help-block">
-                    <strong>{{$errors->first('teacher')}}</strong>
-                </span>
-                @endif

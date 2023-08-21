@@ -2,8 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Exception;
+use Mail;
+use App\Models\UserEmailCode;
+use App\Mail\SendEmailCode;
+use	Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
+use App\Enums\StaffsEnum;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -18,8 +25,9 @@ class Staff extends Authenticatable implements Searchable
     *@var array
     */
     protected $table = 'staffs';
-    protected $fillable = ['title','name','image','gender','email','emp_no','id_no','dob','designation','address','phone_no','history','bg_id','school_id','position_staff_id','password','admin_id'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','role','blood_group','image','gender','email','emp_no','id_no','dob','designation','address','phone_no','role','history','school_id','password','admin_id'];
     protected $appends = ['age'];
+    protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> StaffsEnum::class];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -27,6 +35,35 @@ class Staff extends Authenticatable implements Searchable
     *@var array
     */
     protected $hidden = ['password','remember_token',];
+
+    /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function generateCode()
+    {
+        $code = rand(100000,999999);
+  
+        UserEmailCode::updateOrCreate(
+            [ 'staff_id' => auth()->user()->id ],
+            [ 'code' => $code ]
+        );
+    
+        try {
+  
+            $details = [
+                'title' => 'Mail Sent from'." ".auth()->user()->school->name,
+                'code' => $code,
+                'school' => auth()->user()->school->name,
+            ];
+             
+            Mail::to(auth()->user()->email)->send(new SendEmailCode($details));
+    
+        } catch (Exception $e) {
+            info("Error: ". $e->getMessage());
+        }
+    }
 
     public function sendPasswordResetNotification($token)
     {
@@ -39,7 +76,7 @@ class Staff extends Authenticatable implements Searchable
 
         return new SearchResult(
                 $this,
-                $this->name,
+                $this->full_name,
                 $url,
             );
     }
@@ -47,16 +84,6 @@ class Staff extends Authenticatable implements Searchable
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
-    }
-
-    public function position_staff()
-    {
-        return $this->belongsTo('App\Models\PositionStaff')->withDefault();
-    }
-
-    public function blood_group()
-    {
-        return $this->belongsTo('App\Models\BloodGroup')->withDefault();
     }
 
     public function departments()
@@ -92,18 +119,80 @@ class Staff extends Authenticatable implements Searchable
     public function getAgeAttribute()       
     { 
         $myDate = $this->dob;
-        $years = \Carbon\Carbon::parse($myDate)->age;
+        $change = Carbon::createFromFormat('d, M, Y',$myDate)->format('d-m-Y H:i');
+        $years = Carbon::parse($change)->age;
 
         return $years;     
     }
 
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = ucfirst($value);
+    public function getFullNameAttribute()       
+    {        
+        return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
+    }
+
+    public function	firstName(): Attribute 
+    {				
+        return	new	Attribute(								                             
+            set: fn	($value) =>	ucfirst($value),				
+        ); 
+    }
+
+    public function	middleName(): Attribute 
+    {				
+        return	new	Attribute(								                             
+            set: fn	($value) =>	ucfirst($value),				
+        ); 
+    }
+
+    public function	lastName(): Attribute 
+    {				
+        return	new	Attribute(								                             
+            set: fn	($value) =>	ucfirst($value),				
+        ); 
     }
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','position_staff','departments','meetings','rewards','clubs','assignments','admin')->get();
+        return $query->with('school','departments','meetings','rewards','clubs','assignments','admin')->get();
+    }
+
+    public function schoolSecretary()
+    {
+        return $this->role === StaffsEnum::SS;
+    }
+
+    public function seniorCook()
+    {
+        return $this->role === StaffsEnum::SC;
+    }
+
+    public function ordinaryCook()
+    {
+        return $this->role === StaffsEnum::OC;
+    }
+
+    public function seniorSecurity()
+    {
+        return $this->role === StaffsEnum::SSCRTY;
+    }
+
+    public function ordinarySecurity()
+    {
+        return $this->role === StaffsEnum::OSCRTY;
+    }
+
+    public function schoolGardener()
+    {
+        return $this->role === StaffsEnum::GDNR;
+    }
+
+    public function schoolElectrician()
+    {
+        return $this->role === StaffsEnum::SE;
+    }
+
+    public function teaServer()
+    {
+        return $this->role === StaffsEnum::TS;
     }
 }

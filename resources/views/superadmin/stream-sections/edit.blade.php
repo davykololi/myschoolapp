@@ -33,7 +33,6 @@
                             <input type="text" name="desc" id="desc" class="form-control" value="{{ $streamSection->desc }}">
                         </div>
                     </div>
-                    @include('ext._attach_schooldiv')
                     @include('ext._submit_update_button')
                 </form>
             </div>

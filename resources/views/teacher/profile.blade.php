@@ -1,12 +1,10 @@
-@extends('layouts.teacher')
-@section('title', '| Teacher Profile')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-teacher>
+    <!-- frontend-main view -->
+    <x-frontend-main>
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
-            <h1 style="text-transform: uppercase;">{{$teacher->title}} {{$teacher->last_name}}'s Profile</h1>
+            <h1 style="text-transform: uppercase;">My Profile</h1>
             <br/>
         </div>
     </div>
@@ -14,19 +12,27 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ Auth::user()->image }}">
+            <img style="width:15%" src="/storage/storage/{{ Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{$teacher->title}} {{$teacher->full_name}}
+            {{ $teacher->salutation }} {{ $teacher->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Position:</strong>
-            {{$teacher->position_teacher->name}}, {{ $teacher->school->name }}
+            <strong>Role:</strong>
+            @if($teacher->headTeacher())
+            {{ __('Head Teacher') }}
+            @elseif($teacher->deputyHeadTeacher())
+            {{ __('Deputy Head Teacher') }}
+            @elseif($teacher->staffTeacher())
+            {{ __('Staff Teacher') }}
+            @elseif($teacher->classTeacher())
+            {{ __('Class Teacher') }}
+            @endif
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -56,7 +62,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Age:</strong>
-            {{ $teacher->age }} years
+             Years
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -68,7 +74,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Postal Address:</strong>
-            {{ $teacher->postal_address }}
+            {{ $teacher->address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -79,21 +85,13 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Streams:</strong>
-            @forelse($teacher->streams as $stream)
-                {{$stream->name}},
+            <strong>Subjects Assigned:</strong>
+            @forelse($teacher->stream_subjects as $strmSubTeacher)
+            <ul>
+                <li><b>{{ $strmSubTeacher->subject->name }}</b> - <i>{{ $strmSubTeacher->stream->name }}</i>.</li>
+            </ul>
             @empty
-            <span style="color: red">Notyet assigned to any class stream.</span>
-            @endforelse
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Subjects:</strong>
-            @forelse($teacher->subjects as $subject)
-                {{$subject->name}},
-            @empty
-            <span style="color: red">No subject(s) assigned to you at the moment.</span>
+            <p style="color: red">The subject(s) have notyet been assigned to you.</p>
             @endforelse
         </div>
     </div>
@@ -113,14 +111,8 @@
             @forelse($teacher->clubs as $club)
                 {{$club->name}},
             @empty
-            <span style="color: red">Notyet assigned to any club.</span>
+            <span style="color: red">You haven't joined any club.</span>
             @endforelse
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Subjects:</strong>
-            
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -136,5 +128,5 @@
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-frontend-main>
+</x-teacher>

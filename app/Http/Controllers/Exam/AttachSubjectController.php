@@ -23,9 +23,9 @@ class AttachSubjectController extends Controller
     public function attachSubject(Request $request,$id)
     {
     	$exam = $this->examRepo->getId($id);
-    	$subject = $request->subject;
-    	$exam->subjects()->attach($subject);
+    	$subjects = $request->subjects;
+    	$exam->subjects()->attach($subjects);
 
-    	return back()->withSuccess('The subject attached to the exam successfully');
+    	return back()->withSuccess('The subjects attached to the'." ".$exam->name." ".'successfully');
     }
 }

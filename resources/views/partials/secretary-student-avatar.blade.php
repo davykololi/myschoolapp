@@ -1,0 +1,1 @@
+<img class="rounded-full ring-2 ring-gray-100 w-36 h-36 mr-6 md:hover:scale-150" src="{{ $student->image_url }}" onerror="this.src='{{asset('static/avatar.png')}}'">

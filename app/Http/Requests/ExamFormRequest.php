@@ -28,21 +28,19 @@ class ExamFormRequest extends FormRequest
             return [
                 //
                 'name' => 'required|string|max:100',
-                'start_date' => 'required|date|after:yesterday',
-                'end_date' => 'required|date|after:start_date',
+                'start_date' => 'required|string',
+                'end_date' => 'required|string',
                 'year' => 'required|integer|max:'.(date('Y')+1),
                 'term' => 'required|string|max:100',
-                'exam_category' => 'required|string|max:100',
 
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
-                'start_date' => 'required|date|after:yesterday',
-                'end_date' => 'required|date|after:start_date',
+                'start_date' => 'required|string',
+                'end_date' => 'required|string',
                 'year' => 'required|integer|max:'.(date('Y')+1),
                 'term' => 'required|string|max:100',
-                'exam_category' => 'required|string|max:100',
             ];
         }
     }
@@ -58,7 +56,6 @@ class ExamFormRequest extends FormRequest
                 'end_date.required' => 'The date of ending exam is required',
                 'year.required' => 'The year the exam is done is required',
                 'term.required' => 'The term the exam is done is required',
-                'exam_category.required' => 'The category the exam belongs to is required',
             ];
         } else {
             return [
@@ -68,7 +65,6 @@ class ExamFormRequest extends FormRequest
                 'end_date.required' => 'The date of ending exam is required',
                 'year.required' => 'The year the exam is done is required',
                 'term.required' => 'The term the exam is done is required',
-                'exam_category.required' => 'The category the exam belongs to is required',  
             ];
         }
     }

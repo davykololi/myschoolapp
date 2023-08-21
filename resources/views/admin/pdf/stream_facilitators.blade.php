@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-    @include('partials.pdf_head')
-</head>
-<body>
-    @include('partials.pdf_header')
-    @include('partials.pdf_school_footer')
-    <br/><br/>
+@extends('layouts.pdf_landscape')
+@section('title', '| Stream Facilitators')
+
+@section('content')
     <table class="table table-bordered" id="table_style">
         <caption class="table_caption">
-            <h2 class="title">
-                <u>{{$title}}</u>
-            </h2>
+            <h2 class="title"><u>{{$title}}</u></h2>
         </caption>
         <thead>
             <tr>
@@ -24,11 +17,11 @@
             </tr>
         </thead>
         <tbody>
-            @if(!empty($classSubjects))
-            @forelse($classSubjects as $key => $sub)
+            @if(!empty($strmSubjectTeachers))
+            @forelse($strmSubjectTeachers as $key => $sub)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $sub->teacher->title }} {{ $sub->teacher->full_name }}</td>
+                <td>{{ $sub->teacher->title }} {{ $sub->teacher->name }}</td>
                 <td>{{ $sub->stream->name }}</td>
                 <td>{{ $sub->subject->name }}</td>
                 <td>{{ $sub->teacher->phone_no }}</td>
@@ -42,5 +35,4 @@
             @endif
         </tbody>
     </table>          
-</body>
-</html>
+@endsection

@@ -17,14 +17,15 @@ class AttachStreamController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('teacher2fa');
     }
     public function attachStream(Request $request,$id)
     {
     	$teacher = Teacher::findOrFail($id);
-    	$stream = $request->stream;
-    	$teacher->streams()->attach($stream);
+    	$streams = $request->streams;
+    	$teacher->streams()->sync($streams);
 
-    	return back()->withSuccess('The class stream attached to the teacher successfully');
+    	return back()->withSuccess('The class streams attached to the teacher successfully');
     }
 
 }

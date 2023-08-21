@@ -22,9 +22,9 @@ class AttachSubjectController extends Controller
     public function attachSubject(Request $request,$id)
     {
     	$student = Student::findOrFail($id);
-    	$subject = $request->subject;
-    	$student->subjects()->attach($subject);
+    	$subjects = $request->subjects;
+    	$student->subjects()->attach($subjects);
 
-    	return back()->withSuccess('The subject attached to the student successfully');
+    	return back()->withSuccess('The subjects attached to the student successfully');
     }
 }

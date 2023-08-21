@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-    @include('partials.pdf_head')
-</head>
-<body>
-    @include('partials.pdf_header')
-    @include('partials.pdf_school_footer')
-    <br/><br/>
-    <table class="table table-bordered" id="table_style">
+@extends('layouts.pdf_landscape_A4_plain')
+@section('title', '| School Departments')
+
+@section('content')
+    <table class="table table-bordered" width="80%">
         <caption class="table_caption">
-            <h2 class="title">
-                <u>{{$title}}</u>
-            </h2>
+            <h2 class="title" style="margin-top: -20px"><u>{{$title}}</u></h2>
         </caption>
         <thead>
-            <tr>
+            <tr style="background-color: black;color: white;">
                 <td><b>NO</b></td>
                 <td><b>NAME</b></td>
                 <td><b>PHONE NO</b></td>
@@ -27,10 +20,10 @@
             @forelse($schoolDepts as $key=>$schoolDept)
             <tr>
                 <td>{{ $loop->iteration}}</td>
-                <td>{{ $schoolDept->name}}</td>
+                <td style="text-transform: uppercase;">{{ $schoolDept->name}}</td>
                 <td>{{ $schoolDept->phone_no}}</td>
-                <td>{{ $schoolDept->head_name}}</td>
-                <td>{{ $schoolDept->asshead_name}}</td>
+                <td style="text-transform: uppercase;">{{ $schoolDept->head_name}}</td>
+                <td style="text-transform: uppercase;">{{ $schoolDept->asshead_name}}</td>
             @empty
                 <td colspan="10" style="color: red">
                     No department(s) formed in {{$school->name}}.
@@ -40,5 +33,4 @@
             @endif
         </tbody>
     </table>        
-</body>
-</html>
+@endsection

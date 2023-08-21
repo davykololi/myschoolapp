@@ -3,30 +3,27 @@
 namespace App\Http\Controllers\Parent;
 
 use Auth;
-use App\Repositories\StudentRepository as StudentRepo;
-use App\Repositories\StreamRepository as StreamRepo;
-use App\Repositories\DepartmentRepository as DeptRepo;
-use App\Repositories\TeacherRepository as TeacherRepo;
-use App\Repositories\TeacherRoleRepository as TeacherRoleRepo;
+use App\Models\Student;
+use App\Models\Stream;
+use App\Models\Department;
+use App\Models\Teacher;
+use App\Models\Year;
+use App\Models\Term;
+use App\Models\Exam;
+use App\Models\PositionTeacher;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ParentController extends Controller
 {
-    protected $studentRepo,$streamRepo,$deptRepo,$teacherRepo,$teacherRoleRepo;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(StudentRepo $studentRepo,StreamRepo $streamRepo,DeptRepo $deptRepo,TeacherRepo $teacherRepo,TeacherRoleRepo $teacherRoleRepo)
+    public function __construct()
     {
         $this->middleware('auth:parent');
-        $this->studentRepo = $studentRepo;
-        $this->streamRepo = $streamRepo;
-        $this->deptRepo = $deptRepo;
-        $this->teacherRepo = $teacherRepo;
-        $this->teacherRoleRepo = $teacherRoleRepo;
     }
  
     /**
@@ -39,24 +36,33 @@ class ParentController extends Controller
         return view('parent');
     }
 
-    public function parentStudents()
+    public function parentChildren()
     {
         $user = Auth::user();
-        $students = $user->students;
+        $parentChildren = $user->children()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records')->get();
 
-        return view('parent.students',compact('user','students'));
+        return view('parent.students',compact('user','parentChildren'));
     }
 
-    public function showStudent($id)
+    public function showChild(Student $child)
     {
-        $student = $this->studentRepo->getId($id);
+        $currentYear = date('Y');
+        $year = Year::where('year',$currentYear)->first();
+        $currentTerm = Term::where('status',1)->first();
+        $currentExam = Exam::where(['status'=>1,'year_id'=>$year->id,'term_id'=>$currentTerm->id])->first();
+        $vv = collect($child->stream->subjects()->pluck('name'));
+        $streamSubjects = $vv->toArray();
 
-        return view('parent.show_student',compact('student'));
+        if(!is_null($currentExam)){
+            $results = $currentExam->name." "."Results";
+            return view('parent.show_student',compact('child','streamSubjects','currentExam','streamSubjects','results'));
+        }
+
+        return view('parent.show_student',compact('child','streamSubjects','currentExam'));
     }
 
-    public function studentStream($id)
+    public function studentStream(Stream $stream)
     {
-        $stream = $this->streamRepo->getId($id);
         $standardSubjects = $stream->standard_subjects;
 
         return view('parent.student_stream',compact('stream','standardSubjects'));
@@ -65,26 +71,22 @@ class ParentController extends Controller
     public function schoolTeachers()
     {
         $user = Auth::user();
-        $principal = $this->teacherRoleRepo->principal();
-        $headTeachers = $principal->teachers()->with('position_teacher')->get();
+        $principal = Teacher::whereRole('headteacher')->first();
 
-        $deputy = $this->teacherRoleRepo->deputyPrincipal();
-        $deputyHeadTeachers = $deputy->teachers()->with('position_teacher')->get();
+        $deputy = Teacher::whereRole('deputyheadteacher')->first();
 
-        $scienceDept = $this->deptRepo->scienceDept();
-        $scienceDeptHead = $this->teacherRoleRepo->scienceDeptHead();
+        $scienceDept = Department::whereName('Science Department')->first();
+        $scienceDeptHead = PositionTeacher::whereName('The Head Science Department')->first();
         $scienceDeptHeadTeachers = $scienceDeptHead->teachers()->with('position_teacher')->get();
-        $scienceDeptAssHead = $this->teacherRoleRepo->assistScienceDept();
+        $scienceDeptAssHead = PositionTeacher::whereName('The Assistant Head Science Department')->first();
         $scienceDeptAssHeadTeachers = $scienceDeptAssHead->teachers()->with('position_teacher')->get();
         $scienceDeptTeachers = $scienceDept->teachers()->with('position_teacher')->get();
 
         return view('parent.school_teachers',compact('user','headTeachers','deputyHeadTeachers','scienceDept','scienceDeptHeadTeachers','scienceDeptAssHeadTeachers','scienceDeptTeachers'));
     }
 
-    public function showTeacher($id)
+    public function showTeacher(Teacher $teacher)
     {
-        $teacher = $this->teacherRepo->getId($id);
-
     	return view('parent.show_teacher',compact('teacher'));
     }
 }

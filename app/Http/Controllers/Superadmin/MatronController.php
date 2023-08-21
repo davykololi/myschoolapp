@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Services\SchoolService;
-use App\Models\BloodGroup;
 use App\Services\MatronService as MatService;
-use App\Services\MatronRoleService as MatRolService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\MatronFormRequest as StoreRequest;
@@ -15,18 +13,17 @@ use App\Http\Requests\MatronFormRequest as UpdateRequest;
 class MatronController extends Controller
 {
     protected $matService;
-    protected $matRolService;
     protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(MatService $matService,MatRolService $matRolService,SchoolService $schoolService)
+    public function __construct(MatService $matService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('superadmin2fa');
         $this->matService = $matService;
-        $this->matRolService = $matRolService;
         $this->schoolService = $schoolService;
     }
 
@@ -52,10 +49,8 @@ class MatronController extends Controller
     {
         //
         $schools = $this->schoolService->all();
-        $matronRoles = $this->matRolService->all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.matrons.create',compact('schools','matronRoles','bloodGroups'));
+        return view('superadmin.matrons.create',compact('schools'));
     }
 
     /**
@@ -69,7 +64,7 @@ class MatronController extends Controller
         //
         $matron = $this->matService->create($request);
 
-        return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->name." ".'info created successfully'));
+        return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->full_name." ".'info created successfully'));
     }
 
     /**
@@ -97,10 +92,8 @@ class MatronController extends Controller
         //
         $matron = $this->matService->getId($id);
         $schools = $this->schoolService->all();
-        $matronRoles = $this->matRolService->all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('superadmin.matrons.edit',compact('matron','schools','matronRoles','bloodGroups'));
+        return view('superadmin.matrons.edit',compact('matron','schools'));
     }
 
     /**

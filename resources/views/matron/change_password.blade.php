@@ -2,6 +2,7 @@
 @section('title', '| Matron Change Password')
 
 @section('content')
+<x-change-password-main>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -16,4 +17,5 @@
         </div>
     </div>
 </div>
+<x-change-password-main>
 @endsection

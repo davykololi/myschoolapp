@@ -23,9 +23,9 @@ class AttachStaffController extends Controller
     public function attachStaff(Request $request,$id)
     {
     	$meeting = $this->meetingRepo->getId($id);
-    	$staff = $request->staff;
-    	$meeting->staffs()->attach($staff);
+    	$staffs = $request->staffs;
+    	$meeting->staffs()->sync($staffs);
 
-    	return back()->withSuccess('The substaff attached to the meeting successfully');
+    	return back()->withSuccess('The substaffs attached to the meeting successfully');
     }
 }

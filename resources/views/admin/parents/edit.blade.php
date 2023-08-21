@@ -2,7 +2,7 @@
 @section('title', '| Edit Parent')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -12,15 +12,50 @@
                 <a href="{{ route('admin.parents.index') }}" class="btn btn-primary pull-right">Back</a>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.parents.update', $parent->id) }}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <form action="{{ route('admin.parents.update', $myParent->id) }}" method="post" class="form-horizontal" enctype="multipart/form-data">
                     @include('ext._csrfdiv')
                     <input type="hidden" name="_method" value="PUT">
-                    @include('ext._parent_edit_form')
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="salutation" id="salutation" class="form-control" value="{{ $myParent->salutation }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" id="name" class="form-control" value="{{ $myParent->name }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Image</label>
+                        <div class="col-sm-10">
+                            <input type="file" name="image" id="image" class="form-control" value="{{ $myParent->image }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Email</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="email" id="email" class="form-control" value="{{ $myParent->email }}">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >ID NO.</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="id_no" id="id_no" class="form-control" value="{{ $myParent->id_no }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Phone No.</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="phone_no" id="phone_no" class="form-control" value="{{ $myParent->phone_no }}">
+                        </div>
+                    </div>
                     @include('ext._submit_update_button')
                 </form>
             </div>
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

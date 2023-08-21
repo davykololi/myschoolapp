@@ -1,12 +1,10 @@
-            <select id="matron_role" type="matron_role" value="{{old('matron_role')}}" class="form-control" name="matron_role">
+            <select id="matron_role" type="text" value="{{old('matron_role')}}" class="form-control" name="matron_role">
                 <option value="">Select Role</option>
-                @foreach ($matronRoles as $key => $matronRole)
-                <option value="{{$matronRole->id}}">{{$matronRole->name}}</option>
-                @endforeach
+                <option value="{{ __('Senior Matron') }}">{{ __('Senior Matron') }}</option>
+                <option value="{{ __('Assistant Matron') }}">{{ __('Assistant Matron') }}</option>
             </select>
-
             @if($errors->has('matron_role'))
             <span class="help-block">
-                <span class="text-danger">{{$errors->first('matron_role')}}</span>
+                <strong>{{$errors->first('matron_role')}}</strong>
             </span>
             @endif

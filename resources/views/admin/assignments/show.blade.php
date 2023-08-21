@@ -1,10 +1,7 @@
-@extends('layouts.admin')
-@section('title', '| Show An Assignment')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-    @include('partials.messages')
-    <div class="row">
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
+        <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
             <h2>ASSIGNMENT DETAILS</h2>
@@ -66,6 +63,9 @@
             </a>
         </div>
     </div>
+
+    <div id="pspdfkit" style="height: 100vh"></div>
+
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <span>
@@ -73,8 +73,38 @@
             </span>
         </div>
     </div>
-    @include('assignment.attachstudentform')
-    @include('assignment.detachstudentform')
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Assignment Students:</strong>
+            @foreach($assignment->students as $student)
+                {{ $student->name }}
+            @endforeach
+        </div>
+    </div>
 </div>
-</main>
-@endsection
+  </x-backend-main>
+</x-admin>
+
+    <!-- PDF VIEWER SCRIPTS -->
+    
+    <script>
+        PSPDFKit.load({
+            container: "#pspdfkit",
+            document: "/storage/files/16857-66499-1-PB_1689107340.pdf"; // Add the path to your document here.
+        })
+        .then(function(instance) {
+            console.log("PSPDFKit loaded", instance);
+        })
+        .catch(function(error) {
+            console.error(error.message);
+        });
+    </script>
+
+
+
+
+
+
+
+
+

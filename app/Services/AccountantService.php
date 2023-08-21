@@ -46,9 +46,9 @@ class AccountantService
 	public function createData(StoreRequest $request)
 	{
 		$data = $request->validated();
-        $data['school_id'] = $request->school;
-        $data['bg_id'] = $request->blood_group;
-        $data['position_accountant_id'] = $request->accountant_role;
+        $data['school_id'] = Auth::user()->school->id;
+        $data['role'] = $request->accountant_role;
+        $data['blood_group'] = $request->blood_group;
         $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
@@ -57,10 +57,10 @@ class AccountantService
 
 	public function updateData(UpdateRequest $request)
 	{
-        $data=$request->only('title','name','dob','email','gender','address','phone_no','id_no','designation','emp_no','history');
-        $data['school_id'] = $request->school;
-        $data['bg_id'] = $request->blood_group;
-        $data['position_accountant_id'] = $request->accountant_role;
+        $data=$request->only('salutation','first_name','middle_name','last_name','dob','email','gender','address','phone_no','id_no','designation','emp_no','history');
+        $data['school_id'] = Auth::user()->school->id;
+        $data['role'] = $request->accountant_role;
+        $data['blood_group'] = $request->blood_group;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;

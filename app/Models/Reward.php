@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Reward extends Model implements Searchable
 {
     //
     protected $table = 'rewards';
-    protected $fillable = ['name','purpose','date','school_id','category_reward_id'];
+    protected $fillable = ['name','type','purpose','date','school_id','category_reward_id'];
     protected $casts = ['created_at' => 'datetime:d-m-Y'];
 
     public function getSearchResult(): SearchResult
@@ -22,6 +22,16 @@ class Reward extends Model implements Searchable
                 $this->name,
                 $url
             );
+    }
+
+    public function bestPerformClass()
+    {
+        return $this->type === 'Best Performance Class Award';
+    }
+
+    public function bestPerformStream()
+    {
+        return $this->type === 'Best Performance Stream Award';
     }
 
     public function students()

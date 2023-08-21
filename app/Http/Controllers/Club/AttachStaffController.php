@@ -23,9 +23,9 @@ class AttachStaffController extends Controller
     public function attachStaff(Request $request,$id)
     {
     	$club = $this->clubRepo->getId($id);
-    	$staff = $request->staff;
-    	$club->staffs()->attach($staff);
+    	$staffs = $request->staffs;
+    	$club->staffs()->attach($staffs);
 
-    	return back()->withSuccess('The substaff attached to the club successfully');
+    	return back()->withSuccess('The substaffs attached to the club successfully');
     }
 }

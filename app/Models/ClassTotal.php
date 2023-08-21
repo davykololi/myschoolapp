@@ -11,5 +11,5 @@ class ClassTotal extends Model
     protected $table = 'class_totals';
     public $incrementing = false;
     protected $primaryKey = 'id';
-    protected $fillable = ['name','mark_total','index_no'];
+    protected $fillable = ['name','mark_total','admission_no'];
 }

@@ -1,39 +1,47 @@
 @extends('layouts.student')
  
+@section('title')
+    {{ $subjectTeacher->subject->name }} {{ __('Notes By')}} {{ $subjectTeacher->teacher->salutation }} {{ $subjectTeacher->teacher->full_name }}
+@endsection
+
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h1 style="text-transform: uppercase;">
-                            {{ $user->stream->name}} {{$standardSubject->subject->name}} Notes
+  <!-- frontend-main view -->
+  <x-frontend-main>
+                    <div>
+                        <h1 class="uppercase text-center font-hairline text-2xl mb-4">
+                            {{ $user->stream->name}} Notes
                         </h1>
+                        <h3 class="uppercase text-center font-hairline text-base">
+                            {{ $subjectTeacher->subject->name }} Notes By {{ $subjectTeacher->teacher->salutation }} {{ $subjectTeacher->teacher->full_name }}
+                        </h3>
                     </div>
-                    <div class="pull-right">
-                        <a href="{{ route('student.stream.subjects') }}" class="label label-primary pull-right"> Back</a>
+                    <div class="text-right">
+                        <x-back-button/>
                     </div>
-                    <div class="panel-body">
-                        @if(!empty($standardSubject))
+                    <div>
                         <ol>
-                            @forelse($standardSubject->notes as $note)
+                            @forelse($subjectTeacher->teacher->notes as $note)
+                            @if(($note->stream->id === $user->stream->id))
                             <li>
-                                <span style="color: blue">{{$note->desc}}</span> - By
+                                <span class="text-blue-500">{{$note->desc}}</span> - By
                                 <a href="{{route('student.teacher.details',[$note->teacher->id,Auth::user()->stream->id])}}">
-                                    {{$note->teacher->title}} {{$note->teacher->full_name}} <span style="color: green">{{$note->teacher->phone_no}}</span>
+                                    {{$note->teacher->salutation}} {{$note->teacher->full_name}} <span class="text-green-800">{{$note->teacher->phone_no}}</span>
                                 </a>
-                                <a href="{{route('student.notes.download',$note->id)}}" class="btn btn-outline-warning">Download</a>
+                                <a href="{{route('student.notes.download',$note->id)}}">Download</a>
                             </li>
+                            @endif
                             @empty
-                                <p style="color: red">
-                                    {{ $user->stream->name}} {{$standardSubject->subject->name}} Notes Notyet Uploaded.
+                                <p class="text-[red]">
+                                    {{ $user->stream->name}} {{ $subject->name }} Notes Notyet Uploaded.
                                 </p>
                             @endforelse
                         </ol>
-                        @endif
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  </x-frontend-main>
 @endsection
+
+
+
+
+
+

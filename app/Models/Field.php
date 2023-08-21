@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Field extends Model implements Searchable
 {
     //
     protected $table = 'fields';
-    protected $fillable = ['name','code','school_id','category_field_id'];
+    protected $fillable = ['name','type','code','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -23,14 +23,24 @@ class Field extends Model implements Searchable
             );
     }
 
+    public function keinoField()
+    {
+        return $this->type === 'Kipchoge Keino Field';
+    }
+
+    public function kingswayField()
+    {
+        return $this->type === 'Kings Way Field';
+    }
+
+    public function hawksField()
+    {
+        return $this->type === 'Hawks Field';
+    }
+
     public function school()
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
-    }
-
-    public function category_field()
-    {
-        return $this->belongsTo('App\Models\CategoryField')->withDefault();
     }
 
     public function assignments()

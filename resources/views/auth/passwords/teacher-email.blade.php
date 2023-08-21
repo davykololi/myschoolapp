@@ -1,46 +1,23 @@
-@extends('layouts.app')
- 
+@extends('layouts.frontend')
+@section('title', '| Teacher Reset Password Email')
+
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Teacher Reset Password</div>
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
- 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('teacher.password.email') }}">
-                        {{ csrf_field() }}
- 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
- 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
- 
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
- 
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btnbtn-primary">
-                                    Send Password Reset Link
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<div class="flex flex-col lg:flex-row flex-nowrap">
+  <!-- frontent-sidebar -->
+  <x-frontend-sidebar>
+    <x-login-links/>
+  </x-frontend-sidebar>
+
+  <!-- frontend-main view -->
+  <x-auth-card>
+    <div class="pt-2 px-4 text-center">
+      <h1 class="font-extrabold text-white justify-center">RESET PASSWORD EMAIL</h1>
     </div>
-</div>
+    <div class="flex w-auto justify-center py-10 items-center">
+      <form method="POST" action="{{ route('teacher.password.email') }}">
+        <x-reset-password-email-form/>
+      </form>
+    </div>
+  </x-auth-card>
+</div>  
 @endsection

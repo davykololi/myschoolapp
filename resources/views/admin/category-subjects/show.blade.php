@@ -1,7 +1,4 @@
-@extends('layouts.admin')
-@section('title', '| Show Subject Category')
-
-@section('content')
+<x-admin>
 <main role="main" class="container"  style="margin-top: 5px" id="main">
     <div class="row">
     <div class="col-md-12 margin-tb">
@@ -41,4 +38,4 @@
     </div>
 </div>
 </main>
-@endsection
+</x-admin>

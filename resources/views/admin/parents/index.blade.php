@@ -2,12 +2,12 @@
 @section('title', '| All Parents')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
 <div class="row">
     <div class="col-lg-12">
     @include('partials.messages')
     <!-- Posts list -->
-    @if(!empty($parents))
+    @if(!empty($myParents))
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -23,10 +23,16 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-head-bg-info table-bordered-bd-info">
                     <!-- Table Headings -->
-                    @include('partials.parenthead')
+                    <thead>
+                        <th width="20%">NAME</th>
+                        <th width="20%">EMAIL</th>
+                        <th width="20%">ID NO.</th>
+                        <th width="20%">PHONE</th>
+                        <th width="20%">ACTION</th>
+                    </thead>
                     <!-- Table Body -->
                     <tbody>
-                    @foreach($parents as $parent)
+                    @foreach($myParents as $parent)
                         <tr>
                             <td class="table-text">
                                 <div>{{$parent->title}} {{$parent->name}}</div>
@@ -39,9 +45,6 @@
                             </td>
                             <td class="table-text">
                                 <div>{{$parent->phone_no}}</div>
-                            </td>
-                            <td class="table-text">
-                                <div>{{$parent->designation}}</div>
                             </td>
                             <td>
                                 <form action="{{route('admin.parents.destroy',$parent->id)}}" method="POST">
@@ -63,5 +66,5 @@
     @endif
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

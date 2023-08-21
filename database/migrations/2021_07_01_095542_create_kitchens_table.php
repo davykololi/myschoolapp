@@ -16,6 +16,7 @@ class CreateKitchensTable extends Migration
         Schema::create('kitchens', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type')->default('Students Kitchen');
             $table->string('code');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();

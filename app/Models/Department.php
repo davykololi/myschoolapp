@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Spatie\Searchable\Searchable;
-use\Spatie\Searchable\SearchResult;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model implements Searchable
@@ -70,6 +70,6 @@ class Department extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','school',)->get();
+        return $query->with('teachers','school','staffs','exams','assignments','subjects','meetings','notes')->get();
     }
 }

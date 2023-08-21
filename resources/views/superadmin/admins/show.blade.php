@@ -2,7 +2,7 @@
 @section('title', '| Show Admin')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
@@ -17,13 +17,19 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $admin->image }}">
+            <img style="width:15%" src="/storage/storage/{{ $admin->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{ $admin->full_name }}">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $admin->title }} {{ $admin->name }}
+            {{ $admin->salutation }} {{ $admin->full_name }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Role:</strong>
+            {{ $admin->role->name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -45,5 +51,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

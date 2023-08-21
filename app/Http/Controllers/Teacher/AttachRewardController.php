@@ -18,13 +18,14 @@ class AttachRewardController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('teacher2fa');
     }
     public function attachReward(Request $request,$id)
     {
     	$teacher = Teacher::findOrFail($id);
-    	$reward = $request->reward;
-    	$teacher->rewards()->attach($reward);
+    	$rewards = $request->rewards;
+    	$teacher->rewards()->sync($rewards);
 
-    	return back()->withSuccess('The reward attached to the teacher successfully');
+    	return back()->withSuccess('The awards attached to the teacher successfully');
     }
 }

@@ -1,7 +1,4 @@
-@extends('layouts.accountant')
-@section('title', '| Fee Categories')
-
-@section('content')
+<x-accountant>
 <main role="main" class="container"  style="margin-top: 5px" id="main">
 <div class="row">
     <div class="col-lg-12">
@@ -65,4 +62,4 @@
     </div>
 </div>
 </main>
-@endsection
+</x-accountant>

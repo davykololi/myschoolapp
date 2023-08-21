@@ -2,7 +2,7 @@
 @section('title', '| Edit Issued Book')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-frontend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -17,7 +17,7 @@
                     <div class="form-group">
         				<label class="control-label col-sm-2" >Attach Student</label>
         				<div class="col-md-10">
-            				<select id="student" type="student" value="{{old('student')}}" class="form-control" name="student">
+            				<select id="student" type="student" value="{{old('student')}}" class="leading-tight" name="student">
                 				<option value="">Select Student</option>
                 				@foreach ($students as $student)
                 				<option value="{{$student->id}}" @if($booker->student_id == $student->id) selected @endif>
@@ -61,25 +61,29 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Issued Date</label>
                         <div class="col-sm-10">
-                            <input type="date" name="issued_date" id="issued_date" class="form-control" value="{{$booker->issued_date}}">
+                            <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                                <input type="text" name="issued_date" id="issued_date" class="form-control" value="{{$booker->issued_date}}">
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Return Date</label>
                         <div class="col-sm-10">
-                            <input type="date" name="return_date" id="return_date" class="form-control" value="{{$booker->return_date}}">
+                            <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                                <input type="text" name="return_date" id="return_date" class="form-control" value="{{$booker->return_date}}">
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Book Returned?</label>
                         <div class="col-sm-10">
-                            <input type="text" name="returned" id="returned" class="form-control" value="{{$booker->returned}}">
+                            <input type="text" name="returned" id="returned" class="form-control" value="{{$booker->returned ? 'Yes':'No' }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Status Returned?</label>
                         <div class="col-sm-10">
-                            <input type="text" name="status_returned" id="status_returned" class="form-control" value="{{$booker->returned_status}}">
+                            <input type="text" name="status_returned" id="status_returned" class="form-control" value="{{$booker->returned_status ? 'Good':'Poor'}}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -94,5 +98,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-frontend-main>
 @endsection

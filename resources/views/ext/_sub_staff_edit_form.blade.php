@@ -2,14 +2,30 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Title: <span class="text-danger">*</span></label>
-                                <input value="{{ $staff->title }}" type="text" name="title" class="form-control">
+                                <input value="{{ $staff->salutation }}" type="salutation" name="salutation" class="form-control">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Full Name: <span class="text-danger">*</span></label>
-                                <input value="{{ $staff->name }}" type="text" name="name" class="form-control">
+                                <label>First Name: <span class="text-danger">*</span></label>
+                                <input value="{{ $staff->first_name }}" type="text" name="first_name" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Middle Name: <span class="text-danger">*</span></label>
+                                <input value="{{ $staff->middle_name }}" type="text" name="middle_name" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Last Name: <span class="text-danger">*</span></label>
+                                <input value="{{ $staff->last_name }}" type="text" name="last_name" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -56,7 +72,9 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Date of Birth: <span class="text-danger">*</span></label>
-                                <input name="dob" value="{{ $staff->dob }}" type="date" class="form-control date-pick">
+                                <div class="relative w-full" data-te-datepicker-init data-te-format="dd, mmm, yyyy" data-te-input-wrapper-init>
+                                    <input name="dob" value="{{ $staff->dob }}" type="text" class="form-control">
+                                </div>
                                 @error('dob')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -102,13 +120,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Blood Group: <span class="text-danger">*</span></label>
-                                @include('ext._blood_group_div')
+                                @include('ext._attach_blood_group')
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Sub Staff Role: <span class="text-danger">*</span></label>
-                                @include('ext._attach_staff_rolediv')
+                                @include('ext._attach_staff_roles')
                             </div>
                         </div>
                     </div>

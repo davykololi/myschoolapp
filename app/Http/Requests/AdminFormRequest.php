@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\EmailValidation;
 use App\Rules\CapitalLetter;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
@@ -29,8 +30,10 @@ class AdminFormRequest extends FormRequest
 
             return [
                 //
-                'title' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
+                'salutation' => 'required|string|max:100',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
                 'gender' => 'required|string|max:100',
                 'phone_no' => 'required|string',
@@ -41,14 +44,15 @@ class AdminFormRequest extends FormRequest
                 'address'   => 'required',
                 'designation'   => 'required',
                 'history' => 'required',
-                'school' => 'required|exists:schools,id',
                 'password'=>['required','string','confirmed',Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
                 'password_confirmation' => ['required'],
             ];
         } else {
             return [
-                'title' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
+                'salutation' => 'required|string|max:100',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
                 'gender' => 'required|string|max:100',
                 'phone_no' => 'required|string',
@@ -59,7 +63,6 @@ class AdminFormRequest extends FormRequest
                 'address'   => 'required',
                 'designation'   => 'required',
                 'history' => 'required',
-                'school' => 'required|exists:schools,id',
             ];
         }
     }
@@ -70,8 +73,10 @@ class AdminFormRequest extends FormRequest
 
             return [
                 //
-                'title.required' => 'The title is required',
-                'name.required' => 'The name is required',
+                'salutation.required' => 'The title is required',
+                'first_name.required' => 'The first name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
                 'image.required' => 'The image is required',
                 'gender.required' => 'Gender status required',
                 'phone_no.required'   => 'The phone number is required',
@@ -82,13 +87,14 @@ class AdminFormRequest extends FormRequest
                 'address.required'   => 'The postal address is required',
                 'designation.required'   => 'The profession is required',
                 'history.required'   => 'Any information about the school adminstrator is required',
-                'school.required'   => 'The name of the school is required',
             ];
         } else {
             return [
                 //
-                'title.required' => 'The title is required',
-                'name.required' => 'The name is required',
+                'salutation.required' => 'The title is required',
+                'first_name.required' => 'The first name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
                 'image.required' => 'The image is required',
                 'gender.required' => 'Gender status required',
                 'phone_no.required'   => 'The phone number is required',
@@ -99,7 +105,6 @@ class AdminFormRequest extends FormRequest
                 'address.required'   => 'The postal address is required',
                 'designation.required'   => 'The profession is required',
                 'history.required'   => 'Any information about the school adminstrator is required',
-                'school.required'   => 'The name of the school is required',
             ];
         }
     }

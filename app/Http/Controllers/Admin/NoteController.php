@@ -8,7 +8,7 @@ use App\Services\DepartmentService as DeptService;
 use App\Services\StreamService;
 use App\Services\TeacherService;
 use App\Services\SubjectService;
-use App\Services\StdSubjectService;
+use App\Services\StreamSubjectTeacherService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\NotesFormRequest as StoreRequest;
@@ -22,9 +22,10 @@ class NoteController extends Controller
      *
      * @return void
      */
-    public function __construct(NotesService $notesService,DeptService $deptService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService,StdSubjectService $stdSubjectService)
+    public function __construct(NotesService $notesService,DeptService $deptService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService,StreamSubjectTeacherService $stdSubjectService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('admin2fa');
         $this->notesService = $notesService;
         $this->deptService = $deptService;
         $this->streamService = $streamService;

@@ -1,10 +1,9 @@
-@extends('layouts.admin')
-@section('title', '| Show Stream')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-    @include('partials.messages')
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
     <div class="row">
+    @include('partials.messages')
+    @include('partials.errors')
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
             <h2 style="text-transform: uppercase;">{{ $stream->name }} Details</h2>
@@ -21,17 +20,19 @@
             <a href="{{route('admin.export.stream_teachers',$stream->id)}}" class="btn btn-primary btn-border">
                 {{ $stream->name }} Teachers Excel
             </a>
-            <br/><br/>
+            <div>
+                <p>{{ $stream->name }} has {{ $streamStudents}} students. {{ $females }} female and {{ $males }} male</p>
+            </div>
         </div>
         <div class="pull-right">
-            <a href="{{ route('admin.streams.index') }}" class="btn btn-primary pull-right">Back</a>
+            <a href="{{ url()->previous() }}" class="btn btn-primary pull-right">Back</a>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Stream:</strong>
+            <strong>Stream Name:</strong>
             {{ $stream->name }}
         </div>
     </div>
@@ -49,17 +50,11 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Stream:</strong>
-            {{ $stream->stream_section->name }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
             <strong>{{ $stream->name }} Students:</strong>
             <ol>
             @forelse($stream->students as $student)
             <a href="{{ route('admin.students.show', $student->id) }}">
-                <li>{{ $student->name }} {{ $student->phone_no }}</li>
+                <li>{{ $student->full_name }} {{ $student->phone_no }}</li>
             </a>
             @empty
             <p style="color: red">No students(s) assigned to {{ $stream->name }} yet.</p>
@@ -164,23 +159,132 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>{{ $stream->name }} Subject Teachers:</strong>
+            <div>
+            <table style="width: 100%;">
+                <thead>
+                    <th>
+                        <td><b>NO</b></td>
+                        <td><b>SUBJECT</b></td>
+                        <td><b>TECHER</b></td>
+                        <td><b>EMAIL</b></td>
+                        <td><b>Action</b></td>
+                    </th>
+                </thead>
+                <tbody>
+                    @forelse($stream->stream_subject_teachers as $strmSubTeacher)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <tb><b>{{ $strmSubTeacher->subject->name }}</b></tb>
+                        <tb>{{ $strmSubTeacher->teacher->full_name }}</tb>
+                        <tb><i>{{ $strmSubTeacher->teacher->email }}</i>.</tb>
+                        <td>
+                            <form action="{{route('admin.streamteacher.remove',$strmSubTeacher->id)}}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    @empty
+                        <tb style="color: red">The subjects facilitators have notyet been assigned to {{ $stream->name }}.</tb>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <span>
                 <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($stream->created_at)) }}
             </span>
         </div>
     </div>
-    @include('stream.attachteacherform')
-    @include('stream.detachteacherform')
-    @include('stream.attachassignmentform')
-    @include('stream.detachassignmentform')
-    @include('stream.attachexamform')
-    @include('stream.detachexamform')
-    @include('stream.attachmeetingform')
-    @include('stream.detachmeetingform')
-    @include('stream.attachrewardform')
-    @include('stream.detachrewardform')
-    @include('stream.attachsubjectform')
-    @include('stream.detachsubjectform')
 </div>
-</main>
-@endsection
+<br/>
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('stream.attachteacherform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('stream.attachassignmentform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('stream.attachexamform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('stream.attachmeetingform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('stream.attachrewardform')
+    </div>
+</div>
+
+<div class="row">
+    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        @include('stream.attachsubjectform')
+    </div>
+</div>
+
+<br/><br/>
+
+    <h2 class="text-title" style="text-align: left;"><b>ATTACH SUBJECT TO TEACHER</b></h2>
+    <form id="subject_teacher_form" action="{{ route('admin.streamsubjectteacher.store') }}" method="POST" class="form-horizontal">
+        {{ csrf_field() }}
+        <div class="form-group">
+            <div class="col-sm-10">
+                <input type="hidden" name="stream_id" id="stream_id" class="form-control" value="{{ $stream->id }}">
+            </div>
+        </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @include('ext._attach_stream_subjects')
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Attach Teacher: <span class="text-danger">*</span></label>
+                        <select id="teacher_id" type="teacher_id" value="{{old('teacher_id')}}" class="form-control" name="teacher_id">
+                            <option value="">Select Teacher</option>
+                            @foreach ($streamTeachers as $teacher)
+                                <option value="{{$teacher->id}}">{{$teacher->full_name}}</option>
+                            @endforeach
+                        </select>
+                        @if($errors->has('teacher_id'))
+                            <span class="help-block">
+                                <span class="text-danger">{{$errors->first('teacher_id')}}</span>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="desc" id="desc" class="form-control" placeholder="Description">
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-xs pull-right">Attach</button>
+            </div>
+        </div>
+    </form>
+</x-backend-main>
+</x-admin>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Rules\MatchOldPassword;
@@ -19,6 +20,7 @@ class StudentChangePasswordController extends Controller
     public function __construct()
     {
         $this->middleware('auth:student');
+        $this->middleware('student2fa');
     }
 
     /**
@@ -41,6 +43,11 @@ class StudentChangePasswordController extends Controller
 
   			Student::find(auth()->user()->id)->update(['password' => Hash::make($request->new_password)]);
 
-  		return back()->withSuccess('The password changed successfuly!');
+            //Logout prompt to log in again using new password
+            Auth::guard('student')->logout();
+
+            //Send SMS/Mail to Auth User Notifying him/her that he/she changed the password
+
+  		return redirect('/student/login') ->withSuccess('The password changed successfuly!. Now login using new password');
     }
 }

@@ -9,7 +9,7 @@
             <h2 style="text-transform: uppercase;">{{ $stream->name }} Details</h2>
         </div>
         <div class="pull-right">
-            <a href="{{ route('parent.students') }}" class="label label-primary pull-right">Back</a>
+            <a href="{{ url()->previous() }}" class="label label-primary pull-right">Back</a>
         </div>
     </div>
 </div>
@@ -20,8 +20,8 @@
             <ol>
             @forelse($stream->teachers as $teacher)
                 <li>
-                    <a href="{{route('parent.show.teacher',$teacher->id)}}">
-                        {{ $teacher->title }} {{ $teacher->full_name }} - {{ $teacher->phone_no }}
+                    <a href="{{route('admin.stream.teacher',[$teacher->id,$stream->id])}}">
+                        {{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}
                     </a>
                 </li>
             @empty
@@ -64,11 +64,13 @@
                     Start Date:{{ date("jS,F,Y",strtotime($exam->start_date)) }} End Date:{{ date("jS,F,Y",strtotime($exam->end_date)) }} 
                     {{ $exam->file }}
                     <span style="color: blue">Timetable:</span>
-                    @forelse($exam->timetables as $timetable)
+                    @if(!is_null($exam->exam_timetables))
+                    @forelse($exam->exam_timetables as $timetable)
                         {{$timetable->file}}
                     @empty
                         <span style="color: red">The Timetable Notyet Uploaded.</span>
                     @endforelse
+                    @endif
                 </li>
             @empty
             <p style="color: red">No exam(s) to {{ $stream->name }} yet.</p>
@@ -115,7 +117,7 @@
                     {{$standardSubject->subject->name}}
                 </li>
             @empty
-                <p style="color: red"> The Facilitators Notyet Assigned to {{ $stream->name }} Subjects.</p>
+                <p style="color: red"> The Facilitators Notyet Assigned to {{ $user->stream->name Subjects.</p>
             @endforelse
             </ol>
             @endif

@@ -2,50 +2,35 @@
 @section('title', '| Add Librarian')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
+<x-backend-main>
+<div class="max-w-full p-4 md:p-8 lg:p-8 shadow-2xl">
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <button class="btn btn-primary"><span class="btn-label"><i class="flaticon-shapes"></i></span>Create</button>
-                <a href="{{ route('superadmin.librarians.index') }}" class="btn btn-primary btn-xs pull-right">Back</a>
-            </div>
-            <div class="panel-body">
+            <h1 class="text-center text-2xl font-bold uppercase underline mb-4">Create Librarian</h1>
+            <x-back-button/>
+            <div class="mt-8 border-2 px-4 py-4">
                 <form action="{{ route('superadmin.librarians.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
                     @include('ext._csrfdiv')
                     @include('ext._first_common_detailsdiv')
                     @include('ext._second_common_detailsdiv')
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Blood Group: <span class="text-danger">*</span></label>
-                                @include('ext._blood_group_div')
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
+                    <div class="w-full flex flex-col md:flex-row lg:flex-row mb-2">
+                        <div class="w-full md:w-1/3 lg:w-1/3">
+                            <div class="flex flex-col">
                                 <label>Librarian Role: <span class="text-danger">*</span></label>
-                                @include('ext._attach_librarian_rolediv')
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>School: <span class="text-danger">*</span></label>
-                                @include('ext._attach_schooldiv')
+                                @include('ext._attach_librarian_role')
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
+                    <div class="w-full flex flex-col md:flex-row lg:flex-row mb-2">
+                        <div class="w-full">
+                            <div class="flex flex-col">
                                 <label>More About Librarian: <span class="text-danger">*</span></label>
                                 @include('ext._content_div')
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="w-full flex flex-col md:flex-row lg:flex-row mb-2 my-4 gap-4">
                         @include('ext._passworddiv')
                     </div>
                     @include('ext._submit_register_button')
@@ -54,5 +39,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

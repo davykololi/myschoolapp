@@ -17,7 +17,7 @@ class TeachersExport implements FromCollection, WithHeadings, WithMapping, Shoul
     */
     public function collection()
     {
-        return Teacher::with('school','position_teacher')->get();
+        return Teacher::with('school','roles')->get();
     }
 
     public function headings(): array
@@ -38,7 +38,7 @@ class TeachersExport implements FromCollection, WithHeadings, WithMapping, Shoul
             $teacher->phone_no,
             $teacher->postal_address,
             $teacher->email,
-            $teacher->position_teacher->name,
+            $teacher->roles,
          ];
     }
 }

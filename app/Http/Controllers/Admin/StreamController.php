@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\School;
-use App\Services\StreamService;
 use App\Models\Teacher;
 use App\Models\Assignment;
 use App\Models\Exam;
 use App\Models\Meeting;
 use App\Models\Reward;
 use App\Models\Subject;
-use App\Models\MyClass;
-use App\Models\StreamSection;
-use Illuminate\Support\Str;
+use App\Services\StreamService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\StreamFormRequest as StoreRequest;
-use App\Http\Requests\StreamFormRequest as UpdateRequest;
 
 class StreamController extends Controller
 {
@@ -46,107 +40,31 @@ class StreamController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-        $classes = MyClass::all();
-        $streamSections = StreamSection::all();
-
-        return view('admin.streams.create',compact('classes','streamSections'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreRequest $request)
-    {
-        //
-        $stream = $this->streamService->create($request);
-
-        return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info created successfully'));
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function details($id)
     {
         //
         $stream = $this->streamService->getId($id);
-        $teachers = Teacher::all();
+        $teachers = Teacher::all()->pluck('full_name','id');
         $streamTeachers = $stream->teachers;
-        $assignments = Assignment::all();
+        $assignments = Assignment::all()->pluck('name','id');
         $streamAssignments = $stream->assignments;
-        $exams = Exam::all();
+        $exams = Exam::all()->pluck('name','id');
         $streamExams = $stream->exams;
-        $meetings = Meeting::all();
+        $meetings = Meeting::all()->pluck('name','id');
         $streamMeetings = $stream->meetings;
-        $rewards = Reward::all();
+        $rewards = Reward::all()->pluck('name','id');
         $streamRewards = $stream->rewards;
-        $subjects = Subject::all();
+        $subjects = Subject::all()->pluck('name','id');
         $streamSubjects = $stream->subjects;
+        $streamStudents = $stream->students->count();
+        $females = $stream->females();
+        $males = $stream->males();
 
-        return view('admin.streams.show',compact('stream','teachers','streamTeachers','assignments','streamAssignments','exams','streamExams','meetings','streamMeetings','rewards','streamRewards','subjects','streamSubjects'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-        $stream = $this->streamService->getId($id);
-        $classes = MyClass::all();
-        $streamSections = StreamSection::all();
-
-        return view('admin.streams.edit',compact('stream','classes','streamSections'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateRequest $request, $id)
-    {
-        //
-        $stream = $this->streamService->getId($id);
-        if($stream){
-            $this->streamService->update($request,$id);
-
-            return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info updated successfully'));
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-        $stream = $this->streamService->getId($id);
-        if($stream){
-            $this->streamService->delete($id);
-
-            return redirect()->route('admin.streams.index')->withSuccess(ucwords($stream->name." ".'stream info deleted successfully'));
-        }
+        return view('admin.streams.show',compact('stream','teachers','streamTeachers','assignments','streamAssignments','exams','streamExams','meetings','streamMeetings','rewards','streamRewards','subjects','streamSubjects','streamStudents','females','males'));
     }
 }

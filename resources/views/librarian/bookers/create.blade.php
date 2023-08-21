@@ -2,8 +2,8 @@
 @section('title', '| Add Issued Book')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
+<x-frontend-main>
+<div class="w-full">
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="panel panel-default">
@@ -13,7 +13,7 @@
             <div class="panel-body">
                 <form action="{{ route('librarian.bookers.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
                     @include('ext._csrfdiv')
-                    @include('ext._attach_studentdiv')
+                    @include('ext._get_students_ids')
                     @include('ext._attach_bookdiv')
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Serial No.</label>
@@ -24,13 +24,17 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Issued Date</label>
                         <div class="col-sm-10">
-                            <input type="date" name="issued_date" id="issued_date" class="form-control" placeholder="Issued Date">
+                            <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                                <input type="text" name="issued_date" id="issued_date" class="form-control" placeholder="Issued Date">
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Return Date</label>
                         <div class="col-sm-10">
-                            <input type="date" name="return_date" id="return_date" class="form-control" placeholder="Return Date">
+                            <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                                <input type="text" name="return_date" id="return_date" class="form-control" placeholder="Return Date">
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -45,5 +49,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-frontend-main>
 @endsection

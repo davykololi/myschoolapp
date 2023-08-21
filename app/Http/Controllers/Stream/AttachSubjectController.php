@@ -22,8 +22,8 @@ class AttachSubjectController extends Controller
     public function attachSubject(Request $request,$id)
     {
     	$stream = Stream::findOrFail($id);
-    	$subject = $request->subject;
-    	$stream->subjects()->attach($subject);
+    	$subjects = $request->subjects;
+    	$stream->subjects()->sync($subjects);
 
     	return back()->withSuccess('The subject(s) attached to the class successfully');
     }

@@ -21,9 +21,9 @@ class AttachTeacherController extends Controller
     public function attachTeacher(Request $request,$id)
     {
     	$stream = Stream::findOrFail($id);
-    	$teacher = $request->teacher;
-    	$stream->teachers()->attach($teacher);
+    	$teachers = $request->teachers;
+    	$stream->teachers()->sync($teachers);
 
-    	return back()->withSuccess('The teacher attached to the class successfully');
+    	return back()->withSuccess('The teachers attached to the class successfully');
     }
 }

@@ -20,7 +20,6 @@
                             <input type="text" name="name" id="name" class="form-control" placeholder="Name">
                         </div>
                     </div>
-                    @include('ext._attach_schooldiv')
                     @include('ext._submit_create_button')
                 </form>
             </div>

@@ -22,6 +22,7 @@ class AdminController extends Controller
     public function __construct(AdminService $adminService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('superadmin2fa');
         $this->adminService = $adminService;
         $this->schoolService = $schoolService;
     }

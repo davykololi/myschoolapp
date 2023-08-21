@@ -4,21 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use Auth;
 use Illuminate\Support\Facades\Notification;
-use App\Models\PositionStudent;
-use App\Services\ParentService;
 use App\Services\StudentService;
 use App\Models\School;
 use App\Services\StreamService;
+use App\Services\ParentService;
 use App\Models\Dormitory;
 use App\Models\Intake;
 use App\Services\SubjectService;
 use App\Models\Reward;
 use App\Models\Assignment;
 use App\Models\Meeting;
-use App\Models\BloodGroup;
+use App\Models\Student;
+use App\Models\StudentInfo;
 use App\Events\StudentRegistered;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\StudentFormRequest as StoreRequest;
 use App\Http\Requests\StudentFormRequest as UpdateRequest;
@@ -29,22 +30,21 @@ use Illuminate\Foundation\Validation\ValdatesRequests;
 
 class StudentController extends Controller
 {
-    protected $studentService;
-    protected $streamService;
-    protected $parentService;
-    protected $subjectService;
+    protected $studentService, $streamService, $subjectService, $parentService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(StudentService $studentService,StreamService $streamService,ParentService $parentService,SubjectService $subjectService)
+    public function __construct(StudentService $studentService,StreamService $streamService,SubjectService $subjectService,Request $request, ParentService $parentService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('admin2fa');
         $this->studentService = $studentService;
         $this->streamService = $streamService;
-        $this->parentService = $parentService;
         $this->subjectService = $subjectService;
+        $this->parentService = $parentService;
+        $this->request = $request;
     }
     /**
      * Display a listing of the resource.
@@ -54,8 +54,8 @@ class StudentController extends Controller
     public function index()
     {
         //
-        $students = $this->studentService->all();
-
+        $students = $this->studentService->paginate();
+        
         return view('admin.students.index',compact('students'));
     }
 
@@ -71,10 +71,8 @@ class StudentController extends Controller
         $intakes = Intake::all();
         $dormitories = Dormitory::all();
         $parents = $this->parentService->all();
-        $studentRoles = PositionStudent::all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('admin.students.create',compact('streams','intakes','dormitories','parents','studentRoles','bloodGroups'));
+        return view('admin.students.create',compact('streams','intakes','dormitories','parents'));
     }
 
     /**
@@ -87,6 +85,8 @@ class StudentController extends Controller
     {
         //
         $student = $this->studentService->create($request);
+        $student_id = $student->id;
+        $StudentInfo = $this->studentService->updateStudentInfo($request, $student_id);
         event(new StudentRegistered($student));
 
         return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info created successfully'));
@@ -102,16 +102,18 @@ class StudentController extends Controller
     {
         //
         $student = $this->studentService->getId($id);
-        $subjects = $this->subjectService->all();
+        $subjects = $this->subjectService->all()->pluck('name','id');
         $studentSubjects = $student->subjects;
-        $rewards = Reward::all();
+        $rewards = Reward::all()->pluck('name','id');
         $studentRewards = $student->rewards;
-        $assignments = Assignment::all();
+        $assignments = Assignment::all()->pluck('name','id');
         $studentAssignments = $student->assignments;
-        $meetings = Meeting::all();
+        $meetings = Meeting::all()->pluck('name','id');
         $studentMeetings = $student->meetings;
+        $vv = collect($student->stream->subjects()->pluck('name'));
+        $streamSubjects = $vv->toArray();
 
-        return view('admin.students.show',compact('student','subjects','studentSubjects','rewards','studentRewards','assignments','studentAssignments','meetings','studentMeetings'));
+        return view('admin.students.show',compact('student','subjects','studentSubjects','rewards','studentRewards','assignments','studentAssignments','meetings','studentMeetings','streamSubjects'));
     }
 
     /**
@@ -128,10 +130,8 @@ class StudentController extends Controller
         $intakes = Intake::all();
         $dormitories = Dormitory::all();
         $parents = $this->parentService->all();
-        $studentRoles = PositionStudent::all();
-        $bloodGroups = BloodGroup::all();
 
-        return view('admin.students.edit',compact('student','streams','intakes','dormitories','parents','studentRoles','bloodGroups'));
+        return view('admin.students.edit',compact('student','streams','intakes','dormitories','parents'));
     }
 
     /**
@@ -147,7 +147,9 @@ class StudentController extends Controller
         $student = $this->studentService->getId($id);
         if($student){
             Storage::delete('public/storage/'.$student->image);
-            $this->studentService->update($request,$id);
+            $this->studentService->update($request,$id); 
+            $student_id = $student->id;
+            $StudentInfo = $this->studentService->updateStudentInfo($request, $student_id); 
 
             return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info updated successfully'));
         }

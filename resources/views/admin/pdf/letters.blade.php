@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-    @include('partials.pdf_head')
-</head>
-<body>
-    @include('partials.pdf_header')
-    @include('partials.pdf_school_footer') 
-    <br/><br/>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <p>{!! $letter->content !!}</p>
-            </div>
+@extends('layouts.pdf_portrait')
+@section('title', '| School Letters')
+
+@section('content')
+<div class="container">
+    <div class="row">
+        <div>
+            <p style="margin-top: -20px">{!! $letter->content !!}</p>
         </div>
     </div>
-</body>
-</html>
+<
+@endsection

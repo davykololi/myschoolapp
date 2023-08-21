@@ -17,6 +17,7 @@ class StaffProfileController extends Controller
     public function __construct()
     {
         $this->middleware('auth:staff');
+        $this->middleware('staff2fa');
     }
     
     public function staffProfile()

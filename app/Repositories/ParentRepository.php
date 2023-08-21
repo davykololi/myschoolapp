@@ -7,30 +7,35 @@ use App\Models\MyParent;
 
 class ParentRepository implements ParentInterface
 {
-	protected $par;
+	protected $my_parent;
 	/**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(MyParent $par)
+    public function __construct(MyParent $my_parent)
     {
-        $this->par = $par;
+        $this->my_parent = $my_parent;
     }
 
     public function all()
     {
-        return $this->par->eagerLoaded();
+        return $this->my_parent->all();
+    }
+
+    public function eagerLoaded()
+    {
+        return $this->my_parent->eagerLoaded();
     }
 
     public function create(array $data)
     {
-    	return $this->par->create($data);
+    	return $this->my_parent->create($data);
     }
 
     public function getId($id)
     {
-    	return $this->par->findOrFail($id);
+    	return $this->my_parent->findOrFail($id);
     }
 
     public function update(array $data,$id)
@@ -41,6 +46,6 @@ class ParentRepository implements ParentInterface
 
     public function delete($id)
     {
-    	return $this->par->destroy($id);
+    	return $this->my_parent->destroy($id);
     }
 }

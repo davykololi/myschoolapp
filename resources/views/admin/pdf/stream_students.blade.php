@@ -1,20 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    @include('partials.pdf_head')
-</head>
-<body>
-    @include('partials.pdf_header')
-    @include('partials.pdf_school_footer') 
-    <br/><br/> 
-    <table class="table table-bordered" id="table_style">
-        <caption class="table_caption">
-            <h2><u>{{ $title}}</u></h2>
-        </caption>
+@extends('layouts.pdf_portrait')
+@section('title', '| Stream Students')
+
+@section('content')
+<div class="container-fluid box"> 
+    <h1 class="title"><u>{{$title}}</u></h1>
+    <h3>
+        <span style="margin-left: 10px;margin-right: 10px;"><b>Total:</b> {{ $stream->students->count() }} <i>Students</i></span>
+        <span style="margin-left: 10px;margin-right: 10px;">
+            @if($males > 1)
+             {{ $males }} <i>Males</i>
+            @else
+             {{ $males }} <i>Male</i>
+            @endif
+        </span>
+        <span style="margin-left: 10px;margin-right: 10px;">
+            @if($females > 1)
+             {{ $females }} <i>Females</i>
+            @else
+             {{ $females }} <i>Female</i>
+            @endif
+        </span>
+    </h3> 
+    <div>
+    <table>
         <thead>
             <tr>
                 <td><b>NO</b></td>
                 <td><b>NAME</b></td>
+                <td><b>GENDER</b></td>
                 <td><b>ADM NO</b></td>
                 <td><b>PHONE NO</b></td>
             </tr>
@@ -24,7 +37,12 @@
             @forelse($streamStudents as $key => $value)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $value->name}}</td>
+                <td>{{ $value->full_name}}</td>
+                @if($value->gender === "Male")
+                <td class="table-left">{{ __('M') }}</td>
+                @elseif($value->gender === "Female")
+                <td class="table-left">{{ __('F') }}</td>
+                @endif
                 <td>{{ $value->admission_no}}</td>
                 <td>{{ $value->phone_no}}</td>
             @empty
@@ -35,6 +53,7 @@
             @endforelse
             @endif
         </tbody>
-    </table>           
-</body>
-</html>
+    </table>
+    </div>
+</div>               
+@endsection

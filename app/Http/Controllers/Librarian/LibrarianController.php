@@ -3,19 +3,25 @@
 namespace App\Http\Controllers\Librarian;
 
 use App\Models\Library;
+use App\Models\Book;
+use App\Models\IssuedBook;
+use App\Services\BookService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class LibrarianController extends Controller
 {
+    protected $bookService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BookService $bookService)
     {
         $this->middleware('auth:librarian');
+        $this->middleware('librarian2fa');
+        $this->bookService = $bookService;
     }
  
     /**
@@ -26,7 +32,7 @@ class LibrarianController extends Controller
     public function index()
     {
 
-        return view('librarian');
+        return view('librarian.librarian');
     }
 
     public function schoolLibraries()
@@ -43,5 +49,17 @@ class LibrarianController extends Controller
         $libraryMeetings = $library->meetings;
 
         return view('librarian.libraries.library',compact('library','libraryMeetings'));
+    }
+
+    public function book(Request $request)
+    {
+        $bookId = $request->book;
+
+        if(is_null($bookId)){
+            return back()->withErrors('Please select the title of the book first!');
+        }
+        $book = Book::where('id',$bookId)->first();
+
+        return view('librarian.search.book',compact('book'));
     }
 }

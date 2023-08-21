@@ -23,6 +23,7 @@ class SchoolTableSeeder extends Seeder
         $schools = [
         	[
         		'name' => 'Lizar Schools Naivasha',
+                'type' => 'Private School',
         		'initials' => 'LSN',
         		'code' => strtoupper(Str::random(15)),
         		'head' => 'Mr. Welton Kisaju Mwadime',
@@ -34,7 +35,6 @@ class SchoolTableSeeder extends Seeder
         		'postal_address' => 'P.O Box 67099, Naivasha',
         		'core_values' => 'N/A',
         		'image' => 'image.png',
-        		'catsch_id' => 2,
         		'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         	],

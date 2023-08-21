@@ -17,6 +17,7 @@ class CategoryBookController extends Controller
     public function __construct()
     {
         $this->middleware('auth:librarian');
+        $this->middleware('librarian2fa');
     }
     
     /**

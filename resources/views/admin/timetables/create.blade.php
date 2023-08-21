@@ -1,8 +1,6 @@
-@extends('layouts.admin')
-@section('title', '| Add A Timetable')
-
-@section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-admin>
+  <!-- frontend-main view -->
+  <x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -32,15 +30,15 @@
                             @enderror
                         </div>
                     </div>
-                    @include('ext._attach_streamdiv')
+                    @include('ext._get_streams_ids')
                     @include('ext._attach_classdiv')
-                    @include('ext._attach_examdiv')
-                    @include('ext._attach_teacherdiv')
+                    @include('ext._get_exams_ids')
+                    @include('ext._get_teachers_ids')
                     @include('ext._submit_create_button')
                 </form>
             </div>
         </div>
     </div>
 </div>
-</main>
-@endsection
+</x-backend-main>
+</x-admin>

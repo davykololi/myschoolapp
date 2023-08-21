@@ -46,7 +46,7 @@ class HallService
 		$data = $request->all();
         $data['code'] = strtoupper(Str::random(15));
         $data['school_id'] = Auth::user()->school->id;
-        $data['category_hall_id'] = $request->hall_category;
+        $data['type'] = $request->hall_type;
 
         return $data;
 	}
@@ -55,7 +55,7 @@ class HallService
 	{
 		$data = $request->only('name');
         $data['school_id'] = Auth::user()->school->id;
-        $data['category_hall_id'] = $request->hall_category;
+        $data['type'] = $request->hall_type;
 
         return $data;
 	}

@@ -2,7 +2,7 @@
 @section('title', '| Edit Book Category')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-frontend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -32,5 +32,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-frontend-main>
 @endsection

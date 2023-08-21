@@ -2,8 +2,10 @@
 @section('title', '| Show Matron')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-    <div class="row">
+<x-backend-main>
+
+<div class="max-w-full p-4 md:p-8 lg:p-8 shadow-lg">
+<div class="row">   
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
@@ -24,13 +26,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $matron->title }} {{ $matron->name }}
+            {{ $matron->title }} {{ $matron->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Position:</strong>
-            {{ $matron->position_matron->name }}
+            <strong>Role:</strong>
+            {{ $matron->role }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -48,7 +50,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Blood Group</strong>
-            {{ $matron->blood_group->type }}
+            {{ $matron->blood_group }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -100,5 +102,6 @@
         </div>
     </div>
 </div>
-</main>
+</div>
+</x-backend-main>
 @endsection

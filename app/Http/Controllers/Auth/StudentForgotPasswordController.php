@@ -36,7 +36,7 @@ class StudentForgotPasswordController extends Controller
         return view('auth.passwords.student-email');
     }
  
-    //defining which password broker to use, in our case its the admins
+    //defining which password broker to use, in our case its the students
     protected function broker() {
         return Password::broker('students');
     }

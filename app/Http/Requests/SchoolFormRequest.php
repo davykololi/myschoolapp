@@ -38,7 +38,6 @@ class SchoolFormRequest extends FormRequest
                 'postal_address' => 'required|string|max:100',
                 'core_values' => 'required|string|max:500',
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
-                'school_category' => 'required|string|max:100',
             ];
         } else {
             return [
@@ -53,7 +52,6 @@ class SchoolFormRequest extends FormRequest
                 'postal_address' => 'required|string|max:100',
                 'core_values' => 'required|string|max:500',
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
-                'school_category' => 'required|string|max:100',
             ];
         }
     }
@@ -76,7 +74,6 @@ class SchoolFormRequest extends FormRequest
                 'postal_address.required' => 'The school postal address is required',
                 'core_values.required' => 'The school core values are required',
                 'image.required' => 'The logo for the school is required',
-                'school_category.required' => 'The category the school belongs to is required',
             ];
         } else {
             return [
@@ -93,7 +90,6 @@ class SchoolFormRequest extends FormRequest
                 'postal_address.required' => 'The school postal address is required',
                 'core_values.required' => 'The school core values are required',
                 'image.required' => 'The logo for the school is required',
-                'school_category.required' => 'The category the school belongs to is required',
             ];
         }
     }
