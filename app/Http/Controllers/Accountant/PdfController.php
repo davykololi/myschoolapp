@@ -33,7 +33,7 @@ class PdfController extends Controller
 
         $school = auth()->user()->school;
         $student = $paymentRecord->student->full_name;
-    	$title = $student." ".'Payment Receipt for'." "."Kshs:".number_format($paymentRecord->amount_paid,2);
+    	$title = $student." ".$paymentRecord->payment->title." "."Receipt";
     	$pdf = PDF::loadView('accountant.pdf.student_receipt',['paymentRecord'=>$paymentRecord,'school'=>$school,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -86,8 +86,8 @@ class PdfController extends Controller
         $student = Student::where('id',$studentId)->first();
         $studentPayments = $student->payments()->with('payment_records','student','year','term')->get();
         
-        if(empty($student->payment_records)){
-            return back()->withErrors('No Payment Records At All');
+        if(($student->payment_records->isEmpty() || $student->payments->isEmpty())){
+            return back()->withErrors('This student has no payment records at all !');
         }
         $school = auth()->user()->school;
         $title = $student->full_name." "."Fee Payment Statement";

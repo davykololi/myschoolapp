@@ -1,5 +1,5 @@
     
-            <select id="admin_role" type="admin_role" value="{{old('admin_role')}}" class="form-control" name="admin_role">
+            <select id="admin_role" type="admin_role" value="{{old('admin_role')}}" class="form-input-one uppercase" name="admin_role">
                 <option value="">Select Role</option>
                 <option value="{{ __('studentregistrar') }}">{{ __('Students Registrar') }}</option>
                 <option value="{{ __('academicregistrar') }}">{{ __('Academic Registrar') }}</option>

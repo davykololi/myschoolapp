@@ -53,14 +53,14 @@
                                         <form action="{{route('superadmin.halls.destroy',$hall->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.halls.show', $hall->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('superadmin.halls.show', $hall->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.halls.edit', $hall->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('superadmin.halls.edit', $hall->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-[red] text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete {{$hall->name}}?')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$hall->name}}?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>

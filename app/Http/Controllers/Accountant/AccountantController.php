@@ -38,7 +38,7 @@ class AccountantController extends Controller
     public function feeBalance(Request $request)
     {
         $balance = $request->balance;
-        $students = $this->studentService->all();
+        $students = $this->studentService->paginate();
         $streams = $this->streamService->all();
 
         return view('accountant.queries.fee_balance',compact('students','streams'));

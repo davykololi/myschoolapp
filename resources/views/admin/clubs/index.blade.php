@@ -13,7 +13,9 @@
                 </div>
                 <div class="pull-right">
                     @if(Auth::user()->school->clubs->isNotEmpty())
-                    <a href="{{route('admin.school.clubs', Auth::user()->school->id)}}" class="btn btn-primary btn-border">CLUBS PDF</a>
+                    <a href="{{route('admin.school.clubs', Auth::user()->school->id)}}" class="pdf">
+                        <x-pdf-svg/>
+                    </a>
                     @else
                     <a href="#" class="text-[red]" style="float:right">NO CLUBS</a>
                     @endif
@@ -56,7 +58,9 @@
                                         <div>{{$club->regDate()}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <a href="{{ route('admin.clubs.show', $club->id) }}" class="bg-[green] px-2 py-1 items-center justify-center text-white rounded md:hover:bg-green-400 text-black">Details</a>
+                                        <a href="{{ route('admin.clubs.show', $club->id) }}" class="show">
+                                            <x-show-svg/>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

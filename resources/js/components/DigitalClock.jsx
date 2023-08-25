@@ -12,7 +12,7 @@ function DigitalClock() {
   }, [])
 
   return (
-    <p className='clock'>
+    <p className='clock center'>
       {date.toLocaleTimeString()}
     </p>
   );

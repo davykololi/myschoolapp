@@ -12,8 +12,8 @@
                     <h2 class="uppercase text-2xl font-bold underline">DEPARMENTS LIST</h2>
                 </div>
                 <div>
-                    <a type="button" href="{{route('admin.school.depts', Auth::user()->school->id)}}" class="bg-orange-500 text-white px-2 py-1 rounded shadow-lg" style="float: right;">
-                        PDF
+                    <a type="button" href="{{route('admin.school.depts', Auth::user()->school->id)}}" class="pdf" style="float: right;">
+                        <x-pdf-svg/>
                     </a>
                 </div>
                 <div class="w-full text-center mt-12">

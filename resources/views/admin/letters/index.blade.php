@@ -15,8 +15,8 @@
                     <a type="button" href="{{route('admin.letter.head',Auth::user()->school->id)}}" class="bg-orange-500 text-white px-2 rounded mx-2 tracking-tight inline-flex" style="float:right">
                         LETTER HEAD
                     </a>
-                    <a type="button" href="{{ route('admin.instantdownload.form') }}" class="bg-green-800 text-white px-2 rounded mx-2 tracking-tight inline-flex" style="float:right">
-                        GENERATE PDF
+                    <a type="button" href="{{ route('admin.instantdownload.form') }}" class="pdf" style="float:right">
+                        <x-pdf-svg/>
                     </a>
                     <a type="button" class="bg-blue-700 text-white px-2 rounded mx-2 inline-flex" href="{{route('admin.letters.create')}}" style="float:right"> 
                         Create
@@ -55,17 +55,17 @@
                                         <form action="{{route('admin.letters.destroy',$letter->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('admin.letters.show', $letter->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('admin.letters.show', $letter->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('admin.letters.edit', $letter->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('admin.letters.edit', $letter->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-[red] text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete')">
+                                                <x-delete-svg/>
                                             </button>
-                                            <a type="button" href="{{route('admin.school.letters',$letter->id)}}" class="bg-orange-500 text-white px-2 py-1 inline-flex mx-0.5 rounded">
-                                                PDF
+                                            <a type="button" href="{{route('admin.school.letters',$letter->id)}}" class="pdf">
+                                                <x-pdf-svg/>
                                             </a>
                                         </form>
                                     </td>

@@ -24,10 +24,10 @@
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
                                 <tr>
-                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="30%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">CATEGORY</th>
-                                    <th scope="col" class="px-2 py-4" width="40%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="40%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="30%">CATEGORY</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -47,14 +47,14 @@
                                         <form action="{{route('superadmin.farms.destroy',$farm->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.farms.show', $farm->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('superadmin.farms.show', $farm->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.farms.edit', $farm->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('superadmin.farms.edit', $farm->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-[red] text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete?')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>

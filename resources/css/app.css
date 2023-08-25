@@ -8,9 +8,37 @@
 		@apply bg-[green] text-white px-2 rounded dark:bg-green-800 dark:text-slate-400;
 	}
 
+  .show {
+    @apply bg-green-800 dark:bg-green-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1 relative
+  }
+
+  .edit {
+    @apply bg-yellow-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1
+  }
+
 	.danger {
 		@apply bg-[red] text-white px-2 rounded dark:bg-red-800 dark:text-slate-400;
-	} 
+	}
+
+  .delete {
+    @apply bg-red-600 dark:bg-red-700 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1
+  } 
+
+  .pdf {
+    @apply bg-orange-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1
+  }
+
+  .form-input-one {
+    @apply border-0 px-3 py-3 placeholder-gray-700 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150
+  }
+
+  .form-input-one-photo-upload {
+    @apply border-0 px-3 py-1 placeholder-gray-700 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150
+  }
+
+  .form-input-label-one {
+    @apply block uppercase text-black text-xs font-bold mb-2 dark:text-slate-200;
+  }
 }
 
 

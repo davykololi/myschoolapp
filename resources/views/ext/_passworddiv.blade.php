@@ -1,6 +1,6 @@
                         <div class="w-full md:w-1/3 lg:w-1/3">
                             <div class="flex flex-col">
-                                <input id="password" type="password" class="leading-tight @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Password">
+                                <input id="password" type="password" class="form-input-one @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Password">
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -10,6 +10,6 @@
                         </div>
                         <div class="w-full md:w-1/3 lg:w-1/3">
                             <div class="flex flex-col">
-                                <input id="password-confirm" type="password" class="leading-tight" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm Password">
+                                <input id="password-confirm" type="password" class="form-input-one" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm Password">
                             </div>
                         </div>

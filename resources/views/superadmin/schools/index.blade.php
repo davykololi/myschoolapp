@@ -44,9 +44,14 @@
                                 <form action="{{route('superadmin.schools.destroy',$school->id)}}" method="POST">
                                     {{method_field('DELETE')}}
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    <a href="{{ route('superadmin.schools.show', $school->id) }}" class="btn btn-success btn-xs">Details</a>
-                                    <a href="{{ route('superadmin.schools.edit', $school->id) }}" class="btn btn-warning btn-xs">Edit</a>
-                                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete {{$school->name}}?')">Delete
+                                    <a href="{{ route('superadmin.schools.show', $school->id) }}" class="show">
+                                        <x-show-svg/>
+                                    </a>
+                                    <a href="{{ route('superadmin.schools.edit', $school->id) }}" class="edit">
+                                        <x-edit-svg/>
+                                    </a>
+                                    <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$school->name}}?')">
+                                        <x-delete-svg/>
                                     </button>
                                 </form>
                             </td>

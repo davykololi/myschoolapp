@@ -10,8 +10,8 @@
             <div class="col-lg-12 margin-tb">
                 <h1 class="uppercase text-center text-2xl font-bold underline mb-4">Teachers List</h1>
                 <div class="items-center justify-center">
-                    <a style="float: right;" href="{{route('superadmin.school.teachers', Auth::user()->school->id)}}" class="bg-red-500 text-white px-2 py-1 rounded mx-2 dark:text-slate-400 dark:bg-stone-500">
-                        Pdf
+                    <a style="float: right;" href="{{route('superadmin.school.teachers', Auth::user()->school->id)}}" class="pdf">
+                        <x-pdf-svg/>
                     </a>
                     <a style="float: right;" href="{{route('superadmin.export.shool_teachers')}}" class="bg-green-800 text-white px-2 py-1 rounded mx-2 dark:bg-green-900 dark:text-slate-400">
                         Excel
@@ -70,14 +70,14 @@
                                         <form action="{{route('superadmin.teachers.destroy',$teacher->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.teachers.show', $teacher->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('superadmin.teachers.show', $teacher->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.teachers.edit', $teacher->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('superadmin.teachers.edit', $teacher->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-[red] text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete?')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>

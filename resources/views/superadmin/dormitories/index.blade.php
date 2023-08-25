@@ -25,11 +25,11 @@
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="25%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="15%">STUDENTS NO.</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">BED NO.</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">BED NO.</th>
                                     <th scope="col" class="px-2 py-4" width="20%">DORM HEAD</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -55,14 +55,14 @@
                                         <form action="{{route('superadmin.dormitories.destroy',$dormitory->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.dormitories.show', $dormitory->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('superadmin.dormitories.show',$dormitory->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.dormitories.edit', $dormitory->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('superadmin.dormitories.edit', $dormitory->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-[red] text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete {{$dormitory->name}}?')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$dormitory->name}}?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>

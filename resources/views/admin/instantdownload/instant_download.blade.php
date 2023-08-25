@@ -3,7 +3,7 @@
   <x-backend-main>
             <div>
                 <h5 class="uppercase text-center text-2xl font-hairline">INSTANT PDF GENERATION</h5> 
-                <a href="{{ url()->previous() }}" class="btn btn-primary pull-right">Back</a>
+                <x-back-button/>
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.instant.download',Auth::user()->school->id) }}" method="get" class="form-horizontal" enctype="multipart/form-data">

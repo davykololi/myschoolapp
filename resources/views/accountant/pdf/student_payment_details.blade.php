@@ -82,7 +82,7 @@
             <tr>
                 <td>#</td>
                 <td>#</td>
-                <td>#</td>
+                <td><b>Kshs:{{ number_format($student->total_payment_amount,2) }}</b></td>
                 <td><b>Kshs:{{ number_format($student->paid_amount,2) }}</b></td>
                 <td>#</td>
                 <td>#</td>

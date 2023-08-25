@@ -1,5 +1,5 @@
     
-            <select id="blood_group" type="blood_group" value="{{old('blood_group')}}" class="" name="blood_group">
+            <select id="blood_group" type="blood_group" value="{{old('blood_group')}}" class="form-input-one" name="blood_group">
                 <option value="">Select Blood Group</option>
                 <option value="{{ __('A+') }}">{{ __('A+') }}</option>
                 <option value="{{ __('B+') }}">{{ __('B+') }}</option>

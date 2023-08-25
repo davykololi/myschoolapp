@@ -80,28 +80,28 @@
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{\Carbon\Carbon::parse($assignment->date)->format('d-m-Y')}}</div>
+                                        <div>{{ $assignment->date }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{\Carbon\Carbon::parse($assignment->deadline)->format('d-m-Y')}}</div>
+                                        <div>{{ $assignment->deadline }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <a href="{{route('admin.assignment.download',$assignment->id)}}" class="bg-yellow-500 hover:bg-yellow-700 text-white text-center py-2 px-4 rounded">
-                                            Download
+                                        <a href="{{route('admin.assignment.download',$assignment->id)}}" class="pdf">
+                                            <x-pdf-svg/>
                                         </a>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <form action="{{route('admin.assignments.destroy',$assignment->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a href="{{ route('admin.assignments.show', $assignment->id) }}" class="bg-green-500 hover:bg-green-700 text-white text-center py-2 px-4 rounded mx-0.5">
-                                                Details
+                                            <a href="{{ route('admin.assignments.show', $assignment->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a href="{{ route('admin.assignments.edit', $assignment->id) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white text-center py-2 px-4 rounded mx-0.5">
-                                                Edit
+                                            <a href="{{ route('admin.assignments.edit', $assignment->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit"  class="bg-red-500 hover:bg-red-700 text-white text-center py-1.5 px-4 rounded mx-0.5"onclick="return confirm('Are you sure to delete {{$assignment->name}}?')">
-                                                Delete
+                                            <button type="submit"  class="delete"onclick="return confirm('Are you sure to delete {{$assignment->name}}?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form> 
                                     </td>

@@ -45,7 +45,9 @@
                                 <div>{{ $stream->females() }}</div>
                             </td>
                             <td>
-                                <a type="button" class="bg-[blue] text-white px-2 mx-0.5 rounded text-center" href="{{ route('admin.stream.details',$stream->id) }}">Details</a>
+                                <a type="button" class="show" href="{{ route('admin.stream.details',$stream->id) }}">
+                                    <x-show-svg/>
+                                </a>
                             </td>
                         </tr>
                     @endforeach

@@ -19,40 +19,40 @@
             <x-back-button/>
         </div>
     </div>
-    <div class="w-full mt-8">
-        <div class="col-xs-12 col-sm-12 col-md-12">
-            <div class="form-group">
-                <strong>Payment Ref No:</strong>
+    <div class="w-full flex flex-col md:flex-row lg:flex-row md:mt-4 gap-4 uppercase">
+        <div class="w-full md:w-1/4 lg:w-1/4">
+            <div class="flex flex-col">
+                <label class="font-bold">Payment Ref No:</label>
                 {{ $payment->ref_no }}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
-            <div class="form-group">
-                <span>
-                    <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($payment->created_at)) }}
-                </span>
+        <div class="w-full md:w-1/4 lg:w-1/4">
+            <div class="flex flex-col">
+                <label class="font-bold">Published On:</label>
+                    {{ date("F j,Y,g:i a",strtotime($payment->created_at)) }}
             </div>
         </div>
-    </div>
 
-    <div>
-        <div class="w-full items-center justify-center">
-            <p>
-                <span class="font-bold">Paid:</span>
-                <span class="bg-green-800 px-2 text-white">Kshs: {{ number_format($payment->paid,2) }}</span>
-            </p>
+        <div class="w-full md:w-1/4 lg:w-1/4">
+            <div class="flex flex-col">
+                <label class="font-bold">Paid:</label>
+                <div class="bg-green-800 px-2 text-white w-fit">Kshs: {{ number_format($payment->paid,2) }}</div>
+            </div>
+        </div>
+        <div class="w-full md:w-1/4 lg:w-1/4">
             @if($payment->amount > $payment->paid)
-            <p>
-                <span class="font-bold">Balance:</span> 
-                <span class="bg-red-700 px-2 text-white">Kshs: {{ number_format($payment->balance,2) }}</span>
-            </p>
+            <div class="flex flex-col">
+                <label class="font-bold">Balance:</label> 
+                <div class="bg-red-700 px-2 text-white w-fit">Kshs: {{ number_format($payment->balance,2) }}</div>
+            </div>
             @else
-            <p>
-                <span class="font-bold">Balance:</span>
-                <span class="bg-[green] px-2 text-white w-[100px] rounded">{{ __('CLEARED') }}</p>
-            </span>
+            <div class="flex flex-col">
+                <label class="font-bold">Balance:</label>
+                <div class="bg-[green] px-2 text-white w-fit">{{ __('CLEARED') }}</div>
+            </div>
             @endif
         </div>
+    </div>
 
         @if($payment->amount > $payment->paid)
         <div class="w-full mt-4">

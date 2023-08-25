@@ -1,26 +1,29 @@
 <x-admin>
 <!-- frontend-main view -->
 <x-backend-main>
-<div class="max-w-full md:p-8 lg:p-8 shadow-2xl">
+<div class="max-w-full md:p-4 lg:p-4 shadow-2xl">
     <div class="col-lg-12">
     @include('partials.messages')
     <!-- Posts list -->
     @if(!empty($exams))
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>EXAMS LIST</h2>
-                </div>
-                <div style="float:right">
-                    <a type="button" class="bg-blue-700 text-white px-2 py-1 rounded" href="{{route('admin.exams.create')}}">Create</a>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col overflow-x-auto mt-12">
+        <div class="flex flex-col overflow-x-auto">
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                     <div class="overflow-x-auto">
                         <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                            <caption class="p-5 text-lg font-semibold text-left text-gray-900 bg-blue-300 dark:text-slate-400 dark:bg-slate-900">
+                                <div class="w-full flex-col md:flex-row lg:flex-row">
+                                    <div>
+                                        <h1 class="font-bold text-lg">EXAMS LIST</h1>
+                                    </div>
+                                    <div style="float:right">
+                                        <a type="button" class="bg-blue-700 text-white px-2 py-1 rounded" href="{{route('admin.exams.create')}}">Create</a>
+                                    </div>
+                                </div>
+                                <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                                    Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in touch, grow your business, and more.
+                                </p>
+                            </caption>
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
@@ -38,7 +41,7 @@
                             <!-- Table Body -->
                             <tbody>
                             @foreach($exams as $key => $exam)
-                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-900">
+                                <tr class="border-b dark:border-neutral-500 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-stone-500 dark:text-slate-400 dark:bg-slate-900">
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $loop->iteration }}</div>
                                     </td>
@@ -47,11 +50,9 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         @if($exam->status === 1)
-                                        <div>
-                                            <button class="bg-green-800 text-white px-2 w-24 animate-pulse rounded">{{ __('CURRENT') }}</button>
-                                        </div>
+                                        <div class="text-green-800 animate-pulse dark:text-green-400">{{ __('CURRENT') }}</div>
                                         @else
-                                        <div><button class="bg-red-600 text-white px-2 w-24 rounded">{{ __('RESERVED') }}</button></div>
+                                        <div class="text-red-700 dark:text-[red]">{{ __('RESERVED') }}</div>
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
@@ -61,42 +62,38 @@
                                         <div>{{ $exam->end_date }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>
-                                            @if($exam->marks->isNotEmpty())
-                                                <button class="bg-green-800 text-white px-2 py-1 rounded">YES</button>
-                                            @else
-                                                <button class="bg-red-600 text-white px-2 py-1 rounded">NO</button>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
-                                        @if($exam->grades->isNotEmpty())
-                                            <button class="bg-green-800 text-white px-2 py-1 rounded">YES</button>
+                                        @if($exam->marks->isNotEmpty())
+                                        <div class="text-green-800 dark:text-green-400">YES</div>
                                         @else
-                                            <button class="bg-red-600 text-white px-2 py-1 rounded">NO</button>
+                                        <div class="text-red-700 dark:text-[red]">NO</div>
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>
-                                            @if($exam->general_grades->isNotEmpty())
-                                                <button class="bg-green-800 text-white px-2 py-1 rounded">YES</button>
-                                            @else
-                                                <button class="bg-red-600 text-white px-2 py-1 rounded">NO</button>
-                                            @endif
-                                        </div>
+                                        @if($exam->grades->isNotEmpty())
+                                        <div class="text-green-800 dark:text-green-400">YES</div>
+                                        @else
+                                        <div class="text-red-700 dark:text-[red]">NO</div>
+                                        @endif
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        @if($exam->general_grades->isNotEmpty())
+                                        <div class="text-green-800 dark:text-green-400">YES</div>
+                                        @else
+                                        <div class="text-red-700 dark:text-[red]">NO</div>
+                                        @endif
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <form action="{{route('admin.exams.destroy',$exam->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('admin.exams.show', $exam->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('admin.exams.show', $exam->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('admin.exams.edit', $exam->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('admin.exams.edit', $exam->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-red-700 text-white px-2 py-1 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete {{$exam->name}}?')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$exam->name}}?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>

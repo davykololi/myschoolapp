@@ -1,5 +1,5 @@
 @if($errors->any())
-    <div class="w-1/2 mx-auto text-center">
+    <div class="w-1/2 mx-auto text-center my-2">
         @foreach($errors->all() as $error)
         <div class="rounded-md bg-[#FFF0F0] p-2">
             <p class="flex items-center text-sm font-medium text-[#BC1C21]">

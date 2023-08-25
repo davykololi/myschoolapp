@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Clock from './Clock';
 import DigitalClock from './DigitalClock';
+import ClockTwo from './ClockTwo';
 
 function Example() {
     return (
@@ -27,6 +28,7 @@ if (document.getElementById('example')) {
     Index.render(
         <React.StrictMode>
             <DigitalClock/>
+            <ClockTwo/>
             <Clock/>
         </React.StrictMode>
     )

@@ -1,5 +1,5 @@
     
-            <select id="student_role" type="student_role" value="{{old('student_role')}}" class="leading-tight" name="student_role">
+            <select id="student_role" type="student_role" value="{{old('student_role')}}" class="form-input-one uppercase" name="student_role">
                 <option value="">Select Role</option>
                 <option value="{{ __('ordinarystudent') }}">{{ __('Ordinary Student') }}</option>
                 <option value="{{ __('studentleader') }}">{{ __('Student Leader') }}</option>

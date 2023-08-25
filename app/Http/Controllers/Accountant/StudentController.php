@@ -34,7 +34,7 @@ class StudentController extends Controller
     {
         $studendId = $request->student;
         if(is_null($studendId)){
-            return back()->withErrors('Please select the name first!');
+            return back()->withErrors('Please select the student name first!');
         }
 
         $student = Student::where('id',$studendId)->first();

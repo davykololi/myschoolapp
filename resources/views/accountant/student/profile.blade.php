@@ -6,16 +6,16 @@
     <div class="max-w-screen dark:bg-slate-900 dark:text-slate-400">
         <div class="w-full">
             <div class="flex flex-col">
-                <div class="mb-2">
-                    <h2 class="uppercase text-center font-bold text-2xl">{{ $student->full_name }} Accounts Profile</h2>
-                </div>
-                <div class="mt-4 w-full">
-                    @include('partials.messages')
-                    @include('partials.errors')
+                <div class="my-2">
+                    <h2 class="uppercase text-center font-bold text-lg">{{ $student->full_name }} Accounts Profile</h2>
                 </div>
             </div>
+            <div class="w-full">
+                @include('partials.messages')
+                @include('partials.errors')
+            </div>
         </div>
-        <div><h3 class="uppercase text-center text-lg font-bold underline">{{ __('Personal Details') }}</h3></div>
+        <div><h3 class="uppercase text-center text-lg font-bold underline mt-4">{{ __('Personal Details') }}</h3></div>
         <div class="flex flex-col overflow-x-auto md:mx-8">
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">

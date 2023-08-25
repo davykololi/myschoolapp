@@ -27,14 +27,14 @@
                     </div>
                     <div class="py-2 w-full md:w-1/3">
                         <label class="text-green-800" >Date Given<span class="text-[red]">***</span></label>
-                        <div class="w-full">
-                            <input type="date" name="date_given" id="date_given" class="py-1 bg-gray-200 w-full md:w-[220px] focus:shadow-outline focus:bg-blue-100 placeholder-indigo-300" value="{{ $assignment->date_given }}">
+                        <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                            <input type="text" name="date_given" id="date_given" class="py-1 bg-gray-200 w-full md:w-[220px] focus:shadow-outline focus:bg-blue-100 placeholder-indigo-300" value="{{ $assignment->date_given }}">
                         </div>
                     </div>
                     <div class="py-2 w-full md:w-1/3">
                         <label class="text-green-800" >Deadline<span class="text-[red]">***</span></label>
-                        <div class="w-full">
-                            <input type="date" name="deadline" id="deadline" class="py-1 bg-gray-200 w-full md:w-[220px] focus:shadow-outline focus:bg-blue-100 placeholder-indigo-300" value="{{ $assignment->deadline }}">
+                        <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                            <input type="text" name="deadline" id="deadline" class="py-1 bg-gray-200 w-full md:w-[220px] focus:shadow-outline focus:bg-blue-100 placeholder-indigo-300" value="{{ $assignment->deadline }}">
                         </div>
                     </div>
                 </div>

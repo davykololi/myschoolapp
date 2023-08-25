@@ -1,4 +1,4 @@
-                            <select id="dormitory" type="text" value="{{old('dormitory',)}}" class="leading-tight" name="dormitory">
+                            <select id="dormitory" type="text" value="{{old('dormitory',)}}" class="form-input-one" name="dormitory">
                                 <option value="">Select Dormitory</option>
                                 @foreach ($dormitories as $dormitory)
                                 <option value="{{ $dormitory->id }}">

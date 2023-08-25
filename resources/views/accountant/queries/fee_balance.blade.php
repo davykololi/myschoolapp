@@ -85,11 +85,14 @@
                                         <div>{{ $student->stream->name }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $student->fee_balance }}</div>
+                                        <div><b>Kshs:</b> {{ number_format($student->fee_balance,2) }}</div>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
+                            <tfoot>
+                                <div class="my-2">{{ $students->links() }}</div>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

@@ -32,13 +32,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Date Given:</strong>
-            {{ \Carbon\Carbon::parse($assignment->date)->format('d-m-Y') }}
+            {{ $assignment->date }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Deadline:</strong>
-            {{ \Carbon\Carbon::parse($assignment->deadline)->format('d-m-Y') }}
+            {{ $assignment->deadline }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -58,8 +58,8 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>File:</strong>
-            <a href="{{route('admin.assignment.download',$assignment->id)}}" class="btn btn-outline-warning">
-                Download
+            <a href="{{route('admin.assignment.download',$assignment->id)}}" class="pdf">
+                <x-pdf-svg/>
             </a>
         </div>
     </div>

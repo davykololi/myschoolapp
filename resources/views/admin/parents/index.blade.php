@@ -50,10 +50,14 @@
                                 <form action="{{route('admin.parents.destroy',$parent->id)}}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <a href="{{ route('admin.parents.show', $parent->id) }}" class="btn btn-success btn-xs">Details</a>
-                                    <a href="{{ route('admin.parents.edit', $parent->id) }}" class="btn btn-warning btn-xs">Edit</a>
-                                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to delete?')">
-                                        Delete
+                                    <a href="{{ route('admin.parents.show', $parent->id) }}" class="show">
+                                        <x-show-svg/>
+                                    </a>
+                                    <a href="{{ route('admin.parents.edit', $parent->id) }}" class="edit">
+                                        <x-edit-svg/>
+                                    </a>
+                                    <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                        <x-delete-svg/>
                                     </button>
                                 </form>
                             </td>

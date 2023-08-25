@@ -12,8 +12,8 @@
                     <h2>SUBSTAFF LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a href="{{route('admin.school.staffs', Auth::user()->school->id)}}" class="btn btn-primary btn-border">
-                        Sub Staff Pdf
+                    <a href="{{route('admin.school.staffs', Auth::user()->school->id)}}" class="pdf">
+                        <x-pdf-svg/>
                     </a>
                 </div>
             </div>

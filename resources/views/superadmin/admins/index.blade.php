@@ -68,14 +68,14 @@
                                         <form action="{{route('superadmin.admins.destroy',$admin->id)}}" method="POST">
                                             {{method_field('DELETE')}}
                                             <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                            <a type="button" href="{{ route('superadmin.admins.show', $admin->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('superadmin.admins.show', $admin->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.admins.edit', $admin->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('superadmin.admins.edit', $admin->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-[red] text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete {{$admin->full_name}}?')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$admin->full_name}}?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>

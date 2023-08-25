@@ -1,5 +1,5 @@
     
-            <select id="accountant_role" type="accountant_role" value="{{old('accountant_role')}}" class="form-control" name="accountant_role">
+            <select id="accountant_role" type="accountant_role" value="{{old('accountant_role')}}" class="form-input-one uppercase" name="accountant_role">
                 <option value="">Select Role</option>
                 <option value="{{ __('senioraccountant') }}">{{ __('Senior Accountant') }}</option>
                 <option value="{{ __('deputysenioraccountant') }}">{{ __('Deputy Accountant') }}</option>

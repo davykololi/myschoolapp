@@ -20,10 +20,8 @@
                         EXCEL
                     </a> 
 
-                    <a href="{{route('admin.school.students', Auth::user()->school->id)}}" class="bg-orange-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 absolute">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                        </svg>
+                    <a href="{{route('admin.school.students', Auth::user()->school->id)}}" class="pdf">
+                        <x-pdf-svg/>
                     </a>
                 </div>
                 <div class="pt-8 uppercase text-center font-2xl">
@@ -97,21 +95,21 @@
                                         <form action="{{route('admin.students.destroy',$student->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('admin.students.show', $student->id) }}" class="bg-green-500 hover:bg-green-700 text-white text-center py-2 px-4 rounded mx-0.5">
-                                                Details
+                                            <a type="button" href="{{ route('admin.students.show', $student->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
                                             @can('studentRegistrar')
-                                            <a type="button" href="{{ route('admin.students.edit', $student->id) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white text-center py-2 px-4 rounded mx-.0.5">
-                                                Edit
+                                            <a type="button" href="{{ route('admin.students.edit', $student->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
                                             @endcan
                                             @can('studentRegistrar')
-                                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white text-center py-1.5 px-4 rounded mx-0.5" onclick="return confirm('Are you sure to delete?')">
-                                                <i>Delete</i>
-                                            </button>
+                                            <a type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                                <x-delete-svg/>
+                                            </a>
                                             @endcan
-                                            <a type="button" href="{{ route('admin.student.details', $student->id) }}" class="bg-orange-500 hover:bg-orange-700 text-white text-center py-2 px-4 rounded mx-0.5">
-                                                <i class="fa fa-pdf">PDF</i>
+                                            <a type="button" href="{{ route('admin.student.details', $student->id) }}" class="pdf">
+                                                <x-pdf-svg/>
                                             </a>
                                         </form>
                                     </td>

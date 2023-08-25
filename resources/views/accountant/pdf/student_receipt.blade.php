@@ -16,7 +16,8 @@
                             <u style="font-family: impact">{{$title}}</u>
                         </h2>
                         <h3 style="text-transform: uppercase;">
-                            Payment For: {{ $paymentRecord->payment->title}}
+                            {{ $paymentRecord->payment->title}} {{ __('Amount')}} 
+                            <b>Kshs:</b>{{ number_format($paymentRecord->payment->amount,2) }}
                         </h3>
                         <p style="font-size: 14px;text-transform: uppercase;">
                             <u><b>REF NO:</b> {{ $paymentRecord->ref_no }}</u>

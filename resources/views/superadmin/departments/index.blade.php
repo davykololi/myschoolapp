@@ -12,9 +12,6 @@
                     <h2 class="text-center uppercase text-2xl font-bold underline">{{Auth::user()->school->name }} Departments</h2>
                 </div>
                 <div  class="text-center items-center justify-center" style="float:right;">
-                    <a href="{{route('admin.school.depts', Auth::user()->school->id)}}" class="bg-orange-500 text-white px-2 py-1 rounded shadow-lg mx-2">
-                        PDF
-                    </a>
                     <a class="bg-blue-700 text-white px-2 py-1 rounded mx-2" href="{{route('superadmin.departments.create')}}">Create</a>
                 </div>
             </div>
@@ -28,13 +25,13 @@
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="10%">PHONE NO</th>
                                     <th scope="col" class="px-2 py-4" width="20%">HEAD</th>
                                     <th scope="col" class="px-2 py-4" width="15%">ASSISTANT</th>
-                                    <th scope="col" class="px-2 py-4" width="5%">TEACHERS</th>
-                                    <th scope="col" class="px-2 py-4" width="5%">SUBSTAFF</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">TEACHERS</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">SUBSTAFF</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -66,14 +63,14 @@
                                         <form action="{{route('superadmin.departments.destroy',$department->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.departments.show', $department->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a type="button" href="{{ route('superadmin.departments.show', $department->id) }}" class="show">
+                                                <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.departments.edit', $department->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a type="button" href="{{ route('superadmin.departments.edit', $department->id) }}" class="edit">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="bg-[red] text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete {{$department->name}}?')">
-                                                Delete
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$department->name}}?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>
