@@ -11,18 +11,15 @@
             @include('partials.messages')
             @include('partials.errors')
         </div>
-        <div class="">
-            <a href="{{route('admin.dept.teachers',$department->id)}}" class="bg-orange-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 absolute">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
+        <div class="flex flex-row" style="float: right">
+            <x-back-button/>
+            <a href="{{route('admin.dept.teachers',$department->id)}}" class="pdf">
+                <x-pdf-svg/>
             </a>
-            <br/>
-            <a href="{{ url()->previous() }}" class="label label-primary pull-right"> Back</a>
         </div>
     </div>
 </div>
-<div class="row">
+<div class="w-full">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Code:</strong>
@@ -136,12 +133,8 @@
     <div class="lg:gap-xl-12 grid gap-x-3 md:grid-cols-2 lg:grid-cols-4">
         @forelse($department->staffs as $staff)
       <div class="mb-12 lg:mb-0 bg-gray-200 py-4 px-2 rounded dark:bg-[#1a1919]  dark:text-slate-400">
-        <a href="{{route('admin.staffs.show',$staff->id)}}">
-            <img class="mx-auto mb-6 rounded-lg shadow-lg dark:shadow-black/20 w-[150px]" src="{{ $staff->image_url }}" alt="{{ $staff->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'"/>
-        </a>
-        <a href="{{route('admin.staffs.show',$staff->id)}}">
-            <h5 class="mb-1 text-lg font-bold">{{ $staff->salutation }} {{ $staff->full_name }}</h5>
-        </a>
+        <img class="mx-auto mb-6 rounded-lg shadow-lg dark:shadow-black/20 w-[150px]" src="{{ $staff->image_url }}" alt="{{ $staff->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'"/>
+        <h5 class="mb-1 text-lg font-bold">{{ $staff->salutation }} {{ $staff->full_name }}</h5>
         <p class="mb-1 text-lg font-hairline">{{ $staff->phone_no }}</p>
         <p class="mb-1 text-lg font-hairline">{{ $staff->email }}</p>
         <ul class="mx-auto flex list-inside justify-center">
@@ -177,60 +170,5 @@
     </div>
   </section>
   <!-- Section: End Department Sub Staffs Section -->
-
-
-</div>
-<!-- Container for demo purpose -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>{{ $department->name }} Substaffs:</strong>
-            <ol>
-            @forelse($department->staffs as $staff)
-            <a href="{{route('admin.staffs.show',$staff->id)}}">
-                <li>{{ $staff->title }} {{ $staff->full_name }} - {{ $staff->phone_no }}</li>
-            </a>
-            @empty
-            <p style="color: red">No substaff(s) assigned to {{ $department->name }} yet.</p>
-            @endforelse
-            </ol>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <span>
-                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($department->created_at)) }}</span>
-        </div>
-    </div>
-    <div class="flex flex-col md:flex-row w-full my-4 border-2 border-white p-4">
-        <div class="w-full md:w-1/3 lg:w-1/3">
-            <div class="flex flex-col">
-                <label class="uppercase mb-2" for="meeting">{{ __('Attach Meeting') }}</label>
-                @include('department.attachmeetingform')
-            </div>
-        </div>
-    </div>
-</div>
 </x-backend-main>
 </x-admin>

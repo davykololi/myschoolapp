@@ -52,7 +52,7 @@
                                         <div>{{$dormitory->dom_head}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.dormitories.destroy',$dormitory->id)}}" method="POST">
+                                        <form action="{{route('superadmin.dormitories.destroy',$dormitory->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.dormitories.show',$dormitory->id) }}" class="show">

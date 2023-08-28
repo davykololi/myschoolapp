@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/app/google-calendar/service-account-credentials
 /vendor
 .env
 .env.backup

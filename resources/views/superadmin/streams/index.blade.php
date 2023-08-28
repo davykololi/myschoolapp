@@ -54,7 +54,7 @@
                                         <div>{{ $stream->females() }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.streams.destroy',$stream->id)}}" method="POST" class="flex flex-col md:flex-row">
+                                        <form action="{{route('superadmin.streams.destroy',$stream->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded" href="{{ route('superadmin.streams.show',$stream->id) }}">

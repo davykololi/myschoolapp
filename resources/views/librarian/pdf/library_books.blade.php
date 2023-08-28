@@ -12,14 +12,14 @@
             <h2 class="title"><u>{{$title}}</u></h2>
         </caption>
         <thead>
-            <tr>
-                <td><b>NO</b></td>
-                <td><b>TITLE</b></td>
-                <td><b>AUTHOR</b></td>
-                <td><b>LIBRARY</b></td>
-                <td><b>ROW NO</b></td>
-                <td><b>RACK NO</b></td>
-                <td><b>UNITS</b></td>
+            <tr style="background-color: black; color: white;">
+                <td class="padding-10"><b>NO</b></td>
+                <td class="padding-10"><b>TITLE</b></td>
+                <td class="padding-10"><b>AUTHOR</b></td>
+                <td class="padding-10"><b>LIBRARY</b></td>
+                <td class="padding-10"><b>ROW NO</b></td>
+                <td class="padding-10"><b>RACK NO</b></td>
+                <td class="padding-10"><b>UNITS</b></td>
             </tr>
         </thead>
         <tbody>

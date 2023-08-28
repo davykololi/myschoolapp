@@ -34,6 +34,11 @@ class Year extends Model
         return $this->hasMany('App\Models\GeneralGrade','year_id','id');
     }
 
+    public function report_general_grades()
+    {
+        return $this->hasMany('App\Models\ReportGeneralGrade','year_id','id');
+    }
+
     public function report_comments()
     {
         return $this->hasMany(ReportComment::class,'year_id','id');

@@ -44,7 +44,7 @@
                                         <div>{{ $intake->desc }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.intakes.destroy',$intake->id)}}" method="POST">
+                                        <form action="{{route('superadmin.intakes.destroy',$intake->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.intakes.show', $intake->id) }}" class="show">

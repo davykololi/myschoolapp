@@ -18,7 +18,6 @@
                 </div>
             </div>
         </div>
-
         <div class="flex flex-col md:flex-row lg:flex-row gap-2">
             <div class="w-full md:w-1/3">
                 <form id="marksheets_form" action="{{ route('accountant.student.paymentDetails') }}" class="p-4 border-2 border-white mb-6" method="get">
@@ -32,7 +31,6 @@
                         </div>
                 </form>
             </div>
-
             <div class="w-full md:w-1/3">
                 <form id="marksheets_form" action="{{ route('accountant.stream.balances') }}" class="p-4 border-2 border-white mb-6" method="get">
                     {{ csrf_field() }}
@@ -44,58 +42,6 @@
                             </div>
                         </div>
                 </form>
-            </div>
-        </div>
-
-
-
-        <div class="flex flex-col overflow-x-auto md:mx-2">
-            <div class="sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                    <div class="overflow-x-auto">
-                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
-                            <!-- Table Headings -->
-                            <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
-                                <tr>
-                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">AVATAR</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">ADM NO</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">STREAM</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">BALANCE</th>
-                                </tr>
-                            </thead>
-                            <!-- Table Body -->
-                            <tbody>
-                            @foreach($students as $student)
-                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-900">
-                                    <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $loop->iteration }}</div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-2 py-4 relative">
-                                        <div>@include('partials.student-avatar')</div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $student->title }} {{ $student->full_name }}</div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $student->admission_no }}</div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $student->stream->name }}</div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
-                                        <div><b>Kshs:</b> {{ number_format($student->fee_balance,2) }}</div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                            <tfoot>
-                                <div class="my-2">{{ $students->links() }}</div>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
         @endif

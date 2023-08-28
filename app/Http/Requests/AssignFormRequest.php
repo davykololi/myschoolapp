@@ -35,8 +35,8 @@ class AssignFormRequest extends FormRequest
         } else {
             return [
                 'name' => 'required|string|max:100',
-                'date_given' => 'required|date',
-                'deadline' => 'required|date',
+                'date_given' => 'required|string',
+                'deadline' => 'required|string',
                 'file' => 'required|mimes:pdf,xlx,csv|max:2048',
             ];
         }

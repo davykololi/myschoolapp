@@ -167,6 +167,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::get('/clubs','ClubController@index')->name('clubs');
 	Route::get('/clubs/show/{id}','ClubController@show')->name('clubs.show');
 	Route::get('/school-students/{school}','PdfController@schoolStudents')->name('school.students');
+	Route::get('/school-teachers/{school}','PdfController@schoolTeachers')->name('school.teachers');
 	Route::get('/stream-students/{stream}','PdfController@streamStudents')->name('stream.students');
 	Route::get('/class-teachers/{stream}','PdfController@streamTeachers')->name('stream.teachers');
 	Route::get('/school-clubs/{school}','PdfController@schoolClubs')->name('school.clubs');
@@ -237,6 +238,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::post('general-gradesheets','ExcelController@generalGradesStore')->name('marks.generalGradesheetsImport');
 	//Report Card Comments Import route
 	Route::post('reportcard-comments','ExcelController@reportcardComments')->name('reportcard.comments');
+	//Report Aggrecade Grades Gradesheet Import route
+	Route::post('reportcard-general-grades','ExcelController@reportGeneralGradesStore')->name('report.aggregadeGrades');
 	//Admin Change Password Routes
 	Route::get('/change-password','AdminChangePasswordController@index')->name('change-password.form');
 	Route::post('/change-password','AdminChangePasswordController@store')->name('change-password.save');

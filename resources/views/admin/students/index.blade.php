@@ -16,8 +16,8 @@
                         CREATE
                     </a>
                     @endcan
-                    <a type="button" class="bg-[green] text-white p-2 rounded shadow-lg mx-2" href="{{route('admin.export.students')}}">
-                        EXCEL
+                    <a class="excel" href="{{route('admin.export.students')}}">
+                        <x-excel-svg/>
                     </a> 
 
                     <a href="{{route('admin.school.students', Auth::user()->school->id)}}" class="pdf">
@@ -92,7 +92,7 @@
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('admin.students.destroy',$student->id)}}" method="POST">
+                                        <form action="{{route('admin.students.destroy',$student->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('admin.students.show', $student->id) }}" class="show">
@@ -104,9 +104,9 @@
                                             </a>
                                             @endcan
                                             @can('studentRegistrar')
-                                            <a type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
                                                 <x-delete-svg/>
-                                            </a>
+                                            </button>
                                             @endcan
                                             <a type="button" href="{{ route('admin.student.details', $student->id) }}" class="pdf">
                                                 <x-pdf-svg/>

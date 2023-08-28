@@ -44,7 +44,7 @@
                                         <div>{{$farm->type}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.farms.destroy',$farm->id)}}" method="POST">
+                                        <form action="{{route('superadmin.farms.destroy',$farm->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.farms.show', $farm->id) }}" class="show">

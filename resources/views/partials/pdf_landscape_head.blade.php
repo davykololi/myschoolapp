@@ -4,7 +4,7 @@
         @page{margin:0cm 0cm;}
         body{margin-top: 4.5cm;margin-left: 2.7cm;margin-bottom: 2cm;height: 100%;margin-right: 3cm;width: 100%}
         header{position: fixed;top: 1cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
-        footer{position: fixed;bottom: 2cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
+        footer{position: fixed;bottom: 1.7cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
         #landscape_logo{position: fixed;bottom:15cm;left:5.5cm;width:8cm;height:8cm;z-index:  -10px;opacity: .6;}
         .landscape_hr_top{width: 82%;border-top: 10px groove brown;margin-top: 5px;}
         .landscape_hr_bottom{width: 82%;border-top: 10px groove brown;margin-top: 0.5cm;left: 0;}

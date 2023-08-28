@@ -8,13 +8,21 @@
             <h2 style="text-transform: uppercase;">{{ $club->name }} Details</h2>
             <br/>
         </div>
-        <div class="pull-right">
-            <a href="{{route('admin.club.students',$club->id)}}" class="btn btn-primary btn-border">
-                {{ $club->name }} Students PDF
-            </a>
-            <a href="{{route('admin.club.teachers',$club->id)}}" class="btn btn-primary btn-border">
-                {{ $club->name }} Teachers PDF
-            </a>
+        <div style="text-align: center;">
+            @include('partials.errors')
+        </div>
+        <div class="flex flex-row">
+            <div class="flex flex-col">
+                <label>Students</label>
+                <a href="{{route('admin.club.students',$club->id)}}" class="pdf w-fit">
+                     <x-pdf-svg/>
+                </a>
+            </div>
+            <div class="flex flex-col mx-2">
+                <label>Teachers</label>
+                <a href="{{route('admin.club.teachers',$club->id)}}" class="pdf w-fit">
+                    <x-pdf-svg/>
+                </a>
             <br/>
             <a href="{{ url()->previous() }}" class="label label-primary pull-right">Back</a>
         </div>
@@ -43,7 +51,7 @@
         <div class="form-group">
             <strong>{{ $club->name }} Teachers:</strong>
             <ol>
-            @forelse($club->teachers as $teacher)
+            @forelse($clubTeachers as $teacher)
             <a href="{{route('superadmin.teachers.show',$teacher->id)}}">
                 <li>{{ $teacher->salutation }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
             </a>
@@ -57,7 +65,7 @@
         <div class="form-group">
             <strong>{{ $club->name }} Substaffs:</strong>
             <ol>
-            @forelse($club->staffs as $staff)
+            @forelse($clubStaffs as $staff)
             <a href="{{route('superadmin.staffs.show',$staff->id)}}">
                 <li>{{ $staff->salutation }} {{ $staff->full_name }} - {{ $staff->phone_no }}</li>
             </a>
@@ -71,7 +79,7 @@
         <div class="form-group">
             <strong>{{ $club->name }} Students:</strong>
             <ol>
-            @forelse($club->students as $student)
+            @forelse($clubStudents as $student)
             <a href="{{route('admin.students.show',$student->id)}}">
                 <li>{{ $student->full_name }} {{ $student->stream->name }}</li>
             </a>
@@ -85,7 +93,7 @@
         <div class="form-group">
             <strong>{{ $club->name }} Meetings:</strong>
             <ol>
-            @forelse($club->meetings as $meeting)
+            @forelse($clubMeetings as $meeting)
             <a href="{{route('admin.meetings.show',$meeting->id)}}">
                 <li>
                     {{ $meeting->name }} will be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda will be {{ $meeting->agenda }}

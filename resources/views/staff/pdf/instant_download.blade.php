@@ -3,8 +3,8 @@
 
 @section('content') 
     <div class="max-w-screen">
-        <div class="flex-row">
-            <div class="lg:prose">
+        <div class="row">
+            <div class="col-md-12" style="margin-top: -60px;">
                 {!! $content !!}
             </div>
         </div>

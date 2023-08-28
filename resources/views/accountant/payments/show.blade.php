@@ -68,7 +68,7 @@
                         <div class="w-full md:w-1/2">
                             <label class="uppercase">Bank Name</label>
                             <div class="flex-1 relative mb-4 flex flex-wrap items-stretch md:mr-32">
-                                <input type="text" name="bank_name" id="bank_name" class="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary" value="{{ old('bank_name') }}" data-te-ripple-init placeholder="Bank Name">
+                                <input type="text" name="bank_name" id="bank_name" class="form-input-two" value="{{ old('bank_name') }}" data-te-ripple-init placeholder="Bank Name">
                             </div>
                         </div>
                         <div class="w-full md:w-1/2">
@@ -90,7 +90,7 @@
                         <div class="w-full md:w-1/2">
                             <label class="uppercase">Bank Receipt Copy</label>
                             <div class="flex-1 relative mb-4 flex flex-wrap items-stretch md:mr-32">
-                                <input type="file" name="file" id="file" class="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary" value="{{ old('file') }}">
+                                <input type="file" name="file" id="file" class="form-input-two" value="{{ old('file') }}">
                             </div>
                         </div>
                     </div>
@@ -98,13 +98,13 @@
                         <div class="w-full md:w-1/2">
                             <label class="uppercase">Amount Paid</label>
                             <div class="flex-1 relative mb-4 flex flex-wrap items-stretch md:mr-32">
-                                <input type="text" name="amount_paid" id="amount_paid" class="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary" value="{{ old('amount_paid') }}" placeholder="Amount">
+                                <input type="text" name="amount_paid" id="amount_paid" class="form-input-two" value="{{ old('amount_paid') }}" placeholder="Amount">
                             </div>
                         </div>
                         <div class="w-full md:w-1/2">
                             <label class="uppercase">Balance</label>
                             <div class="flex-1 relative mb-4 flex flex-wrap items-stretch md:mr-32">
-                                <input type="text" name="balance" id="balance" class="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary" value="{{ old('balance') }}" placeholder="Balance">
+                                <input type="text" name="balance" id="balance" class="form-input-two" value="{{ old('balance') }}" placeholder="Balance">
                             </div>
                         </div>
                     </div>

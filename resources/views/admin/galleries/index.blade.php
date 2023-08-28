@@ -50,7 +50,7 @@
                                         <div>{{$gallery->description}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('admin.galleries.destroy',$gallery->id)}}" method="POST">
+                                        <form action="{{route('admin.galleries.destroy',$gallery->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('admin.galleries.show', $gallery->id) }}" class="show">

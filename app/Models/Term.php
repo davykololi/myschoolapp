@@ -46,6 +46,11 @@ class Term extends Model
         return $this->hasMany('App\Models\GeneralGrade','term_id','id');
     }
 
+    public function report_general_grades()
+    {
+        return $this->hasMany('App\Models\ReportGeneralGrade','term_id','id');
+    }
+
     public function report_comments()
     {
         return $this->hasMany(ReportComment::class,'term_id','id');

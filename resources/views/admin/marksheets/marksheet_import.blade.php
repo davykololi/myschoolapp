@@ -27,8 +27,8 @@
                 </div>
             </div>
             <div class="w-full">
-                <div class="mt-4">
-                    <x-generate-button/>
+                <div class="mt-4 items-center justify-center">
+                    <x-generate-pdf/>
                 </div>
             </div>
     </form>
@@ -40,7 +40,7 @@
             @include('ext._stream_results_form')
             <div class="w-full">
                 <div class="mt-4">
-                    <x-generate-button/>
+                    <x-generate-excel/>
                 </div>
             </div>
     </form>
@@ -61,7 +61,7 @@
         </div>
         <div class="w-full">
             <div class="mt-4">
-                <x-generate-button/>
+                <x-generate-pdf/>
             </div>
         </div>
     </form>
@@ -72,7 +72,7 @@
             @include('ext._class_results_form')
         <div class="w-full">
             <div class="mt-4">
-                <x-generate-button/>
+                <x-generate-excel/>
             </div>
         </div>
     </form>

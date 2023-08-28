@@ -1,4 +1,4 @@
-@extends('layouts.pdf_landscape')
+@extends('layouts.pdf_landscape_A4_plain')
 @section('title', '| Department Teachers')
 
 @section('content')

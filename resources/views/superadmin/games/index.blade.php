@@ -48,7 +48,7 @@
                                         <div>{{$game->category_game->name}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.games.destroy',$game->id)}}" method="POST">
+                                        <form action="{{route('superadmin.games.destroy',$game->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.games.show', $game->id) }}" class="show">

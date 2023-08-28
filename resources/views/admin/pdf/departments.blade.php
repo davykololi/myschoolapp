@@ -8,11 +8,11 @@
         </caption>
         <thead>
             <tr style="background-color: black;color: white;">
-                <td><b>NO</b></td>
-                <td><b>NAME</b></td>
-                <td><b>PHONE NO</b></td>
-                <td><b>HEAD</b></td>
-                <td><b>ASSISTANT</b></td>
+                <td class="padding-10"><b>NO</b></td>
+                <td class="padding-10"><b>NAME</b></td>
+                <td class="padding-10"><b>PHONE NO</b></td>
+                <td class="padding-10"><b>HEAD</b></td>
+                <td class="padding-10"><b>ASSISTANT</b></td>
             </tr>
         </thead>
         <tbody>

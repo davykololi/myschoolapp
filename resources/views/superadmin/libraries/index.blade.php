@@ -28,9 +28,9 @@
                                     <th scope="col" class="px-2 py-4" width="15%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="10%">CODE</th>
                                     <th scope="col" class="px-2 py-4" width="15%">PHONE</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">LIBRARIAN.</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">ASS LIB</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">LIBRARIAN.</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">ASS LIB</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -56,7 +56,7 @@
                                         <div>{{$library->lib_asshead}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.libraries.destroy',$library->id)}}" method="POST">
+                                        <form action="{{route('superadmin.libraries.destroy',$library->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a href="{{ route('superadmin.libraries.show', $library->id) }}" class="show">

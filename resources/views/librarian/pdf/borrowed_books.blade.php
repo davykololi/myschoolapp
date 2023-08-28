@@ -17,13 +17,13 @@
         <table class="table table-bordered" width="82%">
             <thead>
                 <tr style="background-color: black;color: white;">
-                    <td><b>NO</b></td>
-                    <td><b>NAME</b></td>
-                    <td><b>CLASS</b></td>
-                    <td><b>TITLE</b></td>
-                    <td><b>SERIAL NO</b></td>
-                    <td><b>BORROWED</b></td>
-                    <td><b>RETURN</b></td>
+                    <td class="padding-10"><b>NO</b></td>
+                    <td class="padding-10"><b>NAME</b></td>
+                    <td class="padding-10"><b>CLASS</b></td>
+                    <td class="padding-10"><b>TITLE</b></td>
+                    <td class="padding-10"><b>SERIAL NO</b></td>
+                    <td class="padding-10"><b>BORROWED</b></td>
+                    <td class="padding-10"><b>RETURN</b></td>
                 </tr>
             </thead>
             <tbody>

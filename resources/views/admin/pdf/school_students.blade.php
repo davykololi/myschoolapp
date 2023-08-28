@@ -24,7 +24,7 @@
     </h3>
     <div>
     <table>
-        <thead>
+        <thead class="table-bordered">
             <tr style="background-color: black;color: white;">
                 <td><b>NO</b></td>
                 <td><b>NAME</b></td>

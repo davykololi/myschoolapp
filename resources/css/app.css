@@ -13,23 +13,31 @@
   }
 
   .edit {
-    @apply bg-yellow-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1
-  }
+    @apply bg-yellow-600 dark:bg-yellow-700 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1 relative
+    }
 
 	.danger {
 		@apply bg-[red] text-white px-2 rounded dark:bg-red-800 dark:text-slate-400;
 	}
 
   .delete {
-    @apply bg-red-600 dark:bg-red-700 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1
+    @apply bg-red-600 dark:bg-red-700 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1 relative
   } 
 
   .pdf {
-    @apply bg-orange-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1
+    @apply bg-orange-500 dark:bg-orange-600 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1 relative
   }
+
+  .excel {
+    @apply bg-[green] inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1 dark:bg-green-800;
+  } 
 
   .form-input-one {
     @apply border-0 px-3 py-3 placeholder-gray-700 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150
+  }
+
+  .form-input-two {
+    @apply relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary
   }
 
   .form-input-one-photo-upload {
@@ -38,6 +46,10 @@
 
   .form-input-label-one {
     @apply block uppercase text-black text-xs font-bold mb-2 dark:text-slate-200;
+  }
+
+  .users-2fa-code-resend-link {
+    @apply text-slate-100 dark:text-slate-400
   }
 }
 

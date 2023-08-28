@@ -8,23 +8,24 @@
         </caption>
         <thead>
             <tr style="color:white;background-color: black;">
-                <td><b>NO</b></td>
-                <td><b>NAME</b></td>
-                <td><b>ADM MRKS</b></td>
-                <td><b>RATE</b></td>
-                <td><b>MATHS</b></td>
-                <td><b>ENG</b></td>
-                <td><b>KISW</b></td>
-                <td><b>CHEM</b></td>
-                <td><b>BIO</b></td>
-                <td><b>PHYSICS</b></td>
-                <td><b>CRE</b></td>
-                <td><b>ISLAM</b></td>
-                <td><b>HIST</b></td>
-                <td><b>GHC</b></td>
-                <td><b>TOTAL</b></td>
-                <td><b>MEAN</b></td>
-                <td><b>P/F</b></td>
+                <td class="table-left padding-10"><b>NO</b></td>
+                <td class="table-left padding-10"><b>NAME</b></td>
+                <td class="table-left padding-10"><b>GDR</b></td>
+                <td class="table-left padding-10"><b>STATUS</b></td>
+                <td class="table-left padding-10"><b>RATE</b></td>
+                <td class="table-left padding-10"><b>MATHS</b></td>
+                <td class="table-left padding-10"><b>ENG</b></td>
+                <td class="table-left padding-10"><b>KISW</b></td>
+                <td class="table-left padding-10"><b>CHEM</b></td>
+                <td class="table-left padding-10"><b>BIO</b></td>
+                <td class="table-left padding-10"><b>PHYSICS</b></td>
+                <td class="table-left padding-10"><b>CRE</b></td>
+                <td class="table-left padding-10"><b>ISLAM</b></td>
+                <td class="table-left padding-10"><b>HIST</b></td>
+                <td class="table-left padding-10"><b>GHC</b></td>
+                <td class="table-left padding-10"><b>TOTAL</b></td>
+                <td class="table-left padding-10"><b>MEAN</b></td>
+                <td class="table-left padding-10"><b>P/F</b></td>
             </tr>
         </thead>
         <tbody>
@@ -38,11 +39,20 @@
                 @endforeach
                 <td class="table-left" style="text-transform: uppercase;">{{ $mark->name }}</td>
 
+                <!-- Gender -->
+                @foreach($mark->class->students as $st)
+                @if($st->admission_no === $mark->admission_no && $st->gender === 'Female')
+                <td class="table-left">F</td>
+                @elseif($st->admission_no === $mark->admission_no && $st->gender === 'Male')
+                <td class="table-left">M</td>
+                @endif
+                @endforeach
+
                 @foreach($mark->stream->students as $st)
                 @if($st->admission_no === $mark->admission_no && $mark->total <= $st->adm_mark)
-                <td class="table-left">{{ $st->adm_mark }} <span style="color: red;margin-left:2px">*</span></td>
+                <td class="table-left"><span style="color: red;">{{ __('DROP') }}</span></td>
                 @elseif($st->admission_no === $mark->admission_no && $mark->total > $st->adm_mark)
-                <td class="table-left">{{ $st->adm_mark }} <span style="color: green;margin-left:2px">*</span></td>
+                <td class="table-left"><span style="color: green;">{{ __('EXCEL') }}</span></td>
                 @endif
                 @endforeach
 
@@ -69,18 +79,117 @@
                         </td>
                         @endif
                 
-                <td>{{ $mark->mathematics }}</td>
-                <td>{{ $mark->english }}</td>
-                <td>{{ $mark->kiswahili }}</td>
-                <td>{{ $mark->chemistry ?? '-' }}</td>
-                <td>{{ $mark->biology ?? '-' }}</td>
-                <td>{{ $mark->physics ?? '-' }}</td>
-                <td>{{ $mark->cre ?? '-' }}</td>
-                <td>{{ $mark->islam ?? '-' }}</td>
-                <td>{{ $mark->history ?? '-' }}</td>
-                <td>{{ $mark->ghc ?? '-' }}</td>
+                <td class="table-left">
+                    {{ $mark->mathematics }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Mathematics' ) && ($grade->from_mark <= $mark->mathematics) && ($grade->to_mark >= $mark->mathematics))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->english }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'English' ) && ($grade->from_mark <= $mark->english) && ($grade->to_mark >= $mark->english))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->kiswahili }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Kiswahili' ) && ($grade->from_mark <= $mark->kiswahili) && ($grade->to_mark >= $mark->kiswahili))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->chemistry ?? '-' }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Chemistry' ) && ($grade->from_mark <= $mark->chemistry) && ($grade->to_mark >= $mark->chemistry))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->biology ?? '-' }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Biology' ) && ($grade->from_mark <= $mark->biology) && ($grade->to_mark >= $mark->biology))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->physics ?? '-' }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Physics' ) && ($grade->from_mark <= $mark->physics) && ($grade->to_mark >= $mark->physics))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->cre ?? '-' }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'CRE' ) && ($grade->from_mark <= $mark->cre) && ($grade->to_mark >= $mark->cre))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->islam ?? '-' }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Islam' ) && ($grade->from_mark <= $mark->islam) && ($grade->to_mark >= $mark->islam))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->history ?? '-' }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'History' ) && ($grade->from_mark <= $mark->history) && ($grade->to_mark >= $mark->history))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
+                <td class="table-left">
+                    {{ $mark->ghc ?? '-' }}
+                    @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'GHC' ) && ($grade->from_mark <= $mark->ghc) && ($grade->to_mark >= $mark->ghc))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
                 <td >{{ $mark->total }}</td>
-                <td>{{ $mark->student_minscore }}</td>
+                <td>
+                    {{ $mark->student_minscore }}
+                    @if(!empty($generalGrades))
+                        @foreach($generalGrades as $genGrade)
+                        @if(($genGrade->from_mark <= round($mark->student_minscore,0)) && ($genGrade->to_mark >= round($mark->student_minscore,0)))
+                        {{ $genGrade->grade }}
+                        @endif
+                        @endforeach
+                    @endif
+                </td>
                 @if($passMark > $mark->total)
                 <td><span style="color: red">F</span></td>
                 @else
@@ -95,24 +204,139 @@
             @endif
         </tbody>
         <tfoot>
-            <tr>
-                <td><b>#</b></td>
-                <td><b>MEAN SCORES</b></td>
-                <td><b>#</b></td>
-                <td><b>#</b></td>
-                <td><b>{{ round($maths->avg(),1) }}</b></td>
-                <td><b>{{ round($english->avg(),1) }}</b></td>
-                <td><b>{{ round($kiswahili->avg(),1) }}</b></td>
-                <td><b>{{ round($chemistry->avg(),1) ? : null ?? '-' }}</b></td>
-                <td><b>{{ round($biology->avg(),1) ? : null ?? '-' }}</b></td>
-                <td><b>{{ round($physics->avg(),1) ? : null ?? '-' }}</b></td>
-                <td><b>{{ round($cre->avg(),1) ? : null ?? '-' }}</b></td>
-                <td><b>{{ round($islam->avg(),1) ? : null ?? '-' }}</b></td>
-                <td><b>{{ round($history->avg(),1) ? : null ?? '-' }}</b></td>
-                <td><b>{{ round($ghc->avg(),1) ? : null ?? '-' }}</b></td>
-                <td><b>{{ round($totals->avg(),1) }}</b></td>
-                <td><b>#</b></td>
-                <td><b>#</b></td>
+            <tr style="background-color: lightgray;">
+                <td class="table-left padding-10"><b>#</b></td>
+                <td class="table-left padding-10"><b>MEAN SCORES</b></td>
+                <td class="table-left padding-10"><b>#</b></td>
+                <td class="table-left padding-10"><b>#</b></td>
+                <td class="table-left padding-10"><b>#</b></td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($maths->avg(),1) }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Mathematics') && ($grade->from_mark <= $maths->avg()) && ($grade->to_mark >= $maths->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($english->avg(),1) }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'English') && ($grade->from_mark <= $english->avg()) && ($grade->to_mark >= $english->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($kiswahili->avg(),1) }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Kiswahili') && ($grade->from_mark <= $kiswahili->avg()) && ($grade->to_mark >= $kiswahili->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($chemistry->avg(),1) ? : null ?? '-' }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Chemistry') && ($grade->from_mark <= $chemistry->avg()) && ($grade->to_mark >= $chemistry->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($biology->avg(),1) ? : null ?? '-' }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Biology') && ($grade->from_mark <= $biology->avg()) && ($grade->to_mark >= $biology->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($physics->avg(),1) ? : null ?? '-' }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Physics') && ($grade->from_mark <= $physics->avg()) && ($grade->to_mark >= $physics->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($cre->avg(),1) ? : null ?? '-' }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'CRE') && ($grade->from_mark <= $cre->avg()) && ($grade->to_mark >= $cre->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($islam->avg(),1) ? : null ?? '-' }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'Islam') && ($grade->from_mark <= $islam->avg()) && ($grade->to_mark >= $islam->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($history->avg(),1) ? : null ?? '-' }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'History') && ($grade->from_mark <= $history->avg()) && ($grade->to_mark >= $history->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ round($ghc->avg(),1) ? : null ?? '-' }}
+                        @if(!empty($examGrades))
+                        @foreach($examGrades as $grade)
+                        @if(($grade->subject->name === 'GHC') && ($grade->from_mark <= $ghc->avg()) && ($grade->to_mark >= $ghc->avg()))
+                        {{ $grade->grade }}
+                        @endif
+                        @endforeach
+                        @endif
+                    </b>
+                </td>
+                <td class="table-left padding-10"><b>{{ round($totals->avg(),1) }}</b></td>
+                <td class="table-left padding-10">
+                    <b>
+                        {{ $marks->avg('student_mimiscore')/$stream->students->count() }}
+                    </b>
+                </td>
+                <td class="table-left padding-10"><b>#</b></td>
             </tr>
         </tfoot>
     </table>

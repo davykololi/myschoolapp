@@ -27,9 +27,9 @@
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="20%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="20%">ROLE</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">PHONE</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">PHONE</th>
                                     <th scope="col" class="px-2 py-4" width="20%">EMAIL</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -65,7 +65,7 @@
                                         <div>{{$admin->email }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.admins.destroy',$admin->id)}}" method="POST">
+                                        <form action="{{route('superadmin.admins.destroy',$admin->id)}}" method="POST" class="flex flex-row">
                                             {{method_field('DELETE')}}
                                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                                             <a type="button" href="{{ route('superadmin.admins.show', $admin->id) }}" class="show">

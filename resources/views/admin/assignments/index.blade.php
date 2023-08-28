@@ -91,7 +91,7 @@
                                         </a>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('admin.assignments.destroy',$assignment->id)}}" method="POST">
+                                        <form action="{{route('admin.assignments.destroy',$assignment->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a href="{{ route('admin.assignments.show', $assignment->id) }}" class="show">

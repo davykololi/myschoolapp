@@ -5,7 +5,7 @@
 <div class="container">
     <div class="row">
         <div>
-            <p style="margin-top: -20px">{!! $letter->content !!}</p>
+            <p style="margin-top: -70px">{!! $letter->content !!}</p>
         </div>
     </div>
 <

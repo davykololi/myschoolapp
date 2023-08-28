@@ -41,7 +41,7 @@
                                         <div>{{$field->category_field->name}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.fields.destroy',$field->id)}}" method="POST">
+                                        <form action="{{route('superadmin.fields.destroy',$field->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.fields.show', $field->id) }}" class="show">

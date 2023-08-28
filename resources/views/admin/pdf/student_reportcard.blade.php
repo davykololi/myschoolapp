@@ -308,7 +308,7 @@
                             <span>
                                 <b>CLOSING DATE:</b> <i>{{ $closingDate }}</i>
                             </span>
-                            <span style="margin-left:400px">
+                            <span style="margin-left:384px">
                                 <b>OPENING DATE:</b> <i>{{ $openingDate }}</i>
                             </span>
                         </div>

@@ -62,6 +62,7 @@ return [
         '*admin/student-details/*',
         '*admin/st-pdf-report-card',
         '*admin/school-students/*',
+        '*admin/school-teachers/*',
         '*admin/letter-head/*',
         '*admin/instant-download/*',
         '*admin/school-letters/*',
@@ -80,5 +81,7 @@ return [
         '*accountant/stream-fee-balances',
         '*accountant/student-payment-details',
         '*parent/download-results',
+        '*admin/club-students/*',
+        '*admin/club-teachers/*',
     ],
 ];

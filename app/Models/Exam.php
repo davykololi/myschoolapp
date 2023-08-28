@@ -125,6 +125,11 @@ class Exam extends Model implements Searchable
         return $this->hasMany(GeneralGrade::class,'exam_id','id');
     }
 
+    public function report_general_grades()
+    {
+        return $this->hasMany('App\Models\ReportGeneralGrade','exam_id','id');
+    }
+
     public function report_comments()
     {
         return $this->hasMany(ReportComment::class,'exam_id','id');

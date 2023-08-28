@@ -5,7 +5,7 @@
         body{margin-top: 4.5cm;margin-left: 2cm;margin-right: 2cm;margin-bottom: 1.2cm;height: 100%; width: 95%}
         header{position: fixed;top: 0.5cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
         footer{position: fixed;bottom: 0.5cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
-        #portrait_logo{position: fixed;bottom:15cm;left:5.5cm;width:8cm;height:8cm;z-index:-100px;opacity:.1;}
+        #portrait_logo{position: fixed;bottom:15cm;left:5.5cm;width:8cm;height:8cm;z-index:-100px;opacity:.2;}
         .hr_portrait_bottom{width: 82%;border-top: 10px groove brown;margin-top: 0.5cm}
         .table-left{text-align: left;}
         .bgcolor-grey{background-color: grey}
@@ -21,12 +21,6 @@
         .right{text-align: right;}
         .margin{margin: 500px;margin-left: 130px;margin-right: 130px;}
         .title{text-align: center;text-transform: uppercase;}
-
-        table{border-collapse: collapse;background-color: #DED68B;border: 1px solid #514F33;width: 100%; }
-        th, td {padding: 3px;white-space: nowrap;border-right: 1px solid #514F33; }
-
-        tbody tr:nth-child(odd) {background-color: #FFEDD2;}
-        tbody tr:nth-child(even) {background-color: #D8CCBA;} 
     </style>
     @include('partials.pdf_page_script')
 </head>

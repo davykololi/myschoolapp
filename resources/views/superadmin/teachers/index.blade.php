@@ -32,12 +32,12 @@
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="20%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">EMAIL</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">EMAIL</th>
                                     <th scope="col" class="px-2 py-4" width="10%">ID NO.</th>
                                     <th scope="col" class="px-2 py-4" width="10%">EMP NO.</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">ROLE</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ROLE</th>
                                     <th scope="col" class="px-2 py-4" width="10%">PHONE NO.</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -67,7 +67,7 @@
                                         <div>{{$teacher->phone_no}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.teachers.destroy',$teacher->id)}}" method="POST">
+                                        <form action="{{route('superadmin.teachers.destroy',$teacher->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.teachers.show', $teacher->id) }}" class="show">

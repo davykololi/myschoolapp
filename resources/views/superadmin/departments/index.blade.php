@@ -30,7 +30,7 @@
                                     <th scope="col" class="px-2 py-4" width="20%">HEAD</th>
                                     <th scope="col" class="px-2 py-4" width="15%">ASSISTANT</th>
                                     <th scope="col" class="px-2 py-4" width="10%">TEACHERS</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">SUBSTAFF</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">SUBSTAFFS</th>
                                     <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
@@ -60,7 +60,7 @@
                                         <div>{{ $department->staffs->count() }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.departments.destroy',$department->id)}}" method="POST">
+                                        <form action="{{route('superadmin.departments.destroy',$department->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.departments.show', $department->id) }}" class="show">

@@ -83,7 +83,7 @@
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('admin.exams.destroy',$exam->id)}}" method="POST">
+                                        <form action="{{route('admin.exams.destroy',$exam->id)}}" method="POST" class="inline-flex">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('admin.exams.show', $exam->id) }}" class="show">

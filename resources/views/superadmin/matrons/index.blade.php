@@ -56,7 +56,7 @@
                                         <div>{{$matron->emp_no}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.matrons.destroy',$matron->id)}}" method="POST">
+                                        <form action="{{route('superadmin.matrons.destroy',$matron->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('superadmin.matrons.show', $matron->id) }}" class="show">

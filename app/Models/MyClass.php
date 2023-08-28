@@ -67,6 +67,11 @@ class MyClass extends Model
         return $this->hasMany('App\Models\GeneralGrade','class_id','id');
     }
 
+    public function report_general_grades()
+    {
+        return $this->hasMany('App\Models\ReportGeneralGrade','class_id','id');
+    }
+
     public function report_comments()
     {
         return $this->hasMany(ReportComment::class,'class_id','id');

@@ -36,7 +36,7 @@
                 <div class="w-full md:w-1/3">
                     <div class="flex flex-col">
                         <label>MARK SHEET FILE:<span class="text-[red]">*</span></label>
-                        <input type="file" name="file">
+                        <input type="file" name="file" class="relative">
                     </div>
                 </div>
             </div>

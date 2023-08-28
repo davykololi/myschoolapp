@@ -41,7 +41,7 @@
                                 <div>{{$school->postal_address}}</div>
                             </td>
                             <td>
-                                <form action="{{route('superadmin.schools.destroy',$school->id)}}" method="POST">
+                                <form action="{{route('superadmin.schools.destroy',$school->id)}}" method="POST" class="flex flex-row">
                                     {{method_field('DELETE')}}
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     <a href="{{ route('superadmin.schools.show', $school->id) }}" class="show">

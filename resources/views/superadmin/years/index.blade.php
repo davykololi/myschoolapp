@@ -54,7 +54,7 @@
                                         <div>{{$year->desc}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.years.destroy',$year->id)}}" method="POST">
+                                        <form action="{{route('superadmin.years.destroy',$year->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a href="{{ route('superadmin.years.show', $year->id) }}" class="show">

@@ -52,7 +52,7 @@
                                         <div>{{$letter->created_at}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('admin.letters.destroy',$letter->id)}}" method="POST">
+                                        <form action="{{route('admin.letters.destroy',$letter->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('admin.letters.show', $letter->id) }}" class="show">

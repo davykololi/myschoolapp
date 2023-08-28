@@ -24,12 +24,12 @@
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
-                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="25%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">STUDENTS</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">STUDENTS</th>
                                     <th scope="col" class="px-2 py-4" width="15%">MALES</th>
                                     <th scope="col" class="px-2 py-4" width="15%">FEMALES</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -52,7 +52,7 @@
                                         <div>{{ $class->females() }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('superadmin.classes.destroy',$class->id)}}" method="POST">
+                                        <form action="{{route('superadmin.classes.destroy',$class->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{route('superadmin.classes.show',$class->id)}}" class="show">

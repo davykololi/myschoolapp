@@ -11,25 +11,25 @@
            <table>
                 <thead>
                     <tr style="color:white;background-color: black;">
-                        <td class="table-left"><b>NO</b></td>
-                        <td class="table-left"><b>NAME</b></td>
-                        <td class="table-left"><b>GDR</b></td>
-                        <td class="table-left"><b>STATUS</b></td>
-                        <td class="table-left"><b>RATE</b></td>
-                        <td class="table-left"><b>MATHS</b></td>
-                        <td class="table-left"><b>ENG</b></td>
-                        <td class="table-left"><b>KISW</b></td>
-                        <td class="table-left"><b>CHEM</b></td>
-                        <td class="table-left"><b>BIO</b></td>
-                        <td class="table-left"><b>PHYSICS</b></td>
-                        <td class="table-left"><b>CRE</b></td>
-                        <td class="table-left"><b>ISLAM</b></td>
-                        <td class="table-left"><b>HIST</b></td>
-                        <td class="table-left"><b>GHC</b></td>
-                        <td class="table-left"><b>TOTAL</b></td>
-                        <td class="table-left"><b>MEAN</b></td>
-                        <td class="table-left"><b>STRM</b></td>
-                        <td class="table-left"><b>P/F</b></td>
+                        <td class="table-left padding-10"><b>NO</b></td>
+                        <td class="table-left padding-10"><b>NAME</b></td>
+                        <td class="table-left padding-10"><b>GDR</b></td>
+                        <td class="table-left padding-10"><b>STATUS</b></td>
+                        <td class="table-left padding-10"><b>RATE</b></td>
+                        <td class="table-left padding-10"><b>MATHS</b></td>
+                        <td class="table-left padding-10"><b>ENG</b></td>
+                        <td class="table-left padding-10"><b>KISW</b></td>
+                        <td class="table-left padding-10"><b>CHEM</b></td>
+                        <td class="table-left padding-10"><b>BIO</b></td>
+                        <td class="table-left padding-10"><b>PHYSICS</b></td>
+                        <td class="table-left padding-10"><b>CRE</b></td>
+                        <td class="table-left padding-10"><b>ISLAM</b></td>
+                        <td class="table-left padding-10"><b>HIST</b></td>
+                        <td class="table-left padding-10"><b>GHC</b></td>
+                        <td class="table-left padding-10"><b>TOTAL</b></td>
+                        <td class="table-left padding-10"><b>MEAN</b></td>
+                        <td class="table-left padding-10"><b>STRM</b></td>
+                        <td class="table-left padding-10"><b>P/F</b></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -206,13 +206,13 @@
                     @endif
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td class="table-left"><b>#</b></td>
-                        <td class="table-left"><b>MEAN SCORES</b></td>
-                        <td class="table-left"><b>#</b></td>
-                        <td class="table-left"><b>#</b></td>
-                        <td class="table-left"><b>#</b></td>
-                        <td class="table-left">
+                    <tr style="background-color: lightgray;">
+                        <td class="table-left padding-10"><b>#</b></td>
+                        <td class="table-left padding-10"><b>MEAN SCORES</b></td>
+                        <td class="table-left padding-10"><b>#</b></td>
+                        <td class="table-left padding-10"><b>#</b></td>
+                        <td class="table-left padding-10"><b>#</b></td>
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($maths->avg(),0) }}
                             @if(!empty($examGrades))
@@ -224,7 +224,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($english->avg(),0) }}
                             @if(!empty($examGrades))
@@ -236,7 +236,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($kiswahili->avg(),0) }}
                             @if(!empty($examGrades))
@@ -248,7 +248,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($chemistry->avg(),0) }}
                             @if(!empty($examGrades))
@@ -260,7 +260,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($biology->avg(),0) }}
                             @if(!empty($examGrades))
@@ -272,7 +272,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($physics->avg(),0) }}
                             @if(!empty($examGrades))
@@ -284,7 +284,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($cre->avg(),0) }}
                             @if(!empty($examGrades))
@@ -296,7 +296,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($islam->avg(),0) }}
                             @if(!empty($examGrades))
@@ -308,7 +308,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($history->avg(),0) }}
                             @if(!empty($examGrades))
@@ -320,7 +320,7 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left">
+                        <td class="table-left padding-10">
                             <b>
                             {{ round($ghc->avg(),0) }}
                             @if(!empty($examGrades))
@@ -332,20 +332,22 @@
                             @endif
                             </b>
                         </td>
-                        <td class="table-left"><b>{{ round($totals->avg(),0) }}</b></td>
+                        <td class="table-left padding-10"><b>{{ round($totals->avg(),0) }}</b></td>
 
-                        <td class="table-left">
-                            <b>{{ round($classMinscore,1) }}
-                            @if(!empty($generalGrades))
-                            @foreach($generalGrades as $genGrade)
-                            @if((round($classMinscore,0) >= $genGrade->from_mark) && (round($classMinscore,0) <= $genGrade->to_mark))
-                            {{ $genGrade->grade }}
-                            @endif
-                            @endforeach
-                        @endif
-                            </b></td>
-                        <td class="table-left"><b>#</b></td>
-                        <td class="table-left"><b>#</b></td>
+                        <td class="table-left padding-10">
+                            <b>
+                                {{ round($classMinscore,1) }}
+                                @if(!empty($generalGrades))
+                                @foreach($generalGrades as $genGrade)
+                                @if((round($classMinscore,0) >= $genGrade->from_mark) && (round($classMinscore,0) <= $genGrade->to_mark))
+                                {{ $genGrade->grade }}
+                                @endif
+                                @endforeach
+                                @endif
+                            </b>
+                        </td>
+                        <td class="table-left padding-10"><b>#</b></td>
+                        <td class="table-left padding-10"><b>#</b></td>
                     </tr>
                 </tfoot>
             </table> 

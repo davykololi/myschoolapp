@@ -27,6 +27,7 @@ use App\Exports\ClassMarksExport;
 use App\Exports\StreamMarksExport;
 use App\Imports\SubjectGrades\MarksGradesheetImport;
 use App\Imports\GeneralGradesheetImport;
+use App\Imports\ReportCardGrades\ReportGeneralGradesheetImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -236,6 +237,53 @@ class ExcelController extends Controller
         \Excel::import(new ReportcardCommentsSheetImport($yearId,$termId,$classId),request()->file('file'));
 
         \Session::put('success', $year->year." ".$term->name." ".$class->name." ".'Report Comments Uploaded Successfully');
+
+        return back();
+    }
+
+    public function reportGeneralGradesStore(Request $request)
+    {
+        $yearId = $request->year;
+        $termId = $request->term;
+        $classId = $request->class;
+        $examId = $request->exam;
+        $teacherId = $request->teacher;
+
+        $maths = Subject::whereName('Mathematics')->firstOrFail();
+        $mathsId = $maths->id;
+        $english = Subject::whereName('English')->firstOrFail();
+        $englishId = $english->id;
+        $kisw = Subject::whereName('Kiswahili')->firstOrFail();
+        $kiswId = $kisw->id;
+        $chem = Subject::whereName('Chemistry')->firstOrFail();
+        $chemId = $chem->id;
+        $biology = Subject::whereName('Biology')->firstOrFail();
+        $bioId = $biology->id;
+        $physics = Subject::whereName('Physics')->firstOrFail();
+        $physicsId = $physics->id;
+        $cre = Subject::whereName('CRE')->firstOrFail();
+        $creId = $cre->id;
+        $islam = Subject::whereName('Islam')->firstOrFail();
+        $islamId = $islam->id;
+        $hist = Subject::whereName('History')->firstOrFail();
+        $histId = $hist->id;
+        $ghc = Subject::whereName('GHC')->firstOrFail();
+        $ghcId = $ghc->id;
+        
+        
+        $class = MyClass::whereId($classId)->first();
+        $year = Year::whereId($yearId)->first();
+        $term = Term::whereId($termId)->first();
+        $exam = Exam::where(['id'=>$examId,'term_id'=>$termId,'year_id'=>$yearId])->first();
+        $requestedFile = request()->file('file');
+
+        if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null) || ($exam === null) || (empty($requestedFile))){
+            return back()->withErrors('Please fill in the required details before you proceed!');
+        } 
+
+        \Excel::import(new ReportGeneralGradesheetImport($yearId,$termId,$classId,$exam,$teacherId,$mathsId,$englishId,$kiswId,$chemId,$bioId,$physicsId,$creId,$islamId,$histId,$ghcId),$requestedFile);
+
+        \Session::put('success', $term->name." ".$class->name." ".$exam->name." ".'Report Card Subject Agrecade Grades Uploaded Successfully');
 
         return back();
     }

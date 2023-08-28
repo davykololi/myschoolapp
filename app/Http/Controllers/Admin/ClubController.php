@@ -53,13 +53,13 @@ class ClubController extends Controller
         //
         $club = $this->clubService->getId($id);
         $students = $this->studentService->all()->pluck('full_name','id');
-        $clubStudents = $club->students;
+        $clubStudents = $club->students()->with('clubs','stream')->get();
         $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $clubTeachers = $club->teachers;
+        $clubTeachers = $club->teachers()->with('clubs')->get();
         $staffs = $this->staffService->all()->pluck('full_name','id');
-        $clubStaffs = $club->staffs;
+        $clubStaffs = $club->staffs()->with('clubs')->get();
         $meetings = $this->meetingService->all()->pluck('name','id');
-        $clubMeetings = $club->meetings;
+        $clubMeetings = $club->meetings()->with('clubs')->get();
 
         return view('admin.clubs.show',compact('club','students','clubStudents','teachers','clubTeachers','staffs','clubStaffs','meetings','clubMeetings'));
     }

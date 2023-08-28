@@ -46,7 +46,7 @@
                             <td class="table-text">
                                 <div>{{$parent->phone_no}}</div>
                             </td>
-                            <td>
+                            <td class="whitespace-nowrap px-2 py-4">
                                 <form action="{{route('admin.parents.destroy',$parent->id)}}" method="POST">
                                     @csrf
                                     @method('DELETE')
