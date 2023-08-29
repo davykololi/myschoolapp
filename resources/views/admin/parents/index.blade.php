@@ -47,7 +47,7 @@
                                 <div>{{$parent->phone_no}}</div>
                             </td>
                             <td class="whitespace-nowrap px-2 py-4">
-                                <form action="{{route('admin.parents.destroy',$parent->id)}}" method="POST">
+                                <form action="{{route('admin.parents.destroy',$parent->id)}}" method="POST" class="flex flex-row">
                                     @csrf
                                     @method('DELETE')
                                     <a href="{{ route('admin.parents.show', $parent->id) }}" class="show">

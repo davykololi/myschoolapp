@@ -5,7 +5,7 @@
         body{margin-top: 4.5cm;margin-left: 2cm;margin-right: 2cm;margin-bottom: 1.2cm;height: 100%;width: 95%}
         header{position: fixed;top: 0.5cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
         footer{position: fixed;bottom: 0.5cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
-        #portrait_logo{position: fixed;bottom:15cm;left:5.5cm;width:8cm;height:8cm;z-index:  -10px;opacity: .2;}
+        #portrait_logo{position: fixed;bottom:15cm;left:5.5cm;width:8cm;height:8cm;z-index:  -10;opacity: .2;}
         .hr_portrait_bottom{width: 82%;border-top: 10px groove brown;margin-top: 0.5cm}
         .table-left{text-align: left;}
         .bgcolor-grey{background-color: grey}

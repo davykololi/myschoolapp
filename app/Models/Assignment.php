@@ -84,17 +84,13 @@ class Assignment extends Model
     public function getDate()
     {
         $dateGiven = $this->date_given;
-        $newDate = Carbon::parse($dateGiven)->format('d-m-Y');
-
-        return $newDate;
+        return $dateGiven;
     }
 
     public function getDeadline()
     {
         $deadline = $this->deadline;
-        $new_deadline = Carbon::parse($deadline)->format('d-m-Y');
-
-        return $new_deadline;
+        return $deadline;
     }
 
     public function scopeEagerLoaded($query)

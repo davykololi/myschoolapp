@@ -47,7 +47,7 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>
-                                            <a href="{{ route('admin.departments.show', $department->id) }}">
+                                            <a href="{{ route('admin.departments.show', $department->id) }}" class="hover:text-purple-500 hover:font-bold">
                                                 {{$department->name}}
                                             </a>
                                         </div>

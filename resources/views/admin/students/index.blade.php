@@ -10,9 +10,9 @@
                 <div class="text-center py-4">
                     <h2 class="uppercase text-2xl font-bold underline">STUDENTS LIST</h2>
                 </div>
-                <div class="items-center justify-center">
+                <div class="items-center flex flex-row" style="float: right;">
                     @can('studentRegistrar')
-                    <a type="button" class="bg-blue-700 text-white p-2 rounded shadow-lg mx-2" href="{{route('admin.students.create')}}">
+                    <a type="button" class="bg-blue-700 text-white px-2 py-1 rounded shadow-lg mx-2" href="{{route('admin.students.create')}}">
                         CREATE
                     </a>
                     @endcan

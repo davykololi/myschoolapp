@@ -61,7 +61,7 @@ class PdfMarksResultsController extends Controller
         $examGrades = Grade::with('class','year','term','subject','exam','teacher')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
         $generalGrades = GeneralGrade::with('class','year','term','exam')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
 
-        $title = $exam->name." ".'Results';
+        $title = $year->year." ".$term->name." ".$exam->name." ".'Results';
         $pdf = PDF::loadView('student.pdf.student_results',compact('marks','year','term','exam','stream','school','title','markName','examGrades','generalGrades'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();

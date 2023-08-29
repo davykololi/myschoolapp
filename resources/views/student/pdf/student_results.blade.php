@@ -13,11 +13,8 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h2 class="title">
-                            <u style="font-family: impact;margin-top: -30px">{{$title}}</u>
+                            <u style="font-family: impact;margin-top: -40px">{{$title}}</u>
                         </h2>
-                        <p style="font-size: 20px;margin-bottom: 12px;text-transform: uppercase;">
-                            <u>{{$year->year}} {{$term->name}}</u>
-                        </p>
                     </div>
                     <div class="row">
                         <div style="margin-bottom: 10px; width: 100%; flex-direction:;" class="uppercase col-12">

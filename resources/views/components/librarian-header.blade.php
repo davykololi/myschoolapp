@@ -9,5 +9,8 @@
         <div class="mt-4">
             @include('ext.librarian-book-search')
         </div>
+        <div class="mt-4">
+            @include('ext.librarian-bookauthor-search')
+        </div>
     </div>
 </div>

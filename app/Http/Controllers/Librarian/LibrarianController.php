@@ -62,4 +62,16 @@ class LibrarianController extends Controller
 
         return view('librarian.search.book',compact('book'));
     }
+
+    public function bookAuthor(Request $request)
+    {
+        $bookAuthor = $request->book_author;
+
+        if(is_null($bookAuthor)){
+            return back()->withErrors('Please select the author of the book first!');
+        }
+        $book = Book::where('author',$bookAuthor)->first();
+
+        return view('librarian.search.book_author',compact('book'));
+    }
 }

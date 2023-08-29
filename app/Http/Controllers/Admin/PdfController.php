@@ -208,12 +208,7 @@ class PdfController extends Controller
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/3);
-        $x = (($width-$imageWidth)/2);
         $canvas->set_opacity(.2,"Multiply");
-        $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,30, array(0,0,0),2,2,-30);
         
         return $pdf->download($title.'.pdf');
@@ -247,12 +242,10 @@ class PdfController extends Controller
         $pdf = PDF::loadView('admin.pdf.letters',['letter'=>$letter,'school'=>$school,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true,'isPhpEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
-        $text = strtoupper('Original Copy');
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $imageUrl = public_path('/storage/storage/'.$school->image);
         $canvas->set_opacity(.2,"Multiply");
-        $canvas->page_text($width/5, $height/2,$text,null,70, array(0,0,0),2,2,-30);
         
         return $pdf->download($title.'.pdf');
     }
@@ -287,7 +280,6 @@ class PdfController extends Controller
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $canvas->set_opacity(.2,"Multiply");
-        $canvas->page_text($width/5, $height/2,strtoupper('Original Copy'),null,70, array(0,0,0),2,2,-30);
         
         return $pdf->download($title.'.pdf');
     }

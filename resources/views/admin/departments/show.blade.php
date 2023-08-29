@@ -1,77 +1,80 @@
 <x-admin>
   <!-- frontend-main view -->
   <x-backend-main>
-<div class="row">
-    <div class="col-md-12 margin-tb">
-        <div class="pull-left">
-            <h2 style="text-transform: uppercase;">{{ $department->school->name }} {{ $department->name }}</h2>
-            <br/>
+<div class="max-w-full mt-4">
+    <div class="w-full bg-trasparent shadow-lg rounded py-4 px-8">
+        <div>
+            <div>
+                <div class="pull-left">
+                    <h2 class="uppercase text-center text-2xl font-bold">
+                        {{ $department->school->name }} {{ $department->name }}
+                    </h2>
+                </div>
+                <div style="text-align: center;">
+                    @include('partials.messages')
+                    @include('partials.errors')
+                </div>
+                <div class="flex flex-row" style="float: right">
+                    <x-back-button/>
+                    <a href="{{route('admin.dept.teachers',$department->id)}}" class="pdf">
+                        <x-pdf-svg/>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div style="text-align: center;">
-            @include('partials.messages')
-            @include('partials.errors')
-        </div>
-        <div class="flex flex-row" style="float: right">
-            <x-back-button/>
-            <a href="{{route('admin.dept.teachers',$department->id)}}" class="pdf">
-                <x-pdf-svg/>
-            </a>
-        </div>
-    </div>
-</div>
-<div class="w-full">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Code:</strong>
-            {{ $department->code }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Phone No.:</strong>
-            {{ $department->phone_no }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Head:</strong>
-            {{ $department->head_name }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Assitant Head:</strong>
-            {{ $department->asshead_name }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Motto:</strong>
-            {{ $department->motto }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>Vision:</strong>
-            {{ $department->vision }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>{{ $department->name }} Meetings:</strong>
-            <ol>
-            @forelse($department->meetings as $meeting)
-            <a href="{{route('admin.meetings.show',$meeting->id)}}">
-                <li>
-                    {{$meeting->name}} will be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda wiil be {{ $meeting->agenda }}.
-                </li>
-            </a>
-            @empty
-            <p style="color: red">No meeting(s) assigned to {{ $department->name }} yet.</p>
-            @endforelse
-            </ol>
-        </div>
-    </div>
+        <div class="w-full mt-8">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Code:</strong>
+                    {{ $department->code }}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Phone No.:</strong>
+                    {{ $department->phone_no }}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Head:</strong>
+                    {{ $department->head_name }}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Assitant Head:</strong>
+                    {{ $department->asshead_name }}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Motto:</strong>
+                    {{ $department->motto }}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Vision:</strong>
+                    {{ $department->vision }}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>{{ $department->name }} Meetings:</strong>
+                    <ol>
+                        @forelse($department->meetings as $meeting)
+                        <a href="{{route('admin.meetings.show',$meeting->id)}}">
+                            <li>
+                                {{$meeting->name}} will be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda wiil be {{ $meeting->agenda }}.
+                            </li>
+                        </a>
+                        @empty
+                        <p style="color: red">No meeting(s) assigned to {{ $department->name }} yet.</p>
+                        @endforelse
+                    </ol>
+                </div>
+            </div>
 
 <!-- Container -->
 <div class="container my-8 mx-auto md:px-6">
@@ -170,5 +173,9 @@
     </div>
   </section>
   <!-- Section: End Department Sub Staffs Section -->
+</div>
+</div>
+</div>
+</div>
 </x-backend-main>
 </x-admin>

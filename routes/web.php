@@ -503,6 +503,8 @@ Route::prefix('librarian')->name('librarian.')->namespace('Librarian')->group(fu
 	Route::get('/search-book','LibrarianController@book')->name('search.book');
 	// Search Student
 	Route::get('/search-student','IssuedBookUpdateController@student')->name('search.student');
+	// Search Book Author
+	Route::get('/book-author','LibrarianController@bookAuthor')->name('book.author');
 });//END OF LIBRARIAN ROUTES
 
 //START OF MATRON ROUTES

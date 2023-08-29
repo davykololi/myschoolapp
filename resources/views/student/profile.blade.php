@@ -252,7 +252,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div><label>{{ $results }}</label></div>
-                <button type="submit" class="bg-green-800 border-2 border-white text-white px-2 rounded-md">Download</button>
+                <button type="submit" class="pdf">
+                    <pdf-svg/>
+                </button>
             </div>
         </div>
     </form>
