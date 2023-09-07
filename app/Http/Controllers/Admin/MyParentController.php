@@ -23,6 +23,7 @@ class MyParentController extends Controller
     public function __construct(ParentService $parentService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->parentService = $parentService;
     }

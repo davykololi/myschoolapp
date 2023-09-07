@@ -1,31 +1,30 @@
 <?php
 
-namespace App\Imports\ReportCardGrades;
+namespace App\Imports\ReportCardSubjectGrades;
 
-use App\Models\ReportGeneralGrade;
+use App\Models\ReportSubjectGrade;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class CREGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
+class IslamGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
 {
-    protected $yearId,$termId,$classId,$examId,$teacherId,$creId;
+    protected $yearId,$termId,$classId,$teacherId,$islamId;
     
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct($yearId,$termId,$classId,$examId,$teacherId,$creId)
+    public function __construct($yearId,$termId,$classId,$teacherId,$islamId)
     {
         $this->yearId = $yearId;
         $this->termId = $termId;
         $this->classId = $classId;
-        $this->examId = $examId;
         $this->teacherId = $teacherId;
-        $this->creId = $creId;
+        $this->islamId = $islamId;
     }
 
     public function uniqueBy()
@@ -40,7 +39,7 @@ class CREGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,Wit
     */
     public function model(array $row)
     {
-        return new ReportGeneralGrade([
+        return new ReportSubjectGrade([
             //
             'grade' => $row['grade'],
             'grade_no' => $row['grade_no'],
@@ -50,9 +49,8 @@ class CREGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,Wit
             'year_id' => $this->yearId,
             'term_id' => $this->termId,
             'class_id' => $this->classId,
-            'exam_id' => $this->examId,
             'teacher_id' => $this->teacherId,
-            'subject_id' => $this->creId,
+            'subject_id' => $this->islamId,
         ]);
     }
 

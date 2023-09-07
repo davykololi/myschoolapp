@@ -18,6 +18,7 @@ class StaffTwoFAController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:staff');
+        $this->middleware('banned');
     }
 
     /**

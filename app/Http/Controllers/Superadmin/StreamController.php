@@ -30,6 +30,7 @@ class StreamController extends Controller
     public function __construct(StreamService $streamService, TeacherService $teacherService, ClassService $classService, StreamSecService $streamSecService, AssignmentService $assignmentService, ExamService $examService, MeetingService $meetingService, RewardService $rewardService, SubjectService $subjectService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->streamService = $streamService;
         $this->teacherService = $teacherService;

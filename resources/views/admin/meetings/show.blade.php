@@ -46,6 +46,18 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <strong>Starting Time:</strong>
+            {{ $meeting->start_at }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Ending Time:</strong>
+            {{ $meeting->end_at }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
             <strong>{{ $meeting->name }} Teachers:</strong>
             <ol>
             @forelse($meeting->teachers as $teacher)

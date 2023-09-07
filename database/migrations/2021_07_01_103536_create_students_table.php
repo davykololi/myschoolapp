@@ -38,6 +38,8 @@ class CreateStudentsTable extends Migration
             $table->foreignId('admin_id')->constrained();
             $table->foreignId('parent_id')->constrained();
             $table->string('password');
+            $table->boolean('is_banned')->default(false);
+            $table->string('lock')->default('enabled');
             $table->timestamps();
         });
     }

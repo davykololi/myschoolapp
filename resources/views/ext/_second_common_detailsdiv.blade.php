@@ -26,8 +26,8 @@
                         <div class="w-full md:w-1/3 lg:w-1/3 px-2">
                             <div class="relative w-full mb-3">
                                 <label class="form-input-label-one">Profession:</label>
-                                <input value="{{ old('designation') }}" class="form-input-one" placeholder="designation" name="Designation" type="text">
-                                @error('address')
+                                <input type="text"  name="designation" value="{{ old('designation') }}" class="form-input-one" placeholder="Designation">
+                                @error('designation')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>

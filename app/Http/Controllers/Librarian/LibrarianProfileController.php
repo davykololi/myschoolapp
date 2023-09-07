@@ -16,6 +16,7 @@ class LibrarianProfileController extends Controller
     public function __construct()
     {
         $this->middleware('auth:librarian');
+        $this->middleware('banned');
         $this->middleware('librarian2fa');
     }
     

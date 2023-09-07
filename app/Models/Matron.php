@@ -24,7 +24,7 @@ class Matron extends Authenticatable
     *@var array
     */
     protected $table = 'matrons';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','role','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password','is_banned'];
     protected $appends = ['age'];
     /**
     * The attributes that should be hidden for arrays.

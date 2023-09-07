@@ -10,6 +10,7 @@ use App\Models\Exam;
 use App\Models\MyClass;
 use App\Models\Gallery;
 use App\Models\ReportComment;
+use App\Models\ReportSubjectGrade;
 use Illuminate\Database\Eloquent\Model;
 
 class School extends Model
@@ -228,6 +229,11 @@ class School extends Model
     public function report_comments()
     {
         return $this->hasMany(ReportComment::class,'school_id','id');
+    }
+
+    public function report_subject_grades()
+    {
+        return $this->hasMany(ReportSubjectGrade::class,'school_id','id');
     }
 
     public function males()

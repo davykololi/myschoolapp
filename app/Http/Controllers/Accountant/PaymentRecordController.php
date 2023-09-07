@@ -24,6 +24,7 @@ class PaymentRecordController extends Controller
     public function __construct(StudentService $studentService)
     {
         $this->middleware('auth:accountant');
+        $this->middleware('banned');
         $this->middleware('accountant2fa');
         $this->studentService = $studentService;
     }

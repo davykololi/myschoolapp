@@ -24,14 +24,6 @@ return new class extends Migration
             $table->foreign('term_id')->references('id')->on('terms')->onDelete('cascade');
             $table->bigInteger('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
-            $table->bigInteger('exam_id')->unsigned();
-            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->bigInteger('teacher_id')->unsigned();
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
-            $table->bigInteger('subject_id')->unsigned()->nullable();
-            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
-            $table->bigInteger('school_id')->unsigned()->nullable();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->timestamps();
         });
     }

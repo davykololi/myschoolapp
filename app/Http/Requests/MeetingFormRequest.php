@@ -29,15 +29,19 @@ class MeetingFormRequest extends FormRequest
                 //
                 'name' => 'required|string|max:100',
                 'agenda' => 'required|string|max:100',
-                'date' => 'required|date',
+                'date' => 'required|string',
                 'venue' => 'required|string|max:100',
+                'start_at' => 'required|string',
+                'end_at' => 'required|string',
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
                 'agenda' => 'required|string|max:100',
-                'date' => 'required|date',
+                'date' => 'required|string',
                 'venue' => 'required|string|max:100',
+                'start_at' => 'required|string',
+                'end_at' => 'required|string',
             ];
         }
     }
@@ -52,6 +56,8 @@ class MeetingFormRequest extends FormRequest
                 'agenda.required' => 'The agenda of the meeting is required',
                 'date.required' => 'The date for the meeting is required',
                 'venue.required' => 'The venue for the meeting is required',
+                'start_at.required' => 'The time the meeting starts is required',
+                'end_at.required' => 'The time the meeting ends is required',
             ];
         } else {
             return [
@@ -59,7 +65,9 @@ class MeetingFormRequest extends FormRequest
                 'name.required' => 'The name of the meeting is required',
                 'agenda.required' => 'The agenda of the meeting is required',
                 'date.required' => 'The date for the meeting is required',
-                'venue.required' => 'The venue for the meeting is required', 
+                'venue.required' => 'The venue for the meeting is required',
+                'start_at.required' => 'The time the meeting starts is required',
+                'end_at.required' => 'The time the meeting ends is required', 
             ];
         }
     }

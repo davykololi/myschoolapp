@@ -30,7 +30,7 @@ class AdminTableSeeder extends Seeder
         		'image' => 'image.png',
         		'gender' => 'Male',
         		'id_no' => '26789065',
-                'dob' => '1979-09-08',
+                'dob' => '08/09/1979',
         		'emp_no'=> '905674325',
         		'designation' => 'Engineer',
         		'address' => 'P.P Box 9678, Bungoma',

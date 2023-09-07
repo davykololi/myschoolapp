@@ -22,7 +22,7 @@ class MyParent extends Authenticatable implements Searchable
     *@var array
     */
     protected $table = 'parents';
-    protected $fillable = ['salutation','name','email','image','id_no','phone_no','school_id','password'];
+    protected $fillable = ['salutation','name','email','image','id_no','phone_no','school_id','password','is_banned','lock'];
 
     /**
     * The attributes that should be hidden for arrays.
@@ -74,6 +74,6 @@ class MyParent extends Authenticatable implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','students');
+        return $query->with('school','children');
     }
 }

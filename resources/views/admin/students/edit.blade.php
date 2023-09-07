@@ -22,8 +22,10 @@
                             <option value="1">{{__('Active')}}</option>
                             <option value="0">{{__('Inactive')}}</option>
                         </select>
-                    </div>
-                    @include('ext._submit_update_button')
+                    </div>                
+                        <button type="submit" class="bg-gray-900 md:hover:bg-white md:hover:text-black md:hover:border-blue-800 items-center text-white px-6 py-0.5 border-2 mt-2 border-white rounded-md" {{ $student->lock }}>
+                            Update
+                        </button> 
                 </form>
             </div>
         </div>

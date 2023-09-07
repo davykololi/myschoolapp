@@ -19,6 +19,7 @@ class FieldController extends Controller
     public function __construct(FieldService $fieldService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->fieldService = $fieldService;
     }

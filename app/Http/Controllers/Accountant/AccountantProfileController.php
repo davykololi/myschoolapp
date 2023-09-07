@@ -16,6 +16,7 @@ class AccountantProfileController extends Controller
     public function __construct()
     {
         $this->middleware('auth:accountant');
+        $this->middleware('banned');
         $this->middleware('accountant2fa');
     }
     

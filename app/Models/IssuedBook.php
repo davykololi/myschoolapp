@@ -37,4 +37,27 @@ class IssuedBook extends Model
 
         return $returnDate;
     }
+
+    public function getConvertedIssuedDateAttribute()
+    {
+        $convertedIssuedDate = Carbon::createFromFormat('d/m/Y',$this->issued_date)->format('Y-m-d');
+        $newIssuedDate = Carbon::parse($convertedIssuedDate);
+
+        return $newIssuedDate;
+    }
+
+    public function getConvertedReturnDateAttribute()
+    {
+        $convertedReturnDate = Carbon::createFromFormat('d/m/Y',$this->return_date)->format('Y-m-d');
+        $newReturnDate = Carbon::parse($convertedReturnDate);
+
+        return $newReturnDate;
+    }
+
+    public function getTimeDifferenceAttribute()
+    {
+        $timeDifference = $this->converted_issued_date->diffForHumans($this->converted_return_date);
+
+        return $timeDifference;
+    }
 }

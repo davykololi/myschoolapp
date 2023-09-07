@@ -121,7 +121,7 @@
                                 <label class="form-input-label-one" htmlfor="grid-password">
                                     Email
                                 </label>
-                                <input type="email" class="form-input-one" placeholder="example@gmail.com">
+                                <input type="email" name="email" class="form-input-one" placeholder="example@gmail.com">
                                 @error('email')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror

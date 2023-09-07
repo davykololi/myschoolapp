@@ -29,7 +29,7 @@ class Accountant extends Authenticatable implements Searchable, BannableContract
     *@var array
     */
     protected $table = 'accountants';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history','role','school_id','password'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history','role','school_id','password','is_banned'];
     protected $appends = ['age'];
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> AccountantsEnum::class];
     /**

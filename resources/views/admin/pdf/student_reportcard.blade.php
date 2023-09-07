@@ -12,7 +12,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h2 class="title">
-                            <u style="font-family: impact">{{$title}}</u>
+                            <u>{{$title}}</u>
                         </h2>
                         <p style="font-size: 20px;margin-bottom: 12px;text-transform: uppercase;">
                             <u>{{$year->year}} {{$term->name}}</u>
@@ -50,7 +50,16 @@
                                     {{ $examThreeMark->mathematics ?? '-' }}
                                     @if(!is_null($examThreeMathsGrade)){{ $examThreeMathsGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($mathsAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($mathsAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'Mathematics') && ($grade->from_mark <= round($mathsAvg,0)) && ($grade->to_mark >= round($mathsAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th class="table-left"><b>ENGLISH</b></th>
@@ -66,7 +75,16 @@
                                     {{ $examThreeMark->english ?? '-' }}
                                     @if(!is_null($examThreeEnglishGrade)){{ $examThreeEnglishGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($engAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($engAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'English') && ($grade->from_mark <= round($engAvg,0)) && ($grade->to_mark >= round($engAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th class="table-left"><b>KISWAHILI</b></th>
@@ -82,7 +100,16 @@
                                     {{ $examThreeMark->kiswahili ?? '-' }}
                                     @if(!is_null($examThreeKiswGrade)){{ $examThreeKiswGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($kiswAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($kiswAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'Kiswahili') && ($grade->from_mark <= round($kiswAvg,0)) && ($grade->to_mark >= round($kiswAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
 
                             @if(!is_null(($examOneMark->chemistry) || !is_null($examTwoMark->chemistry) || !is_null($examThreeMark->chemistry) ))
@@ -100,7 +127,16 @@
                                     {{ $examThreeMark->chemistry ?? '-' }}
                                     @if(!is_null($examThreeChemGrade)){{ $examThreeChemGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($chemAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($chemAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'Chemistry') && ($grade->from_mark <= round($chemAvg,0)) && ($grade->to_mark >= round($chemAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -120,7 +156,16 @@
                                     {{ $examThreeMark->biology ?? '-' }}
                                     @if(!is_null($examThreeBioGrade)){{ $examThreeBioGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($bioAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($bioAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'Biology') && ($grade->from_mark <= round($bioAvg,0)) && ($grade->to_mark >= round($bioAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -140,7 +185,16 @@
                                     {{ $examThreeMark->physics ?? '-' }}
                                     @if(!is_null($examThreePhysicsGrade)){{ $examThreePhysicsGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($physicsAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($physicsAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'Physics') && ($grade->from_mark <= round($physicsAvg,0)) && ($grade->to_mark >= round($physicsAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -160,7 +214,16 @@
                                     {{ $examThreeMark->cre ?? '-' }}
                                     @if(!is_null($examThreeCREGrade)){{ $examThreeCREGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($creAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($creAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'CRE') && ($grade->from_mark <= round($creAvg,0)) && ($grade->to_mark >= round($creAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -180,7 +243,16 @@
                                     {{ $examThreeMark->islam ?? '-' }}
                                     @if(!is_null($examThreeIslamGrade)){{ $examThreeIslamGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($islamAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($islamAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'Islam') && ($grade->from_mark <= round($islamAvg,0)) && ($grade->to_mark >= round($islamAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -200,7 +272,16 @@
                                     {{ $examThreeMark->history ?? '-' }}
                                     @if(!is_null($examThreeHistGrade)){{ $examThreeHistGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($histAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($histAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'History') && ($grade->from_mark <= round($histAvg,0)) && ($grade->to_mark >= round($histAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -220,7 +301,16 @@
                                     {{ $examThreeMark->ghc ?? '-' }}
                                     @if(!is_null($examThreeGHCGrade)){{ $examThreeGHCGrade }}@endif
                                 </td>
-                                <td class="table-left">{{ round($ghcAvg,1) ? : null ?? '-' }}</td>
+                                <td class="table-left">
+                                    {{ round($ghcAvg,1) ? : null ?? '-' }}
+                                    @if(!empty($reportSubjectGrades))
+                                    @foreach($reportSubjectGrades as $grade)
+                                    @if(($grade->subject->name === 'GHC') && ($grade->from_mark <= round($ghcAvg,0)) && ($grade->to_mark >= round($ghcAvg,0)))
+                                    {{ $grade->grade }}
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                </td>
                             </tr>
                             @else
                             @endif 
@@ -246,7 +336,16 @@
                                     </b>
                                 </td>
                                 <td class="table-left">
-                                    <b>{{ round($overalTotalAvg/5,1) }}</b>
+                                    <b>
+                                        {{ round($overalTotalAvg/5,1) }}
+                                        @if(!empty($reportGeneralGrades))
+                                        @foreach($reportGeneralGrades as $genGrade)
+                                        @if(($genGrade->from_mark <= round($overalTotalAvg/5,0)) && ($genGrade->to_mark >= round($overalTotalAvg/5,0)))
+                                        {{ $genGrade->grade }}
+                                        @endif
+                                        @endforeach
+                                        @endif
+                                    </b>
                                 </td>
                             </tr>
                             <tr>
@@ -254,7 +353,7 @@
                                 <td class="table-left"></td>
                                 <td class="table-left"></td>
                                 <td class="table-left"></td>
-                                <td class="table-left"><b>{{ round($overalTotalAvg,0) }}</b></td>
+                                <td class="table-left"><b>{{ round($overalTotalAvg,0) }}/500</b></td>
                             </tr>
                             <tr>
                                 <th class="table-left"><b>GPA</b></th>
@@ -284,7 +383,7 @@
                             @endif
                         </span>
                     </div>
-                    <div><p>General Comment: <i>{{ $reportCardComment }}.</i></p></div>
+                    <div><p><b>General Comment:</b> <i>{{ $reportCardComment }}.</i></p></div>
                     <div class="col-lg-12">
                         <p style="width: 100%;line-height: 0.5cm;line-height: 0.7cm;">
                             <b>Recommendation:</b> ..................................................................................................................................

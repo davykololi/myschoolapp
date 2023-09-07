@@ -20,6 +20,7 @@ class SchoolController extends Controller
     public function __construct(SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->schoolService = $schoolService;
     }

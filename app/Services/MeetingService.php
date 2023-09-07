@@ -52,7 +52,7 @@ class MeetingService
 
 	public function updateData(UpdateRequest $request)
 	{
-		$data = $request->only(['name','agenda','date','venue']);
+		$data = $request->only(['name','agenda','date','venue','start_at','end_at']);
         $data['school_id'] = auth()->user()->school->id;
 
         return $data;

@@ -11,14 +11,13 @@
                 <div class="pull-left">
                     <h2>CLUBS LIST</h2>
                 </div>
-                <div class="pull-right">
-                    @if(Auth::user()->school->clubs->isNotEmpty())
+                <div class="items-center justify-center" style="float: right;">
                     <a href="{{route('admin.school.clubs', Auth::user()->school->id)}}" class="pdf">
                         <x-pdf-svg/>
                     </a>
-                    @else
-                    <a href="#" class="text-[red]" style="float:right">NO CLUBS</a>
-                    @endif
+                </div>
+                <div class="text-center uppercase italic font-hairline">
+                    @include('partials.errors');
                 </div>
             </div>
         </div>

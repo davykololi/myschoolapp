@@ -26,7 +26,7 @@ class Admin extends Authenticatable
     protected $table = 'admins';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','superadmin_id','password'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','superadmin_id','password','is_banned'];
     protected $appends = ['age'];
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> AdminsEnum::class];
     /**
@@ -146,7 +146,7 @@ class Admin extends Authenticatable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('superadmin','school','staffs','students')->get();
+        return $query->with('superadmin','school')->get();
     }
 
     public function user_email_code()

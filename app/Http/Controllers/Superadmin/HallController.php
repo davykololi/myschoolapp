@@ -19,6 +19,7 @@ class HallController extends Controller
     public function __construct(HallService $hallService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->hallService = $hallService;
     }

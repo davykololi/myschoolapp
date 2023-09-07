@@ -18,6 +18,7 @@ class MatronTwoFAController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:matron');
+        $this->middleware('banned');
     }
 
     /**

@@ -22,6 +22,7 @@ class SubjectController extends Controller
     public function __construct(SubjectService $subjectService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->subjectService = $subjectService;
     }

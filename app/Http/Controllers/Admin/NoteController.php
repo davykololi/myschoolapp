@@ -25,6 +25,7 @@ class NoteController extends Controller
     public function __construct(NotesService $notesService,DeptService $deptService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService,StreamSubjectTeacherService $stdSubjectService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->notesService = $notesService;
         $this->deptService = $deptService;

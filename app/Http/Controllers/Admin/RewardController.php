@@ -24,6 +24,7 @@ class RewardController extends Controller
     public function __construct(StreamService $streamService,DeptService $deptService,RewardService $rewardService,TeacherService $teacherService,StudentService $studentService,StaffService $staffService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->streamService = $streamService;
         $this->deptService = $deptService;

@@ -24,6 +24,8 @@ use App\Models\ClassTotal;
 use App\Models\StreamTotal;
 use App\Models\Grade;
 use App\Models\GeneralGrade;
+use App\Models\ReportSubjectGrade;
+use App\Models\ReportGeneralGrade;
 use App\Models\ReportComment;
 use App\Enums\GradeTypeEnum;
 use App\Charts\MarksChart;
@@ -47,6 +49,7 @@ class PdfController extends Controller
     public function __construct(StudentService $studentService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
     }
 
@@ -55,7 +58,7 @@ class PdfController extends Controller
         $students = $school->students()->with('stream','school','dormitory')->inRandomOrder()->get();
         $males = $school->males();
         $females = $school->females();
-        $title = 'School Students List';
+        $title = 'Students List';
         $pdf = PDF::loadView('admin.pdf.school_students',compact('school','students','title','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -70,7 +73,7 @@ class PdfController extends Controller
     public function schoolTeachers(School $school)
     {
         $teachers = $school->teachers()->with('streams','school')->inRandomOrder()->get();
-        $title = 'School Teachers List';
+        $title = 'Teachers List';
         $pdf = PDF::loadView('admin.pdf.school_teachers',compact('school','teachers','title'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -143,6 +146,10 @@ class PdfController extends Controller
     {
         $clubs = $school->clubs()->with('school','teachers','staffs','students')->get();
         $title = $school->name." ".'Clubs';
+
+        if($clubs->isEmpty()){
+            return back()->withErrors($school->name." "."has no clubs at the moment!");
+        }
 
         $pdf = PDF::loadView('admin.pdf.school_clubs',['school'=>$school,'clubs'=>$clubs,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
@@ -516,8 +523,10 @@ class PdfController extends Controller
         $school = auth()->user()->school;
         $streamStudents = $stream->students()->with('class','school')->get();
 
+        $streamMiniscore = (round($maths->avg(),1) + round($english->avg(),1) + round($kiswahili->avg(),1) + round($chemistry->avg(),1) + round($biology->avg(),1) + round($physics->avg(),1) + round($cre->avg(),1) + round($islam->avg(),1) + round($history->avg(),1) + round($ghc->avg(),1))/5;
+
         $title = $term->name." ".$stream->name." ".$exam->name." ".'Results';
-        $pdf = PDF::loadView('admin.pdf.stream_marksheet',compact('marks','examGrades','generalGrades','exam','stream','school','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','ghc','streamStudents','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a3','landscape');
+        $pdf = PDF::loadView('admin.pdf.stream_marksheet',compact('marks','examGrades','generalGrades','exam','stream','school','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','ghc','streamStudents','males','females','streamMiniscore'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a3','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -763,9 +772,13 @@ class PdfController extends Controller
         $examThreeGenGrade = examThreeGeneralGrade($examThreeMark,$examThree,$examThreeTotal);
         //General Report Card Comment
         $reportCardComment = reportCardComment($yearId,$termId,$stream,$year,$term,$overalTotalAvg);
+        //Report Card Subject Average Grades
+        $reportSubjectGrades = ReportSubjectGrade::with('class','year','term','subject')->where(['term_id'=>$termId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
+        //Report Card General Grades
+        $reportGeneralGrades = ReportGeneralGrade::with('class','year','term')->where(['term_id'=>$termId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
         $streamStudents = $stream->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','marks')->get();
 
-        $pdf = PDF::loadView('admin.pdf.student_reportcard',compact('school','title','examOne','examTwo','examThree','examOneMark','examTwoMark','examThreeMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','ghcAvg','year','term','overalTotalAvg','openingDate','closingDate','overalPosition','streamPosition','stream','examOneTotal','examTwoTotal','examThreeTotal','name','markName','examOneMathsGrade','examOneEnglishGrade','examOneKiswGrade','examOneChemGrade','examOneBioGrade','examOnePhysicsGrade','examOneCREGrade','examOneIslamGrade','examOneHistGrade','examOneGHCGrade','examTwoMathsGrade','examTwoEnglishGrade','examTwoKiswGrade','examTwoChemGrade','examTwoBioGrade','examTwoPhysicsGrade','examTwoCREGrade','examTwoIslamGrade','examTwoHistGrade','examTwoGHCGrade','examThreeMathsGrade','examThreeEnglishGrade','examThreeKiswGrade','examThreeChemGrade','examThreeBioGrade','examThreePhysicsGrade','examThreeCREGrade','examThreeIslamGrade','examThreeHistGrade','examThreeGHCGrade','examOneGenGrade','examTwoGenGrade','examThreeGenGrade','overalGPA','reportCardComment','mark','streamStudents'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.student_reportcard',compact('school','title','examOne','examTwo','examThree','examOneMark','examTwoMark','examThreeMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','ghcAvg','year','term','overalTotalAvg','openingDate','closingDate','overalPosition','streamPosition','stream','examOneTotal','examTwoTotal','examThreeTotal','name','markName','examOneMathsGrade','examOneEnglishGrade','examOneKiswGrade','examOneChemGrade','examOneBioGrade','examOnePhysicsGrade','examOneCREGrade','examOneIslamGrade','examOneHistGrade','examOneGHCGrade','examTwoMathsGrade','examTwoEnglishGrade','examTwoKiswGrade','examTwoChemGrade','examTwoBioGrade','examTwoPhysicsGrade','examTwoCREGrade','examTwoIslamGrade','examTwoHistGrade','examTwoGHCGrade','examThreeMathsGrade','examThreeEnglishGrade','examThreeKiswGrade','examThreeChemGrade','examThreeBioGrade','examThreePhysicsGrade','examThreeCREGrade','examThreeIslamGrade','examThreeHistGrade','examThreeGHCGrade','examOneGenGrade','examTwoGenGrade','examThreeGenGrade','overalGPA','reportCardComment','mark','streamStudents','reportSubjectGrades','reportGeneralGrades'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
 
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();

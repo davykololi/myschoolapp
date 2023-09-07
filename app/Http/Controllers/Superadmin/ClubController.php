@@ -23,6 +23,7 @@ class ClubController extends Controller
     public function __construct(ClubService $clubService,StudentService $studentService,TeacherService $teacherService,StaffService $staffService,MeetingService $meetingService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->clubService = $clubService;
         $this->studentService = $studentService;

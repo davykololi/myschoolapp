@@ -37,6 +37,7 @@
         "spatie/laravel-html": "^3.2",
         "spatie/laravel-searchable": "^1.11",
         "technohive-kenya/laravel-bulk-sms": "dev-master",
+        "wendelladriel/laravel-validated-dto": "^2.11",
         "yazan/laravel-settings": "^1.0",
         "yoeunes/toastr": "^2.3"
     },

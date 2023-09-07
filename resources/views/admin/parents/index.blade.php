@@ -56,7 +56,7 @@
                                     <a href="{{ route('admin.parents.edit', $parent->id) }}" class="edit">
                                         <x-edit-svg/>
                                     </a>
-                                    <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                    <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')" {{ $parent->lock }}>
                                         <x-delete-svg/>
                                     </button>
                                 </form>

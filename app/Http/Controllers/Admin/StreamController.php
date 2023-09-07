@@ -23,6 +23,8 @@ class StreamController extends Controller
     public function __construct(StreamService $streamService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
+        $this->middleware('admin2fa');
         $this->streamService = $streamService;
     }
     

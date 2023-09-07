@@ -18,6 +18,7 @@ class MatronController extends Controller
     public function __construct(SchRepo $schRepo,DormRepo $dormRepo)
     {
         $this->middleware('auth:matron');
+        $this->middleware('banned');
         $this->middleware('matron2fa');
         $this->schRepo = $schRepo;
         $this->dormRepo = $dormRepo;

@@ -17,6 +17,7 @@ class AttachMeetingController extends Controller
     public function __construct(DormRepo $dormRepo)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->dormRepo = $dormRepo;
     }
 

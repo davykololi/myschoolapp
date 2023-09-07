@@ -17,6 +17,7 @@ class SuperadminAttachTeacherController extends Controller
     public function __construct()
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
     }
     public function attachTeacher(Request $request,$id)
     {

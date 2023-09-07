@@ -17,6 +17,7 @@ class AttachExamController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
     }
     public function attachExam(Request $request,$id)
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Imports\ReportCardGrades;
+namespace App\Imports\ReportCardSubjectGrades;
 
-use App\Models\ReportGeneralGrade;
+use App\Models\ReportSubjectGrade;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
@@ -11,19 +11,18 @@ use Maatwebsite\Excel\Concerns\ToModel;
 
 class PhysicsGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
 {
-    protected $yearId,$termId,$classId,$examId,$teacherId,$physicsId;
+    protected $yearId,$termId,$classId,$teacherId,$physicsId;
     
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct($yearId,$termId,$classId,$examId,$teacherId,$physicsId)
+    public function __construct($yearId,$termId,$classId,$teacherId,$physicsId)
     {
         $this->yearId = $yearId;
         $this->termId = $termId;
         $this->classId = $classId;
-        $this->examId = $examId;
         $this->teacherId = $teacherId;
         $this->physicsId = $physicsId;
     }
@@ -40,7 +39,7 @@ class PhysicsGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts
     */
     public function model(array $row)
     {
-        return new ReportGeneralGrade([
+        return new ReportSubjectGrade([
             //
             'grade' => $row['grade'],
             'grade_no' => $row['grade_no'],
@@ -50,7 +49,6 @@ class PhysicsGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts
             'year_id' => $this->yearId,
             'term_id' => $this->termId,
             'class_id' => $this->classId,
-            'exam_id' => $this->examId,
             'teacher_id' => $this->teacherId,
             'subject_id' => $this->physicsId,
         ]);

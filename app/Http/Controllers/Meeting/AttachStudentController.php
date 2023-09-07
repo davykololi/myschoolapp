@@ -17,6 +17,7 @@ class AttachStudentController extends Controller
     public function __construct(MeetingRepo $meetingRepo)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->meetingRepo = $meetingRepo;
     }
 

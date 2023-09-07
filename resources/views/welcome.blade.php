@@ -7,8 +7,12 @@
         <!-- Item 1 -->
         @if(!empty($galleries))
         @foreach($galleries as $key => $gallery)
-        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+        <div class="hidden duration-700 ease-in-out gfg" data-carousel-item>
             <img src="{{ $gallery->image_url }}" class="absolute block w-full md:h-[480px]" alt="$gallery->title }}">
+            <div class="text-container">
+                <h3 class="uppercase font-extrabold text-3xl text-center">{{ $gallery->title }}</h3>
+                <p class="text-center">{{ $gallery->description }}</p>
+            </div>
         </div>
         @endforeach
         @endif

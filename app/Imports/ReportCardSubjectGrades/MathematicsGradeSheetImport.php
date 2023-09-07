@@ -1,31 +1,30 @@
 <?php
 
-namespace App\Imports\ReportCardGrades;
+namespace App\Imports\ReportCardSubjectGrades;
 
-use App\Models\ReportGeneralGrade;
+use App\Models\ReportSubjectGrade;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class GHCGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
+class MathematicsGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
 {
-    protected $yearId,$termId,$classId,$examId,$teacherId,$ghcId;
+    protected $yearId,$termId,$classId,$teacherId,$mathsId;
     
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct($yearId,$termId,$classId,$examId,$teacherId,$ghcId)
+    public function __construct($yearId,$termId,$classId,$teacherId,$mathsId)
     {
         $this->yearId = $yearId;
         $this->termId = $termId;
         $this->classId = $classId;
-        $this->examId = $examId;
         $this->teacherId = $teacherId;
-        $this->ghcId = $ghcId;
+        $this->mathsId = $mathsId;
     }
 
     public function uniqueBy()
@@ -40,7 +39,7 @@ class GHCGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,Wit
     */
     public function model(array $row)
     {
-        return new ReportGeneralGrade([
+        return new ReportSubjectGrade([
             //
             'grade' => $row['grade'],
             'grade_no' => $row['grade_no'],
@@ -50,9 +49,8 @@ class GHCGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,Wit
             'year_id' => $this->yearId,
             'term_id' => $this->termId,
             'class_id' => $this->classId,
-            'exam_id' => $this->examId,
             'teacher_id' => $this->teacherId,
-            'subject_id' => $this->ghcId,
+            'subject_id' => $this->mathsId,
         ]);
     }
 

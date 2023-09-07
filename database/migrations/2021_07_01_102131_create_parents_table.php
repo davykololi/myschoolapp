@@ -24,6 +24,8 @@ class CreateParentsTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->boolean('is_banned')->default(false);
+            $table->string('lock')->default('enabled');
             $table->timestamps();
         });
     }

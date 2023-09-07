@@ -22,6 +22,7 @@ class AccountantController extends Controller
     public function __construct(AccService $accService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->accService = $accService;
         $this->schoolService = $schoolService;

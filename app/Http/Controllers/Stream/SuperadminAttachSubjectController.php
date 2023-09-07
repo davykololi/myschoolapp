@@ -17,6 +17,7 @@ class SuperadminAttachSubjectController extends Controller
     public function __construct()
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
     }
 
     public function attachSubject(Request $request,$id)

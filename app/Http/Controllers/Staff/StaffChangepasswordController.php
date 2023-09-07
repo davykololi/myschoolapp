@@ -21,6 +21,7 @@ class StaffChangepasswordController extends Controller
     public function __construct()
     {
         $this->middleware('auth:staff');
+        $this->middleware('banned');
         $this->middleware('staff2fa');
     }
 

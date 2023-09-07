@@ -17,6 +17,7 @@ class AttachSubjectController extends Controller
     public function __construct(ExamRepo $examRepo)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->examRepo = $examRepo;
     }
 

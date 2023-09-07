@@ -1,31 +1,30 @@
 <?php
 
-namespace App\Imports\ReportCardGrades;
+namespace App\Imports\ReportCardSubjectGrades;
 
-use App\Models\ReportGeneralGrade;
+use App\Models\ReportSubjectGrade;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class IslamGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
+class ChemistryGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,WithChunkReading,WithUpserts
 {
-    protected $yearId,$termId,$classId,$examId,$teacherId,$islamId;
+    protected $yearId,$termId,$classId,$teacherId,$chemId;
     
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct($yearId,$termId,$classId,$examId,$teacherId,$islamId)
+    public function __construct($yearId,$termId,$classId,$teacherId,$chemId)
     {
         $this->yearId = $yearId;
         $this->termId = $termId;
         $this->classId = $classId;
-        $this->examId = $examId;
         $this->teacherId = $teacherId;
-        $this->islamId = $islamId;
+        $this->chemId = $chemId;
     }
 
     public function uniqueBy()
@@ -40,7 +39,7 @@ class IslamGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,W
     */
     public function model(array $row)
     {
-        return new ReportGeneralGrade([
+        return new ReportSubjectGrade([
             //
             'grade' => $row['grade'],
             'grade_no' => $row['grade_no'],
@@ -50,9 +49,8 @@ class IslamGradeSheetImport implements ToModel,WithHeadingRow,WithBatchInserts,W
             'year_id' => $this->yearId,
             'term_id' => $this->termId,
             'class_id' => $this->classId,
-            'exam_id' => $this->examId,
             'teacher_id' => $this->teacherId,
-            'subject_id' => $this->islamId,
+            'subject_id' => $this->chemId,
         ]);
     }
 

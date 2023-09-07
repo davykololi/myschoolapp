@@ -31,12 +31,14 @@
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">EMAIL</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">EMAIL</th>
                                     <th scope="col" class="px-2 py-4" width="10%">ID NO.</th>
                                     <th scope="col" class="px-2 py-4" width="10%">EMP NO.</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">ROLE</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">ROLE</th>
                                     <th scope="col" class="px-2 py-4" width="10%">PHONE NO.</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">BANNED</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">STATUS</th>
                                     <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
@@ -65,6 +67,28 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$teacher->phone_no}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        @if($teacher->is_banned == 1)
+                                        <div class="text-[red]">{{ __('YES') }}</div>
+                                        @else
+                                        <div class="text-[green]">{{ __('NO') }}</div>
+                                        @endif
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>
+                                            @if($teacher->is_banned == 0)
+                                            <form action="{{ route('superadmin.teacher.bann',$teacher->id) }}" method="POST">
+                                                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                <button type="submit" class="text-[red]">BANN</button>
+                                            </form>
+                                            @elseif($teacher->is_banned == 1)
+                                            <form action="{{ route('superadmin.teacher.unbann',$teacher->id) }}" method="POST">
+                                                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                <button type="submit" class="text-[green]">LIFT BANN</button>
+                                            </form>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <form action="{{route('superadmin.teachers.destroy',$teacher->id)}}" method="POST" class="flex flex-row">

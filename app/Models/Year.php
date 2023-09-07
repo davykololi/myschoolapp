@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\ReportComment;
+use App\Models\ReportSubjectGrade;
+use App\Models\ReportGeneralGrade;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,9 +36,14 @@ class Year extends Model
         return $this->hasMany('App\Models\GeneralGrade','year_id','id');
     }
 
+    public function report_subject_grades()
+    {
+        return $this->hasMany(ReportSubjectGrade::class,'year_id','id');
+    }
+
     public function report_general_grades()
     {
-        return $this->hasMany('App\Models\ReportGeneralGrade','year_id','id');
+        return $this->hasMany(ReportGeneralGrade::class,'year_id','id');
     }
 
     public function report_comments()

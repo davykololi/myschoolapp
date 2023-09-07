@@ -33,6 +33,7 @@ class CreateAdminsTable extends Migration
             $table->string('phone_no')->nullable();
             $table->longText('history',2000);
             $table->string('role')->default('ordinaryadmin');
+            $table->boolean('is_banned')->default(false);
             $table->bigInteger('school_id')->unsigned();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->bigInteger('superadmin_id')->unsigned();

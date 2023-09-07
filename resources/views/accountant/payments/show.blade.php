@@ -8,7 +8,7 @@
     @include('partials.messages')
     <div class="w-full">
         <div>
-            <h2 class="uppercase text-center font-bold text-2xl mb-4 pt-4">
+            <h2 class="uppercase text-center font-bold text-2xl">
                 {{ $payment->student->full_name}} Payment Details
             </h2>
             <h3 class="uppercase text-left font-hairline text-2xl">

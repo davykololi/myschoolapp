@@ -33,7 +33,7 @@ class Student extends Authenticatable implements Searchable
     *@var array
     */
     protected $table = 'students';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','image','gender','email','role','blood_group','adm_mark','admission_no','phone_no','dob','doa','active','role','school_id','stream_id','intake_id','dormitory_id','admin_id','parent_id','password'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','image','gender','email','role','blood_group','adm_mark','admission_no','phone_no','dob','doa','active','role','school_id','stream_id','intake_id','dormitory_id','admin_id','parent_id','password','is_banned','lock'];
     protected $appends = ['age','full_name','fee_balance'];
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> StudentsEnum::class];
 

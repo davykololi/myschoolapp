@@ -22,6 +22,7 @@ class MatronController extends Controller
     public function __construct(MatService $matService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->matService = $matService;
         $this->schoolService = $schoolService;

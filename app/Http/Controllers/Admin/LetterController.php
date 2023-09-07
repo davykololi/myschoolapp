@@ -17,6 +17,7 @@ class LetterController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
     }
     

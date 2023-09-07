@@ -51,6 +51,15 @@
   .users-2fa-code-resend-link {
     @apply text-slate-100 dark:text-slate-400
   }
+
+  .gfg {
+    @apply mt-0 relative;
+  }
+
+  .text-container {
+    @apply absolute text-white w-full mt-[300px] bg-transparent p-2;
+  }
+
 }
 
 

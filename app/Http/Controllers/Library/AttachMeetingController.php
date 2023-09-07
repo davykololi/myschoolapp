@@ -17,6 +17,7 @@ class AttachMeetingController extends Controller
     public function __construct(LibRepo $libRepo)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->libRepo = $libRepo;
     }
 

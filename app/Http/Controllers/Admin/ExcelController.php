@@ -27,7 +27,8 @@ use App\Exports\ClassMarksExport;
 use App\Exports\StreamMarksExport;
 use App\Imports\SubjectGrades\MarksGradesheetImport;
 use App\Imports\GeneralGradesheetImport;
-use App\Imports\ReportCardGrades\ReportGeneralGradesheetImport;
+use App\Imports\ReportCardSubjectGrades\ReportSubjectGradesheetImport;
+use App\Imports\ReportCardGeneralGrades\ReportGeneralGradesheetImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,6 +44,7 @@ class ExcelController extends Controller
     public function __construct( YearService $yearService, TermService $termService, ExamService $examService, ClassService $classService, StreamService $streamService, TeacherService $teacherService, SubjectService $subjectService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->yearService = $yearService;
         $this->termService = $termService;
@@ -236,17 +238,16 @@ class ExcelController extends Controller
 
         \Excel::import(new ReportcardCommentsSheetImport($yearId,$termId,$classId),request()->file('file'));
 
-        \Session::put('success', $year->year." ".$term->name." ".$class->name." ".'Report Comments Uploaded Successfully');
+        \Session::put('success', $year->year." ".$term->name." ".$class->name." ".'Report Card General Comments Uploaded Successfully');
 
         return back();
     }
 
-    public function reportGeneralGradesStore(Request $request)
+    public function reportSubjectGradesStore(Request $request)
     {
         $yearId = $request->year;
         $termId = $request->term;
         $classId = $request->class;
-        $examId = $request->exam;
         $teacherId = $request->teacher;
 
         $maths = Subject::whereName('Mathematics')->firstOrFail();
@@ -274,16 +275,36 @@ class ExcelController extends Controller
         $class = MyClass::whereId($classId)->first();
         $year = Year::whereId($yearId)->first();
         $term = Term::whereId($termId)->first();
-        $exam = Exam::where(['id'=>$examId,'term_id'=>$termId,'year_id'=>$yearId])->first();
         $requestedFile = request()->file('file');
 
-        if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null) || ($exam === null) || (empty($requestedFile))){
+        if(($yearId === null) || ($termId === null) || ($classId === null) || (empty($requestedFile))){
             return back()->withErrors('Please fill in the required details before you proceed!');
         } 
 
-        \Excel::import(new ReportGeneralGradesheetImport($yearId,$termId,$classId,$exam,$teacherId,$mathsId,$englishId,$kiswId,$chemId,$bioId,$physicsId,$creId,$islamId,$histId,$ghcId),$requestedFile);
+        \Excel::import(new ReportSubjectGradesheetImport($yearId,$termId,$classId,$teacherId,$mathsId,$englishId,$kiswId,$chemId,$bioId,$physicsId,$creId,$islamId,$histId,$ghcId),$requestedFile);
 
-        \Session::put('success', $term->name." ".$class->name." ".$exam->name." ".'Report Card Subject Agrecade Grades Uploaded Successfully');
+        \Session::put('success', $term->name." ".$class->name." ".'Report Card Subject Average Grades Uploaded Successfully');
+
+        return back();
+    }
+
+    public function reportGeneralGradesStore(Request $request)
+    {
+        $yearId = $request->year;
+        $termId = $request->term;
+        $classId = $request->class;
+        
+        $class = MyClass::where('id',$classId)->first();
+        $year = Year::where('id',$yearId)->first();
+        $term = Term::where('id',$termId)->first();
+
+        if(($yearId === null) || ($termId === null) || ($classId === null)){
+            return back()->withErrors('Please fill in the required details before you proceed!');
+        } 
+
+        \Excel::import(new ReportGeneralGradesheetImport($yearId,$termId,$classId),request()->file('file'));
+
+        \Session::put('success', $year->year." ".$term->name." ".$class->name." ".'Report Card General Grades Uploaded Successfully');
 
         return back();
     }

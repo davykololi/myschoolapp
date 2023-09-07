@@ -19,6 +19,7 @@ class IntakeController extends Controller
     public function __construct( IntakeService $intakeService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->intakeService = $intakeService;
     }

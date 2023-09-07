@@ -27,6 +27,7 @@ class StudentController extends Controller
     public function __construct( ClubRepo $clubRepo,TeacherRepo $teacherRepo,StreamRepo $streamRepo,SubjectRepo $subjectRepo,ClassSubjectRepo $classSubjectRepo)
     {
         $this->middleware('auth:student');
+        $this->middleware('banned');
         $this->middleware('student2fa');
         $this->clubRepo = $clubRepo;
         $this->teacherRepo = $teacherRepo;

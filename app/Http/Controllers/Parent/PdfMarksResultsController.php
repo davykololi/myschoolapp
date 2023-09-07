@@ -23,6 +23,7 @@ class PdfMarksResultsController extends Controller
     public function __construct()
     {
         $this->middleware('auth:parent');
+        $this->middleware('banned');
     }
     /**
      * Handle the incoming request.

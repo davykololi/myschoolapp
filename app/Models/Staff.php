@@ -25,7 +25,7 @@ class Staff extends Authenticatable implements Searchable
     *@var array
     */
     protected $table = 'staffs';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','role','blood_group','image','gender','email','emp_no','id_no','dob','designation','address','phone_no','role','history','school_id','password','admin_id'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','role','blood_group','image','gender','email','emp_no','id_no','dob','designation','address','phone_no','role','history','school_id','password','superadmin_id','is_banned'];
     protected $appends = ['age'];
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> StaffsEnum::class];
 

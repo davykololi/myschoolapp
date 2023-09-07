@@ -52,7 +52,7 @@
                                         <div>{{$meeting->agenda}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('admin.meetings.destroy',$meeting->id)}}" method="POST">
+                                        <form action="{{route('admin.meetings.destroy',$meeting->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
                                             <a href="{{ route('admin.meetings.show', $meeting->id) }}" class="show">

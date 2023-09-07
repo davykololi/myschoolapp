@@ -26,6 +26,7 @@ class AssignmentController extends Controller
     public function __construct(AssignmentService $assignmentService,SchoolService $schoolService,StudentService $studentService,StreamService $streamService,StaffService $staffService,TeacherService $teacherService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->assignmentService = $assignmentService;
         $this->schoolService = $schoolService;

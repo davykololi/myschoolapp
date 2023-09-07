@@ -23,6 +23,7 @@ class LibrarianController extends Controller
     public function __construct(LibrnService $librnService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->librnService = $librnService;
         $this->schoolService = $schoolService;

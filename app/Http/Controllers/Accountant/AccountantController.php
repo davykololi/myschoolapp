@@ -20,6 +20,7 @@ class AccountantController extends Controller
     public function __construct(StudentService $studentService, StreamService $streamService)
     {
         $this->middleware('auth:accountant');
+        $this->middleware('banned');
         $this->middleware('accountant2fa');
         $this->studentService = $studentService;
         $this->streamService = $streamService;

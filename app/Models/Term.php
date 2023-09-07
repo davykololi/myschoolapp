@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\ReportComment;
+use App\Models\ReportSubjectGrade;
+use App\Models\ReportGeneralGrade;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,9 +48,14 @@ class Term extends Model
         return $this->hasMany('App\Models\GeneralGrade','term_id','id');
     }
 
+    public function report_subject_grades()
+    {
+        return $this->hasMany(ReportSubjectGrade::class,'term_id','id');
+    }
+
     public function report_general_grades()
     {
-        return $this->hasMany('App\Models\ReportGeneralGrade','term_id','id');
+        return $this->hasMany(ReportGeneralGrade::class,'term_id','id');
     }
 
     public function report_comments()

@@ -17,6 +17,7 @@ class StaffController extends Controller
     public function __construct(StaffService $staffService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->staffService = $staffService;
     }

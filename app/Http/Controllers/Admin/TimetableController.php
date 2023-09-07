@@ -24,6 +24,7 @@ class TimetableController extends Controller
     public function __construct(TimetableService $timetableService,StreamService $streamService,ClassService $classService,ExamService $examService,TeacherService $teacherService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->timetableService = $timetableService;
         $this->streamService = $streamService;

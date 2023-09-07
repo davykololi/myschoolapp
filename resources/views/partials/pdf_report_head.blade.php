@@ -15,7 +15,7 @@
         .school_margin{margin-top: -0.5em;margin-bottom: -0.5em;}
         .email_margin{margin-top: 0.5em;margin-bottom: 1em;}
         .table_caption{text-transform: uppercase;text-align: center;margin-top: 0;margin-bottom: -04em;}
-        .title{text-transform: uppercase;text-align: center;margin-top: 20px;}
+        .title{text-transform: uppercase;text-align: center;margin-top: 20px;font-family: Arial Narrow}
         .uppercase{text-transform: uppercase;}
     </style>
     <!-- Styles -->

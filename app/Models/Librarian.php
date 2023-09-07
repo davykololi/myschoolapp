@@ -25,7 +25,7 @@ class Librarian extends Authenticatable implements Searchable
     *@var array
     */
     protected $table = 'librarians';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','role','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','role','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password','is_banned'];
     protected $appends = ['age'];
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> LibrariansEnum::class];
 

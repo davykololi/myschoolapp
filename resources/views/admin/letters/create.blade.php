@@ -6,7 +6,7 @@
         @include('partials.errors')
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">CREATE LETTER</h5> 
+                <h5 class="card-title">CREATE, SAVE & COVERT TO PDF</h5> 
                 <a href="{{ route('admin.letters.index') }}" class="btn btn-primary pull-right">Back</a>
             </div>
             <div class="card-body">

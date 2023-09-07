@@ -46,7 +46,7 @@
                                         <div>{{ $loop->iteration }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $exam->name }}</div>
+                                        <div class="uppercase">{{ $exam->name }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         @if($exam->status === 1)

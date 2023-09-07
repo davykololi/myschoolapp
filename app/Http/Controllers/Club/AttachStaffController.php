@@ -17,6 +17,7 @@ class AttachStaffController extends Controller
     public function __construct(ClubRepo $clubRepo)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->clubRepo = $clubRepo;
     }
 

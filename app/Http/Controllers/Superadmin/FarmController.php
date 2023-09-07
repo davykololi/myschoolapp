@@ -19,6 +19,7 @@ class FarmController extends Controller
     public function __construct(FarmService $farmService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->farmService = $farmService;
     }

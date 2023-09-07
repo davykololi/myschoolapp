@@ -24,6 +24,7 @@ class MeetingController extends Controller
     public function __construct(MeetingService $meetingService,TeacherService $teacherService,StudentService $studentService,StaffService $staffService,StreamService $streamService,ClubService $clubService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->meetingService = $meetingService;
         $this->teacherService = $teacherService;

@@ -18,6 +18,7 @@ class StudentTwoFAController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:student');
+        $this->middleware('banned');
     }
 
     /**

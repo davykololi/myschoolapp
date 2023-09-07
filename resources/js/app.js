@@ -14,6 +14,7 @@ import './bootstrap';
 
 import './components/Example';
 
+
 /**
  * Next, we will create a fresh React component instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -27,8 +28,8 @@ window.Alpine = Alpine;
 Alpine.start();
 
 
-import { Datepicker, Input, Select, Carousel, Ripple, Collapse, Sidenav, Chart, Lightbox,initTE } from "tw-elements";
-initTE({ Datepicker, Input, Select, Carousel, Ripple, Collapse, Sidenav, Chart, Lightbox });
+import { Datepicker, Input, Select, Carousel, Ripple, Collapse, Sidenav, Chart, Lightbox, Datetimepicker, initTE } from "tw-elements";
+initTE({ Datepicker, Input, Select, Carousel, Ripple, Collapse, Sidenav, Chart, Lightbox, Datetimepicker });
 
 import 'flowbite';
 

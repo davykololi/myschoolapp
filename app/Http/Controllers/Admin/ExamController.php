@@ -23,6 +23,7 @@ class ExamController extends Controller
     public function __construct(ExamService $examService,SubjectService $subjectService,streamService $streamService,YearService $yearService,TermService $termService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->examService = $examService;
         $this->subjectService = $subjectService;

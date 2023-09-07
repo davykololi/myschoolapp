@@ -26,6 +26,7 @@ class PaymentController extends Controller
     public function __construct(PaymentService $paymentService,StudentService $studentService,YearService $yearService,TermService $termService,ClassService $classService,StreamService $streamService)
     {
         $this->middleware('auth:accountant');
+        $this->middleware('banned');
         $this->middleware('accountant2fa');
         $this->studentService = $studentService;
         $this->paymentService = $paymentService;

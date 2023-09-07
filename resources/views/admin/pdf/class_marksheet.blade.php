@@ -214,10 +214,10 @@
                         <td class="table-left padding-10"><b>#</b></td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($maths->avg(),0) }}
+                            {{ round($maths->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'Mathematics') && ($grade->from_mark <= $maths->avg()) && ($grade->to_mark >= $maths->avg()))
+                            @if(($grade->subject->name === 'Mathematics') && ($grade->from_mark <= round($maths->avg(),0)) && ($grade->to_mark >= round($maths->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -226,10 +226,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($english->avg(),0) }}
+                            {{ round($english->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'English') && ($grade->from_mark <= $english->avg()) && ($grade->to_mark >= $english->avg()))
+                            @if(($grade->subject->name === 'English') && ($grade->from_mark <= round($english->avg(),0)) && ($grade->to_mark >= round($english->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -238,10 +238,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($kiswahili->avg(),0) }}
+                            {{ round($kiswahili->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'Kiswahili') && ($grade->from_mark <= $kiswahili->avg()) && ($grade->to_mark >= $kiswahili->avg()))
+                            @if(($grade->subject->name === 'Kiswahili') && ($grade->from_mark <= round($kiswahili->avg(),0)) && ($grade->to_mark >= round($kiswahili->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -250,10 +250,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($chemistry->avg(),0) }}
+                            {{ round($chemistry->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'Chemistry') && ($grade->from_mark <= $chemistry->avg()) && ($grade->to_mark >= $chemistry->avg()))
+                            @if(($grade->subject->name === 'Chemistry') && ($grade->from_mark <= round($chemistry->avg(),0)) && ($grade->to_mark >= round($chemistry->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -262,10 +262,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($biology->avg(),0) }}
+                            {{ round($biology->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'Biology') && ($grade->from_mark <= $biology->avg()) && ($grade->to_mark >= $biology->avg()))
+                            @if(($grade->subject->name === 'Biology') && ($grade->from_mark <= round($biology->avg(),0)) && ($grade->to_mark >= round($biology->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -274,10 +274,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($physics->avg(),0) }}
+                            {{ round($physics->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'Physics') && ($grade->from_mark <= $physics->avg()) && ($grade->to_mark >= $physics->avg()))
+                            @if(($grade->subject->name === 'Physics') && ($grade->from_mark <= round($physics->avg(),0)) && ($grade->to_mark >= round($physics->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -286,10 +286,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($cre->avg(),0) }}
+                            {{ round($cre->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'CRE') && ($grade->from_mark <= $cre->avg()) && ($grade->to_mark >= $cre->avg()))
+                            @if(($grade->subject->name === 'CRE') && ($grade->from_mark <= round($cre->avg(),0)) && ($grade->to_mark >= round($cre->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -298,10 +298,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($islam->avg(),0) }}
+                            {{ round($islam->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'Islam') && ($grade->from_mark <= $islam->avg()) && ($grade->to_mark >= $islam->avg()))
+                            @if(($grade->subject->name === 'Islam') && ($grade->from_mark <= round($islam->avg(),0)) && ($grade->to_mark >= round($islam->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -310,10 +310,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($history->avg(),0) }}
+                            {{ round($history->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'History') && ($grade->from_mark <= $history->avg()) && ($grade->to_mark >= $history->avg()))
+                            @if(($grade->subject->name === 'History') && ($grade->from_mark <= round($history->avg(),0)) && ($grade->to_mark >= round($history->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -322,10 +322,10 @@
                         </td>
                         <td class="table-left padding-10">
                             <b>
-                            {{ round($ghc->avg(),0) }}
+                            {{ round($ghc->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'GHC') && ($grade->from_mark <= $ghc->avg()) && ($grade->to_mark >= $ghc->avg()))
+                            @if(($grade->subject->name === 'GHC') && ($grade->from_mark <= round($ghc->avg(),0)) && ($grade->to_mark >= round($ghc->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -392,8 +392,9 @@
                 <div>{!! json_encode($totalMarksFrequencies) !!}</div>
 
                 <h3 style="">STUDENTS GENDER GRAPH</h3>
-                <canvas data-te-chart="bar" data-te-dataset-label="Overal Perfomance" data-te-labels="['Highest', 'Median','Lowest']" data-te-dataset-data="[{{ $totals->max() }}, {{ $totals->median() }}, $totals->min() }}]" data-te-dataset-background-color="['rgba(63, 81, 181, 0.5)', 'rgba(63, 81, 181, 0.5)', 'rgba(63, 81, 181, 0.5)']" data-te-dark-ticks-color="#ff0000" data-te-dark-grid-lines-color="#ffff00" data-te-dark-label-color="#ff00ff">
-                </canvas>
+                <img src="data:image/png;base64,{!! base64_encode(<canvas data-te-chart="bar" data-te-dataset-label="Overal Perfomance" data-te-labels="['Highest', 'Median','Lowest']" data-te-dataset-data="[{{ $totals->max() }}, {{ $totals->median() }}, $totals->min() }}]" data-te-dataset-background-color="['rgba(63, 81, 181, 0.5)', 'rgba(63, 81, 181, 0.5)', 'rgba(63, 81, 181, 0.5)']" data-te-dark-ticks-color="#ff0000" data-te-dark-grid-lines-color="#ffff00" data-te-dark-label-color="#ff00ff">
+                </canvas>) !!}">
+                
             </div>
     </div>
 </div>

@@ -20,6 +20,7 @@ class LibrarianController extends Controller
     public function __construct(BookService $bookService)
     {
         $this->middleware('auth:librarian');
+        $this->middleware('banned');
         $this->middleware('librarian2fa');
         $this->bookService = $bookService;
     }

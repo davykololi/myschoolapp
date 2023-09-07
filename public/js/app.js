@@ -15302,7 +15302,8 @@ alpinejs__WEBPACK_IMPORTED_MODULE_2__["default"].start();
   Collapse: tw_elements__WEBPACK_IMPORTED_MODULE_3__.Collapse,
   Sidenav: tw_elements__WEBPACK_IMPORTED_MODULE_3__.Sidenav,
   Chart: tw_elements__WEBPACK_IMPORTED_MODULE_3__.Chart,
-  Lightbox: tw_elements__WEBPACK_IMPORTED_MODULE_3__.Lightbox
+  Lightbox: tw_elements__WEBPACK_IMPORTED_MODULE_3__.Lightbox,
+  Datetimepicker: tw_elements__WEBPACK_IMPORTED_MODULE_3__.Datetimepicker
 });
 
 

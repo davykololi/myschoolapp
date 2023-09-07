@@ -21,6 +21,7 @@ class LibraryController extends Controller
     public function __construct(LibService $libService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->libService = $libService;
     }

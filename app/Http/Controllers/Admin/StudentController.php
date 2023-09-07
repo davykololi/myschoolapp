@@ -39,6 +39,7 @@ class StudentController extends Controller
     public function __construct(StudentService $studentService,StreamService $streamService,SubjectService $subjectService,Request $request, ParentService $parentService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->studentService = $studentService;
         $this->streamService = $streamService;

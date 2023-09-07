@@ -17,6 +17,7 @@ class DetachLessonController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
     }
 
     public function detachLesson(Request $request,$id)

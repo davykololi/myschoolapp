@@ -21,6 +21,7 @@ class DormitoryController extends Controller
     public function __construct(DormService $dormService, MeetingService $meetingService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->dormService = $dormService;
         $this->meetingService = $meetingService;

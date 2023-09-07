@@ -13,7 +13,7 @@ use App\Models\Reward;
 use App\Models\Note;
 use App\Models\Grade;
 use App\Models\Record;
-use App\Models\ReportGeneralGrade;
+use App\Models\ReportSubjectGrade;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -105,9 +105,9 @@ class Subject extends Model implements Searchable
         return $this->hasMany(Grade::class,'subject_id','id');
     }
 
-    public function report_general_grades(): HasMany
+    public function report_subject_grades()
     {
-        return $this->hasMany(ReportGeneralGrade::class,'subject_id','id');
+        return $this->hasMany(ReportSubjectGrade::class,'subject_id','id');
     }
 
     public function marks(): HasManyThrough

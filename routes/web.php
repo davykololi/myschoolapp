@@ -11,7 +11,6 @@ use App\Http\Controllers\Staff\StaffTwoFAController;
 use App\Http\Controllers\Student\StudentTwoFAController;
 use App\Http\Controllers\Admin\ReportExcelController;
 use App\Http\Controllers\Admin\Pdf\PdfSortResultsController;
-use App\Http\Controllers\Admin\Event\EventController;
 use App\Http\Controllers\Admin\Charts\ChartController;
 
 
@@ -132,6 +131,8 @@ Route::prefix('superadmin')->name('superadmin.')->namespace('Superadmin')->group
 	Route::resource('games','GameController');
 	Route::resource('intakes','IntakeController');
 	Route::resource('fields','FieldController');
+	Route::get('/students','StudentController@students')->name('students');
+	Route::get('/parents','ParentController@parents')->name('parents');
 	Route::get('marksheet-form','ExcelController@marksheetsForm')->name('marksheet.form');
 	Route::get('/delete-class-marksheets','DeleteReportMarksheetController')->name('delete.classMarksheets');
 	//Superadmin Change Password Routes
@@ -142,6 +143,36 @@ Route::prefix('superadmin')->name('superadmin.')->namespace('Superadmin')->group
 	// Attach Subjects to teacher route
 	Route::get('remove/teacher/{id}','StreamSubjectTeacherController@removeStreamSubjectTeacher')->name('streamteacher.remove');
 	Route::post('/stream-subject-teacher/store','StreamSubjectTeacherController@store')->name('streamsubjectteacher.store');
+	// Admin Bann Controller
+	Route::post('/admin-bann/{id}','AdminBannedController@bann')->name('admin.bann');
+	Route::post('/admin-unbann/{id}','AdminBannedController@unbann')->name('admin.unbann');
+	// Teacher Bann Controller
+	Route::post('/teacher-bann/{id}','TeacherBannedController@bann')->name('teacher.bann');
+	Route::post('/teacher-unbann/{id}','TeacherBannedController@unbann')->name('teacher.unbann');
+	// Student Bann Controller
+	Route::post('/student-bann/{id}','StudentBannedController@bann')->name('student.bann');
+	Route::post('/student-unbann/{id}','StudentBannedController@unbann')->name('student.unbann');
+	// Accountant Bann Controller
+	Route::post('/accountant-bann/{id}','AccountantBannedController@bann')->name('accountant.bann');
+	Route::post('/accountant-unbann/{id}','AccountantBannedController@unbann')->name('accountant.unbann');
+	// Librarian Bann Controller
+	Route::post('/librarian-bann/{id}','LibrarianBannedController@bann')->name('librarian.bann');
+	Route::post('/librarian-unbann/{id}','LibrarianBannedController@unbann')->name('librarian.unbann');
+	// Sub Staff Bann Controller
+	Route::post('/staff-bann/{id}','StaffBannedController@bann')->name('staff.bann');
+	Route::post('/staff-unbann/{id}','StaffBannedController@unbann')->name('staff.unbann');
+	// Matron Bann Controller
+	Route::post('/matron-bann/{id}','MatronBannedController@bann')->name('matron.bann');
+	Route::post('/matron-unbann/{id}','MatronBannedController@unbann')->name('matron.unbann');
+	// Parent Bann Controller
+	Route::post('/parent-bann/{id}','ParentBannedController@bann')->name('parent.bann');
+	Route::post('/parent-unbann/{id}','ParentBannedController@unbann')->name('parent.unbann');
+	// Student lock Controller
+	Route::post('/student-lock/{id}','StudentLockController@lock')->name('student.lock');
+	Route::post('/student-unlock/{id}','StudentLockController@unlock')->name('student.unlock');
+	// Parent Lock Controller
+	Route::post('/parent-lock/{id}','ParentLockController@lock')->name('parent.lock');
+	Route::post('/parent-unlock/{id}','ParentLockController@unlock')->name('parent.unlock');
 });
 
 //START OF ADMIN ROUTES
@@ -188,9 +219,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::get('/delete-reports','ReportsDeleteController')->name('delete.reports');
 	//Instant Download controller route
 	Route::get('/instant-download-form','Pdf\InstantDownloadController')->name('instantdownload.form');
-	//Event Routes
-	Route::get('calendar-event', [EventController::class, 'index'])->name('calender.event');
-	Route::post('calendar-crud-ajax', [EventController::class, 'calendarEvents']);
+	//Event Controller Routes
+	Route::get('calendar-event', 'Event\EventController@index')->name('calendar.event');
+	Route::post('fullcalendar/create', 'Event\EventController@create');
+	Route::post('fullcalendar/update', 'Event\EventController@update');
+	Route::post('fullcalendar/delete', 'Event\EventController@destroy');
 	//Charts Routes
 	Route::get('student-chart', [ChartController::class, 'index']);
 
@@ -238,8 +271,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::post('general-gradesheets','ExcelController@generalGradesStore')->name('marks.generalGradesheetsImport');
 	//Report Card Comments Import route
 	Route::post('reportcard-comments','ExcelController@reportcardComments')->name('reportcard.comments');
-	//Report Aggrecade Grades Gradesheet Import route
-	Route::post('reportcard-general-grades','ExcelController@reportGeneralGradesStore')->name('report.aggregadeGrades');
+	//Report Subject Grades Gradesheet Import route
+	Route::post('reportcard-subject-grades','ExcelController@reportSubjectGradesStore')->name('report.subjectGrades');
+	//Report General Grades Gradesheet Import route
+	Route::post('reportcard-general-grades','ExcelController@reportGeneralGradesStore')->name('report.generalGrades');
 	//Admin Change Password Routes
 	Route::get('/change-password','AdminChangePasswordController@index')->name('change-password.form');
 	Route::post('/change-password','AdminChangePasswordController@store')->name('change-password.save');

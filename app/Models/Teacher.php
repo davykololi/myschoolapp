@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Exception;
 use Mail;
 use App\Models\UserEmailCode;
+use App\Models\ReportSubjectGrade;
 use App\Mail\SendEmailCode;
 use App\Enums\TeacherRoleEnum;
 use Carbon\Carbon;
@@ -31,7 +32,7 @@ class Teacher extends Authenticatable implements Searchable
     *@var array
     */
     protected $table = 'teachers';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password'];
+    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password','is_banned'];
     protected $appends = ['age'];
 
     /**
@@ -318,5 +319,10 @@ class Teacher extends Authenticatable implements Searchable
     public function staffTeacher()
     {
         return $this->role === TeacherRoleEnum::ST;
+    }
+
+    public function report_subject_grades()
+    {
+        return $this->hasMany(ReportSubjectGrade::class,'teacher_id','id');
     }
 }

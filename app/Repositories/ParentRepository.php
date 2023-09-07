@@ -28,6 +28,11 @@ class ParentRepository implements ParentInterface
         return $this->my_parent->eagerLoaded();
     }
 
+    public function paginate()
+    {
+        return $this->eagerLoaded()->paginate(15);
+    }
+
     public function create(array $data)
     {
     	return $this->my_parent->create($data);

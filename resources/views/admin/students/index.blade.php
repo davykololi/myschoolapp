@@ -33,7 +33,7 @@
         <div class="flex flex-col overflow-x-auto md:mx-2">
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto" data-te-datatable-init>
                         <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
@@ -104,7 +104,7 @@
                                             </a>
                                             @endcan
                                             @can('studentRegistrar')
-                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')" {{ $student->lock }}>
                                                 <x-delete-svg/>
                                             </button>
                                             @endcan

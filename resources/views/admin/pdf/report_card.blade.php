@@ -102,10 +102,23 @@
     </div>
 
     <div class="py-4 md:px-2 justify-evenly">
-    <form id="marksheets_form" action="{{ route('admin.report.aggregadeGrades') }}" class="p-4 border-2 border-white mb-6" method="post" enctype="multipart/form-data">
+    <form id="marksheets_form" action="{{ route('admin.report.subjectGrades') }}" class="p-4 border-2 border-white mb-6" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <div class="font-bold mb-4">UPLOAD REPORT CARD SUBJECTS AGGREGADE GRADES </div>
-        @include('ext._reportcard_importsheet')
+        <div class="font-bold mb-4">UPLOAD REPORT CARD SUBJECTS AVERAGE GRADES </div>
+        @include('ext._reportcardsubjectgrades_importsheet')
+        <div class="w-full">
+            <div class="mt-4">
+                <x-upload-button/>
+            </div>
+        </div>
+    </form>
+    </div>
+
+    <div class="py-4 md:px-2 justify-evenly">
+    <form id="marksheets_form" action="{{ route('admin.report.generalGrades') }}" class="p-4 border-2 border-white mb-6" method="post" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        <div class="font-bold mb-4">UPLOAD REPORT CARD GENERAL GRADES </div>
+        @include('ext._reportcardgeneralgrades_importsheet')
         <div class="w-full">
             <div class="mt-4">
                 <x-upload-button/>
@@ -201,16 +214,16 @@
             <div class="w-full md:w-1/2">
                 <div class="block">
                     <label>Closing Date: <span class="text-[red]">*</span></label>
-                    <div class="relative w-full md:w-48 bg-black text-white" data-te-datepicker-init data-te-format="dd, mmm, yyyy" data-te-input-wrapper-init>
-                        <input type="text" name="closing_date" class="w-full md:w-48 bg-black text-white" placeholder="Enter Closing Date"/>
+                    <div class="relative w-full md:w-1/2 bg-black text-white" data-te-datepicker-init data-te-format="dd, mmm, yyyy" data-te-input-wrapper-init>
+                        <input type="text" name="closing_date" class="w-full bg-black text-white" placeholder="Enter Closing Date"/>
                     </div>
                 </div>
             </div>
             <div class="w-full md:w-1/2">
                 <div class="block">
                     <label>Opening Date: <span class="text-[red]">*</span></label>
-                    <div class="relative w-full md:w-48 bg-black text-white" data-te-datepicker-init data-te-format="dd, mmm, yyyy" data-te-input-wrapper-init>
-                        <input type="text" name="opening_date" class="w-full md:w-48 bg-black text-white" placeholder="Enter Opening Date"/>
+                    <div class="relative w-full md:w-1/2 bg-black text-white" data-te-datepicker-init data-te-format="dd, mmm, yyyy" data-te-input-wrapper-init>
+                        <input type="text" name="opening_date" class="w-full bg-black text-white" placeholder="Enter Opening Date"/>
                     </div>
                 </div>
             </div>

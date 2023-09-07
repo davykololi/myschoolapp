@@ -20,6 +20,7 @@ class DepartmentController extends Controller
     public function __construct(DepartmentService $deptService,TeacherService $teacherService,StaffService $staffService,MeetingService $meetingService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->deptService = $deptService;
         $this->teacherService = $teacherService;

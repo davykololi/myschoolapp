@@ -29,6 +29,11 @@ class ParentService
         return $this->parentRepo->eagerLoaded();
     }
 
+    public function paginate()
+    {
+        return $this->parentRepo->paginate();
+    }
+
     public function create(StoreRequest $request)
     {
         $data = $this->createData($request);

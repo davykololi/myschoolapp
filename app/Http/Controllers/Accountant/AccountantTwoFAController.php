@@ -18,6 +18,7 @@ class AccountantTwoFAController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:accountant');
+        $this->middleware('banned');
     }
 
     /**

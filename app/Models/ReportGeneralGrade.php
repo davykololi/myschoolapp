@@ -10,12 +10,7 @@ class ReportGeneralGrade extends Model
     use HasFactory;
 
     protected $table = 'report_general_grades';
-    protected $fillable = ['grade','grade_no','points','from_mark','to_mark','school_id','year_id','term_id','exam_id','teacher_id','subject_id','class_id'];
-
-    public function school()
-    {
-        return $this->belongsTo('App\Models\School')->withDefault();
-    }
+    protected $fillable = ['grade','grade_no','points','from_mark','to_mark','year_id','term_id','class_id'];
 
     public function class()
     {
@@ -27,23 +22,8 @@ class ReportGeneralGrade extends Model
         return $this->belongsTo('App\Models\Year')->withDefault();
     }
 
-    public function exam()
-    {
-        return $this->belongsTo('App\Models\Exam')->withDefault();
-    }
-
     public function term()
     {
         return $this->belongsTo('App\Models\Term')->withDefault();
-    }
-
-    public function subject()
-    {
-        return $this->belongsTo('App\Models\Subject')->withDefault();
-    }
-
-    public function teacher()
-    {
-        return $this->belongsTo('App\Models\Teacher')->withDefault();
     }
 }

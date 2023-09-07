@@ -34,7 +34,8 @@ class CreateStaffsTable extends Migration
             $table->longText('history',2000);
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
             $table->string('blood_group')->default('A');
-            $table->foreignId('admin_id')->constrained();
+            $table->foreignId('superadmin_id')->constrained();
+            $table->boolean('is_banned')->default(false);
             $table->timestamps();
         });
     }

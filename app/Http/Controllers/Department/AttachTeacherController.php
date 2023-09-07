@@ -17,6 +17,7 @@ class AttachTeacherController extends Controller
     public function __construct(DeptRepo $deptRepo)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->deptRepo = $deptRepo;
     }

@@ -17,6 +17,7 @@ class TeacherController extends Controller
     public function __construct(TeacherService $teacherService)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->middleware('admin2fa');
         $this->teacherService = $teacherService;
     }

@@ -24,6 +24,7 @@ class StudentController extends Controller
     public function __construct(StudentService $studentService,YearService $yearService,TermService $termService)
     {
         $this->middleware('auth:accountant');
+        $this->middleware('banned');
         $this->middleware('accountant2fa');
         $this->studentService = $studentService;
         $this->yearService = $yearService;

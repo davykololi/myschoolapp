@@ -19,6 +19,7 @@ class GameController extends Controller
     public function __construct(GameService $gameService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->gameService = $gameService;
     }

@@ -18,6 +18,7 @@ class LibrarianTwoFAController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:librarian');
+        $this->middleware('banned');
     }
 
     /**

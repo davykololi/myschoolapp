@@ -16,6 +16,7 @@ class MatronProfileController extends Controller
     public function __construct()
     {
         $this->middleware('auth:matron');
+        $this->middleware('banned');
         $this->middleware('matron2fa');
     }
     

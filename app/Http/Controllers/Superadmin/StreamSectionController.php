@@ -21,6 +21,7 @@ class StreamSectionController extends Controller
     public function __construct(StreamSecService $streamSecService,SchoolService $schoolService)
     {
         $this->middleware('auth:superadmin');
+        $this->middleware('banned');
         $this->middleware('superadmin2fa');
         $this->streamSecService = $streamSecService;
         $this->schoolService = $schoolService;

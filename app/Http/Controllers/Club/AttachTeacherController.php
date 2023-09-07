@@ -17,6 +17,7 @@ class AttachTeacherController extends Controller
     public function __construct(ClubRepo $clubRepo)
     {
         $this->middleware('auth:admin');
+        $this->middleware('banned');
         $this->clubRepo = $clubRepo;
     }
     public function attachTeacher(Request $request,$id)
