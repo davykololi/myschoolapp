@@ -1,0 +1,1 @@
+<img x-cloak src="{{ asset('static/moon.svg') }}" :class="{'hidden': darkMode}" {{ $attributes }} alt="{{ config('app.name') }}" />

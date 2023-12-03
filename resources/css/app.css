@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+@layer components {
+	.success {
+		@apply bg-[green] text-white px-2 rounded dark:bg-green-800 dark:text-slate-400;
+	}
+
+  .show {
+    @apply bg-green-800 dark:bg-green-500 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1 relative
+  }
+
+  .edit {
+    @apply bg-yellow-600 dark:bg-yellow-700 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-base font-medium text-white hover:bg-opacity-90 mx-1 relative
+    }
+
+	.danger {
+		@apply bg-[red] text-white px-2 rounded dark:bg-red-800 dark:text-slate-400;
+	}
+
+  .delete {
+    @apply bg-red-600 dark:bg-red-700 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1 relative
+  } 
+
+  .pdf {
+    @apply bg-orange-500 dark:bg-orange-600 inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1 relative
+  }
+
+  .excel {
+    @apply bg-[green] inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1 dark:bg-green-800;
+  } 
+
+  .form-input-one {
+    @apply border-0 px-3 py-3 placeholder-gray-700 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150
+  }
+
+  .form-input-two {
+    @apply relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary
+  }
+
+  .form-input-one-photo-upload {
+    @apply border-0 px-3 py-1 placeholder-gray-700 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150
+  }
+
+  .form-input-label-one {
+    @apply block uppercase text-black text-xs font-bold mb-2 dark:text-slate-200;
+  }
+
+  .users-2fa-code-resend-link {
+    @apply text-slate-100 dark:text-slate-400
+  }
+
+  .gfg {
+    @apply mt-0 relative;
+  }
+
+  .text-container {
+    @apply absolute text-white w-full mt-[300px] bg-transparent p-2;
+  }
+
+  .shadowed-border {
+    @apply bg-[#B3ACA6] border shadow-2xl p-4 mb-6 mx-4 rounded-md md:mx-0 dark:bg-slate-900;
+  }
+
+  .shadowed-border-payment {
+    @apply bg-blue-900 border shadow-2xl p-4 mb-6 mx-4 md:mx-0 dark:bg-slate-900;
+  }
+
+  .form-sub-heading-one {
+    @apply text-gray-800 font-bold mb-4 rounded dark:text-slate-400;
+  }
+
+  .input-div-one {
+    @apply block relative mb-4 flex flex-wrap items-stretch
+  }
+
+  .input-div-two {
+    @apply flex-1 flex-wrap items-stretch
+  }
+
+  .payment-input {
+    @apply relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary;
+  }
+
+  .label-one {
+    @apply text-gray-800 dark:text-slate-400;
+  }
+
+  .label-two {
+    @apply text-white dark:text-slate-400;
+  }
+
+  .select-form-one {
+    @apply bg-transparent w-full relative;
+  }
+
+  .admin-h2 {
+    @apply text-white text-2xl text-center uppercase font-extrabold dark:text-slate-400;
+  }
+
+  .admin-h2-two {
+    @apply text-gray-700 text-2xl text-left uppercase font-extrabold dark:text-slate-400;
+  }
+
+  .create-button {
+    @apply inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+  }
+
+  .back-button {
+    @apply flex items-center rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+  }
+
+  .sidebar-toggler-button {
+    @apply inline-block rounded bg-primary px-6 py-1 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg mx-2 mt-0.5;
+  }
+
+  .multi-select-collapse-button {
+    @apply inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+  }
+
+  .form-h2 {
+    @apply font-bold mb-4 text-[#B3A409] dark:text-slate-400;
+  }
+
+  .otp-holder {
+    @appy w-[190px] overflow-hidden;
+  }
+
+  .otp-content {
+    @apply left-0 sticky;
+  }
+
+  .otp-input {
+    @apply pl-8 tracking-[20px] border-0 mb-0 bg-bottom bg-repeat-x bg-[left_2rem_top_1rem] w-[220px] outline-none rounded bg-[length:35px];
+  }
+}
+
+
+/* Material Design Icons Start */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+/* Material Design Icons End */
+
+@font-face {
+  font-family: 'Han Solo Halftone';
+  src: url('https://www.fontsaddict.com/fontface/han-solo-halftone.ttf');
+}
+
+@font-face {
+  font-family: "Metroplex";
+  src: asset("/fonts/metroplex/Metroplex Shadow.ttf");
+}
+
+@font-face {
+  font-family: 'Voodoo';
+  src: url('https://www.fontsaddict.com/fontface/voodoo-vampire.ttf');
+}
+
+@font-face { 
+    font-family: "shortbaby"; 
+    src: asset("/fonts/shortbaby/shortbaby.ttf") format('truetype'); 
+} 
+
+
