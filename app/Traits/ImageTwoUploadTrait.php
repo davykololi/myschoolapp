@@ -26,8 +26,8 @@ trait ImageTwoUploadTrait{
                 $featuredImage = Image::make($originalImage->getRealPath())->resize(760,421);
                 $waterMark = Image::make(public_path('/static/favicon.png'))->resize(40,40)->opacity(50);
                 $featuredImage->insert($waterMark,'bottom-right', 3, 3);
-                $featuredImage->text('© 2020-2023 SOMA APP - All Rights Reserved', 150, 45, function($font) { 
-                $font->file(public_path('fonts/nfl/nfl-vikings-2013.ttf'));
+                $featuredImage->text('© 2020-2024 SOMA APP - All Rights Reserved', 150, 45, function($font) { 
+                $font->file(public_path('fonts/shortbaby/shortbaby.ttf'));
                 $font->size(24);  
                 $font->color([255, 0, 0, 0.9]);  
                 $font->align('middle');  

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Superadmin;
 
 use Auth;
+use App\Models\User;
+use App\Models\Teacher;
 use App\Models\Stream;
 use Illuminate\Support\Facades\Storage;
 use App\Services\TeacherService;
@@ -11,14 +13,17 @@ use App\Models\Subject;
 use App\Models\Assignment;
 use App\Models\Reward;
 use App\Models\Meeting;
-use App\Models\TeacherRole;
+use App\Models\StreamSubject;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\TeacherFormRequest as StoreRequest;
-use App\Http\Requests\TeacherFormRequest as UpdateRequest;
+use App\Traits\ImageUploadTrait;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class TeacherController extends Controller
 {
+    use ImageUploadTrait;
     protected $teacherService;
     /**
      * Create a new controller instance.
@@ -27,9 +32,9 @@ class TeacherController extends Controller
      */
     public function __construct(TeacherService $teacherService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->teacherService = $teacherService;
     }
     
@@ -64,11 +69,35 @@ class TeacherController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $teacher = $this->teacherService->create($request);
-        if(!$teacher){
-            return redirect()->route('superadmin.teachers.index')->withErrors(ucwords('Oops!!, An error occured. Please try again later!'));
-        }
-            return redirect()->route('superadmin.teachers.index')->withSuccess(ucwords($teacher->name." ".'info created successfully'));
+        $user = User::create([
+            'salutation' => $request->salutation,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'school_id' => Auth::user()->school->id,
+        ]);
+
+        $user->teacher()->create([
+            'blood_group' => $request->blood_group,
+            'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+            'gender' => $request->gender,
+            'id_no' => $request->id_no,
+            'emp_no' => $request->emp_no,
+            'dob' => $request->dob,
+            'designation' => $request->designation,
+            'phone_no' => $request->phone_no,
+            'history' => $request->history,
+            'position' => $request->position,
+            'school_id' => Auth::user()->school->id,
+            'current_address'   => $request->current_address,
+            'permanent_address' => $request->permanent_address
+        ]);
+
+        $user->assignRole('teacher');
+
+        return redirect()->route('superadmin.teachers.index')->withSuccess(ucwords($user->full_name." ".'info created successfully'));
     }
 
     /**
@@ -81,16 +110,18 @@ class TeacherController extends Controller
     {
         //
         $teacher = $this->teacherService->getId($id);
-        $streams = Stream::all()->pluck('name','id');
+        $streams = Stream::all();
         $teacherStreams = $teacher->streams;
-        $subjects = Subject::all()->pluck('name','id');
-        $teacherSubjects = $teacher->subjects;
-        $assignments = Assignment::all()->pluck('name','id');
+        $subjects = Subject::all();
+        $teacherSubjects = $teacher->subjects()->with('subject')->get();
+        $assignments = Assignment::all();
         $teacherAssignments = $teacher->assignments;
-        $rewards = Reward::all()->pluck('name','id');
+        $rewards = Reward::all();
         $teacherRewards = $teacher->rewards;
+        $streamSubjects = StreamSubject::all();
+        $teacherStreamSubjects = $teacher->stream_subjects()->with('subject','teacher','stream')->get();
 
-        return view('superadmin.teachers.show',compact('teacher','streams','teacherStreams','subjects','teacherSubjects','assignments','teacherAssignments','rewards','teacherRewards'));
+        return view('superadmin.teachers.show',compact('teacher','streams','teacherStreams','subjects','teacherSubjects','assignments','teacherAssignments','rewards','teacherRewards','streamSubjects','teacherStreamSubjects'));
     }
 
     /**
@@ -119,9 +150,32 @@ class TeacherController extends Controller
         $teacher = $this->teacherService->getId($id);
         if($teacher){
             Storage::delete('public/storage/'.$teacher->image);
-            $this->teacherService->update($request,$id);
+            $teacher->user()->update([
+                'salutation' => $request->salutation,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'school_id' => Auth::user()->school->id,
+            ]);
 
-            return redirect()->route('superadmin.teachers.index')->withSuccess(ucwords($teacher->name." ".'info updated successfully'));
+            $teacher->update([
+                'blood_group' => $request->blood_group,
+                'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+                'gender' => $request->gender,
+                'id_no' => $request->id_no,
+                'emp_no' => $request->emp_no,
+                'dob' => $request->dob,
+                'designation' => $request->designation,
+                'phone_no' => $request->phone_no,
+                'history' => $request->history,
+                'position' => $request->position,
+                'school_id' => Auth::user()->school->id,
+                'current_address'   => $request->current_address,
+                'permanent_address' => $request->permanent_address
+            ]);
+
+            return redirect()->route('superadmin.teachers.index')->withSuccess(ucwords($teacher->user->full_name." ".'info updated successfully'));
         }
     }
 
@@ -137,9 +191,12 @@ class TeacherController extends Controller
         $teacher = $this->teacherService->getId($id);
         if($teacher){
             Storage::delete('public/storage/'.$teacher->image);
-            $this->teacherService->delete($id);
+            $user = User::findOrFail($teacher->user_id);
+            $user->teacher()->delete();
+            $user->delete();
+            $user->removeRole('teacher');
 
-            return redirect()->route('superadmin.teachers.index')->withSuccess(ucwords($teacher->name." ".'info deleted successfully'));
+            return redirect()->route('superadmin.teachers.index')->withSuccess(ucwords($user->full_name." ".'info deleted successfully'));
         }
     }
 }

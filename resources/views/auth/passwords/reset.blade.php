@@ -1,6 +1,6 @@
-@extends('layouts.app')
-
-@section('content')
+<x-frontend><!-- The layout -->
+<!-- frontend-main view -->
+<x-auth-card>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -62,4 +62,5 @@
         </div>
     </div>
 </div>
-@endsection
+</x-auth-card>
+</x-frontend>

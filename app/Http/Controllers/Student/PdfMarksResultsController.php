@@ -22,9 +22,10 @@ class PdfMarksResultsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:student');
-        $this->middleware('banned');
-        $this->middleware('student2fa');
+        $this->middleware('auth');
+        $this->middleware('role:student');
+        $this->middleware('student-banned');
+        $this->middleware('checktwofa');
     }
     /**
      * Handle the incoming request.
@@ -43,7 +44,7 @@ class PdfMarksResultsController extends Controller
         $yearId = $year->id;
         $termId = $currentTerm->id;
         $examId = $currentExam->id;
-        $streamId = Auth::user()->stream->id;
+        $streamId = Auth::user()->student->stream->id;
         $name = Auth::user()->full_name;
         $marks = streamMarks($yearId,$termId,$examId,$streamId);
 
@@ -63,20 +64,21 @@ class PdfMarksResultsController extends Controller
         $generalGrades = GeneralGrade::with('class','year','term','exam')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
 
         $title = $year->year." ".$term->name." ".$exam->name." ".'Results';
-        $pdf = PDF::loadView('student.pdf.student_results',compact('name','marks','year','term','exam','stream','school','title','markName','examGrades','generalGrades'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
+        $downloadTitle = $school->name."."." ".$markName.":"." ".$title;
+        $pdf = PDF::loadView('student.pdf.student_results',compact('name','marks','year','term','exam','stream','school','title','markName','examGrades','generalGrades','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $imageUrl = public_path('/storage/storage/'.$school->image);
-        $imageWidth = 250;
-        $imageHeight = 250;
-        $y = (($height-$imageHeight)/2);
+        $imageWidth = 200;
+        $imageHeight = 200;
+        $y = (($height-$imageHeight)/1.8);
         $x = (($width-$imageWidth)/2);
         $canvas->set_opacity(.2,"Multiply");
         $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,25, array(0,0,0),2,2,-30);
         
-        return $pdf->download($title.'.pdf',array("Attachment" => 0));
+        return $pdf->download($downloadTitle.'.pdf',array("Attachment" => 0));
     }
 }

@@ -1,6 +1,9 @@
-<x-admin>  
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Edit Meeting')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
@@ -64,7 +67,7 @@
                     </div>
                     @include('ext._attach_teacherdiv')
                     @include('ext._attach_studentdiv')
-                    @include('ext._attach_staffdiv')
+                    @include('ext._attach_subordinatediv')
                     @include('ext._attach_streamdiv')
                     @include('ext._attach_clubdiv')
                     @include('ext._submit_update_button')
@@ -74,4 +77,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

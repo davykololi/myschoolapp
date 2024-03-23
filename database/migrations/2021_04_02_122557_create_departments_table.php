@@ -23,6 +23,8 @@ class CreateDepartmentsTable extends Migration
             $table->string('motto');
             $table->string('vision');
             $table->string('mission');
+            $table->bigInteger('dept_section_id')->unsigned();
+            $table->foreign('dept_section_id')->references('id')->on('department_sections')->onDelete('cascade');
             $table->bigInteger('school_id')->unsigned();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->timestamps();

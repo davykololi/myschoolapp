@@ -17,9 +17,10 @@ class IssuedBooksController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:librarian');
-        $this->middleware('banned');
-        $this->middleware('librarian2fa');
+        $this->middleware('auth');
+        $this->middleware('role:librarian');
+        $this->middleware('librarian-banned');
+        $this->middleware('checktwofa');
     }
     
     /**
@@ -30,7 +31,7 @@ class IssuedBooksController extends Controller
     public function index()
     {
         //
-        $bookers = IssuedBook::with('student','book')->get();
+        $bookers = IssuedBook::with('student.user','book')->get();
 
         return view('librarian.bookers.index',compact('bookers'));
     }
@@ -43,10 +44,11 @@ class IssuedBooksController extends Controller
     public function create()
     {
         //
-        $students = Student::all();
+        $students = Student::with('user')->get();
         $books = Book::all();
+        $title = 'Issue Book To Student';
 
-        return view('librarian.bookers.create',compact('students','books'));
+        return view('librarian.bookers.create',compact('students','books','title'));
     }
 
     /**
@@ -87,10 +89,11 @@ class IssuedBooksController extends Controller
     public function edit(IssuedBook $booker)
     {
         //
-        $students = Student::all();
+        $students = Student::with('user')->get();
         $books = Book::all();
+        $title = 'Edit Issued Book';
 
-        return view('librarian.bookers.edit',compact('booker','students','books'));
+        return view('librarian.bookers.edit',compact('booker','students','books','title'));
     }
 
     /**

@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show School')
+@section('title', '| School Details')
 
 @section('content')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
@@ -78,6 +78,12 @@
         <div class="form-group">
             <strong>Email Address:</strong>
             {{ $school->email }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Phone:</strong>
+            {{ $school->phone_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

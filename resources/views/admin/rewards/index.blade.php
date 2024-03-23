@@ -1,6 +1,9 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Awards List')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
 <div class="row">
     <div class="col-lg-12">
     @include('partials.messages')
@@ -70,4 +73,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

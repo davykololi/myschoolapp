@@ -16,9 +16,9 @@ class LibrarianBannedController extends Controller
      */
     public function __construct(LibrarianService $librarianService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->librarianService = $librarianService;
     }
 

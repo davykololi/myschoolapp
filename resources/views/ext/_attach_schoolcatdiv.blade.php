@@ -8,6 +8,6 @@
 
             @if($errors->has('school_type'))
             <span class="help-block">
-                <strong>{{$errors->first('school_type')}}</strong>
+                <strong class="text-red-700">{{$errors->first('school_type')}}</strong>
             </span>
             @endif

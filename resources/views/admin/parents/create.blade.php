@@ -2,60 +2,31 @@
 @section('title', '| Add Parent')
 
 @section('content')
+@role('admin')
+@can('studentRegistrar')
 <x-backend-main>
-<div class="row">
-    <div class="col-lg-12">
-        @include('partials.errors')
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title">CREATE PARENT</h5>
-                <a href="{{ route('admin.parents.index') }}" class="btn btn-primary pull-right">Back</a>
-            </div>
-            <div class="card-body">
-                <form action="{{ route('admin.parents.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
-                    @include('ext._csrfdiv')
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Salutation</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="salutation" id="salutation" value="{{old('salutation')}}" class="form-control" placeholder="Mr./Mrs./Miss./Pstr./Dr./Rev.">
-                        </div>
+    <section class="max-w-full py-1 bg-blueGray-50">
+        <div class="w-full px-4 mx-auto mt-6">
+            <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0 dark:bg-stone-700 dark:text-slate-200">
+                <div class="rounded-t bg-white mb-0 px-6 py-6 dark:bg-gray-200">
+                    <div class="text-center flex justify-between">
+                        <h6 class="text-blueGray-700 text-xl font-bold uppercase dark:text-slate-800">
+                            Parent Registration
+                        </h6>
+                        <x-back-button/>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="name" id="name" value="{{old('name')}}" class="form-control" placeholder="Enter Name">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Email</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="email" id="email" value="{{old('email')}}" class="form-control" placeholder="Email Address">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Image</label>
-                        <div class="col-sm-10">
-                            <input type="file" name="image" id="image" value="{{old('image')}}" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >ID NO.</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="id_no" id="id_no" class="form-control" placeholder="ID No.">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Phone No.</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="phone_no" id="phone_no" class="form-control" placeholder="Phone Number.">
-                        </div>
-                    </div>
-                    @include('ext._passworddiv')
-                    @include('ext._submit_register_button')
-                </form>
+                </div>
+                <div class="flex-auto px-4 lg:px-10 py-10 pt-4 bg-gray-400 dark:bg-stone-500">
+                    <form action="{{ route('admin.parents.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        @include('ext._csrfdiv')
+                        @include('ext.parent_registration_form')
+                        @include('ext._submit_register_button')
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 </x-backend-main>
+@endcan
+@endrole
 @endsection

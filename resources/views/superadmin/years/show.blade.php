@@ -2,7 +2,8 @@
 @section('title', '| Show Year')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<x-backend-main>
+<div role="main" class="container"  style="margin-top: 5px" id="main">
     @include('partials.messages')
     <div class="row">
     <div class="col-md-12 margin-tb">
@@ -36,5 +37,6 @@
         </div>
     </div>
 </div>
-</main>
+</div>
+</x-backend-main>
 @endsection

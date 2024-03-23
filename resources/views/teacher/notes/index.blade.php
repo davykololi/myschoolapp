@@ -20,7 +20,15 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <table class="table table-striped task-table">
                     <!-- Table Headings -->
-                    @include('partials.notes_tch_tbhead')
+                    <tr>
+                        <thead>
+                            <th width="20%">CLASS</th>
+                            <th width="20%">SUBJECT</th>
+                            <th width="20%">TOPIC</th>
+                            <th width="15%">FILE</th>
+                            <th width="25%">ACTION</th>
+                        </thead>
+                    </tr>
                     <!-- Table Body -->
                     <tbody>
                     @forelse($notes as $note)

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Superadmin;
 use App\Services\ClubService;
 use App\Services\StudentService;
 use App\Services\TeacherService;
-use App\Services\StaffService;
+use App\Services\SubordinateService;
 use App\Services\MeetingService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,21 +14,21 @@ use App\Http\Requests\ClubFormRequest as UpdateRequest;
 
 class ClubController extends Controller
 {
-    protected $clubService, $studentService, $teacherService, $staffService, $meetingService;
+    protected $clubService, $studentService, $teacherService, $subordinateService, $meetingService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(ClubService $clubService,StudentService $studentService,TeacherService $teacherService,StaffService $staffService,MeetingService $meetingService)
+    public function __construct(ClubService $clubService,StudentService $studentService,TeacherService $teacherService,SubordinateService $subordinateService,MeetingService $meetingService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->clubService = $clubService;
         $this->studentService = $studentService;
         $this->teacherService = $teacherService;
-        $this->staffService = $staffService;
+        $this->subordinateService = $subordinateService;
         $this->meetingService = $meetingService;
     }
     
@@ -53,11 +53,11 @@ class ClubController extends Controller
     public function create()
     {
         //
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $subordinates = $this->subordinateService->all();
 
-        return view('superadmin.clubs.create',compact('teachers','students','staffs'));
+        return view('superadmin.clubs.create',compact('teachers','students','subordinates'));
     }
 
     /**
@@ -74,8 +74,8 @@ class ClubController extends Controller
         $club->teachers()->sync($teachers);
         $students = $request->students;
         $club->students()->sync($students);
-        $staffs = $request->staffs;
-        $club->staffs()->sync($staffs);
+        $subordinates = $request->subordinates;
+        $club->subordinates()->sync($subordinates);
 
         return redirect()->route('superadmin.clubs.index')->withSuccess(ucwords($club->name." ".'created successfully'));
     }
@@ -90,16 +90,16 @@ class ClubController extends Controller
     {
         //
         $club = $this->clubService->getId($id);
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $clubStudents = $club->students()->with('stream')->get();
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $clubTeachers = $club->teachers;
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $clubStaffs = $club->staffs;
-        $meetings = $this->meetingService->all()->pluck('name','id');
+        $students = $this->studentService->all();
+        $clubStudents = $club->students()->with('stream','user')->get();
+        $teachers = $this->teacherService->all();
+        $clubTeachers = $club->teachers()->with('user')->get();
+        $subordinates = $this->subordinateService->all();
+        $clubSubordinates = $club->subordinates()->with('user')->get();
+        $meetings = $this->meetingService->all();
         $clubMeetings = $club->meetings;
 
-        return view('superadmin.clubs.show',compact('club','students','clubStudents','teachers','clubTeachers','staffs','clubStaffs','meetings','clubMeetings'));
+        return view('superadmin.clubs.show',compact('club','students','clubStudents','teachers','clubTeachers','subordinates','clubSubordinates','meetings','clubMeetings'));
     }
 
     /**
@@ -112,11 +112,11 @@ class ClubController extends Controller
     {
         //
         $club = $this->clubService->getId($id);
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $subordinates = $this->subordinateService->all();
 
-        return view('superadmin.clubs.edit',compact('club','teachers','students','staffs'));
+        return view('superadmin.clubs.edit',compact('club','teachers','students','subordinates'));
     }
 
     /**
@@ -136,8 +136,8 @@ class ClubController extends Controller
             $club->teachers()->sync($teachers);
             $students = $request->students;
             $club->students()->sync($students);
-            $staffs = $request->staffs;
-            $club->staffs()->sync($staffs);
+            $subordinates = $request->subordinates;
+            $club->subordinates()->sync($subordinates);
 
             return redirect()->route('superadmin.clubs.index')->withSuccess(ucwords($club->name." ".'updated successfully'));
         }
@@ -157,7 +157,7 @@ class ClubController extends Controller
             $this->clubService->delete($id);
             $club->teachers()->detach();
             $club->students()->detach();
-            $club->staffs()->detach();
+            $club->subordinates()->detach();
 
             return redirect()->route('superadmin.clubs.index')->withSuccess(ucwords($club->name." ".'deleted successfully'));
         }

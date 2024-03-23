@@ -1,6 +1,9 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Meeting Detalis')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -29,7 +32,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Date:</strong>
-            {{\Carbon\Carbon::parse($meeting->date)->format('d-m-Y')}}
+            {{ $meeting->date }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -60,8 +63,8 @@
         <div class="form-group">
             <strong>{{ $meeting->name }} Teachers:</strong>
             <ol>
-            @forelse($meeting->teachers as $teacher)
-                <li>{{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
+            @forelse($meetingTeachers as $teacher)
+                <li>{{ $teacher->user->salutation }} {{ $teacher->user->full_name }} {{ $teacher->phone_no }}</li>
             @empty
             <p>No teacher(s) assigned to {{ $meeting->name }} yet.</p>
             @endforelse
@@ -72,8 +75,8 @@
         <div class="form-group">
             <strong>{{ $meeting->name }} Students:</strong>
             <ol>
-            @forelse($meeting->students as $student)
-                <li>{{ $student->full_name }} {{ $student->stream->name }}</li>
+            @forelse($meetingStudents as $student)
+                <li>{{ $student->user->full_name }} {{ $student->stream->name }}</li>
             @empty
             <p>No student(s) assigned to {{ $meeting->name }} yet.</p>
             @endforelse
@@ -84,8 +87,8 @@
         <div class="form-group">
             <strong>{{ $meeting->name }} Subordinade Staff(s):</strong>
             <ol>
-            @forelse($meeting->staffs as $staff)
-                <li>{{ $staff->title }} {{ $staff->full_name }} {{ $staff->phone_no }}</li>
+            @forelse($meetingSubordinates as $subordinate)
+                <li>{{ $subordinate->user->salutation }} {{ $subordinate->user->full_name }} {{ $subordinate->phone_no }}</li>
             @empty
             <p>No subordinade staff(s) assigned to {{ $meeting->name }} yet.</p>
             @endforelse
@@ -96,7 +99,7 @@
         <div class="form-group">
             <strong>{{ $meeting->name }} Class(es):</strong>
             <ol>
-            @forelse($meeting->streams as $stream)
+            @forelse($meetingStreams as $stream)
                 <li>{{$stream->name}}</li>
             @empty
             <p>No class(es) assigned to {{ $meeting->name }} yet.</p>
@@ -108,7 +111,7 @@
         <div class="form-group">
             <strong>{{ $meeting->name }} Club(s):</strong>
             <ol>
-            @forelse($meeting->clubs as $club)
+            @forelse($meetingClubs as $club)
                 <li>{{$club->name}}</li>
             @empty
             <p>No club(s) assigned to {{ $meeting->name }} yet.</p>
@@ -122,10 +125,11 @@
                 <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($meeting->created_at)) }}</span>
         </div>
     </div>
-    @include('meeting.attachteacherform')
-    @include('meeting.attachstudentform')
-    @include('meeting.attachstaffform')
-    @include('meeting.attachstreamform')
+    @include('admin.meeting.attach_detach_teacherform')
+    @include('admin.meeting.attach_detach_studentform')
+    @include('admin.meeting.attach_detach_subordinateform')
+    @include('admin.meeting.attach_detach_streamform')
+    @include('admin.meeting.attach_detach_clubform')
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

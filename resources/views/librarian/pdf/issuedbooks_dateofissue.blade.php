@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    @include('partials.pdf_landscape_head')
+    @include('partials.pdf_landscape_A4_plain_head')
 </head>
 <body>
     @include('partials.pdf_landscape_header')
     @include('partials.school_landscape_logo')
     @include('partials.pdf_landscape_school_footer') 
 <div> 
-    <p style="font-size: 25px;margin-top: -20px;text-align: right;">
-        <b>Date:</b> <u style="margin-right: 40px">{!! date('d/m/Y') !!}</u>
-    </p>
+    <div class="mt"><x-pdf-landscape-current-date/></div>
     <div>
-        <h2 style="text-transform: uppercase;text-align: center;margin-top: -10px"><u>{{$title}}</u></h2>
+        <h2><u>{{$title}}</u></h2>
     </div>  
     <div>
     <table>
@@ -29,21 +27,25 @@
         </thead>
         <tbody>
             @if(!empty($issuedBooks))
-            @forelse($issuedBooks as $issuedBook)
+            @foreach($issuedBooks as $issuedBook)
             <tr>
                 <td>{{ $loop->iteration}}</td>
-                <td>{{ $issuedBook->student->full_name }}</td>
+                <td>{{ $issuedBook->student->user->full_name }}</td>
                 <td>{{ $issuedBook->student->stream->name }}</td>
                 <td>{{ $issuedBook->book->title }}</td>
                 <td>{{ $issuedBook->serial_no }}</td>
                 <td>{{ $issuedBook->issuedDate() }}</td>
                 <td>{{ $issuedBook->returnDate() }}</td>
-            @empty
+            </tr>
+            @endforeach
+            @endif
+
+            @if($issuedBooks->isEmpty())
+            <tr>
                 <td colspan="10" style="color: red">
                     No {{$title}} Found.
                 </td>
             </tr>
-            @endforelse
             @endif
         </tbody>
     </table> 

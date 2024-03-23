@@ -44,6 +44,7 @@ class DepartmentService
 	{
 		$data = $request->validated();
         $data['code'] = strtoupper(Str::random(15));
+        $data['dept_section_id'] = $request->dept_section;
         $data['school_id'] = auth()->user()->school->id;
 
         return $data;
@@ -52,6 +53,7 @@ class DepartmentService
 	public function updateData(UpdateRequest $request)
 	{
         $data = $request->only('name','phone_no','head_name','asshead_name','motto','vision','mission');
+        $data['dept_section_id'] = $request->dept_section;
         $data['school_id'] = auth()->user()->school->id;
 
         return $data;

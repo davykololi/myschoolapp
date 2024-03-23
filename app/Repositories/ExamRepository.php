@@ -20,27 +20,43 @@ class ExamRepository implements ExamInterface
 
     public function all()
     {
-        return $this->exam->eagerLoaded();
+        return $this->exam->eagerLoaded()->get();
     }
 
     public function create(array $data)
     {
-    	return $this->exam->create($data);
+        try {
+            return $this->exam->create($data);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to create exam. '.$e->getMessage());
+        }
     }
 
     public function getId($id)
     {
-    	return $this->exam->findOrFail($id);
+        try {
+            return $this->exam->findOrFail($id);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to show exam. '.$e->getMessage());
+        }
     }
 
     public function update(array $data,$id)
     {
         $record = $this->getId($id);
-    	return $record->update($data);
+        try {
+            return $record->update($data);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to update exam. '.$e->getMessage());
+        }	
     }
 
     public function delete($id)
     {
-    	return $this->exam->destroy($id);
+        try {
+            return $this->exam->destroy($id);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to delete exam. '.$e->getMessage());
+        }
     }
 }

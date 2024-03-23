@@ -31,7 +31,7 @@ return [
     | users are actually retrieved out of your database or other storage
     | mechanisms used by this application to persist your user's data.
     |
-    | Supported: "session", "token"
+    | Supported: "session"
     |
     */
 
@@ -40,57 +40,6 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
-        ],
-
-        'superadmin' => [
-            'driver' => 'session',
-            'provider' => 'superadmins'
-        ],
-
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins'
-        ],
-
-        'teacher' => [
-            'driver' => 'session',
-            'provider' => 'teachers'
-        ],
-
-        'student' => [
-            'driver' => 'session',
-            'provider' => 'students'
-        ],
-
-        'staff' => [
-            'driver' => 'session',
-            'provider' => 'staffs'
-        ],
-
-        'parent' => [
-            'driver' => 'session',
-            'provider' => 'parents'
-        ],
-
-        'accountant' => [
-            'driver' => 'session',
-            'provider' => 'accountants'
-        ],
-
-        'librarian' => [
-            'driver' => 'session',
-            'provider' => 'librarians'
-        ],
-
-        'matron' => [
-            'driver' => 'session',
-            'provider' => 'matrons'
-        ]
     ],
 
     /*
@@ -115,51 +64,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        'superadmins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Superadmin::class,
-        ],
-
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
-        ],
-
-        'teachers' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Teacher::class,
-        ],
-
-        'students' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Student::class,
-        ],
-
-        'staffs' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Staff::class,
-        ],
-
-        'parents' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\MyParent::class,
-        ],
-
-        'accountants' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Accountant::class,
-        ],
-
-        'librarians' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Librarian::class,
-        ],
-
-        'matrons' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Matron::class,
-        ]
 
         // 'users' => [
         //     'driver' => 'database',
@@ -187,62 +91,21 @@ return [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
+            'throttle' => 60,
         ],
-
-        'superadmins' => [
-            'provider' => 'superadmins',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'admins' => [
-            'provider' => 'admins',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'teachers' => [
-            'provider' => 'teachers',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'students' => [
-            'provider' => 'students',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'staffs' => [
-            'provider' => 'staffs',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'parents' => [
-            'provider' => 'parents',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'accountants' => [
-            'provider' => 'accountants',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'librarians' => [
-            'provider' => 'librarians',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'matrons' => [
-            'provider' => 'matrons',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the amount of seconds before a password confirmation
+    | times out and the user is prompted to re-enter their password via the
+    | confirmation screen. By default, the timeout lasts for three hours.
+    |
+    */
+
+    'password_timeout' => 10800,
 
 ];

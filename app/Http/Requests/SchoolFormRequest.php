@@ -35,6 +35,7 @@ class SchoolFormRequest extends FormRequest
                 'vision' => 'required|string|max:100',
                 'mission' => 'required|string|max:100',
                 'email' => 'required|email',
+                'school_type' => 'required|string',
                 'postal_address' => 'required|string|max:100',
                 'core_values' => 'required|string|max:500',
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
@@ -49,6 +50,7 @@ class SchoolFormRequest extends FormRequest
                 'vision' => 'required|string|max:100',
                 'mission' => 'required|string|max:100',
                 'email' => 'required|email',
+                'school_type' => 'required|string',
                 'postal_address' => 'required|string|max:100',
                 'core_values' => 'required|string|max:500',
                 'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
@@ -73,7 +75,8 @@ class SchoolFormRequest extends FormRequest
                 'email.required' => 'The school email address is required',
                 'postal_address.required' => 'The school postal address is required',
                 'core_values.required' => 'The school core values are required',
-                'image.required' => 'The logo for the school is required',
+                'image.required' => 'The school logo for the school is required',
+                'school_type.required' => 'The category the school belongs to is required',
             ];
         } else {
             return [
@@ -89,7 +92,8 @@ class SchoolFormRequest extends FormRequest
                 'email.required' => 'The school email address is required',
                 'postal_address.required' => 'The school postal address is required',
                 'core_values.required' => 'The school core values are required',
-                'image.required' => 'The logo for the school is required',
+                'image.required' => 'The school logo for the school is required',
+                'school_type.required' => 'The category the school belongs to is required',
             ];
         }
     }

@@ -15,7 +15,7 @@ class PaymentRecord extends Model
 {
     use HasFactory;
 
-    protected $fillable =['student_id','payment_id','amount_paid','balance','bank_name','file','payment_receipt_ref','payment_date','verified','ref_no','accountant_id'];
+    protected $fillable =['student_id','payment_id','amount_paid','balance','payment_mode','payment_ref_code','barcode','payment_date','verified','ref_no','accountant_id'];
 
     public function payment(): BelongsTo
     {
@@ -35,7 +35,7 @@ class PaymentRecord extends Model
     public function getCreatedAttribute()
     {
         $createdAt = $this->created_at;
-        $formatedDate = Carbon::createFromFormat('Y-m-d H:i:s',$createdAt)->format('d/m/Y H:i:s');
+        $formatedDate = Carbon::createFromFormat('Y-m-d H:i:s',$createdAt)->format('d/m/Y');
 
         return $formatedDate;
     }

@@ -5,7 +5,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <x-pdf-portrait-current-date/>
+            <div class="mt"><x-pdf-portrait-current-date/></div>
             <h2 class="title"><u>{{$title}}</u></h2> 
             <div>
                 <table>
@@ -22,9 +22,9 @@
                         @forelse($clubTeachers as $key=>$clubTeacher)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td style="text-transform: uppercase;">{{ $clubTeacher->full_name }}</td>
+                            <td>{{ $clubTeacher->user->full_name }}</td>
                             <td>{{ $clubTeacher->phone_no }}</td>
-                            <td>{{ $clubTeacher->email }}</td>
+                            <td>{{ $clubTeacher->user->email }}</td>
                         @empty
                             <td colspan="10" style="color: red">
                                 Teachers notyet assigned to {{$club->name}}.

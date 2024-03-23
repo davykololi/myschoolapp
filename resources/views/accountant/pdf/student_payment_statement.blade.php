@@ -3,10 +3,8 @@
 
 @section('content')
 <div class="container-fluid box"> 
-    <div>
-        <p style="font-size: 25px;margin-top: -20px;text-align: right;">
-            <b>Date:</b> <u style="margin-right: 40px">{!! date('d/m/Y') !!}</u>
-        </p>
+    <div class="mt">
+        <x-pdf-landscape-current-date/>
     </div>
     <div><h3 class="title" style="margin-top: -20px"><u>{{$title}}</u></h3></div>
     <div>
@@ -18,8 +16,8 @@
                 <td width="10%"><b>AMOUNT</b></td>
                 <td width="10%"><b>PAID</b></td>
                 <td width="10%"><b>PAID ON</b></td>
-                <td width="15"><b>RECEIPT NO.</b></td>
-                <td width="10%"><b>BANK</b></td>
+                <td width="15"><b>PAYMT REF.</b></td>
+                <td width="10%"><b>PAYMT MODE</b></td>
                 <td width="25%"><b>BALANCE</b></td>
             </tr>
         </thead>
@@ -61,7 +59,7 @@
                 <td>
                 @if(!empty($studentPayment->payment_records))
                 @forelse($studentPayment->payment_records as $paymentRecord)
-                    <p>{{ $paymentRecord->payment_receipt_ref }}</p>
+                    <p>{{ $paymentRecord->payment_ref_code }}</p>
                 @empty
                     <p>{{ __('----------------------------') }}</p>
                 @endforelse
@@ -70,7 +68,7 @@
                 <td>
                 @if(!empty($studentPayment->payment_records))
                 @forelse($studentPayment->payment_records as $paymentRecord)
-                    <p>{{ $paymentRecord->bank_name }}</p>
+                    <p>{{ $paymentRecord->payment_mode }}</p>
                 @empty
                     <p>{{ __('----------------------------') }}</p>
                 @endforelse

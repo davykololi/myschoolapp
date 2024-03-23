@@ -15,9 +15,10 @@ class ReportsDeleteController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
     }
 
     /**

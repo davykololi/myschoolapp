@@ -122,7 +122,7 @@ class Subject extends Model implements Searchable
 
     public function stream_subjects(): HasMany
     {
-        return $this->hasMany(StreamSubjectTeacher::class,'subject_id','id');
+        return $this->hasMany(StreamSubject::class,'subject_id','id');
     }
 
     public function records(): HasMany

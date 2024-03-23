@@ -5,16 +5,16 @@
 <div class="container"> 
     <div>
         <div>
-            <x-pdf-portrait-current-date/>
+            <div class="mt"><x-pdf-portrait-current-date/></div>
             <div><h3 class="title"><u>{{$title}}</u></h3></div>
             <div>
                 <table>
                     <thead>
                         <tr>
-                            <td width="10%"><b>NO</b></td>
+                            <td width="5%"><b>NO</b></td>
                             <td width="40%"><b>NAME</b></td>
-                            <td width="5%"><b>SEX</b></td>
-                            <td width="20%"><b>ADM NO</b></td>
+                            <td width="5%"><b>GDR</b></td>
+                            <td width="25%"><b>ADM NO</b></td>
                             <td width="25%"><b>AMOUNT</b></td>
                         </tr>
                     </thead>
@@ -23,7 +23,7 @@
                         @foreach($payments as $payment)
                         <tr>
                             <td class="left">{{ $loop->iteration }}</td>
-                            <td class="left">{{ $payment->student->full_name}}</td>
+                            <td class="left">{{ $payment->student->user->full_name}}</td>
                             @if($payment->student->gender === "Male")
                             <td class="left">{{ __('M') }}</td>
                             @elseif($payment->student->gender === "Female")

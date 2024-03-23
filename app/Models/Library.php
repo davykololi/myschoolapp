@@ -31,6 +31,11 @@ class Library extends Model implements Searchable
     	return $this->belongsToMany('App\Models\Student')->withTimestamps();
     }
 
+    public function library_numbers(): HasMany
+    {
+        return $this->hasMany('App\Models\LibraryNumber','library_id','id');
+    }
+
     public function school(): BelongsTo
     {
     	return $this->belongsTo('App\Models\School')->withDefault();

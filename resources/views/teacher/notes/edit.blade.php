@@ -1,4 +1,6 @@
-<x-teacher>
+@extends('layouts.teacher')
+
+@section('content')
     <!-- frontend-main view -->
     <x-frontend-main>
 <div class="row">
@@ -35,4 +37,4 @@
     </div>
 </div>
 </x-frontend-main>
-</x-teacher>
+@endsection

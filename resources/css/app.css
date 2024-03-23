@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Oswald:wght@200&family=Poppins&family=Roboto&display=swap');
 
 @layer components {
+
+  .page-container {
+    @apply h-fit md:min-h-screen lg:min-h-screen;
+  }
+  
 	.success {
 		@apply bg-[green] text-white px-2 rounded dark:bg-green-800 dark:text-slate-400;
 	}
@@ -31,7 +36,27 @@
 
   .excel {
     @apply bg-[green] inline-flex items-center justify-center rounded-[5px] p-4 text-center text-white mx-1 dark:bg-green-800;
+  }
+
+  .password-form-input {
+    @apply w-full text-center font-bold rounded;
+  }
+
+  .form-input {
+    @apply w-full bg-transparent border border-white rounded h-8 text-black dark:text-white;
+  }
+
+  .form-input-2 {
+    @apply w-full bg-transparent border border-white rounded;
+  }
+
+  .user-form-input {
+    @apply w-full bg-transparent border border-white rounded h-8 text-black dark:text-white;
   } 
+
+  .lib-form-input {
+    @apply w-full bg-transparent border border-white rounded h-8 text-black dark:text-white;
+  }
 
   .form-input-one {
     @apply border-0 px-3 py-3 placeholder-gray-700 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150
@@ -49,12 +74,16 @@
     @apply block uppercase text-black text-xs font-bold mb-2 dark:text-slate-200;
   }
 
+  .multi-dropdown{
+    @apply w-full bg-transparent border border-white rounded h-8 text-black dark:text-white;
+  }
+
   .users-2fa-code-resend-link {
     @apply text-slate-100 dark:text-slate-400
   }
 
   .gfg {
-    @apply mt-0 relative;
+    @apply relative;
   }
 
   .text-container {
@@ -62,11 +91,11 @@
   }
 
   .shadowed-border {
-    @apply bg-[#B3ACA6] border shadow-2xl p-4 mb-6 mx-4 rounded-md md:mx-0 dark:bg-slate-900;
+    @apply bg-white border p-4 mb-6 mx-4 rounded-md md:mx-0 dark:bg-gray-800;
   }
 
   .shadowed-border-payment {
-    @apply bg-blue-900 border shadow-2xl p-4 mb-6 mx-4 md:mx-0 dark:bg-slate-900;
+    @apply bg-white border shadow-2xl p-4 mb-6 mx-4 rounded md:mx-0 dark:bg-gray-800;
   }
 
   .form-sub-heading-one {
@@ -98,7 +127,7 @@
   }
 
   .admin-h2 {
-    @apply text-white text-2xl text-center uppercase font-extrabold dark:text-slate-400;
+    @apply text-black text-2xl text-center uppercase font-extrabold shadow-2xl dark:text-slate-400 dark:text-white;
   }
 
   .admin-h2-two {
@@ -122,7 +151,7 @@
   }
 
   .form-h2 {
-    @apply font-bold mb-4 text-[#B3A409] dark:text-slate-400;
+    @apply font-bold mb-4 text-black dark:text-slate-400;
   }
 
   .otp-holder {
@@ -135,6 +164,66 @@
 
   .otp-input {
     @apply pl-8 tracking-[20px] border-0 mb-0 bg-bottom bg-repeat-x bg-[left_2rem_top_1rem] w-[220px] outline-none rounded bg-[length:35px];
+  }
+
+  .fine-box {
+    @apply box-shadow: 4px 4px 8px #ddc1a0,-4px -4px 8px #f7e5cc;
+  }
+
+  .mondegreen-box {
+    @apply shadow-[5px_5px_rgba(0,_98,_90,_0.4),_10px_10px_rgba(0,_98,_90,_0.3),_15px_15px_rgba(0,_98,_90,_0.2),_20px_20px_rgba(0,_98,_90,_0.1),_25px_25px_rgba(0,_98,_90,_0.05)]
+  }
+
+  .purplestamp-box {
+    @apply shadow-[5px_5px_0px_0px_rgba(109,40,217)]
+  }
+
+  .brutal-box {
+    @apply shadow-[rgba(6,_24,_44,_0.4)_0px_0px_0px_2px,_rgba(6,_24,_44,_0.65)_0px_4px_6px_-1px,_rgba(255,_255,_255,_0.08)_0px_1px_0px_inset]
+  }
+
+  .jubilation-box {
+    @apply shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]
+  }
+
+  .nimble-box {
+    @apply shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]
+  }
+
+  .india-box {
+    @apply shadow-[0_10px_20px_rgba(255,255,255,1)]
+  }
+
+  .studydesk-box {
+    @apply shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]
+  }
+
+  .aesthetic-box {
+    @apply shadow-[0_3px_10px_rgb(0,0,0,0.2)]
+  }
+
+  .card-one {
+    @apply p-4 mb-6 mx-2 border bg-white rounded-md md:mx-0 dark:bg-gray-800;
+  }
+
+  .attach-button {
+    @apply bg-black text-white py-1 px-4 uppercase rounded font-bold hover:text-black hover:bg-white;
+  }
+
+  .file-upload {
+    @apply w-full text-black text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-2.5 file:px-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-black rounded;
+  }
+
+  .download-button {
+    @apply bg-orange-500 hover:bg-orange-400 border-b-4 border-orange-700 hover:border-orange-500 text-white text-white text-center py-2 px-4 rounded;
+  }
+
+  .view-button {
+    @apply bg-blue-500 hover:bg-blue-400 border-b-4 border-blue-700 hover:border-blue-500 text-white text-white text-center py-2 px-4 rounded;
+  }
+
+  .file {
+    @apply w-full text-black text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded;
   }
 }
 
@@ -167,24 +256,6 @@
 
 /* Material Design Icons End */
 
-@font-face {
-  font-family: 'Han Solo Halftone';
-  src: url('https://www.fontsaddict.com/fontface/han-solo-halftone.ttf');
-}
 
-@font-face {
-  font-family: "Metroplex";
-  src: asset("/fonts/metroplex/Metroplex Shadow.ttf");
-}
-
-@font-face {
-  font-family: 'Voodoo';
-  src: url('https://www.fontsaddict.com/fontface/voodoo-vampire.ttf');
-}
-
-@font-face { 
-    font-family: "shortbaby"; 
-    src: asset("/fonts/shortbaby/shortbaby.ttf") format('truetype'); 
-} 
 
 

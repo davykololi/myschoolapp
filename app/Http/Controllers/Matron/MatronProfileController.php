@@ -15,15 +15,17 @@ class MatronProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:matron');
-        $this->middleware('banned');
-        $this->middleware('matron2fa');
+        $this->middleware('auth');
+        $this->middleware('role:matron');
+        $this->middleware('matron-banned');
+        $this->middleware('checktwofa');
     }
     
     public function matronProfile()
     {
         $user = Auth::user();
-
-    	return view('matron.profile',compact('user'));
+        if($user->hasRole('matron')){
+            return view('matron.profile',compact('user'));
+        }
     }
 }

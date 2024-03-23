@@ -1,9 +1,14 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
+@extends('layouts.admin')
+@section('title', '| Admin Add Notes')
+
+@section('content')
+@role('admin')
+@can('academicRegistrar')
+<!-- frontend-main view -->
+<x-backend-main>
+<div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
+    <div class="w-full">
+        <div class="mx-2 md:mx-8 lg:mx-8">
             <div class="card-header">
                 <h5 class="card-title">CREATE NOTES</h5> 
                 <a href="{{ route('admin.notes.index') }}" class="btn btn-primary pull-right">Back</a>
@@ -26,7 +31,6 @@
                             <input type="text" name="desc" id="desc" class="form-control" placeholder="Description">
                         </div>
                     </div>
-                    @include('ext._get_departments_ids')
                     @include('ext._get_streams_ids')
                     @include('ext._get_teachers_ids')
                     @include('ext._get_subjects_ids')
@@ -37,4 +41,6 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endcan
+@endrole
+@endsection

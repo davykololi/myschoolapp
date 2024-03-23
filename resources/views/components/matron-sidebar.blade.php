@@ -1,3 +1,4 @@
+@role('matron')
 <!-- Sidenav -->
 <nav
   id="sidenav-79"
@@ -443,4 +444,4 @@
   </ul>
 </nav>
 <!-- Sidenav -->
-
+@endrole

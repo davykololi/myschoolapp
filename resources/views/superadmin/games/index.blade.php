@@ -1,4 +1,7 @@
-<x-superadmin> 
+@extends('layouts.superadmin')
+@section('title', '| Games List')
+
+@section('content')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -74,4 +77,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-superadmin>
+@endsection

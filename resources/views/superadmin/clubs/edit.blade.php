@@ -29,7 +29,7 @@
                     </div>
                     @include('ext._attach_teacherdiv')
                     @include('ext._attach_studentdiv')
-                    @include('ext._attach_staffdiv')
+                    @include('ext._attach_subordinatediv')
                     @include('ext._submit_update_button')
                 </form>
             </div>

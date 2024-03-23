@@ -4,5 +4,5 @@
 		<span style="text-align:left;"><b>School Motto:</b> <i class="blue">{{Auth::user()->school->motto}}</i></span>
 		<span class="pull-right"><b style="margin-left: 400px;">Year:</b> <i class="blue">{{ date('Y') }}</i></span>
 	</p>
-	<img src="data:image/png;base64,{!! base64_encode(QrCode::size(100)->generate($title)) !!}" align="right" style="margin-right: 112px; margin-top: -50px;">
+	<img src="data:image/png;base64,{!! base64_encode(QrCode::size(100)->generate($downloadTitle)) !!}" align="right" style="margin-right: 112px; margin-top: -50px;">
 </footer>

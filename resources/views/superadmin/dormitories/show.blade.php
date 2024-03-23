@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Dormitory')
+@section('title', '| Dormitory Details')
 
 @section('content')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
@@ -55,13 +55,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Dormitorry Students:</strong>
-            <ol>
             @forelse($dormitoryStudents as $student)
-                <li>{{ $student->full_name }} {{ $student->stream->name }}</li>
+            <ul>
+                <li>{{ $student->user->full_name }} {{ $student->stream->name }}</li>
+            </ul>
             @empty
             <p>No students assigned to {{ $dormitory->name }}.</p>
             @endforelse
-            </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

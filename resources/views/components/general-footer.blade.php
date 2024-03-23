@@ -1,5 +1,5 @@
 <!-- ====== Footer Section Start -->
-<footer class="relative z-10px bg-white pt-20 pb-10 lg:pt-[120px] lg:pb-20 dark:bg-gray-800 dark:text-slate-400">
+<footer class="relative z-10px bg-white pt-20 pb-10 lg:pt-[120px] lg:pb-20 dark:bg-gray-800 dark:text-slate-400 border-t border-gray-400">
   <div class="container mx-auto">
     <div class="-mx-4 flex flex-wrap">
       <div class="w-full px-4 sm:w-2/3 lg:w-3/12">
@@ -80,15 +80,15 @@
           <ul>
             <li>
               <a
-                href="javascript:void(0)"
+                href="{{ route('about.us') }}"
                 class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
               >
-                About TailGrids
+                About Our School
               </a>
             </li>
             <li>
               <a
-                href="javascript:void(0)"
+                href="{{ route('contact.us') }}"
                 class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
               >
                 Contact & Support
@@ -217,7 +217,7 @@
               </svg>
             </a>
           </div>
-          <p class="text-body-color text-base">&copy; 2025 TailGrids</p>
+          <p class="text-body-color text-base">&copy; {{ date('Y')}} {{ config('app.name')}} {{ __('App. All Rights Reverved') }}</p>
         </div>
       </div>
     </div>

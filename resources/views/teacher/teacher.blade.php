@@ -1,13 +1,16 @@
-<x-teacher>
+@extends('layouts.teacher')
+@section('title', '| Teacher Dashboard')
+
+@section('content')
     <!-- frontend-main view -->
     <x-frontend-main>
-            <div class="container ">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">Teacher Dashboard</div>
+            <div class="container max-w-screen h-screen">
+                <div class="w-full">
+                    <div class="mx-2 md:mx-8 lg:mx-8">
+                        <div class="">
+                            <div class="text-center text-2xl font-bold uppercase">Teacher Dashboard</div>
 
-                            <div class="panel-body">
+                            <div class="mt-8">
                                 You are logged in as a Teacher! Welcome {{ Auth::user()->salutation }} {{Auth::user()->first_name}}
                             </div>
 
@@ -19,18 +22,13 @@
                             </label>
 
                             <div class="avatar">
-  <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-    <img src="{{ asset('/static/avatarb.jpg')}}" />
-  </div>
-</div>
-
-
-
-
-
+                                <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                    <img src="{{ asset('/static/avatarb.jpg')}}" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
     </x-frontend-main>
-</x-teacher>
+@endsection

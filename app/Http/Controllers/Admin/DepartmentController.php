@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\TeacherService;
-use App\Services\StaffService;
+use App\Services\SubordinateService;
 use App\Services\DepartmentService;
 use App\Services\MeetingService;
 use App\Http\Controllers\Controller;
@@ -11,20 +11,21 @@ use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
-    protected $deptService, $teacherService, $staffService, $meetingService;
+    protected $deptService, $teacherService, $subordinateService, $meetingService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(DepartmentService $deptService,TeacherService $teacherService,StaffService $staffService,MeetingService $meetingService)
+    public function __construct(DepartmentService $deptService,TeacherService $teacherService,SubordinateService $subordinateService,MeetingService $meetingService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->deptService = $deptService;
         $this->teacherService = $teacherService;
-        $this->staffService = $staffService;
+        $this->subordinateService = $subordinateService;
         $this->meetingService = $meetingService;
     }
     
@@ -51,13 +52,13 @@ class DepartmentController extends Controller
     {
         //
         $department = $this->deptService->getId($id);
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $deptTeachers = $department->teachers;
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $deptStaffs = $department->staffs;
-        $meetings = $this->meetingService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $deptTeachers = $department->teachers()->with('user')->get();
+        $subordinates = $this->subordinateService->all();
+        $deptSubordinates = $department->subordinates()->with('user')->get();
+        $meetings = $this->meetingService->all();
         $deptMeetings = $department->meetings;
 
-        return view('admin.departments.show',compact('department','teachers','deptTeachers','staffs','deptStaffs','meetings','deptMeetings'));
+        return view('admin.departments.show',compact('department','teachers','deptTeachers','subordinates','deptSubordinates','meetings','deptMeetings'));
     }
 }

@@ -7,11 +7,13 @@ use App\Models\School;
 use App\Models\Assignment;
 use App\Models\Stream;
 use App\Models\Student;
-use App\Models\Staff;
+use App\Models\Subordinate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\FilesUploadTrait;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\AssignFormRequest as StoreRequest;
+use App\Http\Requests\AssignFormRequest as UpdateRequest;
 
 class AssignmentController extends Controller
 {
@@ -23,8 +25,10 @@ class AssignmentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:teacher');
-        $this->middleware('teacher2fa');
+        $this->middleware('auth');
+        $this->middleware('role:teacher');
+        $this->middleware('teacher-banned');
+        $this->middleware('checktwofa');
     }
 
     /**
@@ -35,7 +39,7 @@ class AssignmentController extends Controller
     public function index()
     {
         //
-        $assignments = Auth::user()->assignments()->with('school','teachers','departments','subjects','streams')->latest()->get();
+        $assignments = Auth::user()->teacher->assignments()->with('school','teachers','departments','subjects','streams')->latest()->get();
 
         return view('teacher.assignments.index',compact('assignments'));
     }
@@ -48,11 +52,11 @@ class AssignmentController extends Controller
     public function create()
     {
         //
-        $streams = Stream::all()->pluck('name','id');
-        $students = Student::all()->pluck('full_name','id');
-        $staffs = Staff::all()->pluck('full_name','id');
+        $streams = Stream::all();
+        $students = Student::with('user')->get();
+        $subordinates = Subordinate::with('user')->get();
 
-        return view('teacher.assignments.create',compact('streams','students','staffs'));
+        return view('teacher.assignments.create',compact('streams','students','subordinates'));
     }
 
     /**
@@ -61,28 +65,21 @@ class AssignmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $request->validate([
-                'file' => 'required|mimes:pdf,xlx,csv|max:2048',
-                'name' => 'required',
-                'date_given' => 'required',
-                'deadline' => 'required|date',
-                ]);
-
         $input = $request->all();
         $input['school_id'] = auth()->user()->school->id;
         $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
         $assignment = Assignment::create($input);
-        $teacher = Auth::id();
-        $assignment->teachers()->sync($teacher);
+        $teacherId = Auth::user()->teacher->id;
+        $assignment->teachers()->sync($teacherId);
         $streams = $request->streams;
         $assignment->streams()->sync($streams);
         $students = $request->students;
         $assignment->students()->sync($students);
-        $staffs = $request->staffs;
-        $assignment->staffs()->sync($staffs);
+        $subordinates = $request->subordinates;
+        $assignment->subordinates()->sync($subordinates);
 
         return redirect()->route('teacher.assignments.index')->withSuccess('The assignment created successfully');
 
@@ -110,11 +107,11 @@ class AssignmentController extends Controller
     public function edit(Assignment $assignment)
     {
         //
-        $streams = Stream::all()->pluck('name','id');
-        $students = Student::all()->pluck('full_name','id');
-        $staffs = Staff::all()->pluck('full_name','id');
+        $streams = Stream::all();
+        $students = Student::with('user')->get();
+        $subordinates = Subordinate::with('user')->get();
 
-        return view('teacher.assignments.edit',compact('assignment','streams','students','staffs'));
+        return view('teacher.assignments.edit',compact('assignment','streams','students','subordinates'));
     }
 
     /**
@@ -124,29 +121,23 @@ class AssignmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Assignment $assignment)
+    public function update(UpdateRequest $request, Assignment $assignment)
     {
         //
-        $request->validate([
-                'file' => 'required|mimes:pdf,xlx,csv|max:2048',
-                'name' => 'required',
-                'date_given' => 'required',
-                'deadline' => 'required|date',
-                ]);
         if($assignment){
             Storage::delete('public/files/'.$assignment->file);
             $input = $request->all();
             $input['school_id'] = auth()->user()->school->id;
             $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
             $assignment->update($input);
-            $teacherId = Auth::id();
+            $teacherId = Auth::user()->teacher->id;
             $assignment->teachers()->sync($teacherId);
             $streams = $request->streams;
         	$assignment->streams()->sync($streams);
             $students = $request->students;
             $assignment->students()->sync($students);
-            $staffs = $request->staffs;
-            $assignment->staffs()->sync($staffs);
+            $subordinates = $request->subordinates;
+            $assignment->subordinates()->sync($subordinates);
 
             return redirect()->route('teacher.assignments.index')->withSuccess('The assignment updated successfully');
         }
@@ -164,6 +155,10 @@ class AssignmentController extends Controller
         if($assignment){
             Storage::delete('public/files/'.$assignment->file);
             $assignment->delete();
+            $assignment->teachers()->detach();
+            $assignment->streams()->detach();
+            $assignment->students()->detach();
+            $assignment->subordinates()->detach();
 
             return redirect()->route('teacher.assignments.index')->withSuccess('The assignment deleted successfully');
         }

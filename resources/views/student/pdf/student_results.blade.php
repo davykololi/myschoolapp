@@ -12,13 +12,16 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
+                        <div style="margin-top: 50px; margin-bottom: -30px;margin-right: 5px;">
+                            <x-pdf-portrait-current-date/>
+                        </div>
                         <h2 class="title">
-                            <u style="font-family: impact;margin-top: -40px">{{$title}}</u>
+                            <u>{{$title}}</u>
                         </h2>
                     </div>
                     <div style="width: 100%;text-transform: uppercase;margin-left: -5px;">
-                        <span style="float: left;text-decoration: underline;"><b>Name: </b><i>{{ $markName }}</i></span>
-                        <span style="float: right;text-decoration: underline;margin-right: 15px;"><b>Class:</b> {{$stream->name}}</span>
+                        <span style="float: left;"><b>Name: </b><span class="dotted-underline"><i>{{ $markName }}</i></span></span>
+                        <span style="float: right;margin-right: 15px;"><b>Class:</b> <span class="dotted-underline">{{$stream->name}}</span></span>
                     </div>
                     <div style="margin-top: 40px;">
                     <table>

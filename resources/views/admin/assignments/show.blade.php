@@ -1,4 +1,9 @@
-<x-admin>
+@extends('layouts.admin')
+@section('title', '| Assignment Details')
+
+@section('content')
+@role('admin')
+@can('academicRegistrar')
   <!-- frontend-main view -->
   <x-backend-main>
         <div class="row">
@@ -32,7 +37,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Date Given:</strong>
-            {{ $assignment->date }}
+            {{ $assignment->date_given }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -44,21 +49,15 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Given By:</strong>
-            @foreach($assignment->teachers as $teacher)
-                {{ $teacher->full_name }}
+            @foreach($assignmentTeachers as $teacher)
+                {{ $teacher->user->salutation }} {{ $teacher->user->full_name }}
             @endforeach
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>School:</strong>
-            {{ $assignment->school->name }}
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>File:</strong>
-            <a href="{{route('admin.assignment.download',$assignment->id)}}" class="pdf">
+            <strong>Assignment File:</strong>
+            <a href="{{route('admin.assignment.download',$assignment->id)}}">
                 <x-pdf-svg/>
             </a>
         </div>
@@ -76,17 +75,23 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Assignment Students:</strong>
-            @foreach($assignment->students as $student)
-                {{ $student->name }}
+            @foreach($assignmentStudents as $student)
+                {{ $student->user->full_name }}
+            @endforeach
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Assignment Subordinates:</strong>
+            @foreach($assignmentSubordinates as $subordinate)
+                {{ $subordinate->user->salutation }} {{ $subordinate->user->full_name }}
             @endforeach
         </div>
     </div>
 </div>
-  </x-backend-main>
-</x-admin>
+</x-backend-main>
 
     <!-- PDF VIEWER SCRIPTS -->
-    
     <script>
         PSPDFKit.load({
             container: "#pspdfkit",
@@ -99,6 +104,9 @@
             console.error(error.message);
         });
     </script>
+@endcan
+@endrole
+@endsection
 
 
 

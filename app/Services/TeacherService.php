@@ -6,8 +6,8 @@ use Auth;
 use App\Repositories\TeacherRepository;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\TeacherFormRequest as StoreRequest;
-use App\Http\Requests\TeacherFormRequest as UpdateRequest;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class TeacherService
 {
@@ -48,6 +48,7 @@ class TeacherService
 		$data = $request->validated();
         $data['school_id'] = auth()->user()->school->id;
         $data['blood_group'] = $request->blood_group;
+        $data['position'] = $request->student_position;
         $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
@@ -58,6 +59,7 @@ class TeacherService
 	{
         $data = $request->only('salutation','first_name','middle_name','last_name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history');
         $data['school_id'] = auth()->user()->school->id;
+        $data['position'] = $request->student_position;
         $data['blood_group'] = $request->blood_group;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 

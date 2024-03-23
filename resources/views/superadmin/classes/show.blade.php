@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Class')
+@section('title', '| Class Details')
 
 @section('content')
   <!-- frontend-main view -->

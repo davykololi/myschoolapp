@@ -1,4 +1,7 @@
-<x-teacher>
+@extends('layouts.teacher')
+@section('title', '| Teacher Assignment Details')
+
+@section('content')
     <!-- frontend-main view -->
     <x-frontend-main>
     @include('partials.messages')
@@ -24,13 +27,13 @@
         <div class="form-group">
             <strong>Given To:</strong>
             @foreach($assignment->streams as $stream)
-                <span style="color: green"><b>Class(s):</b></span> {{$stream->name}}
+                <span style="color: green"><b>Stream(s):</b></span> {{$stream->name}}
             @endforeach
             @forelse($assignment->students as $student)
-                <span style="color: green"><b>Student(s):</b></span> {{$student->full_name}},
+                <span style="color: green"><b>Student(s):</b></span> {{$student->user->full_name}},
             @endforeach
-            @forelse($assignment->staffs as $staff)
-                <span style="color: green"><b>Staff(s):</b></span> {{$staff->full_name}},
+            @forelse($assignment->subordinates as $subordinate)
+                <span style="color: green"><b> Sub Staff(s):</b></span> {{$subordinate->user->full_name}},
             @endforeach
         </div>
     </div>
@@ -62,4 +65,4 @@
     </div>
 </div>
 </x-frontend-main>
-</x-teacher>
+@endsection

@@ -1,7 +1,7 @@
 @if($errors->any())
-    <div class="w-1/2 mx-auto text-center my-2">
+    <div class="max-w-screen my-2">
         @foreach($errors->all() as $error)
-        <div class="rounded-md bg-[#FFF0F0] p-2">
+        <div class="rounded-md bg-[#FFF0F0] p-2 mx-2 w-full">
             <p class="flex items-center text-sm font-medium text-[#BC1C21]">
                 <span class="pr-3">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -11,7 +11,7 @@
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M9.4502 11.9992C9.4502 11.6955 9.69644 11.4492 10.0002 11.4492H10.0052C10.309 11.4492 10.5552 11.6955 10.5552 11.9992C10.5552 12.303 10.309 12.5492 10.0052 12.5492H10.0002C9.69644 12.5492 9.4502 12.303 9.4502 11.9992Z" fill="white"></path>
                     </svg>
                 </span>
-                    {{ $error }}
+                <span class="text-center">{{ $error }}</span>
             </p>
         </div>
         @endforeach()

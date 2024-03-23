@@ -28,12 +28,12 @@ class FarmFormRequest extends FormRequest
             return [
                 //
                 'name' => 'required|string|max:100',
-                'farm_type' => 'required|string', 
+                'type' => 'required|string', 
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
-                'farm_type' => 'required|string',
+                'type' => 'required|string',
             ];
         }
     }
@@ -45,13 +45,13 @@ class FarmFormRequest extends FormRequest
             return [
                 //
                 'name.required' => 'The name of the farm is required',
-                'farm_type.required' => 'The category the farm belongs to is required',
+                'type.required' => 'The category the farm belongs to is required',
             ];
         } else {
             return [
                 //
                 'name.required' => 'The name of the farm is required',
-                'farm_type.required' => 'The category the farm belongs to is required',
+                'type.required' => 'The category the farm belongs to is required',
             ];
         }
     }

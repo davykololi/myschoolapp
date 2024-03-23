@@ -1,8 +1,8 @@
-@extends('layouts.error', [
-    'title' => 'No Page Found',
-    'errorCode' => '404',
-    'homeLink' => true,
-])
+@extends('layouts.error')
+
+@section('title')
+{{__('| 404 Page Not Found!') }}
+@endsection
 
 @section('content')
 <!-- ====== Error 404 Section Start -->
@@ -20,10 +20,10 @@
             Oops! That page can’t be found
           </h4>
           <p class="mb-8 text-lg text-white">
-            The page you are looking for it maybe deleted
+            The page you are looking for not found.
           </p>
           <a
-            href="/"
+            href="{{ url()->previous() }}"
             class="hover:text-primary inline-block rounded-lg border border-white px-8 py-3 text-center text-base font-semibold text-white transition hover:bg-white"
           >
             Go To Home

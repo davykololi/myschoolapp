@@ -2,31 +2,34 @@
 
 namespace App\Http\Controllers\Superadmin;
 
+use Auth;
+use App\Models\User;
+use App\Models\Librarian;
 use App\Http\Controllers\Controller;
-use App\Services\SchoolService;
 use App\Services\LibrarianService as LibrnService;
 use App\Models\Library;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\LibrarianFormRequest as StoreRequest;
-use App\Http\Requests\LibrarianFormRequest as UpdateRequest;
+use App\Traits\ImageUploadTrait;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class LibrarianController extends Controller
 {
+    use ImageUploadTrait;
     protected $librnService; 
-    protected $schoolService;
 	/**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(LibrnService $librnService,SchoolService $schoolService)
+    public function __construct(LibrnService $librnService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->librnService = $librnService;
-        $this->schoolService = $schoolService;
     }
 
     /**
@@ -50,10 +53,9 @@ class LibrarianController extends Controller
     public function create()
     {
         //
-        $schools = $this->schoolService->all();
         $libraries = Library::all();
 
-        return view('superadmin.librarians.create',compact('schools','libraries'));
+        return view('superadmin.librarians.create',compact('libraries'));
     }
 
     /**
@@ -65,11 +67,35 @@ class LibrarianController extends Controller
     public function store(StoreRequest $request)
     {
         //
-        $librarian = $this->librnService->create($request);
-        if(!$librarian){
-            return redirect()->route('superadmin.librarians.index')->withErrors('Ooop!, An error occured. Please try again later!');
-        }
-            return redirect()->route('superadmin.librarians.index')->withSuccess(ucwords($librarian->name." ".'info created successfully'));
+        $user = User::create([
+            'salutation' => $request->salutation,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'school_id' => Auth::user()->school->id,
+        ]);
+
+        $user->librarian()->create([
+            'blood_group' => $request->blood_group,
+            'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+            'gender' => $request->gender,
+            'id_no' => $request->id_no,
+            'emp_no' => $request->emp_no,
+            'dob' => $request->dob,
+            'designation' => $request->designation,
+            'phone_no' => $request->phone_no,
+            'history' => $request->history,
+            'position' => $request->position,
+            'school_id' => Auth::user()->school->id,
+            'current_address'   => $request->current_address,
+            'permanent_address' => $request->permanent_address
+        ]);
+
+        $user->assignRole('librarian');
+
+        return redirect()->route('superadmin.librarians.index')->withSuccess(ucwords($user->full_name." ".'info created successfully'));
     }
 
     /**
@@ -96,10 +122,9 @@ class LibrarianController extends Controller
     {
         //
         $librarian = $this->librnService->getId($id);
-        $schools = $this->schoolService->all();
         $libraries = Library::all();
 
-        return view('superadmin.librarians.edit',compact('librarian','schools','libraries'));
+        return view('superadmin.librarians.edit',compact('librarian','libraries'));
     }
 
     /**
@@ -114,10 +139,33 @@ class LibrarianController extends Controller
     	$librarian = $this->librnService->getId($id);
         if($librarian){
             Storage::delete('public/storage/'.$librarian->image);
-            $this->librnService->update($request,$id);
+            $librarian->user()->update([
+                'salutation' => $request->salutation,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'school_id' => Auth::user()->school->id,
+            ]);
 
-        	return redirect()->route('superadmin.librarians.index')->withSuccess(ucwords($librarian->name." ".'info updated successfully'));
-    	}
+            $librarian->update([
+                'blood_group' => $request->blood_group,
+                'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+                'gender' => $request->gender,
+                'id_no' => $request->id_no,
+                'emp_no' => $request->emp_no,
+                'dob' => $request->dob,
+                'designation' => $request->designation,
+                'phone_no' => $request->phone_no,
+                'history' => $request->history,
+                'position' => $request->position,
+                'school_id' => Auth::user()->school->id,
+                'current_address'   => $request->current_address,
+                'permanent_address' => $request->permanent_address
+            ]);
+
+            return redirect()->route('superadmin.librarians.index')->withSuccess(ucwords($librarian->user->full_name." ".'info updated successfully'));
+        }
     }
 
     /**
@@ -131,9 +179,12 @@ class LibrarianController extends Controller
     	$librarian = $this->librnService->getId($id);
         if($librarian){
             Storage::delete('public/storage/'.$librarian->image);
-        	$this->librnService->delete($id);
+            $user = User::findOrFail($librarian->user_id);
+            $user->librarian()->delete();
+            $user->delete();
+            $user->removeRole('librarian');
 
-        	return redirect()->route('superadmin.librarians.index')->withSuccess(ucwords($librarian->name." ".'info deleted successfully'));
-        }
+            return redirect()->route('superadmin.librarians.index')->withSuccess(ucwords($user->full_name." ".'info deleted successfully'));
+        }  
     }
 }

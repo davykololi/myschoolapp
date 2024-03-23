@@ -1,4 +1,9 @@
-<x-admin> 
+@extends('layouts.admin')
+@section('title', '| Edit Exam')
+
+@section('content')
+@role('admin')
+@can('examRegistrar')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full md:p-8 lg:p-8 shadow-2xl">
@@ -16,46 +21,46 @@
                     @include('ext._csrfdiv')
                     <input type="hidden" name="_method" value="PUT">
                     <div class="w-full flex flex-col md:flex-row lg:flex-row mb-4 gap-2">
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="control-label col-sm-2" >Exam Name</label>
                             <div class="flex flex-col">
-                                <input type="text" name="name" id="name" class="form-control" value="{{ $exam->name }}">
+                                <input type="text" name="name" id="name" class="lib-form-input" value="{{ $exam->name }}">
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="w-full" >Start Date</label>
                             <div class="flex flex-col">
                                 <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
-                                    <input type="text" name="start_date" id="start_date" class="w-full" value="{{ $exam->start_date }}">
+                                    <input type="text" name="start_date" id="start_date" class="lib-form-input" value="{{ $exam->start_date }}">
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="control-label col-sm-2" >End Date</label>
                             <div class="flex flex-col">
                                 <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
-                                    <input type="text" name="end_date" id="end_date" class="w-full" value="{{ $exam->end_date }}">
+                                    <input type="text" name="end_date" id="end_date" class="lib-form-input" value="{{ $exam->end_date }}">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="w-full flex flex-col md:flex-row lg:flex-row mb-4 gap-2">
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="w-full" >Year</label>
                             <div class="flex flex-col">
                                 @include('ext._attach_yeardiv')
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="w-full" >Term</label>
                             <div class="flex flex-col">
-                                @include('ext._attach_termdiv')
+                                @include('ext._get_term_id')
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="w-full" >Category</label>
                             <div class="flex flex-col">
-                                <select id="exam_type" type="exam_type" value="{{old('exam_type')}}" class="form-control" name="exam_type">
+                                <select id="exam_type" type="exam_type" value="{{old('exam_type')}}" class="lib-form-input" name="exam_type">
                                     <option value="{!! $exam->type !!}" @if($exam->type) selected @endif>
                                         {!! $exam->type !!}
                                     </option>
@@ -73,19 +78,19 @@
                         </div>
                     </div>
                     <div class="w-full flex flex-col md:flex-row lg:flex-row mb-4 gap-2">
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="w-full" >Subjects</label>
                             <div class="flex flex-col">
                                 @include('ext._attach_subjectdiv')
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="w-full" >Streams</label>
                             <div class="flex flex-col">
                                 @include('ext._attach_streamdiv')
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3">
+                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
                             <label class="w-full" >Status</label>
                             <div class="flex flex-col">
                                 @include('ext._attach_exam_status')
@@ -99,4 +104,6 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endcan
+@endrole
+@endsection

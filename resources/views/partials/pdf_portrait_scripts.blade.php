@@ -8,7 +8,7 @@
 			$text = "Page {PAGE_NUM} of {PAGE_COUNT}";
 			$font = null;
 			$size = 14;
-			$color = array(250,0,0);
+			$color = array(0,0,0);
 			$word_space = 0.0; 
 			$char_space = 0.0;
 			$angle = 0.0;

@@ -20,7 +20,7 @@ class YearRepository implements YearInterface
 
     public function all()
     {
-        return $this->year->all();
+        return $this->year->latest('id')->get();
     }
 
     public function create(array $data)

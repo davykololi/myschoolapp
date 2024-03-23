@@ -70,6 +70,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="control-label col-sm-2" >Phone</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="phone_no" id="phone_no" class="form-control" placeholder="Phone Number">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label col-sm-2" >Core Values</label>
                         <div class="col-sm-10">
                             <textarea name="core_values" rows="5" cols="40" value="{!! old('core_values') !!}" id="summary-ckeditor">

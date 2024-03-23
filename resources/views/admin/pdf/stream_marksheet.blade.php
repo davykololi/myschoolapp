@@ -10,7 +10,7 @@
             <tr>
                 <td class="table-left padding-10"><b>NO</b></td>
                 <td class="table-left padding-10"><b>NAME</b></td>
-                <td class="table-left padding-10"><b>SEX</b></td>
+                <td class="table-left padding-10"><b>GDR</b></td>
                 <td class="table-left padding-10"><b>STATUS</b></td>
                 <td class="table-left padding-10"><b>RATE</b></td>
                 <td class="table-left padding-10"><b>MATHS</b></td>
@@ -204,7 +204,7 @@
             @endif
         </tbody>
         <tfoot>
-            <tr style="background-color: lightgray;">
+            <tr style="border-top: 5px solid black;">
                 <td class="table-left padding-10"><b>#</b></td>
                 <td class="table-left padding-10"><b>MEAN SCORES</b></td>
                 <td class="table-left padding-10"><b>#</b></td>

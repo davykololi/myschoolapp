@@ -2,89 +2,38 @@
 
 namespace App\Models;
 
-use App\Models\StandardSubject;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Str;
-use Exception;
-use Mail;
-use App\Models\UserEmailCode;
 use App\Models\ReportSubjectGrade;
-use App\Mail\SendEmailCode;
-use App\Enums\TeacherRoleEnum;
+use App\Enums\TeacherPositionEnum;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Notifications\Notifiable;
 use	Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use App\Notifications\TeacherResetPasswordNotification;
+use App\Models\CommonUserInformation;
 
-class Teacher extends Authenticatable implements Searchable
+class Teacher extends CommonUserInformation implements Searchable
 {
     use Notifiable;
-    protected $guard = 'teacher';
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'teachers';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','password','is_banned'];
-    protected $appends = ['age'];
-
-    /**
-    * The attributes that should be hidden for arrays.
-    *
-    *@var array
-    */
-    protected $hidden = ['password','remember_token',];
-
     /**
      * The attributes that should be cast.
      *
      * @var array
      */
-    protected $casts = ['email_verified_at' => 'datetime','created_at' => 'datetime:d-m-Y H:i','role'=> TeacherRoleEnum::class];
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-    public function generateCode()
-    {
-        $code = rand(100000,999999);
-  
-        UserEmailCode::updateOrCreate(
-            [ 'teacher_id' => auth()->user()->id ],
-            [ 'code' => $code ]
-        );
-    
-        try {
-  
-            $details = [
-                'title' => 'Mail Sent from'." ".auth()->user()->school->name,
-                'code' => $code,
-                'school' => auth()->user()->school->name,
-            ];
-             
-            Mail::to(auth()->user()->email)->send(new SendEmailCode($details));
-    
-        } catch (Exception $e) {
-            info("Error: ". $e->getMessage());
-        }
-    }
-
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new TeacherResetPasswordNotification($token));
-    }
+    protected $casts = ['email_verified_at' => 'datetime','created_at' => 'datetime:d-m-Y H:i','position'=> TeacherPositionEnum::class];
 
     public function getSearchResult(): SearchResult
     {
@@ -115,11 +64,6 @@ class Teacher extends Authenticatable implements Searchable
     	return $this->belongsToMany('App\Models\Stream')->withTimestamps();
     }
 
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo('App\Models\School')->withDefault();
-    }
-
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Department')->withTimestamps();
@@ -146,16 +90,6 @@ class Teacher extends Authenticatable implements Searchable
         return $this->hasMany(Attendance::class, 'teacher_id', 'id');
     }
 
-    public function meetings(): BelongsToMany
-    {
-        return $this->belongsToMany('App\Models\Meeting')->withTimestamps();
-    }
-
-    public function rewards(): BelongsToMany
-    {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
-    }
-
     public function clubs(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Club')->withTimestamps();
@@ -171,51 +105,9 @@ class Teacher extends Authenticatable implements Searchable
         return $this->belongsTo('App\Models\Admin')->withDefault();
     }
 
-    public function getAgeAttribute()       
-    { 
-        $myDate = $this->dob;
-        $change = Carbon::createFromFormat('d/m/Y',$myDate)->format('d-m-Y H:i');
-        $years = Carbon::parse($change)->age;
-
-        return $years;     
-    }
-
-    public function getImageUrlAttribute()       
-    { 
-        return URL::asset('/storage/storage/'.$this->image);   
-    }
-
-    public function	firstName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
-    public function	middleName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
-    public function	lastName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
-    public function fullName(): Attribute 
-    {               
-        return  new Attribute(                                                           
-            get: fn () => ucfirst($this->first_name. " ".$this->middle_name." ".$this->last_name),                
-        ); 
-    }
-
     public function stream_subjects(): HasMany
     {
-        return $this->hasMany('App\Models\StreamSubjectTeacher','teacher_id','id');
+        return $this->hasMany('App\Models\StreamSubject','teacher_id','id');
     }
 
     public function notes(): HasMany
@@ -251,7 +143,7 @@ class Teacher extends Authenticatable implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('streams','school','students','departments')->get();
+        return $query->with('streams','students','departments','user');
     }
 
     public function grades(): HasMany
@@ -259,69 +151,64 @@ class Teacher extends Authenticatable implements Searchable
         return $this->hasMany('App\Models\GradeSystem','teacher_id','id');
     }
 
-    public function user_email_code(): HasOne
-    {
-        return $this->hasOne('App\Models\UserEmailCode','teacher_id','id');
-    }
-
     public function classTeacher()
     {
-        return $this->role === TeacherRoleEnum::CT;
+        return $this->position === TeacherPositionEnum::CT;
     }
 
     public function headTeacher()
     {
-        return $this->role === TeacherRoleEnum::HT;
+        return $this->position === TeacherPositionEnum::HT;
     }
 
     public function deputyHeadTeacher()
     {
-        return $this->role === TeacherRoleEnum::DHT;
+        return $this->position === TeacherPositionEnum::DHT;
     }
 
     public function headScienceDept()
     {
-        return $this->role === TeacherRoleEnum::HSD;
+        return $this->position === TeacherPositionEnum::HSD;
     }
 
     public function assistantHeadScinceDept()
     {
-        return $this->role === TeacherRoleEnum::AHSD;
+        return $this->position === TeacherPositionEnum::AHSD;
     }
 
     public function headHumanityDept()
     {
-        return $this->role === TeacherRoleEnum::HHD;
+        return $this->position === TeacherPositionEnum::HHD;
     }
 
     public function assistantHeadHumanityDept()
     {
-        return $this->role === TeacherRoleEnum::AHHD;
+        return $this->position === TeacherPositionEnum::AHHD;
     }
 
     public function headMathsDept()
     {
-        return $this->role === TeacherRoleEnum::HMD;
+        return $this->position === TeacherPositionEnum::HMD;
     }
 
     public function assistantHeadMathsDept()
     {
-        return $this->role === TeacherRoleEnum::AHMD;
+        return $this->position === TeacherPositionEnum::AHMD;
     }
 
     public function headLanguagesDept()
     {
-        return $this->role === TeacherRoleEnum::HLD;
+        return $this->position === TeacherPositionEnum::HLD;
     }
 
     public function assistantHeadLanguagesDept()
     {
-        return $this->role === TeacherRoleEnum::AHLD;
+        return $this->position === TeacherPositionEnum::AHLD;
     }
 
     public function staffTeacher()
     {
-        return $this->role === TeacherRoleEnum::ST;
+        return $this->position === TeacherPositionEnum::ST;
     }
 
     public function report_subject_grades(): HasMany

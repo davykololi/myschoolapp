@@ -12,7 +12,7 @@ class Reward extends Model implements Searchable
 {
     //
     protected $table = 'rewards';
-    protected $fillable = ['name','type','purpose','date','school_id','category_reward_id'];
+    protected $fillable = ['name','type','purpose','date','school_id'];
     protected $casts = ['created_at' => 'datetime:d-m-Y'];
 
     public function getSearchResult(): SearchResult
@@ -41,11 +41,6 @@ class Reward extends Model implements Searchable
     	return $this->belongsToMany('App\Models\Student')->withTimestamps();
     }
 
-    public function category_reward(): BelongsTo
-    {
-        return $this->belongsTo('App\Models\CategoryReward')->withDefault();
-    }
-
     public function teachers(): BelongsToMany
     {
     	return $this->belongsToMany('App\Models\Teacher')->withTimestamps();
@@ -56,9 +51,9 @@ class Reward extends Model implements Searchable
         return $this->belongsTo('App\Models\School')->withDefault();
     }
 
-    public function staffs(): BelongsToMany
+    public function subordinates(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Staff')->withTimestamps();
+        return $this->belongsToMany('App\Models\Subordinate')->withTimestamps();
     }
 
     public function department(): BelongsTo
@@ -83,6 +78,6 @@ class Reward extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('students','category_reward','teachers','school','staffs','department','streams','libraries')->get();
+        return $query->with('students','category_reward','teachers','school','subordinates','department','streams','libraries')->get();
     }
 }

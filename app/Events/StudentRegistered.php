@@ -13,17 +13,17 @@ use Illuminate\Queue\SerializesModels;
 class StudentRegistered
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $student;
+    public $user;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($student)
+    public function __construct($user)
     {
         //
-        $this->student = $student;
+        $this->user = $user;
     }
 
     /**

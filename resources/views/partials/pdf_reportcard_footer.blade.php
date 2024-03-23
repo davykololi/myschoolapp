@@ -4,5 +4,5 @@
 		<span style="text-align:left;"><b>School Motto:</b> <i>{{Auth::user()->school->motto}}</i></span>
 		<span class="pull-right"><b style="margin-left: 400px;">Year:</b> <i>{{ date('Y') }}</i></span>
 	</p>
-	<img src="data:image/png;base64,{!! base64_encode(QrCode::size(100)->generate($title.' '.$markName.' '.'CLASS POSITION:'.''.$overalPosition.' '.'STREAM POSITION:'.''.$streamPosition)) !!}" align="right" style="margin-right: 110px; margin-top: -50px;">
+	<img src="data:image/png;base64,{!! base64_encode(QrCode::size(100)->generate($downloadTitle.' '.'CLASS POSITION:'.''.$overalPosition.' '.'STREAM POSITION:'.''.$streamPosition)) !!}" align="right" style="margin-right: 110px; margin-top: -50px;">
 </footer>

@@ -25,9 +25,10 @@ class ReportcardTotalsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
     }
 
     public function twoExamsClassTotalsStore(Request $request)
@@ -61,11 +62,9 @@ class ReportcardTotalsController extends Controller
             return back()->withErrors('Please populate class marks first!');
         }
 
-        $classSt = $class->students;
-        $classStudents = $classSt->toArray();
-
+        $classStudents = $class->students()->with('user')->get();
         foreach($classStudents as $student){
-            $name = $student['full_name'];
+            $name = $student->user->full_name;
             $mark = Mark::when($yearId,function($query,$yearId){
                     return $query->where('year_id',$yearId);
                 })->when($termId,function($query,$termId){
@@ -137,11 +136,9 @@ class ReportcardTotalsController extends Controller
             return back()->withErrors('Please populate class marks first!');
         }
 
-        $classSt = $class->students;
-        $classStudents = $classSt->toArray();
-
+        $classStudents = $class->students()->with('user')->get();
         foreach($classStudents as $student){
-            $name = $student['full_name'];
+            $name = $student->user->full_name;
             $mark = Mark::when($yearId,function($query,$yearId){
                     return $query->where('year_id',$yearId);
                 })->when($termId,function($query,$termId){
@@ -215,11 +212,9 @@ class ReportcardTotalsController extends Controller
         }
 
         $classId = $stream->class->id;
-        $streamSt = $stream->students;
-        $streamStudents = $streamSt->toArray();
-
+        $streamStudents = $stream->students()->with('user')->get();
         foreach($streamStudents as $student){
-            $name = $student['full_name'];
+            $name = $student->user->full_name;
             $mark = Mark::when($yearId,function($query,$yearId){
                     return $query->where('year_id',$yearId);
                 })->when($termId,function($query,$termId){
@@ -294,11 +289,9 @@ class ReportcardTotalsController extends Controller
         }
 
         $classId = $stream->class->id;
-        $streamSt = $stream->students;
-        $streamStudents = $streamSt->toArray();
-
+        $streamStudents = $stream->students()->with('user')->get();
         foreach($streamStudents as $student){
-            $name = $student['full_name'];
+            $name = $student->user->full_name;
             $mark = Mark::when($yearId,function($query,$yearId){
                     return $query->where('year_id',$yearId);
                 })->when($termId,function($query,$termId){

@@ -1,4 +1,7 @@
-<x-superadmin>
+@extends('layouts.superadmin')
+@section('title', '| Intakes List')
+
+@section('content')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl h-screen">
@@ -24,10 +27,10 @@
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow  dark:text-slate-400 dark:bg-black">
                                 <tr>
-                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">INTAKE NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="40%">DESCRIPTION</th>
-                                    <th scope="col" class="px-2 py-4" width="30%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="35%">INTAKE NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="45%">DESCRIPTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -47,13 +50,13 @@
                                         <form action="{{route('superadmin.intakes.destroy',$intake->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.intakes.show', $intake->id) }}" class="show">
+                                            <a type="button" href="{{ route('superadmin.intakes.show', $intake->id) }}">
                                                 <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.intakes.edit', $intake->id) }}" class="edit">
+                                            <a type="button" href="{{ route('superadmin.intakes.edit', $intake->id) }}">
                                                 <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete?')">
+                                            <button type="submit" onclick="return confirm('Are you sure to delete?')">
                                                 <x-delete-svg/>
                                             </button>
                                         </form>
@@ -70,4 +73,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-superadmin>
+@endsection

@@ -14,13 +14,19 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ Auth::user()->image }}">
+            <img style="width:15%;border: 10px double brown;" src="/storage/storage/{{ Auth::user()->librarian->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{$user->full_name}}">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{$user->full_name}}
+            {{ $user->full_name }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Position:</strong>
+            {{ $user->librarian->position->value }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -32,31 +38,37 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>DOB:</strong>
-            {{ $user->dob }}
+            {{ $user->librarian->dob }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Age:</strong>
-            {{ $user->age }} Years
+            {{ $user->librarian->age }} Years
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Postal Address:</strong>
-            {{ $user->address }}
+            <strong>Current Postal Address:</strong>
+            {{ $user->librarian->current_address }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Permanent Postal Address:</strong>
+            {{ $user->librarian->permanent_address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>More:</strong>
-            {!! $user->history !!}
+            {!! $user->librarian->history !!}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <span>
-                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($user->created_at)) }}
+                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($user->librarian->created_at)) }}
             </span>
         </div>
     </div>

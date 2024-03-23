@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Parent;
 
 use Auth;
 use PDF;
+use App\Models\Student;
 use App\Models\Year;
 use App\Models\Term;
 use App\Models\Stream;
@@ -22,8 +23,10 @@ class PdfMarksResultsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:parent');
-        $this->middleware('banned');
+        $this->middleware('auth');
+        $this->middleware('role:parent');
+        $this->middleware('parent-banned');
+        $this->middleware('checktwofa');
     }
     /**
      * Handle the incoming request.
@@ -31,7 +34,7 @@ class PdfMarksResultsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function  downloadResults(Request $request)
+    public function  childExamResults(Request $request)
     {
         $currentYear = date('Y');
         $year = Year::where('year',$currentYear)->first();
@@ -46,6 +49,7 @@ class PdfMarksResultsController extends Controller
         $name = $request->child_name;
         $marks = streamMarks($yearId,$termId,$examId,$streamId);
 
+        $year = Year::whereId($yearId)->first();
         $term = Term::where('id',$termId)->first();
         $exam = Exam::where('id',$examId)->first();
         $stream = Stream::where(['id'=>$streamId])->first();
@@ -61,8 +65,9 @@ class PdfMarksResultsController extends Controller
         $examGrades = Grade::with('class','year','term','subject','exam','teacher')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
         $generalGrades = GeneralGrade::with('class','year','term','exam')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
 
-        $title = $exam->name." ".'Results';
-        $pdf = PDF::loadView('parent.pdf.student_results',compact('marks','year','term','exam','stream','school','title','name','markName','examGrades','generalGrades'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
+        $title = $year->year." ".$term->name." ".$exam->name." ".'Results';
+        $downloadTitle = $school->name." ".$markName." ".$title;
+        $pdf = PDF::loadView('parent.pdf.child_exam_results',compact('marks','year','term','exam','stream','school','title','name','markName','examGrades','generalGrades','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -76,6 +81,6 @@ class PdfMarksResultsController extends Controller
         $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,25, array(0,0,0),2,2,-30);
         
-        return $pdf->download($title.'.pdf',array("Attachment" => 0));
+        return $pdf->download($downloadTitle.'.pdf',array("Attachment" => 0));
     }
 }

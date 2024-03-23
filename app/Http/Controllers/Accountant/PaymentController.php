@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Accountant;
 
+use Auth;
 use App\Services\PaymentService;
 use App\Services\YearService;
 use App\Services\TermService;
 use App\Services\ClassService;
 use App\Services\StreamService;
 use App\Services\StudentService;
+use App\Services\PaymentSectionService;
 use App\Models\PaymentRecord;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreateFormRequest;
@@ -16,20 +18,22 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    protected $paymentService, $studentService, $yearService, $termService, $classService, $streamService;
+    protected $paymentSectionService ,$paymentService, $studentService, $yearService, $termService, $classService, $streamService;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(PaymentService $paymentService,StudentService $studentService,YearService $yearService,TermService $termService,ClassService $classService,StreamService $streamService)
+    public function __construct(PaymentSectionService $paymentSectionService,PaymentService $paymentService,StudentService $studentService,YearService $yearService,TermService $termService,ClassService $classService,StreamService $streamService)
     {
-        $this->middleware('auth:accountant');
-        $this->middleware('banned');
-        $this->middleware('accountant2fa');
+        $this->middleware('auth');
+        $this->middleware('role:accountant');
+        $this->middleware('accountant-banned');
+        $this->middleware('checktwofa');
         $this->studentService = $studentService;
         $this->paymentService = $paymentService;
+        $this->paymentSectionService = $paymentSectionService;
         $this->yearService = $yearService;
         $this->termService = $termService;
         $this->classService = $classService;
@@ -54,13 +58,6 @@ class PaymentController extends Controller
     public function create()
     {
         //
-        $students = $this->studentService->all();
-        $years = $this->yearService->all();
-        $terms = $this->termService->all();
-        $classes = $this->classService->all();
-        $streams = $this->streamService->all();
-
-        return view('accountant.payments.create',compact('students','years','terms','classes','streams'));
     }
 
     /**
@@ -72,9 +69,16 @@ class PaymentController extends Controller
     public function store(CreateFormRequest $request)
     {
         //
-        $payment = $this->paymentService->create($request);
+        $user = Auth::user();
+        if(Auth::check() && $user->hasRole('accountant')){
+            $payment = $this->paymentService->create($request);
+            if($payment){
+                $terms = $request->terms;
+                $payment->terms()->sync($terms);
 
-        return back()->withSuccess(ucwords($payment->title." ".'info created successfully'));
+                return back()->withSuccess('Done successfully');
+            }
+        }
     }
 
     /**
@@ -86,9 +90,6 @@ class PaymentController extends Controller
     public function show($id)
     {
         //
-        $payment = $this->paymentService->getId($id);
-
-        return view('accountant.payments.show',compact('payment'));
     }
 
     /**
@@ -100,14 +101,18 @@ class PaymentController extends Controller
     public function edit($id)
     {
         //
-        $payment = $this->paymentService->getId($id);
-        $students = $this->studentService->all();
-        $years = $this->yearService->all();
-        $terms = $this->termService->all();
-        $classes = $this->classService->all();
-        $streams = $this->streamService->all();
+        $user = Auth::user();
+        if(Auth::check() && $user->hasRole('accountant')){
+            $payment = $this->paymentService->getId($id);
+            $students = $this->studentService->all();
+            $years = $this->yearService->all();
+            $terms = $this->termService->all();
+            $classes = $this->classService->all();
+            $streams = $this->streamService->all();
+            $paymentSections = $this->paymentSectionService->all();
 
-        return view('accountant.payments.edit',compact('payment','students','years','terms','classes','streams'));
+            return view('accountant.payments.edit',compact('payment','students','years','terms','classes','streams','paymentSections'));  
+        }
     }
 
     /**
@@ -120,12 +125,17 @@ class PaymentController extends Controller
     public function update(UpdateFormRequest $request, $id)
     {
         //
-        $payment = $this->paymentService->getId($id);
-        if($payment){
-            $this->paymentService->update($request,$id);
+        $user = Auth::user();
+        if(Auth::check() && $user->hasRole('accountant')){
+            $payment = $this->paymentService->getId($id);
+            if($payment){
+                $this->paymentService->update($request,$id);
+                $terms = $request->terms;
+                $payment->terms()->sync($terms);
 
-            return redirect()->route('accountant.payments.index')->withSuccess(ucwords($payment->title." ".'info updated successfully'));
-        }
+                return redirect()->route('accountant.student.profile')->withSuccess(ucwords($payment->title." ".'info updated successfully'));
+            }
+        } 
     }
 
     /**
@@ -137,11 +147,15 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         //
-        $payment = $this->paymentService->getId($id);
-        if($payment){
-            $this->paymentService->delete($id);
+        $user = Auth::user();
+        if(Auth::check() && $user->hasRole('accountant')){
+            $payment = $this->paymentService->getId($id);
+            if($payment){
+                $this->paymentService->delete($id);
+                $payment->terms()->detach();
 
-            return back()->withSuccess(ucwords($payment->title." ".'info deleted successfully'));
-        }
+                return back()->withSuccess(ucwords($payment->title." ".'info deleted successfully'));
+            }
+        } 
     }
 }

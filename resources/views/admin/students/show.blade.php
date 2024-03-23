@@ -1,11 +1,16 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Admin Student Details')
+
+@section('content')
+@role('admin')
+@can('studentRegistrar')
+<!-- frontend-main view -->
+<x-backend-main>
 <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
-            <h2 class="uppercase">{{ $student->full_name }} Profile</h2>
+            <h2 class="uppercase">{{ $student->user->full_name }} Profile</h2>
             <br/>
         </div>
         <div class="pull-right">
@@ -28,7 +33,7 @@
   </div>
   <div class="p-6">
     <h5 class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50">
-      {{ $student->full_name }}
+      {{ $student->user->full_name }}
     </h5>
   </div>
 </div>
@@ -39,7 +44,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Role:</strong>
-            {{ $student->role->name }}
+            {{ $student->position->value }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -93,7 +98,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $student->email }}
+            {{ $student->user->email }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -176,21 +181,21 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->first_name }}'s Awards:</strong>
+            <strong>{{ $student->user->first_name }}'s Awards:</strong>
             <ol>
             @forelse($student->rewards as $reward)
             <a href="{{route('admin.rewards.show',$reward->id)}}">
                 <li>{{ $reward->name }} <span style="color: blue">Purpose:</span> {{ $reward->purpose }}.</li>
             </a>
             @empty
-                <p class="text-[red]">{{ $student->first_name }} notyet recieved any award.</p>
+                <p class="text-[red]">{{ $student->user->first_name }} notyet recieved any award.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->first_name }}'s Assignments:</strong>
+            <strong>{{ $student->user->first_name }}'s Assignments:</strong>
             <ol>
             @forelse($student->assignments as $assignment)
                 <li>
@@ -203,28 +208,28 @@
                     {{ $assignment->file}}
                 </li>
             @empty
-                <p class="text-[red]">{{ $student->first_name }} notyet been given any assignment(s).</p>
+                <p class="text-[red]">{{ $student->user->first_name }} notyet been given any assignment(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->first_name }}'s Clubs:</strong>
+            <strong>{{ $student->user->first_name }}'s Clubs:</strong>
             <ol>
             @forelse($student->clubs as $club)
             <a href="{{route('admin.clubs.show',$club->id)}}">
                 <li>{{ $club->name }}</li>
             </a>
             @empty
-                <p class="text-[red]">{{ $student->first_name }} notyet been assigned to any club.</p>
+                <p class="text-[red]">{{ $student->user->first_name }} notyet been assigned to any club.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $student->first_name }}'s Meetings:</strong>
+            <strong>{{ $student->user->first_name }}'s Meetings:</strong>
             <ol>
             @forelse($student->meetings as $key => $meeting)
             <a href="{{route('admin.meetings.show',$meeting->id)}}">
@@ -234,14 +239,14 @@
                 </li>
             </a>
             @empty
-                <p class="text-[red]">{{ $student->first_name }} notyet been assigned to any meeting(s).</p>
+                <p class="text-[red]">{{ $student->user->first_name }} notyet been assigned to any meeting(s).</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>More About {{ $student->first_name }}:</strong>
+            <strong>More About {{ $student->user->first_name }}:</strong>
             {!! $student->history !!}
         </div>
     </div>
@@ -255,26 +260,28 @@
 <br/>
 <div class="row">
     <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('student.attachsubjectform')
+        @include('admin.student.attach_detach_subjectform')
     </div>
 </div>
 
 <div class="row">
     <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('student.attachrewardform')
+        @include('admin.student.attach_detach_rewardform')
     </div>
 </div>
 
 <div class="row">
     <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('student.attachassignmentform')
+        @include('admin.student.attach_detach_assignmentform')
     </div>
 </div>
 
 <div class="row">
     <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('student.attachmeetingform')
+        @include('admin.student.attach_detach_meetingform')
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endcan
+@endrole
+@endsection

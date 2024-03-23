@@ -43,9 +43,10 @@ class ExcelController extends Controller
      */
     public function __construct( YearService $yearService, TermService $termService, ExamService $examService, ClassService $classService, StreamService $streamService, TeacherService $teacherService, SubjectService $subjectService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->yearService = $yearService;
         $this->termService = $termService;
         $this->examService = $examService;

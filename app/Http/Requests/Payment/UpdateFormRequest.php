@@ -12,14 +12,10 @@ class UpdateFormRequest extends FormRequest
         return true;
     }
 
-
     public function rules()
     {
         return [
-            'title' => 'required|string',
-            'description' => 'required|string',
-            'amount' => 'required',
-            'ref_no' => 'required|string',
+            'year' => 'required',
         ];
     }
 
@@ -28,10 +24,7 @@ class UpdateFormRequest extends FormRequest
 
         return [
                 //
-                'title.required' => 'The payment title is required',
-                'description.required' => 'The payment description is required',
-                'amount.required' => 'The payment amount is required',
-                'ref_no.required' => 'The payment reference number is required',   
+                'year.required' => 'The year is required',   
             ];
     }
 }

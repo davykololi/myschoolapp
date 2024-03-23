@@ -1,6 +1,9 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Award Details')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
@@ -62,4 +65,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

@@ -33,4 +33,3 @@ initTE({ Datepicker, Input, Select, Carousel, Ripple, Collapse, Sidenav, Chart, 
 
 import 'flowbite';
 
-// OTP

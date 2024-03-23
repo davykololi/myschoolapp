@@ -2,11 +2,11 @@
 @section('title', '| Edit Year')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
-<div class="row">
-    <div class="col-lg-12">
+<x-backend-main>
+<div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen">
+    <div class="w-full">
         @include('partials.errors')
-        <div class="card">
+        <div class="mx-2 md:mx-8 lg:mx-8">
             <div class="card-header">
                 <h5 class="card-title">EDIT YEAR</h5>
                 <a href="{{ route('superadmin.years.index') }}" class="btn btn-primary pull-right">Back</a>
@@ -33,5 +33,5 @@
         </div>
     </div>
 </div>
-</main>
+</x-backend-main>
 @endsection

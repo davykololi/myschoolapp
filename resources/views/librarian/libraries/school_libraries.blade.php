@@ -3,12 +3,12 @@
 
 @section('content')
 <x-frontend-main>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+    <div class="max-w-screen mb-8 h-screen">
+        <div class="w-full">
+            <div class="mx-2 md:mx-8">
                 <div class="panel panel-default">
-                    <div class="panel-heading"><h3 style="text-transform: uppercase;">{{$school->name}} Libraries</h3></div>
-                    <div class="panel-body">
+                    <div><h3 class="text-center text-2xl font-bold uppercase">{{$school->name}} Libraries</h3></div>
+                    <div class="mt-8">
                         <div>
                             @if(!empty($schoolLibraries))
                             @forelse($schoolLibraries as $key => $library)

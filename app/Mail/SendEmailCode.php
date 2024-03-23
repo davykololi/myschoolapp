@@ -35,7 +35,7 @@ class SendEmailCode extends Mailable
     {
         return new Envelope(
             from: config('app.name'),
-            subject: 'School App Login Code',
+            subject: 'Login Code',
         );
     }
 

@@ -7,5 +7,5 @@
 		</span>
 		<span style="float: right;margin-right: 400px;"><b>Year:</b> <i class="blue">{{ date('Y') }}</i></span>
 	</p>
-	<img src="data:image/png;base64,{!! base64_encode(QrCode::size(150)->generate($title)) !!}" align="right" style="margin-right: 110px; margin-top: -65px;">
+	<img src="data:image/png;base64,{!! base64_encode(QrCode::size(150)->generate($downloadTitle)) !!}" align="right" style="margin-right: 110px; margin-top: -65px;">
 </footer>

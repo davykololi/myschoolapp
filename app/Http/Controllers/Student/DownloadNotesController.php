@@ -15,9 +15,10 @@ class DownloadNotesController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:student');
-        $this->middleware('banned');
-        $this->middleware('student2fa');
+        $this->middleware('auth');
+        $this->middleware('role:student');
+        $this->middleware('student-banned');
+        $this->middleware('checktwofa');
     }
     
     public function dowmloadNotes($noteId)

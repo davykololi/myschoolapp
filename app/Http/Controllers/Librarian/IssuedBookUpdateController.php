@@ -16,9 +16,10 @@ class IssuedBookUpdateController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:librarian');
-        $this->middleware('banned');
-        $this->middleware('librarian2fa');
+        $this->middleware('auth');
+        $this->middleware('role:librarian');
+        $this->middleware('librarian-banned');
+        $this->middleware('checktwofa');
     }
 
     public function issuedBookReturned(IssuedBook $booker) //Set issued book as Returned

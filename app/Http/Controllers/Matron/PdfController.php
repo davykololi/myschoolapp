@@ -17,16 +17,17 @@ class PdfController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:matron');
-        $this->middleware('banned');
-        $this->middleware('matron2fa');
+        $this->middleware('auth');
+        $this->middleware('role:matron');
+        $this->middleware('matron-banned');
+        $this->middleware('checktwofa');
     }
 
     public function dormitoryStudents(Request $request)
     {
         $dormitoryId = $request->dormitory;
         $dormitory = Dormitory::whereId($dormitoryId)->firstOrFail();
-        $dormitoryStudents = $dormitory->students()->with('stream','school')->inRandomOrder()->get();
+        $dormitoryStudents = $dormitory->students()->with('stream','school','user','dormitory','bed_number')->inRandomOrder()->get();
         $school = Auth::user()->school;
         $title = $dormitory->name." ".'Dormitory Students';
         $downloadTitle = $school->name." ".$title;
@@ -35,7 +36,7 @@ class PdfController extends Controller
             return back()->with('error','This dormitory has no students at the moment!');
         }
 
-        $pdf = PDF::loadView('matron.pdf.dormitory_students',compact('dormitory','dormitoryStudents','title','school'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('matron.pdf.dormitory_students',compact('dormitory','dormitoryStudents','title','school','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();

@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show An Intake')
+@section('title', '| Intake Details')
 
 @section('content')
 <main role="main" class="container"  style="margin-top: 5px" id="main">

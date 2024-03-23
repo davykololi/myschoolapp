@@ -83,9 +83,9 @@ class Stream extends Model implements Searchable
         return $this->belongsToMany('App\Models\Subject')->withTimestamps();
     }
 
-    public function stream_subject_teachers(): HasMany
+    public function stream_subjects(): HasMany
     {
-        return $this->hasMany('App\Models\StreamSubjectTeacher','stream_id','id');
+        return $this->hasMany('App\Models\StreamSubject','stream_id','id');
     }
 
     public function stream_subjects_number(): BelongsToMany
@@ -145,7 +145,7 @@ class Stream extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','school','class','stream_subject_teachers','stream_section');
+        return $query->with('teachers','students','school','class','stream_subjects','stream_section','timetables');
     }
 
     public function grades(): HasManyThrough

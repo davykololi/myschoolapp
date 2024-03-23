@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Librarian;
 
 use PDF;
+use Auth;
 use Carbon\Carbon;
 use App\Models\School;
 use App\Models\Book;
@@ -19,20 +20,23 @@ class PdfController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:librarian');
-        $this->middleware('banned');
-        $this->middleware('librarian2fa');
+        $this->middleware('auth');
+        $this->middleware('role:librarian');
+        $this->middleware('librarian-banned');
+        $this->middleware('checktwofa');
     }
 
-    public function libraryBooks(School $school)
+    public function libraryBooks()
     {
+        $school = Auth::user()->school;
         if($school->books->isEmpty()){
             return back()->withErrors('School libraries have no books at the moment!');
         }
 
         $books = $school->books()->with('school','library')->get();
     	$title = 'Library Books';
-    	$pdf = PDF::loadView('librarian.pdf.library_books',['school'=>$school,'books'=>$books,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $downloadTitle = $school->name." ".$title;
+    	$pdf = PDF::loadView('librarian.pdf.library_books',['school'=>$school,'books'=>$books,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -41,12 +45,12 @@ class PdfController extends Controller
         $canvas->set_opacity(.2,"Multiply");
         $canvas->page_text($width/5, $height/2,strtoupper('Library Books'),null,70, array(0,0,0),2,2,-30);
         
-        return $pdf->download($school->name." ".'Library Books'.'.pdf');
+        return $pdf->download($downloadTitle.'.pdf');
     }
 
     public function borrowedBooks()
     {
-        $issuedBooks = Issuedbook::with('book','student.stream')->get();
+        $issuedBooks = Issuedbook::with('book','student.stream','student.user')->get();
 
         if($issuedBooks->isEmpty()){
             return back()->withErrors('There are no issued books at the moment');
@@ -54,7 +58,8 @@ class PdfController extends Controller
 
         $school = auth()->user()->school;
         $title = 'Library Issued Books';
-        $pdf = PDF::loadView('librarian.pdf.borrowed_books',['issuedBooks'=>$issuedBooks,'title'=>$title,'school'=>$school])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('librarian.pdf.borrowed_books',['issuedBooks'=>$issuedBooks,'title'=>$title,'school'=>$school,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
 
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -64,14 +69,14 @@ class PdfController extends Controller
         $canvas->set_opacity(.2,"Multiply");
         $canvas->page_text($width/5, $height/2,strtoupper('Library Issued Books'),null,50, array(0,0,0),2,2,-30);
         
-        return $pdf->download($school->name." ".'Issued Books'.'.pdf');
+        return $pdf->download($downloadTitle.'.pdf');
     }
 
     public function issuedBooksByReturnDate(Request $request)
     {
         $school = auth()->user()->school;
         $returnDate = $request->return_date;
-        $issuedBooks = Issuedbook::where('return_date',$returnDate)->with('book','student.stream')->get();
+        $issuedBooks = Issuedbook::where('return_date',$returnDate)->with('book','student.stream','student.user')->get();
 
         if(is_null($returnDate)){
             return back()->withErrors('Provide return date before you procced!');
@@ -80,7 +85,8 @@ class PdfController extends Controller
         }
 
         $title = 'Library Books To Be Returned On'." ".$returnDate;
-        $pdf = PDF::loadView('librarian.pdf.issuedbooks_bydate',['issuedBooks'=>$issuedBooks,'title'=>$title,'school'=>$school])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('librarian.pdf.issuedbooks_by_returndate',['issuedBooks'=>$issuedBooks,'title'=>$title,'school'=>$school,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
 
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -90,14 +96,14 @@ class PdfController extends Controller
         $canvas->set_opacity(.2,"Multiply");
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,20, array(0,0,0),2,2,-30);
         
-        return $pdf->download($title.'.pdf');
+        return $pdf->download($downloadTitle.'.pdf');
     }
 
     public function issuedBooksByDateOfIssue(Request $request)
     {
         $school = auth()->user()->school;
         $issuedDate = $request->issued_date;
-        $issuedBooks = Issuedbook::where('issued_date',$issuedDate)->with('book','student.stream')->get();
+        $issuedBooks = Issuedbook::where('issued_date',$issuedDate)->with('book','student.stream','student.user')->get();
 
         if(is_null($issuedDate)){
             return back()->withErrors('Provide date of issue before you procced!');
@@ -106,7 +112,8 @@ class PdfController extends Controller
         }
 
         $title = 'Library Books Issued On'." ".$issuedDate;
-        $pdf = PDF::loadView('librarian.pdf.issuedbooks_dateofissue',['issuedBooks'=>$issuedBooks,'title'=>$title,'school'=>$school])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('librarian.pdf.issuedbooks_dateofissue',['issuedBooks'=>$issuedBooks,'title'=>$title,'school'=>$school,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
 
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -116,6 +123,6 @@ class PdfController extends Controller
         $canvas->set_opacity(.2,"Multiply");
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,20, array(0,0,0),2,2,-30);
         
-        return $pdf->download($title.'.pdf');
+        return $pdf->download($downloadTitle.'.pdf');
     }
 }

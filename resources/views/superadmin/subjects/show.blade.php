@@ -1,8 +1,8 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Subject')
+@section('title', '| Subject Details')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<div class="max-w-screen">
     <div class="row">
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
@@ -46,5 +46,5 @@
         </div>
     </div>
 </div>
-</main>
+</div>
 @endsection

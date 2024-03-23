@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Librarian;
 
+use Auth;
 use App\Models\Library;
 use App\Models\Book;
 use App\Models\IssuedBook;
@@ -19,9 +20,10 @@ class LibrarianController extends Controller
      */
     public function __construct(BookService $bookService)
     {
-        $this->middleware('auth:librarian');
-        $this->middleware('banned');
-        $this->middleware('librarian2fa');
+        $this->middleware('auth');
+        $this->middleware('role:librarian');
+        $this->middleware('librarian-banned');
+        $this->middleware('checktwofa');
         $this->bookService = $bookService;
     }
  
@@ -32,47 +34,60 @@ class LibrarianController extends Controller
      */
     public function index()
     {
-
-        return view('librarian.librarian');
+        $user = Auth::user();
+        if($user->hasRole('librarian')){
+            return view('librarian.librarian');
+        }
     }
 
     public function schoolLibraries()
     {
         $user = auth()->user();
-        $school = $user->school;
-        $schoolLibraries = $school->libraries;
+        if($user->hasRole('librarian')){
+            $school = $user->school;
+            $schoolLibraries = $school->libraries;
 
-        return view('librarian.libraries.school_libraries',compact('school','schoolLibraries'));
+            return view('librarian.libraries.school_libraries',compact('school','schoolLibraries'));
+        }
     }
 
     public function library(Library $library)
     {
-        $libraryMeetings = $library->meetings;
+        $user = auth()->user();
+        if($user->hasRole('librarian')){
+            $libraryMeetings = $library->meetings;
 
-        return view('librarian.libraries.library',compact('library','libraryMeetings'));
+            return view('librarian.libraries.library',compact('library','libraryMeetings'));
+        }
     }
 
     public function book(Request $request)
     {
-        $bookId = $request->book;
+        $user = auth()->user();
+        if($user->hasRole('librarian')){
+            $bookId = $request->book;
 
-        if(is_null($bookId)){
-            return back()->withErrors('Please select the title of the book first!');
+            if(is_null($bookId)){
+                return back()->withErrors('Please select the title of the book first!');
+            }
+            $book = Book::where('id',$bookId)->first();
+
+            return view('librarian.search.book',compact('book'));
         }
-        $book = Book::where('id',$bookId)->first();
-
-        return view('librarian.search.book',compact('book'));
     }
 
     public function bookAuthor(Request $request)
     {
-        $bookAuthor = $request->book_author;
+        $user = auth()->user();
+        if($user->hasRole('librarian')){
+            $bookAuthor = $request->book_author;
 
-        if(is_null($bookAuthor)){
-            return back()->withErrors('Please select the author of the book first!');
+            if(is_null($bookAuthor)){
+                return back()->withErrors('Please select the author of the book first!');
+            }
+            $book = Book::where('author',$bookAuthor)->first();
+
+            return view('librarian.search.book_author',compact('book'));
         }
-        $book = Book::where('author',$bookAuthor)->first();
-
-        return view('librarian.search.book_author',compact('book'));
     }
 }

@@ -2,6 +2,8 @@
 @section('title', '| School Departments')
 
 @section('content')
+<div class="container">
+    <div class="mt"><x-pdf-landscape-current-date/></div>
     <table>
         <caption class="table_caption">
             <h2 class="title" style="margin-top: -20px"><u>{{$title}}</u></h2>
@@ -10,6 +12,7 @@
             <tr>
                 <td class="top-bottom-pad left"><b>NO</b></td>
                 <td class="top-bottom-pad left"><b>NAME</b></td>
+                <td class="top-bottom-pad left"><b>SECTION</b></td>
                 <td class="top-bottom-pad left"><b>PHONE NO</b></td>
                 <td class="top-bottom-pad left"><b>HEAD</b></td>
                 <td class="top-bottom-pad left"><b>ASSISTANT</b></td>
@@ -17,13 +20,14 @@
         </thead>
         <tbody>
             @if(!empty($schoolDepts))
-            @forelse($schoolDepts as $key=>$schoolDept)
+            @forelse($schoolDepts as $schoolDept)
             <tr>
-                <td class="left">{{ $loop->iteration}}</td>
-                <td class="left">{{ $schoolDept->name}}</td>
-                <td class="left">{{ $schoolDept->phone_no}}</td>
-                <td class="left">{{ $schoolDept->head_name}}</td>
-                <td class="left">{{ $schoolDept->asshead_name}}</td>
+                <td class="left">{{ $loop->iteration }}</td>
+                <td class="left">{{ $schoolDept->name }}</td>
+                <td class="left">{{ $schoolDept->dept_section->name }}</td>
+                <td class="left">{{ $schoolDept->phone_no }}</td>
+                <td class="left">{{ $schoolDept->head_name }}</td>
+                <td class="left">{{ $schoolDept->asshead_name }}</td>
             @empty
                 <td colspan="10" style="color: red">
                     No department(s) formed in {{$school->name}}.
@@ -32,5 +36,6 @@
             @endforelse
             @endif
         </tbody>
-    </table>        
+    </table> 
+</div>       
 @endsection

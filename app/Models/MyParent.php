@@ -7,32 +7,21 @@ use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Notifications\ParentResetPasswordNotification;
 
-class MyParent extends Authenticatable implements Searchable
+class MyParent extends Model implements Searchable
 {
     use HasFactory, Notifiable;
-    //
-    protected $guard = 'parent';
-
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'parents';
-    protected $fillable = ['salutation','name','email','image','id_no','phone_no','school_id','password','is_banned','lock'];
-
-    /**
-    * The attributes that should be hidden for arrays.
-    *
-    *@var array
-    */
-    protected $hidden = ['password','remember_token',];
+    protected $fillable = ['image','gender','id_no','phone_no','current_address','permanent_address','is_banned','lock','user_id','school_id'];
 
     public function sendPasswordResetNotification($token)
     {
@@ -50,9 +39,14 @@ class MyParent extends Authenticatable implements Searchable
             );
     }
 
-    public function school(): BelongsTo
+    public function user() 
     {
-    	return $this->belongsTo('App\Models\School')->withDefault();
+        return $this->belongsTo(User::class)->withDefault();
+    }
+
+    public function school() 
+    {
+        return $this->belongsTo(School::class)->withDefault();
     }
 
     public function meetings(): BelongsToMany
@@ -77,6 +71,6 @@ class MyParent extends Authenticatable implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','children');
+        return $query->with('children','user');
     }
 }

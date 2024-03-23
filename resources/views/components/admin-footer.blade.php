@@ -75,7 +75,7 @@
         </div>
     </div>
     <div class="py-6 px-4 bg-gray-700 md:flex md:items-center md:justify-between">
-        <span class="text-sm text-gray-300 sm:text-center">© 2022 <a href="https://flowbite.com">{{ config('app.name') }}™</a>
+        <span class="text-sm text-gray-300 sm:text-center">© {{ date('Y') }} <a href="https://flowbite.com">{{ config('app.name') }}™</a>
             . All Rights Reserved.
         </span>
         <div class="flex mt-4 space-x-6 sm:justify-center md:mt-0">
@@ -97,3 +97,5 @@
         </div>
     </div>
 </footer>
+
+

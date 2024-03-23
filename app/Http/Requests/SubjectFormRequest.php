@@ -29,13 +29,13 @@ class SubjectFormRequest extends FormRequest
                 //
                 'name' => 'required|string|max:100|unique:subjects',
                 'department' => 'required|exists:departments,id',
-                'subject_category' => 'required|exists:category_subjects,id',
+                'type' => 'required|exists:category_subjects,id',
             ];
         } else {
             return [
-                'name' => 'required|string|max:100|unique:subjects',
+                'name' => 'required|string|max:100',
                 'department' => 'required|exists:departments,id',
-                'subject_category' => 'required|exists:category_subjects,id',
+                'type' => 'required',
             ];
         }
     }
@@ -48,14 +48,14 @@ class SubjectFormRequest extends FormRequest
                 //
                 'name.required' => 'The name of the subject is required',
                 'department.required' => 'The department the subject belogs to is required',
-                'subject_category.required' => 'The category this subject belongs to is required',
+                'type.required' => 'The category this subject belongs to is required',
             ];
         } else {
             return [
                 //
                 'name.required' => 'The name of the subject is required',
                 'department.required' => 'The department the subject belogs to is required',
-                'subject_category.required' => 'The category this subject belongs to is required', 
+                'type.required' => 'The category this subject belongs to is required', 
             ];
         }
     }

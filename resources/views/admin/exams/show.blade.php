@@ -1,6 +1,11 @@
-<x-admin> 
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Exam Details')
+
+@section('content')
+@role('admin')
+@can('examRegistrar')
+<!-- frontend-main view -->
+<x-backend-main>
     <div class="row">
     @include('partials.messages')
     <div class="col-md-12 margin-tb">
@@ -88,4 +93,6 @@
     @include('exam.attachsubjectform')
 </div>
 </x-backend-main>
-</x-admin>
+@endcan
+@endrole
+@endsection

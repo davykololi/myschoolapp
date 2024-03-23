@@ -23,8 +23,10 @@ class ParentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:parent');
-        $this->middleware('banned');
+        $this->middleware('auth');
+        $this->middleware('role:parent');
+        $this->middleware('parent-banned');
+        $this->middleware('checktwofa');
     }
  
     /**
@@ -34,15 +36,15 @@ class ParentController extends Controller
      */
     public function index()
     {
-        return view('parent');
+        return view('parent.parent');
     }
 
     public function parentChildren()
     {
         $user = Auth::user();
-        $parentChildren = $user->children()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records')->get();
+        $parentChildren = $user->parent->children()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','user')->get();
 
-        return view('parent.students',compact('user','parentChildren'));
+        return view('parent.children',compact('user','parentChildren'));
     }
 
     public function showChild(Student $child)
@@ -56,7 +58,7 @@ class ParentController extends Controller
 
         if(!is_null($currentExam)){
             $results = $currentExam->name." "."Results";
-            return view('parent.show_student',compact('child','streamSubjects','currentExam','streamSubjects','results'));
+            return view('parent.show_child',compact('child','streamSubjects','currentExam','streamSubjects','results'));
         }
 
         return view('parent.show_student',compact('child','streamSubjects','currentExam'));

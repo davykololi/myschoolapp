@@ -3,35 +3,34 @@
 
 @section('content')
 <div class="container"> 
-    <x-pdf-portrait-current-date/>
+    <div class="mt"><x-pdf-portrait-current-date/></div>
     <div>
     <div><h2 class="title"><u>{{ $title }}</u></h2></div>
-    <h3>
-        <span style="margin-left: 10px;margin-right: 10px;"><b>Total:</b> {{ $students->count() }} <i>Students</i></span>
-        <span style="margin-left: 10px;margin-right: 10px;">
+    <div style="font-family: Harrington;margin-bottom: 10px;">
+        <b>Total:</b> 
+        <span class="dotted-underline">{{ $students->count() }} <i>Students</i> -
             @if($males > 1)
              {{ $males }} <i>Males</i>
             @else
              {{ $males }} <i>Male</i>
             @endif
-        </span>
-        <span style="margin-left: 10px;margin-right: 10px;">
+        
             @if($females > 1)
              {{ $females }} <i>Females</i>
             @else
              {{ $females }} <i>Female</i>
             @endif
         </span>
-    </h3>
+    </div>
     <div>
     <table>
         <thead>
             <tr>
-                <td width="10%"><b>NO</b></td>
+                <td width="7%"><b>NO</b></td>
                 <td width="40%"><b>NAME</b></td>
-                <td width="5%"><b>SEX</b></td>
-                <td width="20%"><b>CLASS</b></td>
-                <td width="25%"><b>ADM NO</b></td>
+                <td width="5%"><b>GDR</b></td>
+                <td width="23%"><b>CLASS</b></td>
+                <td width="25%"><b>ADMISSION NO</b></td>
             </tr>
         </thead>
         <tbody>
@@ -39,7 +38,7 @@
             @forelse($students as $student)
             <tr>
                 <td>{{ $loop->iteration}}</td>
-                <td class="table-left">{{ $student->full_name }}</td>
+                <td class="table-left">{{ $student->user->full_name }}</td>
                 @if($student->gender === "Male")
                 <td class="table-left">{{ __('M') }}</td>
                 @elseif($student->gender === "Female")

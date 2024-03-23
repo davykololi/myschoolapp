@@ -1,18 +1,23 @@
 @extends('layouts.matron')
  
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h1 style="text-transform: uppercase;">Dormitories</h1>
+@role('matron')
+<x-frontend-main>
+<div class="max-w-screen h-screen">
+    <div class="w-full">
+        <div class="mx-2 md:mx-8">
+            <div class="">
+                <div>
+                    <div>
+                        <h2 class="uppercase text-center text-2xl font-bold">Dormitories</h2>
                     </div>
-                    <div class="panel-body">
+                    <div class="pt-4">
                         <ol>
                             @foreach($dormitories as $dormitory)
                             <li>
-                                <a href="{{route('matron.dormitory',$dormitory->id)}}">{{ $dormitory->name}}</a>
+                                <a href="{{route('matron.dormitory',$dormitory->id)}}">
+                                    {{ $dormitory->name }} dormitory has {{ $dormitory->students->count()}} students. It's headed by {{ $dormitory->dom_head }} and assisted by {{ $dormitory->ass_head }}.
+                                </a>
                             </li>
                             @endforeach
                         </ol>
@@ -21,4 +26,7 @@
             </div>
         </div>
     </div>
+</div>
+</x-frontend-main>
+@endrole
 @endsection

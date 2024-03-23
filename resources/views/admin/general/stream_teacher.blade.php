@@ -1,4 +1,7 @@
-<x-admin>
+@extends('layouts.admin')
+@section('title', '| Stream Teacher')
+
+@section('content')
   <!-- frontend-main view -->
   <x-backend-main>
     <div class="row">
@@ -149,4 +152,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

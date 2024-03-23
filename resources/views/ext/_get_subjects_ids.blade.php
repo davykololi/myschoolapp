@@ -1,5 +1,4 @@
-                            <select id="subject" type="subject" value="{{old('subject')}}" class="py-1 bg-gray-800 text-white w-full md:w-[220px] my-1 focus:shadow-outline focus:bg-black" name="exam">
-                                <option value="">Select Subject</option>
+                            <select id="subject" type="subject" value="{{old('subject')}}" class="w-full bg-transparent" name="subject" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Subject">
                                 @foreach ($subjects as $subject)
                                     <option value="{{$subject->id}}">{{$subject->name}}</option>
                                 @endforeach

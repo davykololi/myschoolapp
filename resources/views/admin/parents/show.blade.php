@@ -1,7 +1,9 @@
 @extends('layouts.admin')
-@section('title', '| Show Parent')
+@section('title', '| Parent Details')
 
 @section('content')
+@role('admin')
+@can('studentRegistrar')
 <x-backend-main>
     <div class="row">
     @include('partials.messages')
@@ -24,7 +26,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $myParent->salutation }} {{ $myParent->name }}
+            {{ $myParent->user->salutation }} {{ $myParent->user->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -36,17 +38,17 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $myParent->email }} 
+            {{ $myParent->user->email }} 
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Children To {{ $myParent->salutation }} {{ $myParent->name }}</strong>
+            <strong>Children To {{ $myParent->user->salutation }} {{ $myParent->user->full_name }}</strong>
             <ol>
                 @if(!is_null($parentChildren))
                 @foreach($parentChildren as $child)
                 <li>
-                    {{$child->full_name}} <span style="color: green">Class</span> {{$child->stream->name}}
+                    {{$child->user->full_name}} <span style="color: green">Class</span> {{$child->stream->name}}
                 </li>
                 @endforeach
                 @endif
@@ -61,4 +63,6 @@
     </div>
 </div>
 </x-backend-main>
+@endcan
+@endrole
 @endsection

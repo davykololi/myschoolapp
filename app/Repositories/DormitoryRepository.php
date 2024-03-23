@@ -20,7 +20,7 @@ class DormitoryRepository implements DormitoryInterface
 
     public function all()
     {
-        return $this->dom->eagerLoaded();
+        return $this->dom->eagerLoaded()->get();
     }
 
     public function create(array $data)

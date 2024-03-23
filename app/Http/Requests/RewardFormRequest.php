@@ -30,14 +30,12 @@ class RewardFormRequest extends FormRequest
                 'name' => 'required|string|max:100',
                 'purpose' => 'required|string|max:500',
                 'date' => 'required|date',
-                'reward_category' => 'required|string|max:100',
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
                 'purpose' => 'required|string|max:500',
                 'date' => 'required|date',
-                'reward_category' => 'required|string|max:100',
             ];
         }
     }
@@ -51,7 +49,6 @@ class RewardFormRequest extends FormRequest
                 'name.required' => 'The name of the reward is required',
                 'purpose.required' => 'The purpose of the reward is required',
                 'date.required' => 'The date of issuing the reward is required',
-                'reward_category.required' => 'The category the reward belongs to is required',
             ];
         } else {
             return [
@@ -59,7 +56,6 @@ class RewardFormRequest extends FormRequest
                 'name.required' => 'The name of the reward is required',
                 'purpose.required' => 'The purpose of the reward is required',
                 'date.required' => 'The date of issuing the reward is required',
-                'reward_category.required' => 'The category the reward belongs to is required', 
             ];
         }
     }

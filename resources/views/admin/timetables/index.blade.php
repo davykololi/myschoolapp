@@ -1,15 +1,17 @@
-<x-admin> 
-  <!-- frontend-main view -->
-  <x-backend-main>
-<div class="row">
-    <div class="col-lg-12">
-    @include('partials.messages')
+@extends('layouts.admin')
+@section('title', '| Timetables List')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
+<div class="max-w-screen">
+    <div class="w-full">
     <!-- Posts list -->
     @if(!empty($timetables))
         <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>TIMETABLES LIST</h2>
+            <div class="">
+                <div>
+                    <h2 class="text-center text-2xl font-bold">TIMETABLES LIST</h2>
                 </div>
                 <div style="float:right;">
                     <a type="button" class="bg-blue-700 text-white px-2 py-1 rounded" href="{{route('admin.timetables.create')}}">
@@ -22,15 +24,15 @@
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                     <div class="overflow-x-auto">
-                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                        <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
                                 <tr>
-                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="30%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="20%">TIMETABLE</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">FOR</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="30%">FOR</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -45,7 +47,7 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>
-                                            <a href="{{route('admin.timetable.download',$timetable->id)}}" class="pdf">
+                                            <a href="{{route('admin.timetable.download',$timetable->id)}}">
                                                 <x-pdf-svg/>
                                             </a>
                                         </div>
@@ -57,13 +59,13 @@
                                         <form action="{{route('admin.timetables.destroy',$timetable->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('admin.timetables.show', $timetable->id) }}" class="show">
+                                            <a type="button" href="{{ route('admin.timetables.show', $timetable->id) }}">
                                                 <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('admin.timetables.edit', $timetable->id) }}" class="edit">
+                                            <a type="button" href="{{ route('admin.timetables.edit', $timetable->id) }}">
                                                 <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$timetable->desc}}?')">
+                                            <button type="submit" onclick="return confirm('Are you sure to delete {{$timetable->desc}}?')">
                                                 <x-delete-svg/>
                                             </button>
                                         </form> 
@@ -80,4 +82,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

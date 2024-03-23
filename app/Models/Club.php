@@ -41,9 +41,9 @@ class Club extends Model implements Searchable
         return $this->belongsTo('App\Models\School')->withDefault();
     }
 
-    public function staffs(): BelongsToMany
+    public function subordinates(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Staff')->withTimestamps();
+        return $this->belongsToMany('App\Models\Subordinate')->withTimestamps();
     }
 
     public function streams(): BelongsToMany
@@ -71,6 +71,6 @@ class Club extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','teachers','streams','staffs','students','assignments','meetings')->get();
+        return $query->with('school','teachers','streams','subordinates','students','assignments','meetings')->get();
     }
 }

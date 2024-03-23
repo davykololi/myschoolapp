@@ -1,8 +1,8 @@
-@extends('layouts.error', [
-    'title' => 'Server error',
-    'errorCode' => '500',
-    'homeLink' => false,
-])
+@extends('layouts.error')
+
+@section('title')
+{{__('| 500 Internal Server Error!') }}
+@endsection
 
 @section('content')
 <!-- ====== Error 404 Section Start -->

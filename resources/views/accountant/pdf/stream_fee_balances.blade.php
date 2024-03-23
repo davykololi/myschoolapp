@@ -5,16 +5,16 @@
 <div class="container"> 
     <div>
         <div>
-            <x-pdf-portrait-current-date/>
+            <div class="mt"><x-pdf-portrait-current-date/></div>
             <div><h3 class="title"><u>{{$title}}</u></h3></div>
             <div>
                 <table>
                     <thead>
                         <tr>
-                            <td width="10%"><b>NO</b></td>
+                            <td width="5%"><b>NO</b></td>
                             <td width="40%"><b>NAME</b></td>
-                            <td width="5%"><b>SEX</b></td>
-                            <td width="20%"><b>ADM NO</b></td>
+                            <td width="5%"><b>GDR</b></td>
+                            <td width="25%"><b>ADM NO</b></td>
                             <td width="25%"><b>BALANCE</b></td>
                         </tr>
                     </thead>
@@ -23,7 +23,7 @@
                         @foreach($streamStudents as $key => $value)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td class="left">{{ $value->full_name}}</td>
+                            <td class="left">{{ $value->user->full_name}}</td>
                             @if($value->gender === "Male")
                             <td class="left">{{ __('M') }}</td>
                             @elseif($value->gender === "Female")
@@ -39,7 +39,8 @@
                             @else
                             <td style="color:green;">
                                 <span class="left">Kshs:</span>
-                                <span style="float:right;">{{ number_format($value->fee_balance,2) }}</td>
+                                <span style="float:right;">{{ number_format($value->fee_balance,2) }}</span>
+                            </td>
                             @endif
                         </tr>
                         @endforeach

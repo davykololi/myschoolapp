@@ -32,6 +32,7 @@ class SchoolTableSeeder extends Seeder
         		'vision' => 'To provide the best education to our students',
         		'mission' => 'To be the best learning institution in Kenya',
         		'email' => 'lizarac@gmail.com',
+                'phone_no' => '+254724907865',
         		'postal_address' => 'P.O Box 67099, Naivasha',
         		'core_values' => 'N/A',
         		'image' => 'image.png',

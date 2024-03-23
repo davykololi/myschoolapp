@@ -3,17 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use Auth;
+use App\Models\User;
+use App\Models\Student;
+use App\Models\MyParent;
 use App\Http\Controllers\Controller;
 use App\Services\ParentService;
 use Illuminate\Http\Request;
+use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ParentFormRequest as StoreRequest;
 use App\Http\Requests\ParentFormRequest as UpdateRequest;
 use Illuminate\Support\Facades\Hash;
-use App\Traits\ImageUploadTrait;
 
 class MyParentController extends Controller
 {
+    use ImageUploadTrait;
     protected $parentService;
     /**
      * Create a new controller instance.
@@ -22,9 +26,10 @@ class MyParentController extends Controller
      */
     public function __construct(ParentService $parentService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->parentService = $parentService;
     }
 
@@ -61,9 +66,29 @@ class MyParentController extends Controller
     public function store(StoreRequest $request)
     {
         //
-        $myParent = $this->parentService->create($request);
+        $user = User::create([
+            'salutation' => $request->salutation,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'school_id' => Auth::user()->school->id,
+        ]);
 
-        return redirect()->route('admin.parents.index')->withSuccess(ucwords($myParent->name." ".'info created successfully'));
+        $user->parent()->create([
+            'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+            'gender' => $request->gender,
+            'id_no' => $request->id_no,
+            'phone_no' => $request->phone_no,
+            'school_id' => Auth::user()->school->id,
+            'current_address'   => $request->current_address,
+            'permanent_address' => $request->permanent_address
+        ]);
+
+        $user->assignRole('parent');
+
+        return redirect()->route('admin.parents.index')->withSuccess(ucwords($user->full_name." ".'info created successfully'));
     }
 
     /**
@@ -76,7 +101,7 @@ class MyParentController extends Controller
     {
         //
         $myParent = $this->parentService->getId($id);
-        $parentChildren = $myParent->children()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records')->get();
+        $parentChildren = $myParent->children()->eagerLoaded()->get();
 
         return view('admin.parents.show',compact('myParent','parentChildren'));
     }
@@ -105,12 +130,29 @@ class MyParentController extends Controller
     public function update(UpdateRequest $request, $id)
     {
         //
-        $myParent = $this->parentService->getId($id);
-        if($myParent){
-            Storage::delete('public/storage/'.$myParent->image);
-            $this->parentService->update($request,$id);
+        $parent = MyParent::findOrFail($id);
+        if($parent){
+            Storage::delete('public/storage/'.$parent->image);
+            $parent->user()->update([
+                'salutation' => $request->salutation,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'school_id' => Auth::user()->school->id,
+            ]);
 
-            return redirect()->route('admin.parents.index')->withSuccess(ucwords($myParent->name." ".'info updated successfully'));
+            $parent->update([
+                'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+                'gender' => $request->gender,
+                'id_no' => $request->id_no,
+                'phone_no' => $request->phone_no,
+                'school_id' => Auth::user()->school->id,
+                'current_address'   => $request->current_address,
+                'permanent_address' => $request->permanent_address
+            ]);
+
+            return redirect()->route('admin.parents.index')->withSuccess(ucwords($parent->user->full_name." ".'info updated successfully'));
         }
     }
 
@@ -123,12 +165,15 @@ class MyParentController extends Controller
     public function destroy($id)
     {
         //
-        $myParent = $this->parentService->getId($id);
-        if($myParent){
-            Storage::delete('public/storage/'.$myParent->image);
-            $myParent->delete();
+        $parent = MyParent::findOrFail($id);
+        if($parent){
+            Storage::delete('public/storage/'.$parent->image);
+            $user = User::findOrFail($parent->user_id);
+            $user->parent()->delete();
+            $user->delete();
+            $user->removeRole('parent');
 
-            return redirect()->route('admin.parents.index')->withSuccess(ucwords($myParent->name." ".'info deleted successfully'));
-        }
+            return redirect()->route('admin.parents.index')->withSuccess(ucwords($user->full_name." ".'info deleted successfully'));
+        } 
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Charts;
 
 use Auth;
+use App\Models\Student;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 
 class StudentsChart
@@ -16,8 +17,9 @@ class StudentsChart
 
     public function build(): \ArielMejiaDev\LarapexCharts\BarChart
     {
-        $females = Auth::user()->school->students()->where('gender','Female')->count();
-        $males = Auth::user()->school->students()->where('gender','Male')->count();
+        
+        $females = Student::where('user_id',Auth::id())->where('gender','Female')->count();
+        $males = Student::where('user_id',Auth::id())->where('gender','Male')->count();
 
         return $this->chart->barChart()
             ->setTitle('School Students Bar Chart.')

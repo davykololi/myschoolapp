@@ -1,4 +1,7 @@
-<x-admin> 
+@extends('layouts.admin')
+@section('title', '| Admin Club Details')
+
+@section('content')
   <!-- frontend-main view -->
   <x-backend-main>
     <div class="row">
@@ -8,23 +11,11 @@
             <h2 style="text-transform: uppercase;">{{ $club->name }} Details</h2>
             <br/>
         </div>
+        <div class="flex flex-row">
+            <a href="{{ url()->previous() }}" class="label label-primary pull-right">Back</a>
+        </div>
         <div style="text-align: center;">
             @include('partials.errors')
-        </div>
-        <div class="flex flex-row">
-            <div class="flex flex-col">
-                <label>Students</label>
-                <a href="{{route('admin.club.students',$club->id)}}" class="pdf w-fit">
-                     <x-pdf-svg/>
-                </a>
-            </div>
-            <div class="flex flex-col mx-2">
-                <label>Teachers</label>
-                <a href="{{route('admin.club.teachers',$club->id)}}" class="pdf w-fit">
-                    <x-pdf-svg/>
-                </a>
-            <br/>
-            <a href="{{ url()->previous() }}" class="label label-primary pull-right">Back</a>
         </div>
     </div>
 </div>
@@ -53,7 +44,7 @@
             <ol>
             @forelse($clubTeachers as $teacher)
             <a href="{{route('superadmin.teachers.show',$teacher->id)}}">
-                <li>{{ $teacher->salutation }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
+                <li>{{ $teacher->user->salutation }} {{ $teacher->user->full_name }} {{ $teacher->phone_no }}</li>
             </a>
             @empty
             <p>No teachers(s) assigned to {{ $club->name }} yet.</p>
@@ -65,9 +56,9 @@
         <div class="form-group">
             <strong>{{ $club->name }} Substaffs:</strong>
             <ol>
-            @forelse($clubStaffs as $staff)
-            <a href="{{route('superadmin.staffs.show',$staff->id)}}">
-                <li>{{ $staff->salutation }} {{ $staff->full_name }} - {{ $staff->phone_no }}</li>
+            @forelse($clubSubordinates as $subordinate)
+            <a href="{{route('superadmin.subordinates.show',$subordinate->id)}}">
+                <li>{{ $subordinate->user->salutation }} {{ $subordinate->user->full_name }} - {{ $subordinate->phone_no }}</li>
             </a>
             @empty
             <p>No substaff(s) assigned to {{ $club->name }} yet.</p>
@@ -81,7 +72,7 @@
             <ol>
             @forelse($clubStudents as $student)
             <a href="{{route('admin.students.show',$student->id)}}">
-                <li>{{ $student->full_name }} {{ $student->stream->name }}</li>
+                <li>{{ $student->user->full_name }} {{ $student->stream->name }}</li>
             </a>
             @empty
             <p>No student(s) assigned to {{ $club->name }} yet.</p>
@@ -111,10 +102,10 @@
                 <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($club->created_at)) }}</span>
         </div>
     </div>
-    @include('club.attachstudentform')
-    @include('club.attachteacherform')
-    @include('club.attachstaffform')
-    @include('club.attachmeetingform')
+    @include('admin.club.attach_detach_studentform')
+    @include('admin.club.attach_detach_teacherform')
+    @include('admin.club.attach_detach_subordinateform')
+    @include('admin.club.attach_detach_meetingform')
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

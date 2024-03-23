@@ -54,9 +54,9 @@ class Assignment extends Model
         return $this->belongsToMany('App\Models\Dormitory')->withTimestamps();
     }
 
-    public function staffs(): BelongsToMany
+    public function subordinates(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Staff')->withTimestamps();
+        return $this->belongsToMany('App\Models\Subordinate')->withTimestamps();
     }
 
     public function farms(): BelongsToMany
@@ -98,6 +98,6 @@ class Assignment extends Model
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','teachers','departments','subjects','streams')->latest()->get();
+        return $query->with('school','teachers','departments','subjects','streams','subordinates')->latest()->get();
     }
 }

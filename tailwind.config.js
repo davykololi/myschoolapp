@@ -13,17 +13,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'poppins': ['Poppins', 'sans-serif'],
-        'montserrat': ['Montserrat'],
-        'lato': ['Lato'],
-        'garamond': ['Garamond'],
-        'glory': ["glory","sans-serif"], 
-        'pop': ["pop","sans"],
-        'shortbaby': ["shortbaby, sans"],
-        'branda': ["Branda",'Poppins'],
-        'metroplex': ["Metroplex"],
-        'hansolo': ["Han Solo Halftone"],
-        'voodoo': ["VooDoo"],
+        Oswald: ['Oswald', 'sans-serif'],
       }
     }
   },

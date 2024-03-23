@@ -1,13 +1,14 @@
 @extends('layouts.librarian')
+@section('title', '| Student Library Profile')
 
 @section('content') 
   <!-- frontend-main view -->
   <x-frontend-main>
-    <div>
+    <div class="max-w-screen mb-8">
         <div class="w-full">
             <div class="flex flex-col">
                 <div class="mb-2">
-                    <h2 class="uppercase text-center font-bold text-2xl">{{ $student->full_name }} Library Profile</h2>
+                    <h2 class="uppercase text-center font-bold text-2xl">{{ $student->user->full_name }} Library Profile</h2>
                 </div>
                 <div class="mt-4 w-full">
                     @include('partials.messages')
@@ -37,7 +38,7 @@
                                         <div class="ml-2">@include('partials.student-avatar')</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $student->full_name  }}</div>
+                                        <div>{{ $student->user->full_name  }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $student->admission_no  }}</div>
@@ -60,7 +61,7 @@
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                     <div class="overflow-x-auto">
-                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                        <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
@@ -79,12 +80,12 @@
                             <tbody>
                             @if(!empty($issuedBooks))
                             @forelse($issuedBooks as $key => $booker)
-                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-800">
+                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $loop->iteration}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{$booker->student->full_name}}</div>
+                                        <div>{{$booker->student->user->full_name}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$booker->book->title}}</div>
@@ -100,14 +101,14 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         @if($booker->returned == 0)
-                                        <div>
-                                            <p type="button" class="bg-[red] text-white w-fit px-2 rounded">
+                                        <div class="w-full">
+                                            <p type="button" class="bg-[red] text-white text-center px-4 rounded">
                                                 {{$booker->returned ? 'YES':'NO'}}
                                             </p>
                                         </div>
                                         @else
-                                        <div>
-                                            <p type="button" class="bg-[green] text-white w-fit px-2 rounded">
+                                        <div class="w-full">
+                                            <p type="button" class="bg-[green] text-white text-center px-4 rounded">
                                                 {{$booker->returned ? 'YES':'NO'}}
                                             </p>
                                         </div>
@@ -115,33 +116,37 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         @if($booker->returned_status == 1)
-                                        <div>
-                                            {{$booker->returned_status ? 'GOOD' : 'POOR' }}
+                                        <div class="w-full">
+                                            <p type="button" class="bg-[green] text-white text-center px-4 rounded">
+                                                {{$booker->returned_status ? 'GOOD' : 'POOR' }}
+                                            </p>
                                         </div>
                                         @else
-                                        <div>
-                                            {{$booker->returned_status ? 'GOOD':'POOR'}}
+                                        <div class="w-full">
+                                            <p type="button" class="bg-[red] text-white text-center px-4 rounded">
+                                                {{$booker->returned_status ? 'GOOD':'POOR'}}
+                                            </p>
                                         </div>
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <form action="{{route('librarian.bookers.destroy',$booker->id)}}" method="POST">
+                                        <form action="{{route('librarian.bookers.destroy',$booker->id)}}" method="POST" class="inline-flex">
                                             @csrf
                                             @method('DELETE')
-                                            <a href="{{ route('librarian.bookers.show', $booker->id) }}" class="bg-green-800 text-white px-2 py-1 transition delay-300 duration-300 ease-in-out inline-flex mx-0.5 rounded">
-                                                Details
+                                            <a href="{{ route('librarian.bookers.show', $booker->id) }}">
+                                                <x-show-svg/>
                                             </a>
-                                            <a href="{{ route('librarian.bookers.edit', $booker->id) }}" class="bg-yellow-500 text-white py-1 px-2 inline-flex mx-0.5 rounded">
-                                                Edit
+                                            <a href="{{ route('librarian.bookers.edit', $booker->id) }}">
+                                                <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="transition bg-red-700 text-white py-1 px-2 inline-flex mx-0.5 rounded" onclick="return confirm('Are you sure to delete {{$booker->book->title}}?')">
-                                                Delete
+                                            <button type="submit" onclick="return confirm('Are you sure to delete {{$booker->book->title}}?')">
+                                                <x-delete-svg/>
                                             </button>
                                         </form>
                                     </td>
                             @empty
                                     <td colspan="10" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter h-12 dark:bg-gray-800 dark:text-slate-400">
-                                        No books issued to {{ $student->full_name }} at the moment.
+                                        No books issued to {{ $student->user->full_name }} at the moment.
                                     </td>
                                 </tr>
                             @endforelse

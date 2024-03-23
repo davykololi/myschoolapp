@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Student;
 use App\Models\Teacher;
-use App\Models\Staff;
+use App\Models\Subordinate;
 use App\Models\Club;
 use App\Models\Department;
 use App\Models\Dormitory;
@@ -37,9 +37,10 @@ class SearchController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
     }
     
     public function search(Request $request)
@@ -52,7 +53,7 @@ class SearchController extends Controller
         $searchResults = (new Search())
                         ->registerModel(Student::class,['first_name','middle_name','last_name','phone_no','admission_no','dob','email'])
                         ->registerModel(Teacher::class,['first_name','middle_name','last_name','email','id_no','emp_no','dob','designation','phone_no'])
-                        ->registerModel(Staff::class,['first_name','middle_name','last_name','email','emp_no','id_no','dob','designation','phone_no'])
+                        ->registerModel(Subordinate::class,['first_name','middle_name','last_name','email','emp_no','id_no','dob','designation','phone_no'])
                         ->registerModel(Club::class,['name','code','reg_date'])
                         ->registerModel(Department::class,['name','code','phone_no','head_name','asshead_name','motto','vision'])
                         ->registerModel(Dormitory::class,['name','code','bed_no','dom_head'])

@@ -3,7 +3,8 @@
 
 @section('content')
 <div class="container"> 
-    <h1 class="title"><u>{{$title}}</u></h1> 
+    <div class="mt"><x-pdf-landscape-current-date/></div>
+    <h2 class="title"><u>{{$title}}</u></h2> 
     <div>
     <table>
         <thead>
@@ -16,14 +17,14 @@
             </tr>
         </thead>
         <tbody>
-            @if(!empty($strmSubjectTeachers))
-            @forelse($strmSubjectTeachers as $strmSubjectTeacher)
+            @if(!empty($streamSubjects))
+            @forelse($streamSubjects as $streamSubject)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $strmSubjectTeacher->teacher->salutation}} {{ $strmSubjectTeacher->teacher->full_name}}</td>
-                <td>{{ $strmSubjectTeacher->subject->name}}</td>
-                <td>{{ $strmSubjectTeacher->teacher->phone_no}}</td>
-                <td>{{ $strmSubjectTeacher->teacher->email}}</td>
+                <td>{{ $streamSubject->teacher->user->salutation}} {{ $streamSubject->teacher->user->full_name}}</td>
+                <td>{{ $streamSubject->subject->name}}</td>
+                <td>{{ $streamSubject->teacher->phone_no}}</td>
+                <td>{{ $streamSubject->teacher->user->email}}</td>
             @empty
                 <td colspan="10" style="color: red">
                     Teachers notyet assigned to {{$stream->name}}.

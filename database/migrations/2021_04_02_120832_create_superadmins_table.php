@@ -15,11 +15,8 @@ class CreateSuperadminsTable extends Migration
     {
         Schema::create('superadmins', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
             $table->string('address')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('school_id')->constrained()->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();

@@ -33,6 +33,11 @@ class Dormitory extends Model implements Searchable
     	return $this->hasMany('App\Models\Student','dormitory_id','id');
     }
 
+    public function bed_numbers(): HasMany
+    {
+        return $this->hasMany('App\Models\BedNumber','dormitory_id','id');
+    }
+
     public function school(): BelongsTo
     {
     	return $this->belongsTo('App\Models\School')->withDefault();
@@ -55,6 +60,6 @@ class Dormitory extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('students','school')->get();
+        return $query->with('students','school');
     }
 }

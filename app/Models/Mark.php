@@ -8,7 +8,7 @@ use App\Models\Student;
 use App\Models\School;
 use App\Models\Teacher;
 use App\Models\Subject;
-use App\Models\StandardSubject;
+use App\Models\StreamSubject;
 use App\Models\MyClass;
 use App\Models\Stream;
 use App\Models\Grade;
@@ -33,9 +33,9 @@ class Mark extends Model
         return $this->belongsTo(Subject::class)->withDefault();
     }
 
-    public function standard_subject(): BelongsTo
+    public function stream_subject(): BelongsTo
     {
-    	return $this->belongsTo(StandardSubject::class)->withDefault();
+    	return $this->belongsTo(StreamSubject::class)->withDefault();
     }
 
      public function year(): BelongsTo

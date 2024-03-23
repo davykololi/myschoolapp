@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Teacher')
+@section('title', '| Teacher Details')
 
 @section('content')
   <!-- frontend-main view -->
@@ -25,23 +25,23 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $teacher->salutation }} {{ $teacher->full_name }}
+            {{ $teacher->user->salutation }} {{ $teacher->user->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Role:</strong>
-            @if(!empty($teacher->role->name))
-            <span>{{ $teacher->role->name }}</span>
+            <strong>Position:</strong>
+            @if(!empty($teacher->position->name))
+            <span>{{ $teacher->position->value }}</span>
             @else
-            <span>{{ __('Has No Role') }}</span>
+            <span>{{ __('Has No Position') }}</span>
             @endif
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $teacher->email }}
+            {{ $teacher->user->email }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -76,8 +76,14 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Postal Address:</strong>
-            {{ $teacher->address }}
+            <strong>Current Postal Address:</strong>
+            {{ $teacher->current_address }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Permanent Postal Address:</strong>
+            {{ $teacher->permanent_address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -100,14 +106,14 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $teacher->salutation }} {{ $teacher->first_name }}'s Classes:</strong>
+            <strong>{{ $teacher->user->salutation }} {{ $teacher->user->first_name }}'s Classes:</strong>
             <ol>
-            @forelse($teacher->streams as $stream)
+            @forelse($teacherStreams as $stream)
             <a href="{{route('superadmin.streams.show',$stream->id)}}">
                 <li>
                     {{ $stream->name }} -
-                    @if(!empty($teacher->stream_subjects))
-                    @forelse($teacher->stream_subjects as $strmSubject)
+                    @if(!empty($teacherStreamSubjects))
+                    @forelse($teacherStreamSubjects as $strmSubject)
                         <span class="text-green-800">{{ $strmSubject->subject->name }}</span>
                     @empty
                         {{ __('Not yet assigned to stream')}}
@@ -116,16 +122,16 @@
                 </li>
             </a>
             @empty
-            <p style="color: red">{{ $teacher->salutation }} {{ $teacher->first_name }} notyet assigned to any class.</p>
+            <p style="color: red">{{ $teacher->user->salutation }} {{ $teacher->user->first_name }} notyet assigned to any class.</p>
             @endforelse
             </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $teacher->salutation }} {{ $teacher->first_name }}'s Subjects:</strong>
+            <strong>{{ $teacher->user->salutation }} {{ $teacher->user->first_name }}'s Subjects:</strong>
             <ol>
-            @forelse($teacher->subjects as $subject)
+            @forelse($teacherSubjects as $subject)
                 <li>{{ $subject->name }}</li>
             @empty
             <p style="color: red">No subject(s) assigned to {{ $teacher->title }} {{ $teacher->first_name }}.</p>
@@ -135,9 +141,9 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>{{ $teacher->salutation }} {{ $teacher->first_name }}'s Assignments:</strong>
+            <strong>{{ $teacher->user->salutation }} {{ $teacher->user->first_name }}'s Assignments:</strong>
             <ol>
-            @forelse($teacher->assignments as $assignment)
+            @forelse($teacherAssignments as $assignment)
                 <li>
                     {{ $assignment->name }} Published: {{ date("jS,F,Y,g:i a",strtotime($assignment->date)) }} 
                     Deadline: {{ date("jS,F,Y",strtotime($assignment->deadline)) }} {{ $assignment->file }}
@@ -146,7 +152,7 @@
                     @endforeach
                 </li>
             @empty
-            <p style="color: red">No assignment(s) by {{ $teacher->title }} {{ $teacher->first_name }}.</p>
+            <p style="color: red">No assignment(s) by {{ $teacher->user->salutation }} {{ $teacher->user->first_name }}.</p>
             @endforelse
             </ol>
         </div>
@@ -155,25 +161,13 @@
 <br/>
 <div class="row">
     <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('teacher.attachstreamform')
+        @include('superadmin.teacher.attach_detach_streamform')
     </div>
 </div>
 
 <div class="row">
     <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('teacher.attachsubjectform')
-    </div>
-</div>
-
-<div class="row">
-    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('teacher.attachassignmentform')
-    </div>
-</div>
-
-<div class="row">
-    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('teacher.attachrewardform')
+        @include('superadmin.teacher.attach_detach_subjectform')
     </div>
 </div>
 </x-backend-main>

@@ -7,7 +7,7 @@ use App\Services\DepartmentService as DeptService;
 use App\Services\RewardService;
 use App\Services\TeacherService;
 use App\Services\StudentService;
-use App\Services\StaffService;
+use App\Services\SubordinateService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\RewardFormRequest as StoreRequest;
@@ -15,23 +15,24 @@ use App\Http\Requests\RewardFormRequest as UpdateRequest;
 
 class RewardController extends Controller
 {
-    protected $streamService,$deptService,$rewardService,$teacherService,$studentService,$staffService;
+    protected $streamService,$deptService,$rewardService,$teacherService,$studentService,$subordinateService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(StreamService $streamService,DeptService $deptService,RewardService $rewardService,TeacherService $teacherService,StudentService $studentService,StaffService $staffService)
+    public function __construct(StreamService $streamService,DeptService $deptService,RewardService $rewardService,TeacherService $teacherService,StudentService $studentService,SubordinateService $subordinateService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->streamService = $streamService;
         $this->deptService = $deptService;
         $this->rewardService = $rewardService;
         $this->teacherService = $teacherService;
         $this->studentService = $studentService;
-        $this->staffService = $staffService;
+        $this->subordinateService = $subordinateService;
     }
 
     /**
@@ -55,12 +56,12 @@ class RewardController extends Controller
     public function create()
     {
         //
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $streams = $this->streamService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $subordinates = $this->subordinateService->all();
+        $streams = $this->streamService->all();
 
-        return view('admin.rewards.create',compact('teachers','students','staffs','streams'));
+        return view('admin.rewards.create',compact('teachers','students','subordinates','streams'));
     }
 
     /**
@@ -77,8 +78,8 @@ class RewardController extends Controller
         $reward->teachers()->sync($teachers);
         $students = $request->students;
         $reward->students()->sync($students);
-        $staffs = $request->staffs;
-        $reward->staffs()->sync($staffs);
+        $subordinates = $request->subordinates;
+        $reward->subordinates()->sync($subordinates);
         $streams = $request->streams;
         $reward->streams()->attach($streams);
 
@@ -109,12 +110,12 @@ class RewardController extends Controller
     {
         //
         $reward = $this->rewardService->getId($id);
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $streams = $this->streamService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $subordinates = $this->subordinateService->all();
+        $streams = $this->streamService->all();
 
-        return view('admin.rewards.edit',compact('reward','teachers','students','staffs','streams'));
+        return view('admin.rewards.edit',compact('reward','teachers','students','subordinates','streams'));
     }
 
     /**
@@ -134,8 +135,8 @@ class RewardController extends Controller
         	$reward->teachers()->sync($teachers);
         	$students = $request->students;
         	$reward->students()->sync($students);
-        	$staffs = $request->staffs;
-        	$reward->staffs()->sync($staffs);
+        	$subordinates = $request->subordinates;
+        	$reward->subordinates()->sync($subordinates);
         	$streams = $request->streams;
         	$reward->streams()->sync($streams);
 
@@ -158,7 +159,7 @@ class RewardController extends Controller
 
         	$reward->teachers()->detach();
         	$reward->students()->detach();
-        	$reward->staffs()->detach();
+        	$reward->subordinates()->detach();
         	$reward->streams()->detach();
         	$reward->clubs()->detach();
 

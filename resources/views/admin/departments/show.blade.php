@@ -1,6 +1,9 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Admin Department Details')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
 <div class="max-w-full mt-4">
     <div class="w-full bg-trasparent shadow-lg rounded py-4 px-8">
         <div>
@@ -16,7 +19,7 @@
                 </div>
                 <div class="flex flex-row" style="float: right">
                     <x-back-button/>
-                    <a href="{{route('admin.dept.teachers',$department->id)}}" class="pdf">
+                    <a href="{{route('admin.dept.teachers',$department->id)}}">
                         <x-pdf-svg/>
                     </a>
                 </div>
@@ -63,7 +66,7 @@
                 <div class="form-group">
                     <strong>{{ $department->name }} Meetings:</strong>
                     <ol>
-                        @forelse($department->meetings as $meeting)
+                        @forelse($deptMeetings as $meeting)
                         <a href="{{route('admin.meetings.show',$meeting->id)}}">
                             <li>
                                 {{$meeting->name}} will be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda wiil be {{ $meeting->agenda }}.
@@ -84,16 +87,16 @@
       {{ $department->name }} Teachers
     </h2>
     <div class="lg:gap-xl-12 grid gap-x-3 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
-        @forelse($department->teachers as $teacher)
+        @forelse($deptTeachers as $teacher)
       <div class="mb-12 lg:mb-0 bg-gray-200 py-4 px-2 rounded dark:bg-[#1a1919]  dark:text-slate-400">
         <a href="{{route('admin.teachers.show',$teacher->id)}}">
             <img class="mx-auto mb-6 rounded-lg shadow-lg dark:shadow-black/20 w-[150px]" src="{{ $teacher->image_url }}" alt="{{ $teacher->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'"/>
         </a>
         <a href="{{route('admin.teachers.show',$teacher->id)}}">
-            <h5 class="mb-1 text-lg font-bold">{{ $teacher->title }} {{ $teacher->full_name }}</h5>
+            <h5 class="mb-1 text-lg font-bold">{{ $teacher->user->salutation }} {{ $teacher->user->full_name }}</h5>
         </a>
         <p class="mb-1 text-lg font-hairline">{{ $teacher->phone_no }}</p>
-        <p class="mb-1 text-lg font-hairline">{{ $teacher->email }}</p>
+        <p class="mb-1 text-lg font-hairline">{{ $teacher->user->email }}</p>
         <ul class="mx-auto flex list-inside justify-center">
           <a href="#!" class="px-2">
             <!-- GitHub -->
@@ -134,12 +137,12 @@
       {{ $department->name }} Sub Staffs
     </h2>
     <div class="lg:gap-xl-12 grid gap-x-3 md:grid-cols-2 lg:grid-cols-4">
-        @forelse($department->staffs as $staff)
+        @forelse($deptSubordinates as $subordinate)
       <div class="mb-12 lg:mb-0 bg-gray-200 py-4 px-2 rounded dark:bg-[#1a1919]  dark:text-slate-400">
-        <img class="mx-auto mb-6 rounded-lg shadow-lg dark:shadow-black/20 w-[150px]" src="{{ $staff->image_url }}" alt="{{ $staff->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'"/>
-        <h5 class="mb-1 text-lg font-bold">{{ $staff->salutation }} {{ $staff->full_name }}</h5>
-        <p class="mb-1 text-lg font-hairline">{{ $staff->phone_no }}</p>
-        <p class="mb-1 text-lg font-hairline">{{ $staff->email }}</p>
+        <img class="mx-auto mb-6 rounded-lg shadow-lg dark:shadow-black/20 w-[150px]" src="{{ $subordinate->image_url }}" alt="{{ $subordinate->user->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'"/>
+        <h5 class="mb-1 text-lg font-bold">{{ $subordinate->user->salutation }} {{ $subordinate->user->full_name }}</h5>
+        <p class="mb-1 text-lg font-hairline">{{ $subordinate->phone_no }}</p>
+        <p class="mb-1 text-lg font-hairline">{{ $subordinate->user->email }}</p>
         <ul class="mx-auto flex list-inside justify-center">
           <a href="#!" class="px-2">
             <!-- GitHub -->
@@ -178,4 +181,4 @@
 </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

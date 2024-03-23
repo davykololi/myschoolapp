@@ -36,8 +36,8 @@
             <ol>
             @forelse($stream->assignments as $assignment)
                 <li>
-                    {{ $assignment->name }} Given: {{ date("jS,F,Y,g:i a",strtotime($assignment->date)) }} 
-                    Deadline: {{ date("jS,F,Y",strtotime($assignment->deadline)) }} 
+                    {{ $assignment->name }} Given: {{ $assignment->date }} 
+                    Deadline: {{ $assignment->deadline }} 
                     <a href="{{route('admin.assignment.download',$assignment->id)}}" class="btn btn-outline-warning">
                         Download
                     </a>
@@ -61,7 +61,7 @@
             @forelse($stream->exams as $exam)
                 <li>
                     {{ $exam->name }} 
-                    Start Date:{{ date("jS,F,Y",strtotime($exam->start_date)) }} End Date:{{ date("jS,F,Y",strtotime($exam->end_date)) }} 
+                    Start Date:{{ $exam->start_date }} End Date:{{ $exam->end_date }} 
                     {{ $exam->file }}
                     <span style="color: blue">Timetable:</span>
                     @if(!is_null($exam->exam_timetables))

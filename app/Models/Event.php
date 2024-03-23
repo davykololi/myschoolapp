@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Spatie\GoogleCalendar\Event;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Event extends Event
+class Event extends Model
 {
     use HasFactory;
 

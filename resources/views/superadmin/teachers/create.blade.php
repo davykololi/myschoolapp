@@ -1,4 +1,7 @@
-<x-superadmin>
+@extends('layouts.superadmin')
+@section('title', '| Teacher Registration')
+
+@section('content')
 <!-- frontend-main view -->
 <x-backend-main>
     <section class="py-1 bg-blueGray-50 w-full">
@@ -12,40 +15,50 @@
                         <x-back-button/>
                     </div>
                 </div>
-                <div class="flex-auto px-4 lg:px-10 py-10 pt-4">
-                <form action="{{ route('superadmin.teachers.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
-                    @include('ext._csrfdiv')
-                    @include('ext._first_common_detailsdiv')
-                    @include('ext._second_common_detailsdiv')
-                    <hr class="mt-6 border-b-1 border-blueGray-300">
-                    <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                        More Information
-                    </h6>
-                    <div class="flex flex-col md:flex-row lg:flex-row">
-                        <div class="w-full lg:w-12/12 px-2">
-                            <div class="relative w-full mb-3">
-                                <label class="form-input-label-one" htmlfor="grid-password">
-                                    More Information About Teacher
-                                </label>
-                                @include('ext._content_div')
-                                @error('history')
-                                    <span class="text-danger">{{$message}}</span>
-                                @enderror
+                <div class="flex-auto px-4 lg:px-10 py-10 pt-4 bg-gray-400 dark:bg-stone-500">
+                    <form action="{{ route('superadmin.teachers.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        @include('ext._csrfdiv')
+                        @include('ext._first_common_detailsdiv')
+                        @include('ext._second_common_detailsdiv')
+                        <div class="flex flex-col md:flex-row lg:flex-row my-4">
+                            <div class="w-full md:w-1/3 lg:w-1/3 px-2">
+                                <div class="relative w-full mb-3">
+                                    <label class="form-input-label-one" htmlfor="grid-password">Position:</label>
+                                        @include('ext._attach_teacher_position')
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <hr class="mt-6 border-b-1 border-blueGray-300">
-                    <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                        Password
-                    </h6>
-                    <div class="flex flex-col md:flex-row lg:flex-row gap-2">
-                        @include('ext._passworddiv')
-                    </div>
-                    @include('ext._submit_register_button')
-                </form>
+
+                        <hr class="mt-6 border-b-1 border-blueGray-300">
+                        <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                            More Information
+                        </h6>
+                        <div class="flex flex-col md:flex-row lg:flex-row">
+                            <div class="w-full lg:w-12/12 px-2">
+                                <div class="relative w-full mb-3">
+                                    <label class="form-input-label-one" htmlfor="grid-password">
+                                        More Information About Teacher
+                                    </label>
+                                    @include('ext._content_div')
+                                    @error('history')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mt-6 border-b-1 border-blueGray-300">
+                        <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                            Password
+                        </h6>
+                        <div class="flex flex-col md:flex-row lg:flex-row gap-2">
+                            @include('ext._passworddiv')
+                        </div>
+                        @include('ext._submit_register_button')
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </x-backend-main>
-</x-superadmin>
+@endsection
+            

@@ -13,7 +13,7 @@ class Department extends Model implements Searchable
 {
     //
     protected $table = 'departments';
-    protected $fillable = ['name','code','phone_no','head_name','asshead_name','motto','vision','mission','school_id'];
+    protected $fillable = ['name','code','phone_no','head_name','asshead_name','motto','vision','mission','dept_section_id','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -36,9 +36,14 @@ class Department extends Model implements Searchable
         return $this->belongsTo('App\Models\School')->withDefault();
     }
 
-    public function staffs(): BelongsToMany
+    public function dept_section(): BelongsTo
     {
-        return $this->belongsToMany('App\Models\Staff')->withTimestamps();
+        return $this->belongsTo('App\Models\DepartmentSection')->withDefault();
+    }
+
+    public function subordinates(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Models\Subordinate')->withTimestamps();
     }
 
     public function exams(): BelongsToMany
@@ -66,13 +71,8 @@ class Department extends Model implements Searchable
         return $this->belongsToMany('App\Models\Reward')->withTimestamps();
     }
 
-    public function notes(): HasMany
-    {
-        return $this->hasMany('App\Models\Note','department_id','id');
-    }
-
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','school','staffs','exams','assignments','subjects','meetings','notes')->get();
+        return $query->with('teachers','school','subordinates','exams','assignments','subjects','meetings','dept_section')->get();
     }
 }

@@ -1,11 +1,13 @@
 <?php
- 
+
 namespace App\Http\Controllers\Auth;
- 
-use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
 use Auth;
- 
+use Socialite;
+use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
 class LoginController extends Controller
 {
     /*
@@ -18,16 +20,16 @@ class LoginController extends Controller
     | to conveniently provide its functionality to your applications.
     |
     */
- 
+
     use AuthenticatesUsers;
- 
+
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
- 
+    protected $redirectTo;
+
     /**
      * Create a new controller instance.
      *
@@ -35,13 +37,56 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout','userlogout');
+        $this->middleware('guest')->except('logout');
     }
- 
-    public function userlogout()
+
+    public function redirectTo()
     {
-        Auth::guard('web')->logout();
- 
-        return redirect('/');
-    }
+        $check = Auth::check();
+        $user = Auth::user();
+        $url = '/authentication-code';
+        switch($user){
+            case $check && $user->hasRole('superadmin'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('admin'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('teacher'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('accountant'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('parent'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('student'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('subordinate'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('matron'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            case $check && $user->hasRole('librarian'):
+                $this->redirectTo = $url;
+                return $this->redirectTo;
+                break;
+            default:
+                $this->redirectTo = '/login';
+                return $this->redirectTo;
+        }
+         
+        // return $next($request);
+    } 
 }

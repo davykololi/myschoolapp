@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ $school }}</title>
+    <title>@yield('title')</title>
 </head>
 <body>
     <h1>{{ $title }}</h1>

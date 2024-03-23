@@ -17,14 +17,17 @@ class TeacherProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:teacher');
-        $this->middleware('teacher2fa');
+        $this->middleware('auth');
+        $this->middleware('role:teacher');
+        $this->middleware('teacher-banned');
+        $this->middleware('checktwofa');
     }
     
     public function teacherProfile()
     {
-        $teacher = Auth::user();
+        $user = Auth::user();
+        $teacherStreamSubjects = $user->teacher->stream_subjects()->with('subject','stream')->get();
 
-    	return view('teacher.profile',['teacher'=>$teacher]);
+    	return view('teacher.profile',compact('user','teacherStreamSubjects'));
     }
 }

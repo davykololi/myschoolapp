@@ -20,7 +20,7 @@ class NotesRepository implements NotesInterface
 
     public function all()
     {
-        return $this->notes->eagerLoaded();
+        return $this->notes->eagerLoaded()->get();
     }
 
     public function create(array $data)

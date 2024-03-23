@@ -8,7 +8,7 @@
                 <div class="w-full md:w-1/4">
                     <div class="flex flex-col">
                         <label class="label-two">Term: <span class="text-[red]">*</span></label>
-                        @include('ext._attach_termdiv')
+                        @include('ext._get_term_id')
                     </div>
                 </div>
                 <div class="w-full md:w-1/4">

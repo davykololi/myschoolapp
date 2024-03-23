@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Letter;
+use App\Models\PdfGenerator;
 use App\Models\Subject;
-use App\Models\StreamSubjectTeacher;
+use App\Models\StreamSubject;
 use App\Models\Mark;
 use App\Models\Exam;
 use App\Models\MyClass;
-use App\Models\Gallery;
+use App\Models\ImageGallery;
 use App\Models\ReportRemark;
 use App\Models\ReportSubjectGrade;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +24,7 @@ class School extends Model
     protected $table = 'schools';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $fillable = ['name','initials','code','head','ass_head','motto','vision','mission','email','postal_address','core_values','image','type'];
+    protected $fillable = ['name','initials','code','head','ass_head','motto','vision','mission','phone_no','email','postal_address','core_values','image','type'];
 
     public function nationalSchool()
     {
@@ -44,6 +44,11 @@ class School extends Model
     public function privateSchool()
     {
         return $this->type === "Private School";
+    }
+
+    public function users(): HasMany
+    {
+        return $this->hasMany('App\Models\User','school_id','id');
     }
 
     public function superadmin(): HasOne
@@ -76,9 +81,9 @@ class School extends Model
         return $this->hasMany('App\Models\Teacher','school_id','id');
     }
 
-    public function staffs(): HasMany
+    public function subordinates(): HasMany
     {
-        return $this->hasMany('App\Models\Staff','school_id','id');
+        return $this->hasMany('App\Models\Subordinate','school_id','id');
     }
 
     public function exams(): HasMany
@@ -161,9 +166,9 @@ class School extends Model
         return $this->hasMany('App\Models\Timetable','school_id','id');
     }
 
-    public function stream_subject_teachers(): HasManyThrough
+    public function stream_subjects(): HasManyThrough
     {
-        return $this->hasManyThrough(StreamSubjectTeacher::class,Subject::class,'school_id','subject_id','id');
+        return $this->hasManyThrough(StreamSubject::class,Subject::class,'school_id','subject_id','id');
     }
 
     public function notes(): HasMany
@@ -201,9 +206,9 @@ class School extends Model
         return $this->hasMany('App\Models\Kitchen','school_id','id');
     }
 
-    public function letters(): HasMany
+    public function pdf_generators(): HasMany
     {
-        return $this->hasMany('App\Models\Letter','school_id','id');
+        return $this->hasMany(PdfGenerator::class,'school_id','id');
     }
 
     public function marks(): HasManyThrough
@@ -223,7 +228,7 @@ class School extends Model
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','departments','clubs','streams')->get();
+        return $query->with('teachers','students','departments','clubs','streams','subordinates')->get();
     }
 
     public function grades(): HasMany
@@ -251,8 +256,8 @@ class School extends Model
         return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','school_id','id')->where(['gender'=>'Female'])->count();
     }
 
-    public function galleries(): HasMany
+    public function image_galleries(): HasMany
     {
-        return $this->hasMany(Gallery::class,'school_id','id');
+        return $this->hasMany(ImageGallery::class,'school_id','id');
     }
 }

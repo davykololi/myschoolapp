@@ -1,11 +1,13 @@
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <label for="title">{{ __('Attach Departments:') }}</label>
-                                    {!! html()->multiselect('departments[]',$departments,old('departments'),['class'=>'form-control','multiple'=>'multiple']) !!}
-                                    @error('departments')
-                                        <span class="text-danger">{{$message}}</span>
-                                    @enderror
-                                </div>
-                            </div>
+                <select id="department" type="text" value="{{old('department')}}" class="select-form-one" name="department" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Department">
+                    @foreach ($departments as $department)
+                        <option class="w-full" value="{{$department->id}}">
+                            {{ $department->name }}
+                        </option>
+                    @endforeach
+                </select>
 
-                        
+                @if($errors->has('department'))
+                <span class="help-block">
+                    <strong>{{$errors->first('department')}}</strong>
+                </span>
+                @endif

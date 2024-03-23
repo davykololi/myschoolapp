@@ -12,12 +12,7 @@
                     <h2>CLUBS LIST</h2>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('superadmin.clubs.create')}}"> ADD CLUB</a>
-                    @if(Auth::user()->school->clubs->isNotEmpty())
-                    <a href="{{route('admin.school.clubs', Auth::user()->school->id)}}" class="btn btn-primary btn-border">CLUBS PDF</a>
-                    @else
-                    <a href="#" class="text-[red]" style="float:right">NO CLUBS</a>
-                    @endif
+                    <a class="btn btn-success" href="{{route('superadmin.clubs.create')}}">Create</a>
                 </div>
             </div>
         </div>
@@ -25,7 +20,7 @@
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                     <div class="overflow-x-auto">
-                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                        <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
                                 <tr>
@@ -40,7 +35,7 @@
                             <!-- Table Body -->
                             <tbody>
                             @foreach($clubs as $club)
-                                <tr class="border-b dark:border-neutral-500">
+                                <tr class="border-b dark:border-neutral-500 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$loop->iteration}}</div>
                                     </td>
@@ -60,13 +55,13 @@
                                         <form action="{{route('superadmin.clubs.destroy',$club->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.clubs.show', $club->id) }}" class="show">
+                                            <a type="button" href="{{ route('superadmin.clubs.show', $club->id) }}">
                                                 <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.clubs.edit', $club->id) }}" class="edit">
+                                            <a type="button" href="{{ route('superadmin.clubs.edit', $club->id) }}">
                                                 <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$club->name}}?')">
+                                            <button type="submit" onclick="return confirm('Are you sure to delete {{$club->name}}?')">
                                                 <x-delete-svg/>
                                             </button>
                                         </form>

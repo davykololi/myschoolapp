@@ -1,9 +1,8 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Matron')
+@section('title', '| Matron Details')
 
 @section('content')
 <x-backend-main>
-
 <div class="max-w-full p-4 md:p-8 lg:p-8 shadow-lg">
 <div class="row">   
     @include('partials.messages')
@@ -26,13 +25,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $matron->title }} {{ $matron->full_name }}
+            {{ $matron->user->salutation }} {{ $matron->user->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Role:</strong>
-            {{ $matron->role }}
+            <strong>Position:</strong>
+            {{ $matron->position->value }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -43,8 +42,14 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Postal Address</strong>
-            {{ $matron->address }}
+            <strong>Current Postal Address</strong>
+            {{ $matron->current_address }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Permanent Postal Address</strong>
+            {{ $matron->permanent_address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -62,7 +67,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>DOB:</strong>
-            {{ date("jS,F,Y",strtotime($matron->dob)) }}
+            {{ $matron->dob }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -80,7 +85,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $matron->email }} 
+            {{ $matron->user->email }} 
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

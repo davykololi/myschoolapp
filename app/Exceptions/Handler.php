@@ -76,38 +76,38 @@ class Handler extends ExceptionHandler
         }
  
         $guard = Arr::get($exception->guards(),0);
- 
+        $url = 'login';
         //using switch statement to switch between the guards
         switch ($guard) {
-            case 'admin':
-                $login = 'admin.login';
+            case 'role:admin':
+                $login = $url;
                 break;
-            case 'superadmin':
-                $login = 'superadmin.login';
+            case 'role:superadmin':
+                $login = $url;
                 break;
-            case 'teacher':
-                $login = 'teacher.login';
+            case 'role:teacher':
+                $login = $url;
                 break;
-            case 'student':
-                $login = 'student.login';
+            case 'role:student':
+                $login = $url;
                 break;
-            case 'staff':
-                $login = 'staff.login';
+            case 'role:subordinate':
+                $login = $url;
                 break;
-            case 'parent':
-                $login = 'parent.login';
+            case 'role:parent':
+                $login = $url;
                 break;
-            case 'accountant':
-                $login = 'accountant.login';
+            case 'role:accountant':
+                $login = $url;
                 break;
-            case 'librarian':
-                $login = 'librarian.login';
+            case 'role:librarian':
+                $login = $url;
                 break;
-            case 'matron':
-                $login = 'matron.login';
+            case 'role:matron':
+                $login = $url;
                 break;
             default:
-                $login = 'login';
+                $login = $url;
                 break;
         }
         return redirect()->guest(route($login));

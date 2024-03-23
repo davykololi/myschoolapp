@@ -6,13 +6,13 @@ use Auth;
 use App\Repositories\AccountantRepository;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\AccFormRequest as StoreRequest;
-use App\Http\Requests\AccFormRequest as UpdateRequest;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class AccountantService
 {
 	use ImageUploadTrait;
-	protected $accRepo;
+	protected $accRepo, $userId;
 
 	public function __construct(AccountantRepository $accRepo)
 	{
@@ -47,21 +47,22 @@ class AccountantService
 	{
 		$data = $request->validated();
         $data['school_id'] = Auth::user()->school->id;
-        $data['role'] = $request->accountant_role;
+        $data['position'] = $request->accountant_position;
         $data['blood_group'] = $request->blood_group;
-        $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
+        $data['user_id'] = $this->userId;
 
         return $data;
 	}
 
 	public function updateData(UpdateRequest $request)
 	{
-        $data=$request->only('salutation','first_name','middle_name','last_name','dob','email','gender','address','phone_no','id_no','designation','emp_no','history');
+        $data=$request->only('dob','gender','current_address','permanent_address','phone_no','id_no','designation','emp_no','history');
         $data['school_id'] = Auth::user()->school->id;
-        $data['role'] = $request->accountant_role;
+        $data['position'] = $request->accountant_position;
         $data['blood_group'] = $request->blood_group;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
+        $data['user_id'] = $this->userId;
 
         return $data;
 	}
@@ -69,5 +70,10 @@ class AccountantService
 	public function delete($id)
 	{
 		return $this->accRepo->delete($id);
+	}
+
+	public function getUserId($userId)
+	{
+		return $userId;
 	}
 }

@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Librarian')
+@section('title', '| Librarian Details')
 
 @section('content')
 <x-backend-main>
@@ -24,13 +24,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $librarian->title }} {{ $librarian->full_name }}
+            {{ $librarian->user->salutation }} {{ $librarian->user->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Role:</strong>
-            {{ $librarian->role->name }}
+            <strong>Position:</strong>
+            {{ $librarian->position->value }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -41,8 +41,14 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Postal Address</strong>
-            {{ $librarian->address }}
+            <strong>Current Postal Address</strong>
+            {{ $librarian->current_address }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Permanent Postal Address</strong>
+            {{ $librarian->permanent_address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -54,7 +60,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>DOB:</strong>
-            {{ date("jS,F,Y",strtotime($librarian->dob)) }}
+            {{ $librarian->dob }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -66,7 +72,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $librarian->email }} 
+            {{ $librarian->user->email }} 
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

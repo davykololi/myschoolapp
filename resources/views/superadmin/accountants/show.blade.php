@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Accountant')
+@section('title', '| Accountant Details')
 
 @section('content')
 <x-backend-main>
@@ -24,17 +24,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $accountant->salutation }} {{ $accountant->full_name }}
+            {{ $accountant->user->salutation }} {{ $accountant->user->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Position:</strong>
-            @if(!is_null($accountant->role))
-            {{ $accountant->role }}
-            @else
-            <span class="text[red]">{{ __('Ordinary Accountant') }}</span>
-            @endif
+            {{ $accountant->position->value }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -51,8 +47,14 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <strong>Postal Address</strong>
-            {{ $accountant->address }}
+            <strong>Current Postal Address</strong>
+            {{ $accountant->current_address }}
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Permanent Postal Address</strong>
+            {{ $accountant->permanent_address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -64,7 +66,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>DOB:</strong>
-            {{ date("jS,F,Y",strtotime($accountant->dob)) }}
+            {{ $accountant->dob }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -76,7 +78,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $accountant->email }} 
+            {{ $accountant->user->email }} 
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

@@ -12,9 +12,9 @@ use App\Models\School;
 use App\Models\Student;
 use App\Models\Stream;
 use App\Models\Department;
-use App\Models\StreamSubjectTeacher;
+use App\Models\StreamSubject;
 use App\Models\ReportCard;
-use App\Models\Letter;
+use App\Models\PdfGenerator;
 use App\Models\MyClass;
 use App\Models\Exam;
 use App\Models\Mark;
@@ -28,6 +28,7 @@ use App\Models\GeneralGrade;
 use App\Models\ReportSubjectGrade;
 use App\Models\ReportMeanGrade;
 use App\Models\ReportRemark;
+use App\Models\Dormitory;
 use App\Enums\GradeTypeEnum;
 use App\Charts\MarksChart;
 use App\Events\ExamRecords;
@@ -49,15 +50,16 @@ class PdfController extends Controller
      */
     public function __construct(StudentService $studentService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
     }
 
     public function schoolStudents()
     {
-        $school = Auth::user()->school;
-        $students = $school->students()->with('stream','school','dormitory')->inRandomOrder()->get();
+        $school = Auth::user()->admin->school;
+        $students = $school->students()->with('stream','school','dormitory','user')->inRandomOrder()->get();
         if($students->isEmpty()){
             toastr()->error(ucwords('This school has no students at the moment!'));
             return back();
@@ -65,8 +67,8 @@ class PdfController extends Controller
         $males = $school->males();
         $females = $school->females();
         $title = 'Students List';
-        $downloadTitle = $school->name." "."Students List";
-        $pdf = PDF::loadView('admin.pdf.school_students',compact('school','students','title','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('admin.pdf.school_students',compact('school','students','title','males','females','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -80,14 +82,35 @@ class PdfController extends Controller
     public function schoolTeachers()
     {
         $school = Auth::user()->school;
-        $teachers = $school->teachers()->with('streams','school')->inRandomOrder()->get();
-        if($teachers->isEmpty()){
+        $schoolTeachers = $school->teachers()->with('streams','school','user')->inRandomOrder()->get();
+        if($schoolTeachers->isEmpty()){
             toastr()->error(ucwords('This school has no teachers at the moment!'));
             return back();
         }
         $title = 'Teachers List';
-        $downloadTitle = $school->name." "."Teachers List";
-        $pdf = PDF::loadView('admin.pdf.school_teachers',compact('school','teachers','title'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('admin.pdf.school_teachers',compact('school','schoolTeachers','title','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf->output();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        $height = $canvas->get_height();
+        $width = $canvas->get_width();
+        $canvas->set_opacity(.2,"Multiply");
+        $canvas->page_text($width/5, $height/2,strtoupper($title),null,40, array(0,0,0),2,2,-30);
+        
+        return $pdf->download($downloadTitle.'.pdf');
+    }
+
+    public function schoolParents()
+    {
+        $school = Auth::user()->school;
+        $schoolParents = $school->parents()->with('school','user')->inRandomOrder()->get();
+        if($schoolParents->isEmpty()){
+            toastr()->error(ucwords('This school has no parents at the moment!'));
+            return back();
+        }
+        $title = 'Parents List';
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('admin.pdf.school_parents',compact('school','schoolParents','title','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -105,7 +128,7 @@ class PdfController extends Controller
             return back()->withErrors('Ensure you select class name first before you proceed');
         }
         $class = MyClass::whereId($classId)->firstOrFail();
-        $classStudents = $class->students()->with('stream.stream_section','school','dormitory')->inRandomOrder()->get();
+        $classStudents = $class->students()->with('stream.stream_section','school','dormitory','user')->inRandomOrder()->get();
         $school = Auth::user()->school;
         $title = $class->name." ".'Students List';
         $downloadTitle = $school->name." ".$title;
@@ -116,7 +139,7 @@ class PdfController extends Controller
             return back()->with('error','This class has no students at the moment!');
         }
 
-        $pdf = PDF::loadView('admin.pdf.class_students',compact('class','classStudents','title','school','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.class_students',compact('class','classStudents','title','school','males','females','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -134,7 +157,7 @@ class PdfController extends Controller
             return back()->withErrors('Ensure you select the stream name first before you proceed');
         }
         $stream = Stream::whereId($streamId)->firstOrFail();
-        $streamStudents = $stream->students()->with('stream','school','dormitory')->inRandomOrder()->get();
+        $streamStudents = $stream->students()->with('stream','school','dormitory','user')->inRandomOrder()->get();
         $school = Auth::user()->school;
         $title = $stream->name." ".'Students List';
         $downloadTitle = $school->name." ".$title;
@@ -145,7 +168,36 @@ class PdfController extends Controller
             return back()->with('error','Students notyet assigned to'." ".$stream->name);
         }
 
-        $pdf = PDF::loadView('admin.pdf.stream_students',compact('stream','streamStudents','title','school','males','females'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.stream_students',compact('stream','streamStudents','title','school','males','females','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf->output();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        $height = $canvas->get_height();
+        $width = $canvas->get_width();
+        $canvas->set_opacity(.2,"Multiply");
+        $canvas->page_text($width/5, $height/2,strtoupper($title),null,35, array(0,0,0),2,2,-30);
+        
+        return $pdf->download($downloadTitle.'.pdf');
+    }
+
+    public function streamRegister(Request $request)
+    {
+        $streamId = $request->stream;
+        if(is_null($streamId)){
+            return back()->withErrors('Ensure you select the stream name first before you proceed');
+        }
+        $stream = Stream::whereId($streamId)->firstOrFail();
+        $streamStudents = $stream->students()->with('stream','school','user')->get();
+        $school = Auth::user()->school;
+        $title = $stream->name." ".'Register Form';
+        $downloadTitle = $school->name." ".$title;
+        $males = $stream->males();
+        $females = $stream->females();
+
+        if($streamStudents->isEmpty()){
+            return back()->with('error','Students notyet assigned to'." ".$stream->name);
+        }
+
+        $pdf = PDF::loadView('admin.pdf.stream_register',compact('stream','streamStudents','title','school','males','females','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -163,15 +215,15 @@ class PdfController extends Controller
             return back()->withErrors('Ensure you select the stream first before you proceed!');
         }
         $stream = Stream::whereId($streamId)->firstOrFail();
-        $strmSubjectTeachers = $stream->stream_subject_teachers()->with('teacher','subject')->inRandomOrder()->get();
-        if($strmSubjectTeachers->isEmpty()){
+        $streamSubjects = StreamSubject::where('stream_id',$streamId)->with('teacher.user','subject')->inRandomOrder()->get();
+        if($streamSubjects->isEmpty()){
             return back()->withErrors('The teachers notyet assigned to'." ".$stream->name);
         }
         $school = Auth::user()->school;
         $title = $stream->name." ".'Teachers';
-        $downloadTitle = $school->name." ".$stream->name." ".'Teachers';
+        $downloadTitle = $school->name." ".$title;
 
-        $pdf = PDF::loadView('admin.pdf.stream_teachers',compact('stream','strmSubjectTeachers','title','school'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $pdf = PDF::loadView('admin.pdf.stream_teachers',compact('stream','streamSubjects','title','school','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -185,14 +237,14 @@ class PdfController extends Controller
     public function schoolClubs()
     {
         $school = Auth::user()->school;
-        $schoolClubs = $school->clubs()->with('school','teachers','staffs','students')->get();
+        $schoolClubs = $school->clubs()->with('school','teachers','subordinates','students')->get();
         if($schoolClubs->isEmpty()){
             return back()->withErrors($school->name." "."has no clubs at the moment!");
         }
-        $title = "School Clubs";
-        $downloadTitle = $school->name." ".'Clubs';
+        $title = "Clubs List";
+        $downloadTitle = $school->name." ".$title;
 
-        $pdf = PDF::loadView('admin.pdf.school_clubs',['school'=>$school,'schoolClubs'=>$schoolClubs,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.school_clubs',['school'=>$school,'schoolClubs'=>$schoolClubs,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -210,16 +262,16 @@ class PdfController extends Controller
             return back()->withErrors('Ensure you select club name first before you proceed');
         }
         $club = Club::whereId($clubId)->firstOrFail();
-        $clubStudents = $club->students()->with('clubs','stream')->get();
+        $clubStudents = $club->students()->with('clubs','stream','user')->get();
         if($clubStudents->isEmpty()){
             toastr()->error(ucwords("The students notyet joined"." ".$club->name));
             return back();
         }
         $school = Auth::user()->school;
         $title = $club->name." ".'Students';
-        $downloadTitle = $school->name." ".$club->name." ".'Students';
+        $downloadTitle = $school->name." ".$title;
 
-        $pdf = PDF::loadView('admin.pdf.club_students',['club'=>$club,'school'=>$school,'clubStudents'=>$clubStudents,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.club_students',['club'=>$club,'school'=>$school,'clubStudents'=>$clubStudents,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -238,15 +290,15 @@ class PdfController extends Controller
             return back()->withErrors('Ensure you select club name first before you proceed');
         }
         $club = Club::whereId($clubId)->firstOrFail();
-        $clubTeachers = $club->teachers()->with('clubs')->get();
+        $clubTeachers = $club->teachers()->with('clubs','user')->get();
         $school = $club->school;
         $title = $club->name." ".'Teachers';
-        $downloadTitle = $school->name." ".$club->name." ".'Teachers';
+        $downloadTitle = $school->name." ".$title;
 
         if($clubTeachers->isEmpty()){
             return back()->withErrors('The teachers notyet assigned to this club!');
         }
-        $pdf = PDF::loadView('admin.pdf.club_teachers',['club'=>$club,'school'=>$school,'clubTeachers'=>$clubTeachers,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.club_teachers',['club'=>$club,'school'=>$school,'clubTeachers'=>$clubTeachers,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -261,10 +313,10 @@ class PdfController extends Controller
     public function schoolDepts()
     {
         $school = Auth::user()->school;
-        $schoolDepts = $school->departments;
-        $title = "School Departments";
-        $downloadTitle = $school->name." ".'Departments';
-        $pdf = PDF::loadView('admin.pdf.departments',['school'=>$school,'schoolDepts'=>$schoolDepts,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $schoolDepts = $school->departments()->with('dept_section')->get();
+        $title = "Departments List";
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('admin.pdf.departments',['school'=>$school,'schoolDepts'=>$schoolDepts,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -283,15 +335,15 @@ class PdfController extends Controller
             return back()->withErrors('Select the department name before you proceed');
         }
         $department = Department::whereId($deptId)->firstOrFail();
-        $deptTeachers = $department->teachers;
+        $deptTeachers = $department->teachers()->with('user')->get();
         if($deptTeachers->isEmpty()){
             return back()->withErrors("Teachers notyet assigned to"." ".$department->name);
         }
 
         $school = Auth::user()->school;
         $title = $department->name." ".'Teachers';
-        $downloadTitle = $school->name." ".$department->name." ".'Teachers';
-        $pdf = PDF::loadView('admin.pdf.department_teachers',['department'=>$department,'school'=>$school,'deptTeachers'=>$deptTeachers,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('admin.pdf.department_teachers',['department'=>$department,'school'=>$school,'deptTeachers'=>$deptTeachers,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -302,11 +354,39 @@ class PdfController extends Controller
         return $pdf->download($downloadTitle.'.pdf');
     }
 
-    public function letter(Letter $letter)
+    public function deptSubordinates(Request $request)
     {
-        $school = $letter->school;
-        $title = $school->name." ".'Letter';
-        $pdf = PDF::loadView('admin.pdf.letters',['letter'=>$letter,'school'=>$school,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true,'isPhpEnabled' => true])->setPaper('a4','potrait');
+        $deptId = $request->department;
+        if(is_null($deptId)){
+            return back()->withErrors('Select the department name before you proceed');
+        }
+        $department = Department::whereId($deptId)->firstOrFail();
+        $deptSubordinates = $department->subordinates()->with('user')->get();
+        if($deptSubordinates->isEmpty()){
+            return back()->withErrors("Subordinate staffs notyet assigned to"." ".$department->name);
+        }
+
+        $school = Auth::user()->school;
+        $title = $department->name." ".'Subordinate Staffs';
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('admin.pdf.department_subordinates',['department'=>$department,'school'=>$school,'deptSubordinates'=>$deptSubordinates,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf->output();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        $height = $canvas->get_height();
+        $width = $canvas->get_width();
+        $canvas->set_opacity(.2,"Multiply");
+        $canvas->page_text($width/5, $height/2,strtoupper($title),null,30, array(0,0,0),2,2,-30);
+        
+        return $pdf->download($downloadTitle.'.pdf');
+    }
+
+    public function pdfGenerator(PdfGenerator $pdfGenerator)
+    {
+        $school = $pdfGenerator->school;
+        $code = $data['code'] = strtoupper(Str::random(15));
+        $title = $school->name." ".'Generated Pdf Document';
+        $downloadTitle = $title." "."CODE: "." ".$code;
+        $pdf = PDF::loadView('admin.pdf.pdf-generators',['pdfGenerator'=>$pdfGenerator,'school'=>$school,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true,'isPhpEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -314,14 +394,15 @@ class PdfController extends Controller
         $imageUrl = public_path('/storage/storage/'.$school->image);
         $canvas->set_opacity(.2,"Multiply");
         
-        return $pdf->download($title.'.pdf');
+        return $pdf->download($downloadTitle.'.pdf');
     }
 
     public function letterHead()
     {
         $school = Auth::user()->school;
         $title = $school->name." ".'Letter Head';
-        $pdf = PDF::loadView('admin.pdf.letter_head',['school'=>$school,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $downloadTitle = $school->name." ".$title;
+        $pdf = PDF::loadView('admin.pdf.letter_head',['school'=>$school,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -335,40 +416,41 @@ class PdfController extends Controller
         $canvas->image($imageUrl,$x,$y,$imageWidth,$imageHeight,$resolution='normal');
         $canvas->page_text($width/5, $height/2,strtoupper('Original Copy'),null,70, array(0,0,0),2,2,-30);
         
-        return $pdf->download($title.'.pdf');
+        return $pdf->download($downloadTitle.'.pdf');
     }
 
     public function instantDownload(School $school,Request $request)
     {
         $content = $request->content;
         $title = $school->name;
-        $pdf = PDF::loadView('admin.pdf.instant_download',['school'=>$school,'title'=>$title,'content'=>$content])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $downloadTitle = $title;
+        $pdf = PDF::loadView('admin.pdf.instant_download',['school'=>$school,'title'=>$title,'content'=>$content,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $canvas->set_opacity(.2,"Multiply");
         
-        return $pdf->download($title.'.pdf');
+        return $pdf->download($downloadTitle.'.pdf');
     }
 
-    public function schoolStaffs()
+    public function schoolSubordinates()
     {
         $school = Auth::user()->school;
-        $schoolSubStaffs = $school->staffs()->with('school')->inRandomOrder()->get();
+        $schoolSubStaffs = $school->subordinates()->with('school','user')->inRandomOrder()->get();
         if($schoolSubStaffs->isEmpty()){
             toastr()->error(ucwords('This school has no sub staffs at the moment!'));
             return back();
         }
-        $title ='Subordinade Staffs';
+        $title ='Subordinate Staffs';
         $downloadTitle = $school->name." ".$title;
-        $pdf = PDF::loadView('admin.pdf.subordinade_staffs',['school'=>$school,'schoolSubStaffs'=>$schoolSubStaffs,'title'=>$title])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
+        $pdf = PDF::loadView('admin.pdf.subordinade_staffs',['school'=>$school,'schoolSubStaffs'=>$schoolSubStaffs,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $canvas->set_opacity(.2,"Multiply");
-        $canvas->page_text($width/5, $height/2,strtoupper('Subordinade Staffs'),null,50, array(0,0,0),2,2,-30);
+        $canvas->page_text($width/5, $height/2,strtoupper('Subordinate Staffs'),null,50, array(0,0,0),2,2,-30);
         
         return $pdf->download($downloadTitle.'.pdf');
     }
@@ -381,18 +463,18 @@ class PdfController extends Controller
             return back(); 
         }
         $student = Student::whereId($studentId)->firstOrFail();
-        if($student->image === "image.png"){
+        if(is_null($student->image)){
             toastr()->error(ucwords('Please upload the student photo first!!!'));
             return back();
         }
         
         $school = Auth::user()->school;
         $title = 'Student Details';
-        $downloadTitle = $student->full_name." "."Details";
+        $downloadTitle = $school->name." ".": ".$student->full_name." "."Details";
         $vv = collect($student->stream->subjects()->pluck('name'));
         $streamSubjects = $vv->toArray();
 
-        $pdf = PDF::loadView('admin.pdf.student_details',['student'=>$student,'school'=>$school,'title'=>$title,'streamSubjects'=>$streamSubjects])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.student_details',['student'=>$student,'school'=>$school,'title'=>$title,'streamSubjects'=>$streamSubjects,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -407,6 +489,30 @@ class PdfController extends Controller
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,50, array(0,0,0),2,2,-30);
         
         return $pdf->download($downloadTitle.'.pdf',array("Attachment" => 0)); 
+    }
+
+    public function dormitoryStudents(Request $request)
+    {
+        $dormitoryId = $request->dormitory;
+        $dormitory = Dormitory::whereId($dormitoryId)->firstOrFail();
+        $dormitoryStudents = $dormitory->students()->with('stream','school','user','dormitory','bed_number')->inRandomOrder()->get();
+        $school = Auth::user()->school;
+        $title = $dormitory->name." ".'Dormitory Students';
+        $downloadTitle = $school->name." ".$title;
+
+        if($dormitoryStudents->isEmpty()){
+            return back()->with('error','This dormitory has no students at the moment!');
+        }
+
+        $pdf = PDF::loadView('admin.pdf.dormitory_students',compact('dormitory','dormitoryStudents','title','school','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf->output();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        $height = $canvas->get_height();
+        $width = $canvas->get_width();
+        $canvas->set_opacity(.2,"Multiply");
+        $canvas->page_text($width/5, $height/2,strtoupper($title),null,35, array(0,0,0),2,2,-30);
+        
+        return $pdf->download($downloadTitle.'.pdf');
     }
 
     public function  studentExamResults(Request $request)
@@ -426,7 +532,7 @@ class PdfController extends Controller
 
         $student = Student::whereId($studentId)->firstOrFail();
         $streamId = $student->stream->id;
-        $name = $student->full_name;
+        $name = $student->user->full_name;
         $marks = streamMarks($yearId,$termId,$examId,$streamId);
 
         $term = Term::where('id',$termId)->first();
@@ -445,8 +551,8 @@ class PdfController extends Controller
         $generalGrades = GeneralGrade::with('class','year','term','exam')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
 
         $title = $year->year." ".$term->name." ".$exam->name." ".'Results';
-        $downloadTitle = $name." ".$title;
-        $pdf = PDF::loadView('admin.pdf.student_results',compact('name','marks','year','term','exam','stream','school','title','markName','examGrades','generalGrades'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
+        $downloadTitle = $markName." ".$title;
+        $pdf = PDF::loadView('admin.pdf.student_results',compact('name','marks','year','term','exam','stream','school','title','markName','examGrades','generalGrades','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -529,6 +635,7 @@ class PdfController extends Controller
         }
         $rankings;// End Marksheet Ranking
         $title = $term->name." ".$class->name." ".$exam->name." ".'Results';
+        $downloadTitle = $school->name." "."-"." ".$title;
         $classMinscore = $marks->avg('student_minscore');//Average of class minscore
         //Total Marks Frequencies
         $totalMarks = $marks->pluck('total','name');
@@ -538,7 +645,7 @@ class PdfController extends Controller
         // call the event
         event(new ExamRecords($yearId,$termId,$examId,$classId,$school,$marks));
 
-        $pdf = PDF::loadView('admin.pdf.class_marksheet',compact('marks','examGrades','generalGrades','exam','class','school','year','term','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','geography','classMinscore','females','males','totalMarksFrequencies'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true,'isPhpEnabled'=>true,'isJavascriptEnabled'=>true])->setPaper('a3','landscape');
+        $pdf = PDF::loadView('admin.pdf.class_marksheet',compact('marks','examGrades','generalGrades','exam','class','school','year','term','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','geography','classMinscore','females','males','totalMarksFrequencies','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true,'isPhpEnabled'=>true,'isJavascriptEnabled'=>true])->setPaper('a3','landscape');
 
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
@@ -552,7 +659,7 @@ class PdfController extends Controller
         $canvas->page_script('$pdf->set_opacity(.2, "Multiply");');
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,30, array(0,0,0),2,2,-30);
         
-        return $pdf->download(Str::slug($title).'.pdf',array("Attachment" => 0));
+        return $pdf->download(Str::slug($downloadTitle).'.pdf',array("Attachment" => 0));
     }
 
     public function streamMarkSheet(Request $request)
@@ -630,14 +737,15 @@ class PdfController extends Controller
         $streamMiniscore = (round($maths->avg(),1) + round($english->avg(),1) + round($kiswahili->avg(),1) + round($chemistry->avg(),1) + round($biology->avg(),1) + round($physics->avg(),1) + round($cre->avg(),1) + round($islam->avg(),1) + round($history->avg(),1) + round($geography->avg(),1))/5;
 
         $title = $term->name." ".$stream->name." ".$exam->name." ".'Results';
-        $pdf = PDF::loadView('admin.pdf.stream_marksheet',compact('marks','examGrades','generalGrades','exam','stream','school','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','geography','streamStudents','males','females','streamMiniscore'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a3','landscape');
+        $downloadTitle = $school->name." "."-"." ".$title;
+        $pdf = PDF::loadView('admin.pdf.stream_marksheet',compact('marks','examGrades','generalGrades','exam','stream','school','title','rankings','passMark','totals','maths','english','kiswahili','chemistry','biology','physics','cre','islam','history','geography','streamStudents','males','females','streamMiniscore','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a3','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
         $width = $canvas->get_width();
         $canvas->set_opacity(.2,"Multiply");
         $canvas->page_text($width/5, $height/2,strtoupper($title),null,25, array(0,0,0),2,2,-30);
-        return $pdf->download($title.'.pdf',array("Attachment" => 0));
+        return $pdf->download($downloadTitle.'.pdf',array("Attachment" => 0));
     }
 
     public function twoExamsReportCardForm()
@@ -646,10 +754,10 @@ class PdfController extends Controller
         $terms = Term::all();
         $classes = MyClass::all();
         $streams = Stream::all();
-        $exams = Exam::all()->pluck('name','id');
+        $exams = Exam::all();
         $reportExams = Exam::with('school','year','term')->get();
-        $teachers = Teacher::all();
-        $students = Student::with('school','libraries','teachers','class','stream','clubs')->get();
+        $teachers = Teacher::with('user')->get();
+        $students = Student::with('school','libraries','teachers','class','stream','clubs','user')->get();
 
         return view('admin.pdf.twoexams_reportcardform',compact('years','terms','classes','streams','exams','students','teachers','reportExams'));
     }
@@ -660,10 +768,10 @@ class PdfController extends Controller
         $terms = Term::all();
         $classes = MyClass::all();
         $streams = Stream::all();
-        $exams = Exam::all()->pluck('name','id');
+        $exams = Exam::all();
         $reportExams = Exam::with('school','year','term')->get();
-        $teachers = Teacher::all();
-        $students = Student::with('school','libraries','teachers','class','stream','clubs')->get();
+        $teachers = Teacher::with('user')->get();
+        $students = Student::with('school','libraries','teachers','class','stream','clubs','user')->get();
 
         return view('admin.pdf.threeexams_reportcardform',compact('years','terms','classes','streams','exams','students','teachers','reportExams'));
     }
@@ -793,7 +901,7 @@ class PdfController extends Controller
         $streamPosition = streamPosition($streamRankings,$markName);
         $school = auth()->user()->school;
         $title = "Student Report Card";
-        $downloadTitle = ucwords($name)." "."Report Card";
+        $downloadTitle = $school->name." "."-"." ".$name." ".$year->year." ".$term->name." "."Report Card";
 
         // Exam One Subject Grades
         $examOneMathsGrade = examOneMathsGrade($examOneMark,$markName);
@@ -878,9 +986,9 @@ class PdfController extends Controller
         $reportSubjectGrades = ReportSubjectGrade::with('class','year','term','subject')->where(['term_id'=>$termId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
         //Report Card General Grades
         $reportMeanGrades = ReportMeanGrade::with('class','year','term')->where(['term_id'=>$termId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
-        $streamStudents = $stream->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','marks')->get();
+        $streamStudents = $stream->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','marks','user')->get();
 
-        $pdf = PDF::loadView('admin.pdf.twoexams_reportcard',compact('school','title','examOne','examTwo','examOneMark','examTwoMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','geogAvg','year','term','overalTotalAvg','openingDate','closingDate','overalPosition','streamPosition','stream','examOneTotal','examTwoTotal','name','markName','examOneMathsGrade','examOneEnglishGrade','examOneKiswGrade','examOneChemGrade','examOneBioGrade','examOnePhysicsGrade','examOneCREGrade','examOneIslamGrade','examOneHistGrade','examOneGeogGrade','examTwoMathsGrade','examTwoEnglishGrade','examTwoKiswGrade','examTwoChemGrade','examTwoBioGrade','examTwoPhysicsGrade','examTwoCREGrade','examTwoIslamGrade','examTwoHistGrade','examTwoGeogGrade','examOneGenGrade','examTwoGenGrade','overalGPA','reportGeneralRemark','mark','streamStudents','reportSubjectGrades','reportMeanGrades'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.twoexams_reportcard',compact('school','title','examOne','examTwo','examOneMark','examTwoMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','geogAvg','year','term','overalTotalAvg','openingDate','closingDate','overalPosition','streamPosition','stream','examOneTotal','examTwoTotal','name','markName','examOneMathsGrade','examOneEnglishGrade','examOneKiswGrade','examOneChemGrade','examOneBioGrade','examOnePhysicsGrade','examOneCREGrade','examOneIslamGrade','examOneHistGrade','examOneGeogGrade','examTwoMathsGrade','examTwoEnglishGrade','examTwoKiswGrade','examTwoChemGrade','examTwoBioGrade','examTwoPhysicsGrade','examTwoCREGrade','examTwoIslamGrade','examTwoHistGrade','examTwoGeogGrade','examOneGenGrade','examTwoGenGrade','overalGPA','reportGeneralRemark','mark','streamStudents','reportSubjectGrades','reportMeanGrades','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
 
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -1022,7 +1130,7 @@ class PdfController extends Controller
         
         $school = auth()->user()->school;
         $title = "Student Report Card";
-        $downloadTitle = ucwords($name)." "."Report Card";
+        $downloadTitle = $school->name." "."-"." ".$name." ".$year->year." ".$term->name." "."Report Card";
 
         // Exam One Subject Grades
         $examOneMathsGrade = examOneMathsGrade($examOneMark,$markName);
@@ -1129,9 +1237,9 @@ class PdfController extends Controller
         $reportSubjectGrades = ReportSubjectGrade::with('class','year','term','subject')->where(['term_id'=>$termId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
         //Report Card General Grades
         $reportMeanGrades = ReportMeanGrade::with('class','year','term')->where(['term_id'=>$termId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
-        $streamStudents = $stream->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','marks')->get();
+        $streamStudents = $stream->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','marks','user')->get();
 
-        $pdf = PDF::loadView('admin.pdf.threeexams_reportcard',compact('school','title','examOne','examTwo','examThree','examOneMark','examTwoMark','examThreeMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','geogAvg','year','term','overalTotalAvg','openingDate','closingDate','overalPosition','streamPosition','stream','examOneTotal','examTwoTotal','examThreeTotal','name','markName','examOneMathsGrade','examOneEnglishGrade','examOneKiswGrade','examOneChemGrade','examOneBioGrade','examOnePhysicsGrade','examOneCREGrade','examOneIslamGrade','examOneHistGrade','examOneGeogGrade','examTwoMathsGrade','examTwoEnglishGrade','examTwoKiswGrade','examTwoChemGrade','examTwoBioGrade','examTwoPhysicsGrade','examTwoCREGrade','examTwoIslamGrade','examTwoHistGrade','examTwoGeogGrade','examThreeMathsGrade','examThreeEnglishGrade','examThreeKiswGrade','examThreeChemGrade','examThreeBioGrade','examThreePhysicsGrade','examThreeCREGrade','examThreeIslamGrade','examThreeHistGrade','examThreeGeogGrade','examOneGenGrade','examTwoGenGrade','examThreeGenGrade','overalGPA','reportGeneralRemark','mark','streamStudents','reportSubjectGrades','reportMeanGrades'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
+        $pdf = PDF::loadView('admin.pdf.threeexams_reportcard',compact('school','title','examOne','examTwo','examThree','examOneMark','examTwoMark','examThreeMark','mathsAvg','engAvg','kiswAvg','chemAvg','bioAvg','physicsAvg','creAvg','islamAvg','histAvg','geogAvg','year','term','overalTotalAvg','openingDate','closingDate','overalPosition','streamPosition','stream','examOneTotal','examTwoTotal','examThreeTotal','name','markName','examOneMathsGrade','examOneEnglishGrade','examOneKiswGrade','examOneChemGrade','examOneBioGrade','examOnePhysicsGrade','examOneCREGrade','examOneIslamGrade','examOneHistGrade','examOneGeogGrade','examTwoMathsGrade','examTwoEnglishGrade','examTwoKiswGrade','examTwoChemGrade','examTwoBioGrade','examTwoPhysicsGrade','examTwoCREGrade','examTwoIslamGrade','examTwoHistGrade','examTwoGeogGrade','examThreeMathsGrade','examThreeEnglishGrade','examThreeKiswGrade','examThreeChemGrade','examThreeBioGrade','examThreePhysicsGrade','examThreeCREGrade','examThreeIslamGrade','examThreeHistGrade','examThreeGeogGrade','examOneGenGrade','examTwoGenGrade','examThreeGenGrade','overalGPA','reportGeneralRemark','mark','streamStudents','reportSubjectGrades','reportMeanGrades','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','potrait');
 
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -1196,14 +1304,15 @@ class PdfController extends Controller
         $geography = $marks->pluck('geography','name');
         //End of mean subjects mean score calculations
         $title = "BLAH BLAH";
+        $downloadTitle = $school->name." ".$title;
 
-        $render = view('admin.pdf.classmarksheet_pdfchart',compact('maths','english','kiswahili','chemistry','biology','physics','cre','islam','geography','history'))->render();
+        $render = view('admin.pdf.classmarksheet_pdfchart',compact('maths','english','kiswahili','chemistry','biology','physics','cre','islam','geography','history','downloadTitle'))->render();
         $pdf = new ChartPdf;
         $pdf->addPage($render);
         $pdf->setOptions(['javascript-delay' => 5000]);
         $pdf->saveAs(public_path('storage/files/'.$title.".pdf"));
     
-        return response()->download(public_path('storage/files/'.$title.".pdf"));
+        return response()->download(public_path('storage/files/'.$downloadTitle.".pdf"));
 
     }
 }

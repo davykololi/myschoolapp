@@ -1,8 +1,11 @@
-@extends('layouts.pdf_landscape_A4_plain')
-@section('title', '| Department Teachers')
+@extends('layouts.pdf_A4plain_portrait')
+@section('title')
+    {{ $title }}
+@endsection
 
 @section('content')
 <div class="container"> 
+    <div class="mt"><x-pdf-portrait-current-date/></div>
     <h2 class="title"><u>{{$title}}</u></h2>
     <div>
     <table>
@@ -19,9 +22,9 @@
             @forelse($deptTeachers as $key=>$deptTeacher)
             <tr>
                 <td>{{ $loop->iteration}}</td>
-                <td>{{ $deptTeacher->title}} {{ $deptTeacher->full_name}}</td>
+                <td>{{ $deptTeacher->user->salutation}} {{ $deptTeacher->user->full_name}}</td>
                 <td>{{ $deptTeacher->phone_no}}</td>
-                <td>{{ $deptTeacher->email}}</td>
+                <td class="blue">{{ $deptTeacher->user->email}}</td>
             @empty
                 <td colspan="10" style="color: red">
                     Teachers notyet assigned to {{$department->name}}.

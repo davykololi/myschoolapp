@@ -1,3 +1,4 @@
+@role('librarian')
 <!-- Sidenav -->
 <nav
   id="sidenav-3"
@@ -9,6 +10,12 @@
 
   <div class="mt-4 mx-1">
     @include('ext.librarian-search-student')
+  </div>
+  <div class="mt-4 mx-1">
+    @include('ext.librarian-book-search')
+  </div>
+  <div class="mt-4 mx-1">
+    @include('ext.librarian-bookauthor-search')
   </div>
   
   <ul
@@ -128,8 +135,9 @@
         <span>Databases</span>
       </a>
     </li>
+
     <li class="relative">
-      <a
+      <a href="{{ route('librarian.bookers.index') }}"
         class="flex cursor-pointer items-center truncate rounded-[5px] px-6 py-[0.45rem] text-[0.85rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-slate-50 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10"
         data-te-sidenav-link-ref>
         <span
@@ -145,7 +153,27 @@
               clip-rule="evenodd" />
           </svg>
         </span>
-        <span>Custom domains</span>
+        <span>ISSUED BOOKS</span>
+      </a>
+    </li>
+    <li class="relative">
+      <a href="{{ route('librarian.school.libraries') }}"
+        class="flex cursor-pointer items-center truncate rounded-[5px] px-6 py-[0.45rem] text-[0.85rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-slate-50 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10"
+        data-te-sidenav-link-ref>
+        <span
+          class="mr-4 [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:text-gray-400 dark:[&>svg]:text-gray-300">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="h-3.5 w-3.5">
+            <path
+              fill-rule="evenodd"
+              d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75H12a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
+              clip-rule="evenodd" />
+          </svg>
+        </span>
+        <span>LIBRARIES</span>
       </a>
     </li>
     <li class="relative">
@@ -399,4 +427,4 @@
   </ul>
 </nav>
 <!-- Sidenav -->
-
+@endrole

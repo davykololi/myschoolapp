@@ -27,9 +27,10 @@ class PaymentRecordController extends Controller
      */
     public function __construct(StudentService $studentService)
     {
-        $this->middleware('auth:accountant');
-        $this->middleware('banned');
-        $this->middleware('accountant2fa');
+        $this->middleware('auth');
+        $this->middleware('role:accountant');
+        $this->middleware('accountant-banned');
+        $this->middleware('checktwofa');
         $this->studentService = $studentService;
     }
     /**
@@ -62,18 +63,19 @@ class PaymentRecordController extends Controller
     {
         //
         $randomnNo = mt_rand(10000, 999999);
+        $barcode = rand(1000000000,9999999999);
         $paymentRefNo = $request->payment_ref_no;
         $input = $request->validated();
         $input['balance'] = $request->payment_balance - $request->amount_paid;
         $input['verified'] = 1;
         $input['ref_no'] = 'PR/'.$randomnNo."/".$paymentRefNo;
+        $input['barcode'] = $barcode;
         $input['student_id'] = $request->student_id;
         $input['payment_id'] = $request->payment_id;
-        $input['accountant_id'] = Auth::user()->id;
-        $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
-        PaymentRecord::create($input);
+        $input['accountant_id'] = Auth::user()->accountant->id;
+        $paymentRecord = PaymentRecord::create($input);
 
-        return redirect()->route('accountant.student.profile')->withSuccess('payment updated successfully');
+        return redirect('accountant/student-profile')->withSuccess('payment updated successfully');
     }
 
     /**
@@ -85,9 +87,6 @@ class PaymentRecordController extends Controller
     public function show($id)
     {
         //
-        $paymentRecord = PaymentRecord::findOrFail($id);
-
-        return view('accountant.paymentrecords.show',compact('paymentRecord'));
     }
 
     /**
@@ -99,9 +98,6 @@ class PaymentRecordController extends Controller
     public function edit($id)
     {
         //
-        $paymentRecord = PaymentRecord::with('payment','student')->findOrFail($id);
-
-        return view('accountant.paymentrecords.edit',compact('paymentRecord'));
     }
 
     /**
@@ -114,19 +110,6 @@ class PaymentRecordController extends Controller
     public function update(UpdateFormRequest $request, $id)
     {
         //
-        $paymentRecord = PaymentRecord::with('payment','student')->findOrFail($id);
-        if($paymentRecord){
-            Storage::delete('public/files/'.$paymentRecord->file);
-            $input = $request->validated();
-            $input['verified'] = 1;
-            $input['student_id'] = $request->student_id;
-            $input['payment_id'] = $paymentRecord->payment->id;
-            $input['accountant_id'] = Auth::user()->id;
-            $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
-            $paymentRecord->update($input);
-
-            return redirect('/accountant/student-profile')->withSuccess('payment updated successfully');
-        }  
     }
 
     /**

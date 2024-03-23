@@ -1,17 +1,10 @@
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Category</label>
-                        <div class="col-md-10">
-                            <select id="field_category" type="field_category" value="{{old('field_category')}}" class="form-control" name="field_category">
-                                <option value="">Select Field</option>
-                                @foreach ($categoryFields as $key => $categoryField)
-                                    <option value="{{$categoryField->id}}">{{$categoryField->name}}</option>
-                                @endforeach
-                            </select>
-
-                            @if($errors->has('field_category'))
-                                <span class="help-block">
-                                    <span class="text-danger">{{$errors->first('field_category')}}</span>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
+            <select id="type" type="text" value="{{old('type')}}" class="leading-tight" name="type" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Category">
+                <option value="{{__('East End Field')}}">{{__('East End Field')}}</option>
+                <option value="{{__('West End Field')}}">{{__('West End Field')}}</option>
+                <option value="{{__('South End Field')}}">{{__('South End Field')}}</option>
+            </select>
+            @if($errors->has('type'))
+            <span class="help-block">
+                <strong class="text-red-700">{{$errors->first('type')}}</strong>
+            </span>
+            @endif

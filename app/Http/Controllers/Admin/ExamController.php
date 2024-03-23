@@ -22,9 +22,10 @@ class ExamController extends Controller
      */
     public function __construct(ExamService $examService,SubjectService $subjectService,streamService $streamService,YearService $yearService,TermService $termService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->examService = $examService;
         $this->subjectService = $subjectService;
         $this->streamService = $streamService;
@@ -53,8 +54,8 @@ class ExamController extends Controller
     public function create()
     {
         //
-        $subjects = $this->subjectService->all()->pluck('name','id');
-        $streams = $this->streamService->all()->pluck('name','id');
+        $subjects = $this->subjectService->all();
+        $streams = $this->streamService->all();
         $years = $this->yearService->all();
         $terms = $this->termService->all();
 
@@ -89,7 +90,7 @@ class ExamController extends Controller
     {
         //
         $exam = $this->examService->getId($id);
-        $subjects = $this->subjectService->all()->pluck('name','id');
+        $subjects = $this->subjectService->all();
         $examSubjects = $exam->subjects;
 
         return view('admin.exams.show',['exam'=>$exam,'subjects'=>$subjects,'examSubjects'=>$examSubjects]);
@@ -105,8 +106,8 @@ class ExamController extends Controller
     {
         //
         $exam = $this->examService->getId($id);
-        $subjects = $this->subjectService->all()->pluck('name','id');
-        $streams = $this->streamService->all()->pluck('name','id');
+        $subjects = $this->subjectService->all();
+        $streams = $this->streamService->all();
         $years = $this->yearService->all();
         $terms = $this->termService->all();
 

@@ -16,9 +16,9 @@ class TeacherBannedController extends Controller
      */
     public function __construct(TeacherService $teacherService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->teacherService = $teacherService;
     }
 

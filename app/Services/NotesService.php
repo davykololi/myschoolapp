@@ -47,11 +47,9 @@ class NotesService
 		$data = $request->validated();
         $data['file'] = $this->verifyAndUpload($request,'file','public/files/');
         $data['school_id'] = auth()->user()->school->id;
-        $data['department_id'] = $request->department;
         $data['stream_id'] = $request->stream;
         $data['teacher_id'] = $request->teacher;
         $data['subject_id'] = $request->subject;
-        $data['standard_subject_id'] = $request->standard_subject;
 
         return $data;
 	}

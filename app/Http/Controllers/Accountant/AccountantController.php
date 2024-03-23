@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Accountant;
 
+use Auth;
 use App\Models\Student;
 use App\Models\Stream;
 use App\Services\StudentService;
@@ -20,9 +21,10 @@ class AccountantController extends Controller
      */
     public function __construct(StudentService $studentService,ClassService $classService,StreamService $streamService)
     {
-        $this->middleware('auth:accountant');
-        $this->middleware('banned');
-        $this->middleware('accountant2fa');
+        $this->middleware('auth');
+        $this->middleware('role:accountant');
+        $this->middleware('accountant-banned');
+        $this->middleware('checktwofa');
         $this->studentService = $studentService;
         $this->classService = $classService;
         $this->streamService = $streamService;
@@ -35,15 +37,21 @@ class AccountantController extends Controller
      */
     public function index()
     {
-        return view('accountant.accountant');
+        $user = Auth::user();
+        if($user->hasRole('accountant')){
+            return view('accountant.accountant');
+        } 
     }
 
     public function feeBalance(Request $request)
     {
-        $students = $this->studentService->all();
-        $classes = $this->classService->all();
-        $streams = $this->streamService->all();
+        $user = Auth::user();
+        if($user->hasRole('accountant')){
+            $students = $this->studentService->all();
+            $classes = $this->classService->all();
+            $streams = $this->streamService->all();
 
-        return view('accountant.queries.fee_balance',compact('students','classes','streams'));
+            return view('accountant.queries.payment_queries',compact('students','classes','streams'));
+        }
     }
 }

@@ -5,28 +5,29 @@ namespace App\Http\Controllers\Admin;
 use App\Services\ClubService;
 use App\Services\StudentService;
 use App\Services\TeacherService;
-use App\Services\StaffService;
+use App\Services\SubordinateService;
 use App\Services\MeetingService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ClubController extends Controller
 {
-    protected $clubService, $studentService, $teacherService, $staffService, $meetingService;
+    protected $clubService, $studentService, $teacherService, $subordinateService, $meetingService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(ClubService $clubService,StudentService $studentService,TeacherService $teacherService,StaffService $staffService,MeetingService $meetingService)
+    public function __construct(ClubService $clubService,StudentService $studentService,TeacherService $teacherService,SubordinateService $subordinateService,MeetingService $meetingService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->clubService = $clubService;
         $this->studentService = $studentService;
         $this->teacherService = $teacherService;
-        $this->staffService = $staffService;
+        $this->subordinateService = $subordinateService;
         $this->meetingService = $meetingService;
     }
     
@@ -53,15 +54,15 @@ class ClubController extends Controller
     {
         //
         $club = $this->clubService->getId($id);
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $clubStudents = $club->students()->with('clubs','stream')->get();
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $clubTeachers = $club->teachers()->with('clubs')->get();
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $clubStaffs = $club->staffs()->with('clubs')->get();
-        $meetings = $this->meetingService->all()->pluck('name','id');
+        $students = $this->studentService->all();
+        $clubStudents = $club->students()->with('clubs','stream','user')->get();
+        $teachers = $this->teacherService->all();
+        $clubTeachers = $club->teachers()->with('clubs','user')->get();
+        $subordinates = $this->subordinateService->all();
+        $clubSubordinates = $club->subordinates()->with('clubs','user')->get();
+        $meetings = $this->meetingService->all();
         $clubMeetings = $club->meetings()->with('clubs')->get();
 
-        return view('admin.clubs.show',compact('club','students','clubStudents','teachers','clubTeachers','staffs','clubStaffs','meetings','clubMeetings'));
+        return view('admin.clubs.show',compact('club','students','clubStudents','teachers','clubTeachers','subordinates','clubSubordinates','meetings','clubMeetings'));
     }
 }

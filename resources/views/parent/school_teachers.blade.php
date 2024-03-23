@@ -1,6 +1,9 @@
 @extends('layouts.parent')
+@section('title', '| Parent School Teachers')
  
 @section('content')
+@role('parent')
+<x-frontend-main>
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -115,4 +118,6 @@
             </div>
         </div>
     </div>
+</x-frontend-main>
+@endrole
 @endsection

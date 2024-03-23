@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\NotesService;
-use App\Services\DepartmentService as DeptService;
 use App\Services\StreamService;
 use App\Services\TeacherService;
 use App\Services\SubjectService;
-use App\Services\StreamSubjectTeacherService;
+use App\Services\StreamSubjectService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\NotesFormRequest as StoreRequest;
@@ -16,23 +15,23 @@ use App\Http\Requests\NotesFormRequest as UpdateRequest;
 
 class NoteController extends Controller
 {
-    protected $notesService,$deptService,$streamService,$teacherService,$subjectService,$stdSubjectService;
+    protected $notesService,$streamService,$teacherService,$subjectService,$streamSubjectService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(NotesService $notesService,DeptService $deptService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService,StreamSubjectTeacherService $stdSubjectService)
+    public function __construct(NotesService $notesService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService,StreamSubjectService $streamSubjectService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->notesService = $notesService;
-        $this->deptService = $deptService;
         $this->streamService = $streamService;
         $this->teacherService = $teacherService;
         $this->subjectService = $subjectService;
-        $this->stdSubjectService = $stdSubjectService;
+        $this->streamSubjectService = $streamSubjectService;
     }
 
     /**
@@ -58,10 +57,9 @@ class NoteController extends Controller
         //
         $streams = $this->streamService->all();
         $teachers = $this->teacherService->all();
-        $departments = $this->deptService->all();
         $subjects = $this->subjectService->all();
 
-        return view('admin.notes.create',compact('streams','teachers','departments','subjects'));
+        return view('admin.notes.create',compact('streams','teachers','subjects'));
     }
 
     /**
@@ -104,11 +102,10 @@ class NoteController extends Controller
         $note = $this->notesService->getId($id);
         $streams = $this->streamService->all();
         $teachers = $this->teacherService->all();
-        $departments = $this->deptService->all();
         $subjects = $this->subjectService->all();
-        $standardSubjects = $this->stdSubjectService->all();
+        $streamSubjects = $this->streamSubjectService->all();
 
-        return view('admin.notes.edit',compact('note','streams','teachers','departments','subjects','standardSubjects'));
+        return view('admin.notes.edit',compact('note','streams','teachers','subjects','streamSubjects'));
     }
 
     /**

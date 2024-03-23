@@ -40,9 +40,9 @@ class Meeting extends Model implements Searchable
         return $this->belongsTo('App\Models\School')->withDefault();
     }
 
-    public function staffs(): BelongsToMany
+    public function subordinates(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Staff')->withTimestamps();
+        return $this->belongsToMany('App\Models\Subordinate')->withTimestamps();
     }
 
     public function departments(): BelongsToMany
@@ -85,6 +85,6 @@ class Meeting extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','school','streams','staffs','departments','dormitories','libraries','clubs')->get();
+        return $query->with('teachers','students','school','streams','subordinates','departments','dormitories','libraries','clubs')->get();
     }
 }

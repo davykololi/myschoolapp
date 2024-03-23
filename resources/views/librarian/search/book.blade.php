@@ -1,4 +1,5 @@
 @extends('layouts.librarian')
+@section('title', '| Book Details')
 
 @section('content') 
   <!-- frontend-main view -->
@@ -19,7 +20,7 @@
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                     <div class="overflow-x-auto">
-                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                        <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
@@ -38,46 +39,46 @@
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-800">
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
+                                    <td class="whitespace-nowrap p-2">
                                         <div></div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->title  }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->author  }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->category_book->name }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->rack_no }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->row_no }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->library->name }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->units }}</div>
                                     </td>
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->issued_books_count }}</div>
                                     </td>
                                     @if(!empty($book->issued_books))
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->available_books }}</div>
                                     </td>
                                     @else
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>{{ $book->units }}</div>
                                     </td>
                                     @endif
 
                                     @if(!empty($book->issued_books))
-                                    <td class="whitespace-nowrap px-2 py-4">
+                                    <td class="whitespace-nowrap p-2">
                                         <div>
                                             <ul>
                                                 @forelse($book->issued_books as $book)

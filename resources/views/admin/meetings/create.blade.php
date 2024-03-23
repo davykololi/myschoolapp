@@ -1,10 +1,13 @@
-<x-admin> 
-  <!-- frontend-main view -->
-  <x-backend-main>
-<div class="row">
-    <div class="col-lg-12">
-        @include('partials.errors')
-        <div class="card">
+@extends('layouts.admin')
+@section('title', '| Add Meeting')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
+<div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
+    <div class="w-full">
+        <div class="mx-2 md:mx-8 lg:mx-8">
+            @include('partials.errors')
             <div class="card-header">
                 <h5 class="card-title">CREATE A MEETING</h5>
                 <a href="{{ route('admin.meetings.index') }}" class="btn btn-primary pull-right">Back</a>
@@ -88,8 +91,8 @@
                         </div>
                         <div class="w-full md:w-1/3 lg:w-1/3">
                             <div class="flex flex-col">
-                                <label class="uppercase mb-2" for="staffs">{{ __('Attach Staffs') }}<span class="text-[red]">**</span></label>
-                                @include('ext._attach_staffdiv')
+                                <label class="uppercase mb-2" for="staffs">{{ __('Attach Subordinate Staffs') }}<span class="text-[red]">**</span></label>
+                                @include('ext._attach_subordinatediv')
                             </div>
                         </div>
                     </div>
@@ -114,4 +117,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

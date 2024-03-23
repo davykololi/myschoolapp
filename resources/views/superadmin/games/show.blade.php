@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Game')
+@section('title', '| Game Details')
 
 @section('content')
 <main role="main" class="container"  style="margin-top: 5px" id="main">

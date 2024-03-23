@@ -23,9 +23,10 @@ class TimetableController extends Controller
      */
     public function __construct(TimetableService $timetableService,StreamService $streamService,ClassService $classService,ExamService $examService,TeacherService $teacherService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->timetableService = $timetableService;
         $this->streamService = $streamService;
         $this->classService = $classService;
@@ -86,8 +87,9 @@ class TimetableController extends Controller
     {
         //
         $timetable = $this->timetableService->getId($id);
+        $timetableStreamName = $timetable->stream->name;
 
-        return view('admin.timetables.show',['timetable'=>$timetable]);
+        return view('admin.timetables.show',compact('timetable','timetableStreamName'));
     }
 
     /**

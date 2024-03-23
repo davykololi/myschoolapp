@@ -56,8 +56,8 @@ class ExamFormRequest extends FormRequest
                 'name.required' => 'The name of the exam is required',
                 'start_date.required' => 'The date of starting exam is required',
                 'end_date.required' => 'The date of ending exam is required',
-                'year.required' => 'The year the exam is done is required',
-                'term.required' => 'The term the exam is done is required',
+                'year.required' => 'The year for the exam is required',
+                'term.required' => 'The term for the exam is required',
                 'status.required' => 'The exam status is required',
             ];
         } else {
@@ -66,8 +66,8 @@ class ExamFormRequest extends FormRequest
                 'name.required' => 'The name of the exam is required',
                 'start_date.required' => 'The date of starting exam is required',
                 'end_date.required' => 'The date of ending exam is required',
-                'year.required' => 'The year the exam is done is required',
-                'term.required' => 'The term the exam is done is required',
+                'year.required' => 'The year for the exam is required',
+                'term.required' => 'The term for the exam is required',
                 'status.required' => 'The exam status is required',
             ];
         }

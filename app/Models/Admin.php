@@ -2,11 +2,7 @@
 
 namespace App\Models;
 
-use Exception;
-use Mail;
-use App\Models\UserEmailCode;
-use App\Mail\SendEmailCode;
-use App\Enums\AdminsEnum;
+use App\Enums\AdminPositionEnum;
 use App\Models\Gallery;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,14 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\hasOne;
 use	Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use App\Notifications\AdminResetPasswordNotification;
+use App\Models\CommonUserInformation;
 
-class Admin extends Authenticatable
+class Admin extends CommonUserInformation
 {
     use Notifiable;
-    protected $guard = 'admin';
     /**
     * The attributes that are mass assignable.
     *@var array
@@ -30,58 +24,7 @@ class Admin extends Authenticatable
     protected $table = 'admins';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $fillable = ['salutation','first_name','middle_name','last_name','blood_group','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','role','history','school_id','superadmin_id','password','is_banned'];
-    protected $appends = ['age'];
-    protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> AdminsEnum::class];
-    /**
-    * The attributes that should be hidden for arrays.
-    *
-    *@var array
-    */
-    protected $hidden = ['password','remember_token',];
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-    public function generateCode()
-    {
-        $code = rand(100000,999999);
-  
-        UserEmailCode::updateOrCreate(
-            [ 'admin_id' => auth()->user()->id ],
-            [ 'code' => $code ]
-        );
-    
-        try {
-  
-            $details = [
-                'title' => 'Mail Sent from'." ".config('app.name'),
-                'code' => $code,
-            ];
-             
-            Mail::to(auth()->user()->email)->send(new SendEmailCode($details));
-    
-        } catch (Exception $e) {
-            info("Error: ". $e->getMessage());
-        }
-    }
-
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new AdminResetPasswordNotification($token));
-    }
-
-    public function superadmin(): BelongsTo
-    {
-    	return $this->belongsTo('App\Models\Superadmin')->withDefault();
-    }
-
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo('App\Models\School')->withDefault();
-    }
+    protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> AdminPositionEnum::class];
 
     public function students(): HasMany
     {
@@ -93,99 +36,59 @@ class Admin extends Authenticatable
         return $this->hasMany('App\Models\Teacher','admin_id','id');
     }
 
-    public function staffs(): HasMany
-    {
-        return $this->hasMany('App\Models\Staff','admin_id','id');
-    }
-
     public function assignments(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Assignment')->withTimestamps();
     }
 
-    public function rewards(): BelongsToMany
-    {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
-    }
-
-    public function getAgeAttribute()       
-    { 
-        $myDate = $this->dob;
-        $change = Carbon::createFromFormat('d/m/Y',$myDate)->format('d-m-Y H:i');
-        $years = Carbon::parse($change)->age;
-
-        return $years;     
-    }
-
-    public function getImageUrlAttribute()       
-    { 
-        return URL::asset('/storage/storage/'.$this->image);   
-    }
-
-    public function getFullNameAttribute()       
-    {        
-        return $this->first_name . " " . $this->middle_name ." ". $this->last_name;       
-    }
-
-    public function	firstName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
-    public function	middleName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
-    public function	lastName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
     public function scopeEagerLoaded($query)
     {
-        return $query->with('superadmin','school')->get();
-    }
-
-    public function user_email_code(): HasOne
-    {
-        return $this->hasOne('App\Models\UserEmailCode','admin_id','id');
+        return $query->with('superadmin','school','user')->get();
     }
 
     public function seniorAdmin()
     {
-        return $this->role === AdminsEnum::SA;
+        return $this->position === AdminPositionEnum::SA;
     }
 
     public function deputySeniorAdmin()
     {
-        return $this->role === AdminsEnum::DSA;
+        return $this->position === AdminPositionEnum::DSA;
     }
 
     public function studentRegistrar()
     {
-        return $this->role === AdminsEnum::SR;
+        return $this->position === AdminPositionEnum::SR;
     }
 
     public function examRegistrar()
     {
-        return $this->role === AdminsEnum::ER;
+        return $this->position === AdminPositionEnum::ER;
     }
 
     public function academicRegistrar()
     {
-        return $this->role === AdminsEnum::AR;
+        return $this->position === AdminPositionEnum::AR;
     }
 
     public function ordinayAdmin()
     {
-        return $this->role === AdminsEnum::OA;
+        return $this->position === AdminPositionEnum::OA;
+    }
+
+    public function accountsAdmin()
+    {
+        return $this->position === AdminPositionEnum::ACAD;
+    }
+
+    public function libraryAdmin()
+    {
+        return $this->position === AdminPositionEnum::LIBAD;
+    }
+
+    public function dataOfficer()
+    {
+        return $this->position === AdminPositionEnum::DATOFF;
     }
 
     public function galleries(): HasMany

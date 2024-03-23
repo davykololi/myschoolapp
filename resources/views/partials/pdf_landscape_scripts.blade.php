@@ -13,7 +13,7 @@
 			$word_space = 0.0; // default
 			$char_space = 0.0; // default 
 			$angle = 0.0; // default
-			$background_color = array(300,0,0);
+			$background_color = array(0,0,0);
 			$pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
 		}
 	</script>

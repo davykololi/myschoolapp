@@ -1,17 +1,24 @@
 @extends('layouts.matron')
- 
+@section('title', '| Matron Dashboard')
+
 @section('content')
-    <div class="max-w-screen max-h-screen">
-        <div class="w-full">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Matron Dashboard</div>
+@role('matron')
+<x-frontend-main>
+<div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
+    <div class="w-full">
+        <div class="mx-2 md:mx-8 lg:mx-8">
+            <div class="">
+                <div>
+                    <h2 class="text-center text-2xl font-bold uppercase">Matron Dashboard</h2>
  
-                    <div class="panel-body">
-                        You are logged in as a matron!
+                    <div class="">
+                        You are logged in as a matron with {{ Auth::user()->matron->position->value }} position!
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</x-frontend-main>
+@endrole
 @endsection

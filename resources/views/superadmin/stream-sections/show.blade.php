@@ -1,5 +1,5 @@
 @extends('layouts.superadmin')
-@section('title', '| Stream Section')
+@section('title', '| Stream Section Details')
 
 @section('content')
 <main role="main" class="container"  style="margin-top: 5px" id="main">

@@ -3,26 +3,31 @@
 namespace App\Http\Controllers\Matron;
 
 use Auth;
+use App\Models\BedNumber;
+use App\Models\Student;
 use App\Services\SchoolService;
 use App\Services\DormitoryService;
+use App\Services\StudentService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MatronController extends Controller
 {
-    protected $schService,$dormService;
+    protected $schService,$dormService,$studentService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(SchoolService $schService,DormitoryService $dormService)
+    public function __construct(SchoolService $schService,DormitoryService $dormService,StudentService $studentService)
     {
-        $this->middleware('auth:matron');
-        $this->middleware('banned');
-        $this->middleware('matron2fa');
+        $this->middleware('auth');
+        $this->middleware('role:matron');
+        $this->middleware('matron-banned');
+        $this->middleware('checktwofa');
         $this->schService = $schService;
         $this->dormService = $dormService;
+        $this->studentService = $studentService;
     }
  
     /**
@@ -32,29 +37,61 @@ class MatronController extends Controller
      */
     public function index()
     {
-        return view('matron.matron');
+        $user = Auth::user();
+        if($user->hasRole('matron')){
+            return view('matron.matron');
+        }
     }
 
     public function dormitories()
     {
-        $school = Auth::user()->school;
-    	$dormitories = $school->dormitories()->with('school','students')->get();
+        $user = Auth::user();
+        if($user->hasRole('matron')){
+            $school = Auth::user()->school;
+            $dormitories = $school->dormitories()->with('school','students')->get();
 
-        return view('matron.dormitories',compact('school','dormitories'));
+            return view('matron.dormitories',compact('school','dormitories'));
+        }
     }
 
     public function dormitory($id)
     {
-        $dormitory = $this->dormService->getId($id);
-        $dormitoryStudents = $dormitory->students()->with('stream')->get();
+        $user = Auth::user();
+        if($user->hasRole('matron')){
+            $dormitory = $this->dormService->getId($id);
+            $dormitoryStudents = $dormitory->students()->with('stream','user')->get();
 
-        return view('matron.dormitory',compact('dormitory','dormitoryStudents'));
+            return view('matron.dormitory',compact('dormitory','dormitoryStudents'));
+        }
     }
 
     public function dormitoryQueries()
     {
-        $dormitories = $this->dormService->all();
+        $user = Auth::user();
+        if($user->hasRole('matron')){
+            $dormitories = $this->dormService->all();
+            $students = $this->studentService->all();
 
-        return view('matron.dormitories.dormitory_queries',compact('dormitories'));
+            return view('matron.dormitories.dormitory_queries',compact('dormitories','students'));
+        }
+    }
+
+    public function studentBedNumber(Request $request)
+    {
+        $user = Auth::user();
+        if($user->hasRole('matron')){
+            $number = $request->number;
+            $studentId = $request->student;
+            $student = Student::where('id',$studentId)->first();
+            $dormitoryId = $student->dormitory_id;
+        
+            $bedNumber = BedNumber::upsert([
+                            'number' => $number,
+                            'student_id' => $studentId,
+                            'dormitory_id' => $dormitoryId,
+                ],['student_id'],['number','dormitory_id']);
+
+            return back()->withSuccess('Done successfully');  
+        }  
     }
 }

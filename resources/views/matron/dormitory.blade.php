@@ -1,7 +1,11 @@
 @extends('layouts.matron')
-@section('title', '| Dormitory')
+
+@section('title')
+{{ Auth::user()->school->name }} {{ $dormitory->name }} {{ __('Dormitory') }}
+@endsection
 
 @section('content')
+@role('matron')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
     <div class="row">
     <div class="col-md-12 margin-tb">
@@ -33,7 +37,7 @@
             <ol>
             @forelse($dormitoryStudents as $student)
                 <li>
-                    {{ $student->full_name }} Class: {{ $student->stream->name }} 
+                    {{ $student->user->full_name }} Class: {{ $student->stream->name }} 
                     <img style="margin-left: 2em" width="30" height="30" src="/storage/storage/{{ $student->image }}">
                 </li>
             @empty
@@ -56,4 +60,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

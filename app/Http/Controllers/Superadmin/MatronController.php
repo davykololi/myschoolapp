@@ -2,30 +2,33 @@
 
 namespace App\Http\Controllers\Superadmin;
 
+use Auth;
+use App\Models\User;
+use App\Models\Matron;
 use App\Http\Controllers\Controller;
-use App\Services\SchoolService;
 use App\Services\MatronService as MatService;
 use Illuminate\Http\Request;
+use App\Traits\ImageUploadTrait;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\MatronFormRequest as StoreRequest;
-use App\Http\Requests\MatronFormRequest as UpdateRequest;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class MatronController extends Controller
 {
+    use ImageUploadTrait;
     protected $matService;
-    protected $schoolService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(MatService $matService,SchoolService $schoolService)
+    public function __construct(MatService $matService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->matService = $matService;
-        $this->schoolService = $schoolService;
     }
 
     /**
@@ -49,9 +52,7 @@ class MatronController extends Controller
     public function create()
     {
         //
-        $schools = $this->schoolService->all();
-
-        return view('superadmin.matrons.create',compact('schools'));
+        return view('superadmin.matrons.create');
     }
 
     /**
@@ -63,9 +64,35 @@ class MatronController extends Controller
     public function store(StoreRequest $request)
     {
         //
-        $matron = $this->matService->create($request);
+        $user = User::create([
+            'salutation' => $request->salutation,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'school_id' => Auth::user()->school->id,
+        ]);
 
-        return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->full_name." ".'info created successfully'));
+        $user->matron()->create([
+            'blood_group' => $request->blood_group,
+            'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+            'gender' => $request->gender,
+            'id_no' => $request->id_no,
+            'emp_no' => $request->emp_no,
+            'dob' => $request->dob,
+            'designation' => $request->designation,
+            'phone_no' => $request->phone_no,
+            'history' => $request->history,
+            'position' => $request->position,
+            'school_id' => Auth::user()->school->id,
+            'current_address'   => $request->current_address,
+            'permanent_address' => $request->permanent_address
+        ]);
+
+        $user->assignRole('matron');
+
+        return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($user->full_name." ".'info created successfully'));
     }
 
     /**
@@ -92,9 +119,8 @@ class MatronController extends Controller
     {
         //
         $matron = $this->matService->getId($id);
-        $schools = $this->schoolService->all();
 
-        return view('superadmin.matrons.edit',compact('matron','schools'));
+        return view('superadmin.matrons.edit',compact('matron'));
     }
 
     /**
@@ -110,9 +136,32 @@ class MatronController extends Controller
         $matron = $this->matService->getId($id);
         if($matron){
             Storage::delete('public/storage/'.$matron->image);
-            $this->matService->update($request,$id);
+            $matron->user()->update([
+                'salutation' => $request->salutation,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'school_id' => Auth::user()->school->id,
+            ]);
 
-            return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->name." ".'info updated successfully'));
+            $matron->update([
+                'blood_group' => $request->blood_group,
+                'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+                'gender' => $request->gender,
+                'id_no' => $request->id_no,
+                'emp_no' => $request->emp_no,
+                'dob' => $request->dob,
+                'designation' => $request->designation,
+                'phone_no' => $request->phone_no,
+                'history' => $request->history,
+                'position' => $request->position,
+                'school_id' => Auth::user()->school->id,
+                'current_address'   => $request->current_address,
+                'permanent_address' => $request->permanent_address
+            ]);
+
+            return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->user->full_name." ".'info updated successfully'));
         }
     }
 
@@ -128,9 +177,12 @@ class MatronController extends Controller
         $matron = $this->matService->getId($id);
         if($matron){
             Storage::delete('public/storage/'.$matron->image);
-            $this->matService->delete($id);
+            $user = User::findOrFail($matron->user_id);
+            $user->matron()->delete();
+            $user->delete();
+            $user->removeRole('matron');
 
-            return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($matron->name." ".'info deleted successfully'));
-        }
+            return redirect()->route('superadmin.matrons.index')->withSuccess(ucwords($user->full_name." ".'info deleted successfully'));
+        }    
     }
 }

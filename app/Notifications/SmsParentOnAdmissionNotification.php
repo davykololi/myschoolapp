@@ -44,7 +44,7 @@ class SmsParentOnAdmissionNotification extends Notification
     public function toNexmo($notifiable)
     {
         return (new NexmoMessage)
-                    ->content($this->student->full_name." ".'has officially been admitted to'." ".$this->student->school->name." ".'Details are as follows. Dormitory:'." ".$this->student->dormitory->name." ".'Class:'." ".$this->student->standard->name." ".'Admission No:'." ".$this->student->admission_no." ".'Thank you for choosing our school and always login to your account to monitor the progress of your child/children.'
+                    ->content($this->student->user->full_name." ".'has officially been admitted to'." ".$this->student->school->name." ".'Details are as follows. Dormitory:'." ".$this->student->dormitory->name." ".'Class:'." ".$this->student->stream->name." ".'Admission No:'." ".$this->student->admission_no." ".'Thank you for choosing our school and always login to your account to monitor the progress of your child.'
                 		);
                     
     }

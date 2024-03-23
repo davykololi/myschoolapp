@@ -1,8 +1,11 @@
-<x-teacher>
-    <!-- frontend-main view -->
-    <x-frontend-main>
-<div class="row">
-    <div class="col-lg-12">
+@extends('layouts.teacher')
+@section('title', '| Teacher Edit Assignment')
+
+@section('content')
+<!-- frontend-main view -->
+<x-frontend-main>
+<div class="max-w-screen mb-8">
+    <div class="w-full">
         @include('partials.errors')
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -20,14 +23,14 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Date Given</label>
-                        <div class="col-sm-10">
-                            <input type="date" name="date_given" id="date_given" class="form-control" value="{{$assignment->date_given}}" required>
+                        <div class="relative w-full md:w-[220px]" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                            <input type="text" name="date_given" id="date_given" class="py-1 bg-gray-200 focus:shadow-outline focus:bg-blue-100 placeholder-indigo-300" value="{{ $assignment->date_given }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Deadline</label>
-                        <div class="col-sm-10">
-                            <input type="date" name="deadline" id="deadline" class="form-control" value="{{ $assignment->deadline }}" required>
+                        <div class="relative w-full md:w-[220px]" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
+                            <input type="text" name="deadline" id="deadline" class="py-1 bg-gray-200 focus:shadow-outline focus:bg-blue-100 placeholder-indigo-300" value="{{ $assignment->deadline }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -43,7 +46,7 @@
                         </div>
                     </div>
                     @include('ext._attach_studentdiv')
-                    @include('ext._attach_staffdiv')
+                    @include('ext._attach_subordinatediv')
                     @include('ext._submit_update_button')
                 </form>
             </div>
@@ -51,4 +54,4 @@
     </div>
 </div>
 </x-frontend-main>
-</x-teacher>
+@endsection

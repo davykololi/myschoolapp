@@ -63,10 +63,10 @@ class StudentService
         $data['stream_id'] = $request->stream;
         $data['intake_id'] = $request->intake;
         $data['dormitory_id'] = $request->dormitory;
-        $data['admin_id'] = Auth::id();
+        $data['admin_id'] = Auth::user()->admin->id;
         $data['parent_id'] = $request->parent;
         $data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->student_role;
+        $data['position'] = $request->student_position;
         $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
         $data['active'] = $request->active;
@@ -81,10 +81,10 @@ class StudentService
         $data['stream_id'] = $request->stream;
         $data['intake_id'] = $request->intake;
         $data['dormitory_id'] = $request->dormitory;
-        $data['admin_id'] = Auth::id();
+        $data['admin_id'] = Auth::user()->admin->id;
         $data['parent_id'] = $request->parent;
         $data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->student_role;
+        $data['position'] = $request->student_position;
         $data['active'] = $request->active;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
@@ -116,7 +116,7 @@ class StudentService
         $info->guardian_occupation = (!empty($request->guardian_occupation)) ? $request->guardian_occupation : '';
         $info->home_email_address = (!empty($request->home_email_address)) ? $request->home_email_address : '';
         $info->home_postal_address = (!empty($request->home_postal_address)) ? $request->home_postal_address : '';
-        $info->admin_id = auth()->user()->id;
+        $info->admin_id = auth()->user()->admin->id;
         $info->save();
     }
 

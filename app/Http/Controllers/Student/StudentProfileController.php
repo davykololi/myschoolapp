@@ -7,6 +7,7 @@ use App\Models\Year;
 use App\Models\Term;
 use App\Models\Stream;
 use App\Models\Exam;
+use App\Models\Mark;
 use Illuminate\Support\Arr;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -20,9 +21,10 @@ class StudentProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:student');
-        $this->middleware('banned');
-        $this->middleware('student2fa');
+        $this->middleware('auth');
+        $this->middleware('role:student');
+        $this->middleware('student-banned');
+        $this->middleware('checktwofa');
     }
     
     public function studentProfile()
@@ -34,15 +36,15 @@ class StudentProfileController extends Controller
         $year = Year::where('year',$currentYear)->first();
         $currentTerm = Term::where('status',1)->first();
         $currentExam = Exam::where(['status'=>1,'year_id'=>$year->id,'term_id'=>$currentTerm->id])->first();
-        $strmSubjectTeachers = $user->stream->stream_subject_teachers()->with('teacher','stream','school','subject')->get();
-        $vv = collect($user->stream->subjects()->pluck('name'));
-        $streamSubjects = $vv->toArray();
+        $streamSubjectFacilitators = $user->student->stream->stream_subjects()->with('teacher.user','stream','school','subject')->get();
+        $vv = collect($user->student->stream->subjects()->pluck('name'));
+        $streamSubjects = $vv->toArray(); 
         
         if(!is_null($currentExam)){
             $results = $currentExam->name." "."Results";
-            return view('student.profile',compact('user','title','currentExam','results','strmSubjectTeachers','streamSubjects'));
-        }
+            return view('student.profile',compact('user','title','currentExam','results','streamSubjectFacilitators','streamSubjects'));
+        }  
 
-        return view('student.profile',compact('user','title','currentExam','strmSubjectTeachers','streamSubjects'));
+        return view('student.profile',compact('user','title','currentExam','streamSubjectFacilitators','streamSubjects'));
     }
 }

@@ -15,15 +15,17 @@ class AccountantProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:accountant');
-        $this->middleware('banned');
-        $this->middleware('accountant2fa');
+        $this->middleware('auth');
+        $this->middleware('role:accountant');
+        $this->middleware('accountant-banned');
+        $this->middleware('checktwofa');
     }
     
     public function accountantProfile()
     {
-        $accountant = Auth::user();
-
-    	return view('accountant.profile',compact('accountant'));
+        $user = Auth::user();
+        if($user->hasRole('accountant')){
+            return view('accountant.profile',compact('user'));
+        }
     }
 }

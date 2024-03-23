@@ -16,8 +16,10 @@ class CategoryFeeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:accountant');
-        $this->middleware('accountant2fa');
+        $this->middleware('auth');
+        $this->middleware('role:accountant');
+        $this->middleware('accountant-banned');
+        $this->middleware('checktwofa');
     }
 
     /**

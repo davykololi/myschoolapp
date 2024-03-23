@@ -20,7 +20,7 @@ class TeacherRepository implements TeacherInterface
 
     public function all()
     {
-        return $this->teacher->eagerLoaded();
+        return $this->teacher->eagerLoaded()->get();
     }
 
     public function create(array $data)

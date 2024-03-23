@@ -1,17 +1,13 @@
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" >Category</label>
-                        <div class="col-md-10">
-                            <select id="subject_category" type="subject_category" value="{{old('subject_category')}}" class="form-control" name="subject_category">
-                                <option value="">Select Category</option>
-                                @foreach ($subjectCategories as $key => $subjectCategory)
-                                    <option value="{{$subjectCategory->id}}">{{$subjectCategory->name}}</option>
-                                @endforeach
-                            </select>
-
-                            @if($errors->has('subject_category'))
-                                <span class="help-block">
-                                    <strong>{{$errors->first('subject_category')}}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
+    
+            <select id="type" type="text" value="{{old('type')}}" class="leading-tight" name="type" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Category">
+                <option value="{{ __('Mathematics') }}">{{ __('Mathematics') }}</option>
+                <option value="{{ __('Languages') }}">{{ __('Languages') }}</option>
+                <option value="{{ __('Sciences') }}">{{ __('Sciences') }}</option>
+                <option value="{{ __('Humanities') }}">{{ __('Humanities') }}</option>
+                <option value="{{ __('Religious') }}">{{ __('Religious') }}</option>
+            </select>
+            @if($errors->has('type'))
+            <span class="help-block">
+                <strong class="text-red-700">{{$errors->first('type')}}</strong>
+            </span>
+            @endif

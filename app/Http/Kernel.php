@@ -61,7 +61,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -72,15 +72,18 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
-        'teacher2fa' => \App\Http\Middleware\TeacherCheck2FA::class,
-        'admin2fa' => \App\Http\Middleware\AdminCheck2FA::class,
-        'librarian2fa' => \App\Http\Middleware\LibrarianCheck2FA::class,
-        'superadmin2fa' => \App\Http\Middleware\SuperadminCheck2FA::class,
-        'accountant2fa' => \App\Http\Middleware\AccountantCheck2FA::class,
-        'matron2fa' => \App\Http\Middleware\MatronCheck2FA::class,
-        'staff2fa' => \App\Http\Middleware\StaffCheck2FA::class,
-        'student2fa' => \App\Http\Middleware\StudentCheck2FA::class,
-        'banned' => \App\Http\Middleware\CheckBanned::class,
+        'checktwofa' => \App\Http\Middleware\Check2FA::class,
+        'student-banned' => \App\Http\Middleware\StudentBanned::class,
+        'teacher-banned' => \App\Http\Middleware\TeacherBanned::class,
+        'accountant-banned' => \App\Http\Middleware\AccountantBanned::class,
+        'librarian-banned' => \App\Http\Middleware\LibrarianBanned::class,
+        'matron-banned' => \App\Http\Middleware\MatronBanned::class,
+        'parent-banned' => \App\Http\Middleware\ParentBanned::class,
+        'admin-banned' => \App\Http\Middleware\AdminBanned::class,
+        'subordinate-banned' => \App\Http\Middleware\SubordinateBanned::class,
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 
     /**

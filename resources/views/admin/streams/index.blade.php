@@ -1,9 +1,9 @@
 @extends('layouts.admin')
-@section('title', '| Class Streams')
+@section('title', '| Admin Streams List')
 
 @section('content') 
-  <!-- frontend-main view -->
-  <x-backend-main>
+<!-- frontend-main view -->
+<x-backend-main>
 <div class="row">
     <div class="col-lg-12">
     @include('partials.messages')

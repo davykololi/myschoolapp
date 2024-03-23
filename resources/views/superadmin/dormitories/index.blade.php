@@ -1,4 +1,7 @@
-<x-superadmin>
+@extends('layouts.superadmin')
+@section('title', '| Dormitories List')
+
+@section('content')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -20,7 +23,7 @@
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                     <div class="overflow-x-auto">
-                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                        <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
                                 <tr>
@@ -35,7 +38,7 @@
                             <!-- Table Body -->
                             <tbody>
                             @foreach($dormitories as $dormitory)
-                                <tr class="border-b dark:border-neutral-500">
+                                <tr class="border-b dark:border-neutral-500 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$loop->iteration}}</div>
                                     </td>
@@ -55,13 +58,13 @@
                                         <form action="{{route('superadmin.dormitories.destroy',$dormitory->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
-                                            <a type="button" href="{{ route('superadmin.dormitories.show',$dormitory->id) }}" class="show">
+                                            <a type="button" href="{{ route('superadmin.dormitories.show',$dormitory->id) }}">
                                                 <x-show-svg/>
                                             </a>
-                                            <a type="button" href="{{ route('superadmin.dormitories.edit', $dormitory->id) }}" class="edit">
+                                            <a type="button" href="{{ route('superadmin.dormitories.edit', $dormitory->id) }}">
                                                 <x-edit-svg/>
                                             </a>
-                                            <button type="submit" class="delete" onclick="return confirm('Are you sure to delete {{$dormitory->name}}?')">
+                                            <button type="submit" onclick="return confirm('Are you sure to delete {{$dormitory->name}}?')">
                                                 <x-delete-svg/>
                                             </button>
                                         </form>
@@ -78,4 +81,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-superadmin>
+@endsection

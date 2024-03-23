@@ -1,5 +1,5 @@
 @extends('layouts.librarian')
-@section('title', '| Librarian Show Library')
+@section('title', '| Librarian View Library')
 
 @section('content')
 <x-frontend-main>

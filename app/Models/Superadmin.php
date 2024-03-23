@@ -2,23 +2,17 @@
 
 namespace App\Models;
 
-use Exception;
-use Mail;
-use App\Models\UserEmailCode;
-use App\Mail\SendEmailCode;
 use App\Models\Admin;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Notifications\SuperadminResetPasswordNotification;
 
-class Superadmin extends Authenticatable
+class Superadmin extends Model
 {
     use Notifiable;
-    protected $guard = 'superadmin';
     /**
     * The attributes that are mass assignable.
     *@var array
@@ -26,43 +20,7 @@ class Superadmin extends Authenticatable
     protected $table = 'superadmins';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $fillable = ['name','title','email','address','school_id','password'];
-
-    /**
-    * The attributes that should be hidden for arrays.
-    *
-    *@var array
-    */
-    protected $hidden = ['password','remember_token',];
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-    public function generateCode()
-    {
-        $code = rand(100000,999999);
-  
-        UserEmailCode::updateOrCreate(
-            [ 'superadmin_id' => auth()->user()->id ],
-            [ 'code' => $code ]
-        );
-    
-        try {
-  
-            $details = [
-                'title' => 'Mail Sent from'." ".auth()->user()->school->name,
-                'code' => $code,
-                'school' => auth()->user()->school->name,
-            ];
-             
-            Mail::to(auth()->user()->email)->send(new SendEmailCode($details));
-    
-        } catch (Exception $e) {
-            info("Error: ". $e->getMessage());
-        }
-    }
+    protected $fillable = ['address','user_id','school_id'];
 
     public function sendPasswordResetNotification($token)
     {
@@ -74,9 +32,9 @@ class Superadmin extends Authenticatable
         return $this->belongsTo('App\Models\School')->withDefault();
     }
 
-    public function admins(): HasMany
+    public function user() 
     {
-    	return $this->hasMany('App\Models\Admin','superadmin_id','id');
+        return $this->belongsTo(User::class)->withDefault();
     }
 
     public function ownsAdmin(Admin $admin)
@@ -92,10 +50,5 @@ class Superadmin extends Authenticatable
     public function rewards(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Reward')->withTimestamps();
-    }
-
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = ucfirst($value);
     }
 }

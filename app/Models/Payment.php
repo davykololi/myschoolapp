@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ class Payment extends Model
 {
     //
     protected $table = 'payments';
-    protected $fillable = ['title','description','amount','ref_no','student_id','school_id','year_id','term_id'];
+    protected $fillable = ['description','amount','ref_no','student_id','payment_section_id','school_id','year_id','lock'];
     protected $appends = ['amount','balance'];
     
     public function student(): BelongsTo
@@ -30,14 +31,19 @@ class Payment extends Model
         return $this->belongsTo('App\Models\Year')->withDefault();
     }
 
-    public function term(): BelongsTo
+    public function terms(): BelongsToMany
     {
-        return $this->belongsTo('App\Models\Term')->withDefault();
+        return $this->belongsToMany('App\Models\Term')->withTimestamps();
     }
 
     public function payment_records(): HasMany
     {
         return $this->hasMany('App\Models\PaymentRecord','payment_id');
+    }
+
+    public function payment_section(): BelongsTo
+    {
+        return $this->belongsTo('App\Models\PaymentSection')->withDefault();
     }
 
     public static function boot() {

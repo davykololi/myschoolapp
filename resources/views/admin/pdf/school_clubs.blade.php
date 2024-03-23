@@ -5,7 +5,7 @@
 <div class="container"> 
     <div class="row">
         <div class="col-lg-12">
-            <x-pdf-portrait-current-date/>
+            <div class="mt"><x-pdf-portrait-current-date/></div>
             <div><h2 class="title"><u>{{$title}}</u></h2></div>
             <div>    
                 <table>

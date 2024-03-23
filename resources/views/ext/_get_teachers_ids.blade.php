@@ -1,7 +1,7 @@
-                <select id="teacher" type="text" value="{{old('teacher')}}" class="py-1 bg-gray-800 text-white w-full md:w-[220px] my-1 focus:shadow-outline focus:bg-black" name="teacher" data-te-select-init data-te-select-filter="true" data-te-select-placeholder="Select Teacher">
+                <select id="teacher" type="text" value="{{old('teacher')}}" class="w-full bg-transparent" name="teacher" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Teacher">
                     @foreach ($teachers as $teacher)
                         <option value="{{$teacher->id}}" data-te-select-icon="{{ $teacher->image_url }}">
-                            {{$teacher->full_name}}
+                            {{$teacher->user->salutation}} {{$teacher->user->full_name}}
                         </option>
                     @endforeach
                 </select>

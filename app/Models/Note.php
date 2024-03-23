@@ -12,7 +12,7 @@ class Note extends Model implements Searchable
 {
     use HasFactory;
     protected $table = 'notes';
-    protected $fillable = ['file','desc','stream_id','teacher_id','subject_id','school_id','department_id'];
+    protected $fillable = ['file','desc','stream_id','teacher_id','subject_id','school_id'];
 
     public function getSearchResult(): SearchResult
     {
@@ -40,11 +40,6 @@ class Note extends Model implements Searchable
         return $this->belongsTo('App\Models\Stream')->withDefault();
     }
 
-    public function department(): BelongsTo
-    {
-    	return $this->belongsTo('App\Models\Department')->withDefault();
-    }
-
     public function teacher(): BelongsTo
     {
     	return $this->belongsTo('App\Models\Teacher')->withDefault();
@@ -57,6 +52,6 @@ class Note extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','class','stream','department','teacher','subject')->get();
+        return $query->with('school','class','stream','teacher.user','subject');
     }
 }

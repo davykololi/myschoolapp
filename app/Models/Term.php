@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Term extends Model
@@ -40,9 +41,9 @@ class Term extends Model
         return $this->hasMany('App\Models\Grade','term_id','id');
     }
 
-    public function payments(): HasMany
+    public function payments(): BelongsToMany
     {
-        return $this->hasMany('App\Models\Payment','term_id','id');
+        return $this->belongsToMany('App\Models\Payment')->withTimestamps();
     }
 
     public function general_grades(): HasMany

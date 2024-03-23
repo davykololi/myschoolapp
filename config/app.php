@@ -171,6 +171,8 @@ return [
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Jimmyjs\ReportGenerator\ServiceProvider::class,
         Milon\Barcode\BarcodeServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+        Lab404\Impersonate\ImpersonateServiceProvider::class,
 
         /*
          * Package Service Providers...

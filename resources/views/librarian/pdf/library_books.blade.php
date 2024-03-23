@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    @include('partials.pdf_landscape_head')
+    @include('partials.pdf_landscape_A4_plain_head')
 </head>
 <body>
     @include('partials.pdf_landscape_header')
     @include('partials.school_landscape_logo')
     @include('partials.pdf_landscape_school_footer')
-<div style="margin-top: -40px;">
-    <p style="font-size: 25px;margin-top: -20px;text-align: right;">
-        <b>Date:</b> <u style="margin-right: 40px">{!! date('d/m/Y') !!}</u>
-    </p>  
+<div>
+    <div class="mt"><x-pdf-landscape-current-date/></div> 
     <table>
         <caption class="table_caption">
             <h2 class="title"><u>{{$title}}</u></h2>
         </caption>
         <thead>
             <tr>
-                <td class="padding-10"><b>NO</b></td>
-                <td class="padding-10"><b>TITLE</b></td>
-                <td class="padding-10"><b>AUTHOR</b></td>
-                <td class="padding-10"><b>LIBRARY</b></td>
-                <td class="padding-10"><b>ROW NO</b></td>
-                <td class="padding-10"><b>RACK NO</b></td>
-                <td class="padding-10"><b>UNITS</b></td>
+                <td width="5%" class="padding-10"><b>NO</b></td>
+                <td width="35%" class="padding-10"><b>TITLE</b></td>
+                <td width="25%" class="padding-10"><b>AUTHOR</b></td>
+                <td width="20%" class="padding-10"><b>LIBRARY</b></td>
+                <td width="5%" class="padding-10"><b>ROW</b></td>
+                <td width="5%" class="padding-10"><b>RACK</b></td>
+                <td width="5%" class="padding-10"><b>UNITS</b></td>
             </tr>
         </thead>
         <tbody>

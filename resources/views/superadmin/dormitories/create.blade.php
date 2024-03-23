@@ -17,25 +17,37 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Dormitory Name</label>
                         <div class="col-sm-10">
-                            <input type="text" name="name" id="name" class="form-control" placeholder="Dormitory Name">
+                            <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" placeholder="Dormitory Name">
+                            @error('name')
+                            <span class="text-red-700">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Bed No.</label>
                         <div class="col-sm-10">
-                            <input type="number" min="0" max="100" name="bed_no" id="bed_no" class="form-control" placeholder="Bed No.">
+                            <input type="number" min="0" max="100" name="bed_no" id="bed_no" class="form-control" value="{{ old('bed_no') }}" placeholder="Bed No.">
+                            @error('bed_no')
+                            <span class="text-red-700">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Dormitory Head</label>
                         <div class="col-sm-10">
-                            <input type="text" name="dom_head" id="dom_head" class="form-control" placeholder="Dormitory Head">
+                            <input type="text" name="dom_head" id="dom_head" class="form-control" value="{{ old('dom_head') }}" placeholder="Dormitory Head">
+                            @error('dom_head')
+                            <span class="text-red-700">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Dormitory Assistant Head</label>
                         <div class="col-sm-10">
-                            <input type="text" name="ass_head" id="ass_head" class="form-control" placeholder="Dormitory Assistant Head">
+                            <input type="text" name="ass_head" id="ass_head" class="form-control" value="{{ old('ass_head') }}" placeholder="Dormitory Assistant Head">
+                            @error('ass_head')
+                            <span class="text-red-700">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     @include('ext._submit_create_button')

@@ -1,24 +1,13 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Club')
+@section('title', '| Club Details')
 
 @section('content')
-<main role="main" class="container"  style="margin-top: 5px" id="main">
+<main class="container max-w-screen">
     <div class="row">
     @include('partials.messages')
-    <div class="col-md-12 margin-tb">
-        <div class="pull-left">
-            <h2 style="text-transform: uppercase;">{{ $club->name }} Details</h2>
-            <br/>
-        </div>
-        <div class="pull-right">
-            <a href="{{route('admin.club.students',$club->id)}}" class="btn btn-primary btn-border">
-                {{ $club->name }} Students PDF
-            </a>
-            <a href="{{route('admin.club.teachers',$club->id)}}" class="btn btn-primary btn-border">
-                {{ $club->name }} Teachers PDF
-            </a>
-            <br/>
-            <a href="{{ url()->previous() }}" class="label label-primary pull-right">Back</a>
+    <div class="">
+        <div class="mt-8">
+            <h2 class="uppercase text-center text-2xl font-bold">{{ $club->name }} Details</h2>
         </div>
     </div>
 </div>
@@ -47,7 +36,7 @@
             <ol>
             @forelse($clubTeachers as $teacher)
             <a href="{{route('admin.teachers.show',$teacher->id)}}">
-                <li>{{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}</li>
+                <li>{{ $teacher->user->salutation }} {{ $teacher->user->full_name }} {{ $teacher->phone_no }}</li>
             </a>
             @empty
             <p>No teachers(s) assigned to {{ $club->name }} yet.</p>
@@ -59,9 +48,11 @@
         <div class="form-group">
             <strong>{{ $club->name }} Substaffs:</strong>
             <ol>
-            @forelse($club->staffs as $staff)
-            <a href="{{route('admin.staffs.show',$staff->id)}}">
-                <li>{{ $staff->title }} {{ $staff->name }} - {{ $staff->phone_no }}</li>
+            @forelse($clubSubordinates as $clubSubordinate)
+            <a href="{{route('superadmin.subordinates.show',$clubSubordinate->id)}}">
+                <li>
+                    {{ $clubSubordinate->user->salutation }} {{ $clubSubordinate->user->full_name }} - {{ $clubSubordinate->phone_no }}
+                </li>
             </a>
             @empty
             <p>No substaff(s) assigned to {{ $club->name }} yet.</p>
@@ -75,7 +66,7 @@
             <ol>
             @forelse($clubStudents as $student)
             <a href="{{route('admin.students.show',$student->id)}}">
-                <li>{{ $student->full_name }} {{ $student->stream->name }}</li>
+                <li>{{ $student->user->full_name }} - {{ $student->stream->name }}</li>
             </a>
             @empty
             <p>No student(s) assigned to {{ $club->name }} yet.</p>
@@ -87,7 +78,7 @@
         <div class="form-group">
             <strong>{{ $club->name }} Meetings:</strong>
             <ol>
-            @forelse($club->meetings as $meeting)
+            @forelse($clubMeetings as $meeting)
             <a href="{{route('admin.meetings.show',$meeting->id)}}">
                 <li>
                     {{ $meeting->name }} will be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda will be {{ $meeting->agenda }}
@@ -105,10 +96,10 @@
                 <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($club->created_at)) }}</span>
         </div>
     </div>
-    @include('club.attachstudentform')
-    @include('club.attachteacherform')
-    @include('club.attachstaffform')
-    @include('club.attachmeetingform')
+    @include('superadmin.club.attach_detach_studentform')
+    @include('superadmin.club.attach_detach_teacherform')
+    @include('superadmin.club.attach_detach_subordinateform')
+    @include('superadmin.club.attach_detach_meetingform')
 </div>
 </main>
 @endsection

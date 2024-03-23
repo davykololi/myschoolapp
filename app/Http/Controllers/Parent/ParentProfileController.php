@@ -15,15 +15,17 @@ class ParentProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:parent');
-        $this->middleware('banned');
+        $this->middleware('auth');
+        $this->middleware('role:parent');
+        $this->middleware('parent-banned');
+        $this->middleware('checktwofa');
     }
     
     public function parentProfile()
     {
-        $parent = Auth::user();
-        $parentStudents = $parent->students()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records')->get();
+        $user = Auth::user();
+        $parentChildren = $user->parent->children()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','user')->get();
 
-    	return view('parent.profile',compact('parent','parentStudents'));
+    	return view('parent.profile',compact('user','parentChildren'));
     }
 }

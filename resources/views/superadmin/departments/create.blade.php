@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     @include('ext._attach_teacherdiv')
-                    @include('ext._attach_staffdiv')
+                    @include('ext._attach_subordinatediv')
                     @include('ext._attach_meetingdiv')
                     @include('ext._submit_create_button')
                 </form>

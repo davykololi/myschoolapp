@@ -15,23 +15,23 @@ function genRefCode()
 
 function streamStudents($stream)
 {
-    $streamStudents = $stream->students()->with('payments','payment_records')->inRandomOrder()->get();
+    $streamStudents = $stream->students()->with('payments','payment_records','user')->inRandomOrder()->get();
 
     return $streamStudents;
 }
 
 function streamTotalBalance($stream)
 {
-   $streamStudentsBalances = $stream->students()->with('payments','payment_records')->get()->pluck('fee_balance'); 
-   $streamBalancesToCollection = collect($streamStudentsBalances);
-   $totalStreamBalance = $streamBalancesToCollection->sum();
+    $streamStudentsBalances = $stream->students()->with('payments','payment_records')->get()->pluck('fee_balance'); 
+    $streamBalancesToCollection = collect($streamStudentsBalances);
+    $totalStreamBalance = $streamBalancesToCollection->sum();
 
-   return number_format($totalStreamBalance,2);
+    return number_format($totalStreamBalance,2);
 }
 
 function classStudents($class)
 {
-    $classStudents = $class->students()->with('payments','payment_records','stream.stream_section')->inRandomOrder()->get();
+    $classStudents = $class->students()->with('payments','payment_records','stream.stream_section','user')->inRandomOrder()->get();
 
     return $classStudents;
 }

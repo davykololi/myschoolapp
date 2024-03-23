@@ -20,9 +20,9 @@ class TermController extends Controller
      */
     public function __construct(TermService $termService,SchoolService $schoolService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->termService = $termService;
         $this->schoolService = $schoolService;
     }

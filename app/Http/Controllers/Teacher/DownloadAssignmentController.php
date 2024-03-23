@@ -15,8 +15,10 @@ class DownloadAssignmentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:teacher');
-        $this->middleware('teacher2fa');
+        $this->middleware('auth');
+        $this->middleware('role:teacher');
+        $this->middleware('teacher-banned');
+        $this->middleware('checktwofa');
     }
     
     public function dowmloadAssignment($assignmentId)

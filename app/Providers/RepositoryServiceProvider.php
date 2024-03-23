@@ -44,10 +44,10 @@ use App\Interfaces\GameInterface;
 use App\Repositories\GameRepository;
 use App\Interfaces\FarmInterface;
 use App\Repositories\FarmRepository;
-use App\Interfaces\StreamSubjectTeacherInterface;
-use App\Repositories\StreamSubjectTeacherRepository;
-use App\Interfaces\StaffInterface;
-use App\Repositories\StaffRepository;
+use App\Interfaces\StreamSubjectInterface;
+use App\Repositories\StreamSubjectRepository;
+use App\Interfaces\SubordinateInterface;
+use App\Repositories\SubordinateRepository;
 use App\Interfaces\ClubInterface;
 use App\Repositories\ClubRepository;
 use App\Interfaces\AssignmentInterface;
@@ -64,6 +64,16 @@ use App\Interfaces\TimetableInterface;
 use App\Repositories\TimetableRepository;
 use App\Interfaces\NotesInterface;
 use App\Repositories\NotesRepository;
+use App\Interfaces\ImageGalleryInterface;
+use App\Repositories\ImageGalleryRepository;
+use App\Interfaces\DepartmentSectionInterface;
+use App\Repositories\DepartmentSectionRepository;
+use App\Interfaces\PaymentSectionInterface;
+use App\Repositories\PaymentSectionRepository;
+use App\Interfaces\PaymentInterface;
+use App\Repositories\PaymentRepository;
+use App\Interfaces\ParentInterface;
+use App\Repositories\ParentRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -96,8 +106,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(FieldInterface::class,FieldRepository::class);
         $this->app->bind(GameInterface::class,GameRepository::class);
         $this->app->bind(FarmInterface::class,FarmRepository::class);
-        $this->app->bind(StreamSubjectTeacherInterface::class,StreamSubjectTeacherRepository::class);
-        $this->app->bind(StaffInterface::class,StaffRepository::class);
+        $this->app->bind(StreamSubjectInterface::class,StreamSubjectRepository::class);
+        $this->app->bind(SubordinateInterface::class,SubordinateRepository::class);
         $this->app->bind(ClubInterface::class,ClubRepository::class);
         $this->app->bind(AssignmentInterface::class,AssignmentRepository::class);
         $this->app->bind(ExamInterface::class,ExamRepository::class);
@@ -106,6 +116,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(HallInterface::class,HallRepository::class);
         $this->app->bind(TimetableInterface::class,TimetableRepository::class);
         $this->app->bind(NotesInterface::class,NotesRepository::class);
+        $this->app->bind(ImageGalleryInterface::class,ImageGalleryRepository::class);
+        $this->app->bind(DepartmentSectionInterface::class,DepartmentSectionRepository::class);
+        $this->app->bind(PaymentSectionInterface::class,PaymentSectionRepository::class);
+        $this->app->bind(PaymentInterface::class,PaymentRepository::class);
+        $this->app->bind(ParentInterface::class,ParentRepository::class);
     }
 
     /**

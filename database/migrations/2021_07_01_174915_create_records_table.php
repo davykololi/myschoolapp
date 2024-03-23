@@ -27,8 +27,8 @@ class CreateRecordsTable extends Migration
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->bigInteger('teacher_id')->unsigned()->nullable();
             $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
-            $table->bigInteger('staff_id')->unsigned()->nullable();
-            $table->foreign('staff_id')->references('id')->on('staffs')->onDelete('cascade');
+            $table->bigInteger('subordinate_id')->unsigned()->nullable();
+            $table->foreign('subordinate_id')->references('id')->on('subordinates')->onDelete('cascade');
             $table->bigInteger('librarian_id')->unsigned()->nullable();
             $table->foreign('librarian_id')->references('id')->on('librarians')->onDelete('cascade');
             $table->bigInteger('matron_id')->unsigned()->nullable();

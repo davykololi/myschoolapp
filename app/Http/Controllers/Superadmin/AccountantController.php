@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers\Superadmin;
 
+use Auth;
+use App\Models\User;
+use App\Models\Accountant;
 use App\Http\Controllers\Controller;
-use App\Services\SchoolService;
-use App\Services\AccountantService as AccService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\AccFormRequest as StoreRequest;
-use App\Http\Requests\AccFormRequest as UpdateRequest;
+use App\Traits\ImageUploadTrait;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class AccountantController extends Controller
 {
-    protected $accService;
-    protected $schoolService;
+    use ImageUploadTrait;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(AccService $accService,SchoolService $schoolService)
+    public function __construct()
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
-        $this->accService = $accService;
-        $this->schoolService = $schoolService;
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
     }
 
     /**
@@ -36,9 +36,12 @@ class AccountantController extends Controller
     public function index()
     {
         //
-        $accountants = $this->accService->all();
+        $user = Auth::user();
+        if($user->hasRole('superadmin')){
+            $accountants = Accountant::with('user')->latest()->paginate(10);
 
-        return view('superadmin.accountants.index',compact('accountants'));
+            return view('superadmin.accountants.index',compact('accountants'));
+        }
     }
 
     /**
@@ -49,7 +52,6 @@ class AccountantController extends Controller
     public function create()
     {
         //
-
         return view('superadmin.accountants.create');
     }
 
@@ -60,11 +62,36 @@ class AccountantController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
-    {
-        //
-        $accountant = $this->accService->create($request);
+    { 
+        $user = User::create([
+            'salutation' => $request->salutation,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'school_id' => Auth::user()->school->id,
+        ]);
 
-        return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($accountant->full_name." ".'info created successfully'));
+        $user->accountant()->create([
+            'blood_group' => $request->blood_group,
+            'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+            'gender' => $request->gender,
+            'id_no' => $request->id_no,
+            'emp_no' => $request->emp_no,
+            'dob' => $request->dob,
+            'designation' => $request->designation,
+            'phone_no' => $request->phone_no,
+            'history' => $request->history,
+            'position' => $request->position,
+            'school_id' => Auth::user()->school->id,
+            'current_address'   => $request->current_address,
+            'permanent_address' => $request->permanent_address
+        ]);
+
+        $user->assignRole('accountant');
+
+        return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($user->full_name." ".'info created successfully'));
     }
 
     /**
@@ -76,7 +103,7 @@ class AccountantController extends Controller
     public function show($id)
     {
         //
-        $accountant = $this->accService->getId($id);
+        $accountant = Accountant::findOrFail($id);
 
         return view('superadmin.accountants.show',compact('accountant'));
     }
@@ -90,7 +117,7 @@ class AccountantController extends Controller
     public function edit($id)
     {
         //
-        $accountant = $this->accService->getId($id);
+        $accountant = Accountant::findOrFail($id);
 
         return view('superadmin.accountants.edit',compact('accountant'));
     }
@@ -105,12 +132,35 @@ class AccountantController extends Controller
     public function update(UpdateRequest $request, $id)
     {
         //
-        $accountant = $this->accService->getId($id);
+        $accountant = Accountant::findOrFail($id);
         if($accountant){
             Storage::delete('public/storage/'.$accountant->image);
-            $this->accService->update($request,$id);
+            $accountant->user()->update([
+                'salutation' => $request->salutation,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'school_id' => Auth::user()->school->id,
+            ]);
 
-            return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($accountant->full_name." ".'info updated successfully'));
+            $accountant->update([
+                'blood_group' => $request->blood_group,
+                'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+                'gender' => $request->gender,
+                'id_no' => $request->id_no,
+                'emp_no' => $request->emp_no,
+                'dob' => $request->dob,
+                'designation' => $request->designation,
+                'phone_no' => $request->phone_no,
+                'history' => $request->history,
+                'position' => $request->position,
+                'school_id' => Auth::user()->school->id,
+                'current_address'   => $request->current_address,
+                'permanent_address' => $request->permanent_address
+            ]);
+
+            return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($accountant->user->full_name." ".'info updated successfully'));
         }
     }
 
@@ -123,12 +173,15 @@ class AccountantController extends Controller
     public function destroy($id)
     {
         //
-        $accountant = $this->accService->getId($id);
+        $accountant = Accountant::findOrFail($id);
         if($accountant){
             Storage::delete('public/storage/'.$accountant->image);
-            $this->accService->delete($id);
+            $user = User::findOrFail($accountant->user_id);
+            $user->accountant()->delete();
+            $user->delete();
+            $user->removeRole('accountant');
 
-            return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($accountant->full_name." ".'info deleted successfully'));
+            return redirect()->route('superadmin.accountants.index')->withSuccess(ucwords($user->full_name." ".'info deleted successfully'));
         }
     }
 }

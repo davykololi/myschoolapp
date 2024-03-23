@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Carbon\Carbon;
 use App\Models\Mark;
 use App\Models\StudentInfo;
 use Illuminate\Support\Str;
-use App\Enums\StudentsEnum;
-use Exception;
-use Mail;
-use App\Models\UserEmailCode;
-use App\Mail\SendEmailCode;
+use App\Enums\StudentPositionEnum;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\URL;
@@ -22,59 +19,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use	Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use App\Notifications\StudentResetPasswordNotification;
 
-class Student extends Authenticatable implements Searchable
+class Student extends Model implements Searchable
 {
-    use HasFactory;
-    use Notifiable;
+    use HasFactory, Notifiable;
     protected $fee_balances = [];
-    protected $guard = 'student';
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'students';
-    protected $fillable = ['salutation','first_name','middle_name','last_name','image','gender','email','role','blood_group','adm_mark','admission_no','phone_no','dob','doa','active','role','school_id','stream_id','intake_id','dormitory_id','admin_id','parent_id','password','is_banned','lock'];
+    protected $fillable = ['image','gender','blood_group','adm_mark','admission_no','phone_no','dob','doa','active','position','stream_id','intake_id','dormitory_id','admin_id','parent_id','is_banned','payment_locked','lock','user_id','school_id'];
     protected $appends = ['age','full_name','fee_balance'];
-    protected $casts = ['created_at' => 'datetime:d-m-Y H:i','role'=> StudentsEnum::class];
-
-    /**
-    * The attributes that should be hidden for arrays.
-    *
-    *@var array
-    */
-    protected $hidden = ['password','remember_token',];
-
-        /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-    public function generateCode()
-    {
-        $code = rand(100000,999999);
-  
-        UserEmailCode::updateOrCreate(
-            [ 'student_id' => auth()->user()->id ],
-            [ 'code' => $code ]
-        );
-    
-        try {
-  
-            $details = [
-                'title' => 'Mail from'." ".auth()->user()->school->name,
-                'code' => $code
-            ];
-             
-            Mail::to(auth()->user()->email)->send(new SendEmailCode($details));
-    
-        } catch (Exception $e) {
-            info("Error: ". $e->getMessage());
-        }
-    }
+    protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> StudentPositionEnum::class];
 
     public function sendPasswordResetNotification($token)
     {
@@ -92,34 +51,49 @@ class Student extends Authenticatable implements Searchable
             );
     }
 
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo('App\Models\School')->withDefault();
+    }
+
+    public function user() 
+    {
+        return $this->belongsTo(User::class)->withDefault();
+    }
+
+    public function bed_number() 
+    {
+        return $this->hasOne(BedNumber::class,'student_id','id');
+    }
+
     public function schoolStudentLeader()
     {
-    	return $this->role === StudentsEnum::SL;
+    	return $this->position === StudentPositionEnum::SL;
     }
 
     public function assSchoolStudentLeader()
     {
-        return $this->role === StudentsEnum::DSL;
+        return $this->position === StudentPositionEnum::DSL;
     }
 
     public function ordinaryStudent()
     {
-        return $this->role === StudentsEnum::OS;
+        return $this->position === StudentPositionEnum::OS;
     }
 
     public function streamPrefect()
     {
-        return $this->role === StudentsEnum::SP;
+        return $this->position === StudentPositionEnum::SP;
     }
 
     public function assistantStreamPrefect()
     {
-        return $this->role === StudentsEnum::ASP;
+        return $this->position === StudentPositionEnum::ASP;
     }
 
     public function timeKeeper()
     {
-        return $this->role === StudentsEnum::TK;
+        return $this->position === StudentPositionEnum::TK;
     }
 
     public function intake(): BelongsTo
@@ -130,11 +104,6 @@ class Student extends Authenticatable implements Searchable
     public function teachers(): BelongsToMany
     {
     	return $this->belongsToMany('App\Models\Teacher')->withTimestamps();
-    }
-
-    public function school(): BelongsTo
-    {
-    	return $this->belongsTo('App\Models\School')->withDefault();
     }
 
     public function parent(): BelongsTo
@@ -273,32 +242,6 @@ class Student extends Authenticatable implements Searchable
         return URL::asset('/storage/storage/'.$this->image);   
     }
 
-    public function getFullNameAttribute()       
-    {        
-        return str($this->first_name . " " . $this->middle_name ." ". $this->last_name)->squish();       
-    }
-
-    public function	firstName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
-    public function	middleName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
-    public function	lastName(): Attribute 
-    {				
-        return	new	Attribute(								                             
-            set: fn	($value) =>	ucfirst($value),				
-        ); 
-    }
-
     public function getDateFormattedAttribute()
     {
         return \Carbon\Carbon::parse($this->created_at)->format('F d, Y');
@@ -337,7 +280,7 @@ class Student extends Authenticatable implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','libraries','teachers','class','stream','clubs','payments','payment_records');
+        return $query->with('libraries','teachers','class','stream','clubs','payments','payment_records','user','dormitory');
     }
 
     public function getTotalPaymentAmountAttribute()

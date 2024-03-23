@@ -51,7 +51,7 @@ class ComposerServiceProvider extends ServiceProvider
         );
 
         View::composer(
-            'layouts.staff',
+            'layouts.subordinate',
             'App\Http\ViewComposers\AppComposer'
         );
 
@@ -71,8 +71,8 @@ class ComposerServiceProvider extends ServiceProvider
         );
 
         View::composer(
-            'ext.staff-search-student',
-            'App\Http\ViewComposers\StaffStudentComposer'
+            'ext.subordinate-search-student',
+            'App\Http\ViewComposers\StudentComposer'
         );
     }
 }

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <x-general-head/>
-<body>
+<body class="antialiased font-family-karla">
     <x-matron-navbar/>
     <x-matron-header/>
     <x-general-layouts-container> <!-- the container -->

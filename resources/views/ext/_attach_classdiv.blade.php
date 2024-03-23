@@ -1,4 +1,4 @@
-                            <select id="class" type="class" value="{{old('class')}}" class="select-form-one" name="class" data-te-select-init data-te-select-filter="true" data-te-select-placeholder="Select Class">
+                            <select id="class" type="class" value="{{old('class')}}" class="select-form-one" name="class" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Class">
                                 @foreach ($classes as $class)
                                     <option value="{{$class->id}}">{{$class->name}}</option>
                                 @endforeach

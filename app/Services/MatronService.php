@@ -6,8 +6,8 @@ use Auth;
 use App\Repositories\MatronRepository;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\MatronFormRequest as StoreRequest;
-use App\Http\Requests\MatronFormRequest as UpdateRequest;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class MatronService
 {
@@ -48,7 +48,7 @@ class MatronService
 		$data = $request->validated();
         $data['school_id'] = Auth::user()->school->id;
         $data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->matron_role;
+        $data['position'] = $request->matron_position;
         $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
@@ -60,7 +60,7 @@ class MatronService
         $data=$request->only('salutation','first_name','middle_name','last_name','dob','email','gender','address','phone_no','id_no','designation','emp_no','history');
         $data['school_id'] = Auth::user()->school->id;
         $data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->matron_role;
+        $data['position'] = $request->matron_position;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;

@@ -1,4 +1,7 @@
-<x-admin>
+@extends('layouts.admin')
+@section('title', '| Admin Create Attendance ')
+
+@section('content')
   <!-- frontend-main view -->
   <x-backend-main>
 <div class="row">
@@ -37,4 +40,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

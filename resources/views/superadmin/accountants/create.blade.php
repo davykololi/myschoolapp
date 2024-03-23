@@ -3,7 +3,7 @@
 
 @section('content')
 <x-backend-main>
-    <section class="max-w-full py-1 bg-blueGray-50">
+    <section class="max-w-full py-1">
         <div class="w-full px-4 mx-auto mt-6">
             <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0 dark:bg-stone-700 dark:text-slate-200">
                 <div class="rounded-t bg-white mb-0 px-6 py-6">
@@ -14,16 +14,16 @@
                         <x-back-button/>
                     </div>
                 </div>
-                <div class="flex-auto px-4 lg:px-10 py-10 pt-4">
+                <div class="flex-auto px-4 lg:px-10 py-10 pt-4 bg-gray-400 dark:bg-stone-500">
                     <form action="{{ route('superadmin.accountants.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
                         @include('ext._csrfdiv')
                         @include('ext._first_common_detailsdiv')
                         @include('ext._second_common_detailsdiv')
-                        <div class="flex flex-col md:flex-row lg:flex-row">
+                        <div class="flex flex-col md:flex-row lg:flex-row my-4">
                             <div class="w-full md:w-1/3 lg:w-1/3 px-2">
                                 <div class="relative w-full mb-3">
-                                    <label class="form-input-label-one" htmlfor="grid-password">Accountant Role:</label>
-                                    @include('ext._attach_accountant_rolediv')
+                                    <label class="form-input-label-one" htmlfor="grid-password">Position:</label>
+                                    @include('ext._attach_accountant_position')
                                 </div>
                             </div>
                         </div>

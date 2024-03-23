@@ -30,22 +30,30 @@ class ParentFormRequest extends FormRequest
             return [
                 //
                 'salutation' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
-                'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
+                'email'=> 'required|string|email|max:255|unique:users',
                 'phone_no' => 'required|string',
                 'id_no' => 'required|string',
-                'email' => 'required|email',
+                'gender' => 'required|string|max:100',
+                'current_address'   => 'required|string|max:255',
+                'permanent_address' => 'required|string|max:255',
                 'password'=>['required','string','confirmed',Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
                 'password_confirmation' => ['required'],
             ];
         } else {
             return [
                 'salutation' => 'required|string|max:100',
-                'name' => 'required','string','max:100',new CapitalLetter(),
-                'image' => 'required||image|mimes:jpeg,png,jpg,gif,webp,svg,bmp|max:2048',
+                'first_name' => 'required','string','max:100',new CapitalLetter(),
+                'middle_name' => 'required','string','max:100',new CapitalLetter(),
+                'last_name' => 'required','string','max:100',new CapitalLetter(),
+                'email'=> 'required|string|email|max:255',
                 'phone_no' => 'required|string',
                 'id_no' => 'required|string',
-                'email' => 'required|email',
+                'gender' => 'required|string|max:100',
+                'current_address'   => 'required|string|max:255',
+                'permanent_address' => 'required|string|max:255',
             ];
         }
     }
@@ -56,22 +64,30 @@ class ParentFormRequest extends FormRequest
 
             return [
                 //
-                'salutation.required' => 'The parent title is required',
-                'name.required' => 'The name is required',
-                'image.required' => 'The image is required',
+                'salutation.required' => 'The title is required',
+                'first_name.required' => 'The first name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
+                'gender.required' => 'The gender status is required',
                 'phone_no.required'   => 'The phone number is required',
                 'id_no.required'   => 'The id number is required',
                 'email.required'   => 'The email address is required',
+                'current_address.required'   => 'The current postal address is required',
+                'permanent_address.required'   => 'The permanent postal address is required',
             ];
         } else {
             return [
                 //
-                'salutation.required' => 'The parent title is required',
-                'name.required' => 'The name is required',
-                'image.required' => 'The image is required',
+                'salutation.required' => 'The title is required',
+                'first_name.required' => 'The first name is required',
+                'middle_name.required' => 'The middle name is required',
+                'last_name.required' => 'The last name is required',
+                'gender.required' => 'The gender status is required',
                 'phone_no.required'   => 'The phone number is required',
                 'id_no.required'   => 'The id number is required',
                 'email.required'   => 'The email address is required',
+                'current_address.required'   => 'The current postal address is required',
+                'permanent_address.required'   => 'The permanent postal address is required',
             ];
         }
     }

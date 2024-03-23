@@ -1,8 +1,8 @@
-@extends('layouts.error', [
-    'title' => 'The Application Under Maintanance',
-    'errorCode' => '503',
-    'homeLink' => false,
-])
+@extends('layouts.error')
+
+@section('title')
+{{__('| 503 Application Under Maintanance!') }}
+@endsection
 
 @section('content')
 <!-- ====== Error 404 Section Start -->
@@ -20,7 +20,7 @@
             Sorry Our Esteemed Users. 
           </h4>
           <p class="mb-8 text-lg text-white">
-            This Application Is Under Maintanance and To Be Right Back Soon. Stay In Touch. Thank You.
+            This Application Is Under Maintanance. To Be Right Back Soon. Thank You.
           </p>
         </div>
       </div>

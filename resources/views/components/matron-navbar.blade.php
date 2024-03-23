@@ -1,13 +1,13 @@
 <nav class="border-b bg-blue-600 border-gray-200 sticky top-0 z-10 dark:bg-gray-900">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
-  <a href="{{ url('/') }}" class="flex items-center">
+  <a href="{{ url('/matron/dashbpard') }}" class="flex items-center">
       <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8" alt="school logo" />
       <span class="self-center text-2xl font-semibold uppercase whitespace-nowrap dark:text-white">{{ config('app.name') }}</span>
   </a>
   <div class="flex items-center md:order-2">
       <button type="button" class="flex" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
         <span class="sr-only">Open user menu</span>
-        <x-auth-user-image/>
+        <x-user-avatar/>
       </button>
       <!-- Dropdown menu -->
       <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
@@ -31,12 +31,12 @@
             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
           </li>
           <li>
-            <a href="{{ route('teacher.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+            <a href="{{ route('matron.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
               My Profile
             </a>
           </li>
           <li>
-            <a href="{{route('teacher.change-password.form')}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+            <a href="{{ route('changePassword.form') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
               Change Password
             </a>
           </li>
@@ -59,7 +59,7 @@
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
     <ul class="flex flex-col font-bold p-4 md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 text-sm">
       <li>
-        <x-matron-sidenav-toggler/>
+        <x-sidenav-toggler-button/>
       </li>
       <li class="mt-2">
         <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">HOME</a>

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Auth;
 use App\Services\SchoolService;
 use App\Services\AssignmentService;
 use App\Services\StudentService;
 use App\Services\StreamService;
-use App\Services\StaffService;
+use App\Services\SubordinateService;
 use App\Services\TeacherService;
 use App\Models\Teacher;
 use App\Http\Controllers\Controller;
@@ -17,22 +18,23 @@ use App\Http\Requests\AssignFormRequest as UpdateRequest;
 
 class AssignmentController extends Controller
 {
-    protected $assignmentService,$schoolService,$studentService,$streamService,$staffService,$teacherService;
+    protected $assignmentService,$schoolService,$studentService,$streamService,$subordinateService,$teacherService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(AssignmentService $assignmentService,SchoolService $schoolService,StudentService $studentService,StreamService $streamService,StaffService $staffService,TeacherService $teacherService)
+    public function __construct(AssignmentService $assignmentService,SchoolService $schoolService,StudentService $studentService,StreamService $streamService,SubordinateService $subordinateService,TeacherService $teacherService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->assignmentService = $assignmentService;
         $this->schoolService = $schoolService;
         $this->studentService = $studentService;
         $this->streamService = $streamService;
-        $this->staffService = $staffService;
+        $this->subordinateService = $subordinateService;
         $this->teacherService = $teacherService;
     }
 
@@ -44,9 +46,12 @@ class AssignmentController extends Controller
     public function index(Request $request)
     {
         //
-        $assignments = $this->assignmentService->all();
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $assignments = $this->assignmentService->all();
 
-        return view('admin.assignments.index',compact('assignments'));
+            return view('admin.assignments.index',compact('assignments'));
+        }
     }
 
     /**
@@ -57,12 +62,15 @@ class AssignmentController extends Controller
     public function create()
     {
         //
-        $streams = $this->streamService->all()->pluck('name','id');
-        $teachers = $this->teacherService->all();
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $streams = $this->streamService->all();
+            $teachers = $this->teacherService->all();
+            $students = $this->studentService->all();
+            $subordinates = $this->subordinateService->all();
 
-        return view('admin.assignments.create',compact('streams','teachers','students','staffs'));
+            return view('admin.assignments.create',compact('streams','teachers','students','subordinates'));
+        }
     }
 
     /**
@@ -73,18 +81,20 @@ class AssignmentController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $assignment = $this->assignmentService->create($request);
-        $streams = $request->streams;
-        $assignment->streams()->sync($streams);
-        $teacherId = $request->teacher;
-        $assignment->teachers()->sync($teacherId);
-        $students = $request->students;
-        $assignment->students()->sync($students);
-        $staffs = $request->staffs;
-        $assignment->staffs()->sync($staffs);
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $assignment = $this->assignmentService->create($request);
+            $streams = $request->streams;
+            $assignment->streams()->sync($streams);
+            $teachers = $request->teachers;
+            $assignment->teachers()->sync($teachers);
+            $students = $request->students;
+            $assignment->students()->sync($students);
+            $subordinates = $request->subordinates;
+            $assignment->subordinates()->sync($subordinates);
 
-
-        return redirect()->route('admin.assignments.index')->withSuccess(ucwords($assignment->name." ".'info created successfully'));
+            return redirect()->route('admin.assignments.index')->withSuccess(ucwords($assignment->name." ".'info created successfully'));
+        }
     }
 
     /**
@@ -98,9 +108,12 @@ class AssignmentController extends Controller
         //
         $assignment = $this->assignmentService->getId($id);
         $students = $this->studentService->all();
-        $assignmentStudents = $assignment->students;
+        $assignmentStudents = $assignment->students()->with('user')->get();
+        $assignmentTeachers = $assignment->teachers()->with('user')->get();
+        $assignmentSubordinates = $assignment->subordinates()->with('user')->get();
 
-        return view('admin.assignments.show',['assignment'=>$assignment,'students'=>$students,'assignmentStudents'=>$assignmentStudents]);
+
+        return view('admin.assignments.show',compact('assignment','students','assignmentStudents','assignmentTeachers','assignmentSubordinates'));
     }
 
     /**
@@ -113,12 +126,12 @@ class AssignmentController extends Controller
     {
         //
         $assignment = $this->assignmentService->getId($id);
-        $streams = $this->streamService->all()->pluck('name','id');
+        $streams = $this->streamService->all();
         $teachers = $this->teacherService->all();
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
+        $students = $this->studentService->all();
+        $subordinates = $this->subordinateService->all();
 
-        return view('admin.assignments.edit',compact('assignment','streams','teachers','students','staffs'));
+        return view('admin.assignments.edit',compact('assignment','streams','teachers','students','subordinates'));
     }
 
     /**
@@ -135,14 +148,14 @@ class AssignmentController extends Controller
         if($assignment){
             Storage::delete('public/files/'.$assignment->file);
             $this->assignmentService->update($request,$id);
-            $teacherId = $request->teacher;
-            $assignment->teachers()->sync($teacherId);
+            $teachers = $request->teachers;
+            $assignment->teachers()->sync($teachers);
             $streams = $request->streams;
             $assignment->streams()->sync($streams);
             $students = $request->students;
             $assignment->students()->sync($students);
-            $staffs = $request->staffs;
-            $assignment->staffs()->sync($staffs);
+            $subordinates = $request->subordinates;
+            $assignment->subordinates()->sync($subordinates);
 
             return redirect()->route('admin.assignments.index')->withSuccess(ucwords($assignment->name." ".'info updated successfully'));
         }
@@ -164,7 +177,7 @@ class AssignmentController extends Controller
             $assignment->teachers()->detach();
             $assignment->streams()->detach();
             $assignment->students()->detach();
-            $assignment->staffs()->detach();
+            $assignment->subordinates()->detach();
 
             return redirect()->route('admin.assignments.index')->withSuccess(ucwords($assignment->name." ".'info deleted successfully'));
         }

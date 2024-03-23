@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Services\MeetingService;
 use App\Services\TeacherService;
 use App\Services\StudentService;
-use App\Services\StaffService;
+use App\Services\SubordinateService;
 use App\Services\StreamService;
 use App\Services\ClubService;
 use App\Http\Controllers\Controller;
@@ -15,21 +15,22 @@ use App\Http\Requests\MeetingFormRequest as UpdateRequest;
 
 class MeetingController extends Controller
 {
-    protected $meetingService,$teacherService,$studentService,$staffService,$streamService,$clubService;
+    protected $meetingService,$teacherService,$studentService,$subordinateService,$streamService,$clubService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(MeetingService $meetingService,TeacherService $teacherService,StudentService $studentService,StaffService $staffService,StreamService $streamService,ClubService $clubService)
+    public function __construct(MeetingService $meetingService,TeacherService $teacherService,StudentService $studentService,SubordinateService $subordinateService,StreamService $streamService,ClubService $clubService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->meetingService = $meetingService;
         $this->teacherService = $teacherService;
         $this->studentService = $studentService;
-        $this->staffService = $staffService;
+        $this->subordinateService = $subordinateService;
         $this->streamService = $streamService;
         $this->clubService = $clubService;
     }
@@ -55,13 +56,13 @@ class MeetingController extends Controller
     public function create()
     {
         //
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $streams = $this->streamService->all()->pluck('name','id');
-        $clubs = $this->clubService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $subordinates = $this->subordinateService->all();
+        $streams = $this->streamService->all();
+        $clubs = $this->clubService->all();
         
-        return view('admin.meetings.create',compact('teachers','students','staffs','streams','clubs'));
+        return view('admin.meetings.create',compact('teachers','students','subordinates','streams','clubs'));
     }
 
     /**
@@ -78,8 +79,8 @@ class MeetingController extends Controller
         $meeting->teachers()->sync($teachers);
         $students = $request->students;
         $meeting ->students()->sync($students);
-        $staffs = $request->staffs;
-        $meeting ->staffs()->sync($staffs);
+        $subordinates = $request->subordinates;
+        $meeting ->subordinates()->sync($subordinates);
         $streams = $request->streams;
         $meeting ->streams()->sync($streams);
         $clubs = $request->clubs;
@@ -98,16 +99,18 @@ class MeetingController extends Controller
     {
         //
         $meeting = $this->meetingService->getId($id);
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $meetingTeachers = $meeting->teachers;
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $meetingStudents = $meeting->students;
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $meetingStaffs = $meeting->staffs;
-        $streams = $this->streamService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $meetingTeachers = $meeting->teachers()->with('user')->get();
+        $students = $this->studentService->all();
+        $meetingStudents = $meeting->students()->with('user','stream')->get();
+        $subordinates = $this->subordinateService->all();
+        $meetingSubordinates = $meeting->subordinates()->with('user')->get();
+        $streams = $this->streamService->all();
         $meetingStreams = $meeting->streams;
+        $clubs = $this->clubService->all();
+        $meetingClubs = $meeting->clubs;
 
-        return view('admin.meetings.show',compact('meeting','teachers','meetingTeachers','students','meetingStudents','staffs','meetingStaffs','streams','meetingStreams'));
+        return view('admin.meetings.show',compact('meeting','teachers','meetingTeachers','students','meetingStudents','subordinates','meetingSubordinates','streams','meetingStreams','clubs','meetingClubs'));
     }
 
     /**
@@ -120,13 +123,13 @@ class MeetingController extends Controller
     {
         //
         $meeting = $this->meetingService->getId($id);
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $students = $this->studentService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $streams = $this->streamService->all()->pluck('name','id');
-        $clubs = $this->clubService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $students = $this->studentService->all();
+        $subordinates = $this->subordinateService->all();
+        $streams = $this->streamService->all();
+        $clubs = $this->clubService->all();
     
-        return view('admin.meetings.edit',compact('meeting','teachers','students','staffs','streams','clubs'));
+        return view('admin.meetings.edit',compact('meeting','teachers','students','subordinates','streams','clubs'));
     }
 
     /**
@@ -146,8 +149,8 @@ class MeetingController extends Controller
             $meeting->teachers()->sync($teachers);
             $students = $request->students;
             $meeting ->students()->sync($students);
-            $staffs = $request->staffs;
-            $meeting ->staffs()->sync($staffs);
+            $subordinates = $request->subordinates;
+            $meeting ->subordinates()->sync($subordinates);
             $streams = $request->streams;
             $meeting ->streams()->sync($streams);
             $clubs = $request->clubs;
@@ -171,7 +174,7 @@ class MeetingController extends Controller
             $this->meetingService->delete($id);
             $meeting->teachers()->detach();
             $meeting ->students()->detach();
-            $meeting ->staffs()->detach();
+            $meeting ->subordinates()->detach();
             $meeting ->streams()->detach();
             $meeting ->clubs()->detach();
             $meeting ->departments()->detach();

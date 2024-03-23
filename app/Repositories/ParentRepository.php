@@ -20,7 +20,7 @@ class ParentRepository implements ParentInterface
 
     public function all()
     {
-        return $this->my_parent->all();
+        return $this->my_parent->eagerLoaded()->get();
     }
 
     public function eagerLoaded()

@@ -1,4 +1,4 @@
-<nav class="border-b bg-blue-600 border-gray-200 sticky top-0 z-10 dark:bg-gray-900">
+<nav class="border-b bg-blue-600 border-gray-200 sticky top-0 z-10 dark:bg-gray-900 py-1 shadow-lg">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
   <a href="{{ url('/') }}" class="flex items-center">
       <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8" alt="school logo" />
@@ -7,7 +7,7 @@
   <div class="flex items-center md:order-2">
       <button type="button" class="flex" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
         <span class="sr-only">Open user menu</span>
-        <x-auth-user-image/>
+        <x-user-avatar/>
       </button>
       <!-- Dropdown menu -->
       <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
@@ -36,7 +36,7 @@
             </a>
           </li>
           <li>
-            <a href="{{route('student.change-password.form')}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+            <a href="{{ route('changePassword.form') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
               Change Password
             </a>
           </li>
@@ -59,7 +59,7 @@
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
     <ul class="flex flex-col font-bold p-4 md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 text-sm">
       <li>
-        <x-students-sidenav-toggler/>
+        <x-sidenav-toggler-button/>
       </li>
       <li class="mt-2">
         <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">HOME</a>
@@ -84,36 +84,6 @@
                           </li>
                           <li>
                             <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Billing</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.stream.assignments') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Assignments</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.stream.students') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Students</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.stream.teachers') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Teachers</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.stream.exams') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Exams</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.stream.rewards') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Awards</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.library.books') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Library Books</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.borrowed.books') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Borrowed Books</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.stream.meetings') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Meetings</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.school.fields') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Fields</a>
-                          </li>
-                          <li>
-                            <a href="{{ route('student.school.halls') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Halls</a>
                           </li>
                         </ul>
                     </div>

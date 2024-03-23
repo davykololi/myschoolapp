@@ -1,100 +1,113 @@
-<nav class="border-b text-gray-900 bg-blue-500 sticky top-0 z-10 dark:bg-slate-900 dark:text-slate-400">
-    <div x-data="{showMenu : false}" class="container max-w-screen-lg mx-0 flex justify-between h-14">
-        <!-- Brand-->
-        <a href="{{ url('/') }}" class="flex items-center cursor-pointer hover:bg-purple-50 px-2">
-            <!-- Logo-->
-            <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8"/>
-            <div class="font-semibold ml-2 uppercase font-extrabold justify-center hover:lg:text-black">{{ config('app.name') }}</div>
-        </a>
-        <!-- Navbar Toggle Button -->
-        <button @click="showMenu = !showMenu" class="block md:hidden text-gray-700 p-2 rounded hover:border focus:border focus:bg-gray-100 my-2 mr-5" type="button" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-        </button>
-        <!-- Nav Links-->
-        <ul class="md:flex text-base mr-3 origin-top"
-            :class="{ 'block absolute top-14 border-b bg-white w-full p-2': showMenu, 'hidden': !showMenu}"
-            id="navbar-main" x-cloak>
-            <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800" :class="showMenu && 'py-1'">
-                <x-librarian-sidenav-toggler/>
-            </li>
-            @can('seniorLibrarian')
-            <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800" :class="showMenu && 'py-1'">
-                <a href="{{ route('librarian.category-books.index') }}">BOOKS CAT</a>
-            </li>
-            <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800" :class="showMenu && 'py-1'">
-                <a href="{{ route('librarian.books.index') }}">BOOKS</a>
-            </li>
-            @endcan
-            <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800" :class="showMenu && 'py-1'">
-                <a href="{{ route('librarian.bookers.index') }}">ISSUED BOOKS</a>
-            </li>
-            <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800" :class="showMenu && 'py-1'">
-                <a href="{{ route('librarian.school.libraries') }}">LIBRARIES</a>
-            </li>
-            <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800">
-                <x-darkmode-togglebutton/>
-            </li>
+<nav class="border-b bg-blue-600 border-gray-200 sticky top-0 z-10 dark:bg-gray-900">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
+  <a href="{{ url('/matron/dashbpard') }}" class="flex items-center">
+      <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8" alt="school logo" />
+      <span class="self-center text-2xl font-semibold uppercase whitespace-nowrap dark:text-white">{{ config('app.name') }}</span>
+  </a>
+  <div class="flex items-center md:order-2">
+      <button type="button" class="flex" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+        <span class="sr-only">Open user menu</span>
+        <x-user-avatar/>
+      </button>
+      <!-- Dropdown menu -->
+      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+        <div class="px-4 py-3">
+          <span class="block text-sm text-gray-900 dark:text-white">{{ Auth::user()->full_name }}</span>
+          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->email }}</span>
+        </div>
+        <ul class="py-2" aria-labelledby="user-menu-button">
+          @guest
+          @if(Route::has('login'))
+          <li>
+            <a href="{{ route('login') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+              <button class="bg-gradient-to-r from-red-200 to-red-800 via-red-500 px-2 py-1 text-white rounded-md hover:text-red-500 hover:bg-gradient-to-l from-black to-white via-red-700 hover:shadow-2xl">
+                Signin
+              </button>
+            </a>
+          </li>
+          @endif
+          @else
+          <li>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
+          </li>
+          <li>
+            <a href="{{ route('librarian.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+              My Profile
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('changePassword.form') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+              Change Password
+            </a>
+          </li>
+          <li>
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer">
+                Sign out
+              </a>
+            </form>
+          </li>
+          @endguest
         </ul>
-
-        <ul class="md:flex text-base mr-3 origin-top"
-            :class="{ 'block absolute top-14 border-b bg-white w-full p-2': showMenu, 'hidden': !showMenu}"
-            id="navbar-main" x-cloak>
-            @guest
-            @if (Route::has('login'))
-            <li class="py-2 md:py-0">
-                <a href="{{ route('login') }}" class="nav-a-right">
-                    <button class="bg-gradient-to-r from-red-200 to-red-800 via-red-500 px-2 py-1 text-white rounded-md hover:text-red-500 hover:bg-gradient-to-l from-black to-white via-red-700 hover:shadow-2xl">
-                        Signin
-                    </button>
-                </a>
-            </li>
-            @endif
-
-            @if (Route::has('register'))
-            <li class="py-2 md:py-0">
-                <a href="{{ route('register') }}" class="nav-a-right">
-                    <button class="bg-gradient-to-r from-red-200 to-red-800 via-red-500 px-2 py-1 text-white rounded-md hover:text-red-500 hover:bg-gradient-to-l from-black to-white via-red-700 hover:shadow-2xl">
-                        Signup
-                    </button>
-                </a>
-            </li>
-            @endif
-
-            @else
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ml-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                            <x-auth-user-image/>
-                            <x-auth-user-name/>
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <x-dropdown-link href="{{ route('librarian.profile') }}">
-                                <span class="font-bold text-red-800 md:hover:text-red-500">Profile</span>
-                            </x-dropdown-link>
-                            <x-dropdown-link href="{{route('librarian.change-password.form')}}">
-                                <span class="font-bold text-red-800 md:hover:text-red-500">Change Password</span>  
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                <span class="font-bold text-red-800 lg:hover:text-red-500">{{ __('Logout') }}</span>
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
+      </div>
+      <button data-collapse-toggle="mobile-menu-2" type="button" class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+    </button>
+  </div>
+  <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
+    <ul class="flex flex-col font-bold p-4 md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 text-sm">
+      <li>
+        <x-sidenav-toggler-button/>
+      </li>
+      <li class="mt-2">
+        <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">HOME</a>
+      </li>
+      <li class="mt-2">
+            <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between w-full py-2 pl-3 pr-4  text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">DROPDOWN <svg class="w-5 h-5 ml-1" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
+            <!-- Dropdown menu -->
+            <div id="dropdownNavbar" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                  </li>
+                  <li aria-labelledby="dropdownNavbarLink">
+                    <button id="doubleDropdownButton" data-dropdown-toggle="doubleDropdown" data-dropdown-placement="right-start" type="button" class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dropdown<svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></button>
+                    <div id="doubleDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="doubleDropdownButton">
+                          <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Overview</a>
+                          </li>
+                          <li>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My downloads</a>
+                          </li>
+                        </ul>
+                    </div>
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+                  </li>
+                </ul>
+                <div class="py-1">
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Sign out</a>
+                </div>
             </div>
-            @endguest
-
-        </ul>
-    </div>
+        </li>
+      <li class="mt-2">
+        <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">ABOUT</a>
+      </li>
+      <li class="mt-2">
+        <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">SERVICES</a>
+      </li>
+      <li class="mt-2">
+        <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">PRICING</a>
+      </li>
+      <li>
+          <x-darkmode-togglebutton/>
+      </li>
+    </ul>
+  </div>
+  </div>
 </nav>
+

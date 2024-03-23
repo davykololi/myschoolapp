@@ -31,6 +31,11 @@
                         <label class="control-label col-sm-2" >Logo</label>
                         <div class="col-sm-10">
                             <input type="file" name="image" id="image" class="form-control" value="{{ $school->image }}">
+                            @error('image')
+                            <span class="help-block">
+                                <strong class="text-red-700">{{ $message }}</strong>
+                            </span>
+                            @endif
                         </div>
                     </div>
                     @include('ext._attach_schoolcatdiv')
@@ -68,6 +73,12 @@
                         <label class="control-label col-sm-2" >Email</label>
                         <div class="col-sm-10">
                             <input type="text" name="email" id="email" class="form-control" value="{{ $school->email }}">
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" >Phone</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="phone_no" id="phone_no" class="form-control" value="{{ $school->phone_no }}">
                         </div>
                     </div> 
                     <div class="form-group">

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Services\TeacherService;
-use App\Services\StaffService;
+use App\Services\SubordinateService;
 use App\Services\DepartmentService;
+use App\Services\DepartmentSectionService;
 use App\Services\MeetingService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,20 +15,21 @@ use App\Http\Requests\DeptFormRequest as UpdateRequest;
 
 class DepartmentController extends Controller
 {
-    protected $deptService, $teacherService, $staffService, $meetingService;
+    protected $deptService, $deptSectionService,$teacherService, $subordinateService, $meetingService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(DepartmentService $deptService,TeacherService $teacherService,StaffService $staffService,MeetingService $meetingService)
+    public function __construct(DepartmentService $deptService,DepartmentSectionService $deptSectionService,TeacherService $teacherService,SubordinateService $subordinateService,MeetingService $meetingService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->deptService = $deptService;
+        $this->deptSectionService = $deptSectionService;
         $this->teacherService = $teacherService;
-        $this->staffService = $staffService;
+        $this->subordinateService = $subordinateService;
         $this->meetingService = $meetingService;
     }
     
@@ -52,11 +54,12 @@ class DepartmentController extends Controller
     public function create()
     {
         //
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $meetings = $this->meetingService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $subordinates = $this->subordinateService->all();
+        $meetings = $this->meetingService->all();
+        $deptSections = $this->deptSectionService->all();
 
-        return view('superadmin.departments.create',compact('teachers','staffs','meetings'));
+        return view('superadmin.departments.create',compact('teachers','subordinates','meetings','deptSections'));
     }
 
     /**
@@ -82,8 +85,8 @@ class DepartmentController extends Controller
             DB::commit();
             $teachers = $request->teachers;
             $department->teachers()->sync($teachers);
-            $staffs = $request->staffs;
-            $department->staffs()->sync($staffs);
+            $subordinates = $request->subordinates;
+            $department->subordinates()->sync($subordinates);
             $meetings = $request->meetings;
             $department->meetings()->sync($meetings);
             toastr()->success(ucwords($department->name." ".'created successfully'));
@@ -105,14 +108,14 @@ class DepartmentController extends Controller
     {
         //
         $department = $this->deptService->getId($id);
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $deptTeachers = $department->teachers;
-        $staffs = $this->staffService->all()->pluck('full_name','id');
-        $deptStaffs = $department->staffs;
-        $meetings = $this->meetingService->all()->pluck('name','id');
+        $teachers = $this->teacherService->all();
+        $deptTeachers = $department->teachers()->with('user')->get();
+        $subordinates = $this->subordinateService->all();
+        $deptSubordinates = $department->subordinates()->with('user')->get();
+        $meetings = $this->meetingService->all();
         $deptMeetings = $department->meetings;
 
-        return view('superadmin.departments.show',compact('department','teachers','deptTeachers','staffs','deptStaffs','meetings','deptMeetings'));
+        return view('superadmin.departments.show',compact('department','teachers','deptTeachers','subordinates','deptSubordinates','meetings','deptMeetings'));
     }
 
     /**
@@ -125,8 +128,9 @@ class DepartmentController extends Controller
     {
         //
         $department = $this->deptService->getId($id);
+        $deptSections = $this->deptSectionService->all();
 
-        return view('superadmin.departments.edit',compact('department'));
+        return view('superadmin.departments.edit',compact('department','deptSections'));
     }
 
     /**
@@ -184,7 +188,7 @@ class DepartmentController extends Controller
             DB::commit();
             $this->deptService->delete($id);
             $department->teachers()->detach();
-            $department->staffs()->detach();
+            $department->subordinates()->detach();
             $department->meetings()->detach();
             toastr()->success(ucwords($department->name." ".'deleted successfully'));
             

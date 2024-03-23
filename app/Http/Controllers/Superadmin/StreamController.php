@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Superadmin;
 
+use App\Models\User;
 use App\Models\School;
+use App\Models\MyClass;
+use App\Models\StreamSubject;
+use App\Models\StreamSection;
 use App\Services\StreamService;
 use App\Services\TeacherService;
 use App\Services\AssignmentService;
@@ -12,7 +16,6 @@ use App\Services\RewardService;
 use App\Services\SubjectService;
 use App\Services\ClassService;
 use App\Services\StreamSecService;
-use App\Models\StreamSubjectTeacher;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -29,9 +32,9 @@ class StreamController extends Controller
      */
     public function __construct(StreamService $streamService, TeacherService $teacherService, ClassService $classService, StreamSecService $streamSecService, AssignmentService $assignmentService, ExamService $examService, MeetingService $meetingService, RewardService $rewardService, SubjectService $subjectService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->streamService = $streamService;
         $this->teacherService = $teacherService;
         $this->classService = $classService;
@@ -94,8 +97,8 @@ class StreamController extends Controller
     {
         //
         $stream = $this->streamService->getId($id);
-        $teachers = $this->teacherService->all()->pluck('full_name','id');
-        $streamTeachers = $stream->teachers;
+        $teachers = $this->teacherService->all();
+        $streamTeachers = $stream->teachers()->with('user')->get();
         $assignments = $this->assignmentService->all()->pluck('name','id');
         $streamAssignments = $stream->assignments;
         $exams = $this->examService->all()->pluck('name','id');
@@ -104,14 +107,15 @@ class StreamController extends Controller
         $streamMeetings = $stream->meetings;
         $rewards = $this->rewardService->all()->pluck('name','id');
         $streamRewards = $stream->rewards;
-        $subjects = $this->subjectService->all()->pluck('name','id');
+        $subjects = $this->subjectService->all();
         $streamSubjects = $stream->subjects;
-        $streamSubjectTeachers = $stream->stream_subject_teachers()->with('teacher','stream','school','subject')->get();
-        $streamStudents = $stream->students->count();
+        $alocatedStreamSubjects = $stream->stream_subjects()->where('stream_id',$stream->id)->with('teacher.user','stream','school','subject')->get();
+        $streamStudents = $stream->students()->with('user')->get();
+        $streamStudentsNumber = $stream->students->count();
         $females = $stream->females();
         $males = $stream->males();
 
-        return view('superadmin.streams.show',compact('stream','teachers','streamTeachers','assignments','streamAssignments','exams','streamExams','meetings','streamMeetings','rewards','streamRewards','subjects','streamSubjects','streamStudents','streamSubjectTeachers','females','males'));
+        return view('superadmin.streams.show',compact('stream','teachers','streamTeachers','assignments','streamAssignments','exams','streamExams','meetings','streamMeetings','rewards','streamRewards','subjects','streamSubjects','streamStudents','streamStudentsNumber','streamSubjects','alocatedStreamSubjects','females','males'));
     }
 
     /**

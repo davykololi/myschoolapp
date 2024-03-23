@@ -1,6 +1,11 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Admin Instant Pdf Generation')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
+    <div>
+        <div>
             <div>
                 <h5 class="uppercase text-center text-2xl font-hairline">INSTANT PDF GENERATION</h5> 
                 <x-back-button/>
@@ -20,10 +25,11 @@
                     </div>
             </div>
                 </form>
-            </div>   
-  </x-backend-main>
-</div>  
-</x-admin>
+            </div>
+        </div>
+    </div>
+</x-backend-main> 
+@endsection
 
 
 

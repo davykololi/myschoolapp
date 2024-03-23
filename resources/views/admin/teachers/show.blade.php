@@ -1,7 +1,9 @@
 @extends('layouts.superadmin')
-@section('title', '| Show Teacher')
+@section('title', '| Admin Teacher Details')
 
 @section('content')
+@role('admin')
+@can('dataOfficer')
   <!-- frontend-main view -->
   <x-backend-main>
     <div class="row">
@@ -177,4 +179,6 @@
     </div>
 </div>
 </x-backend-main>
+@endcan
+@endrole
 @endsection

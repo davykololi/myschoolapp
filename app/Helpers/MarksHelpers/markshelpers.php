@@ -5,14 +5,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 function classMarks($yearId,$termId,$examId,$classId)
 {
-    $classMarks = Mark::with('year','term','exam','student','school','teacher','class','stream.stream_section','subject')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$classId,'year_id'=>$yearId])->get()->sortByDesc('total');
+    $classMarks = Mark::with('year','term','exam','student.user','school','teacher','class','stream.stream_section','subject')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$classId,'year_id'=>$yearId])->get()->sortByDesc('total');
 
     return $classMarks;
 }
 
 function streamMarks($yearId,$termId,$examId,$streamId)
 {
-    $streamMarks = Mark::with('year','term','exam','student','school','teacher','class','stream.stream_section','subject')->where(['term_id'=>$termId,'exam_id'=>$examId,'stream_id'=>$streamId,'year_id'=>$yearId])->get()->sortByDesc('total');
+    $streamMarks = Mark::with('year','term','exam','student.user','school','teacher','class','stream.stream_section','subject')->where(['term_id'=>$termId,'exam_id'=>$examId,'stream_id'=>$streamId,'year_id'=>$yearId])->get()->sortByDesc('total');
 
     return $streamMarks;
 }

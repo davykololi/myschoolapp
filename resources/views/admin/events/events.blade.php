@@ -1,10 +1,17 @@
- <x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
- <div class="container mt-5" style="max-width: 700px;">
-      <h2 class="h2 text-center mb-5 border-bottom pb-3 uppercase">{{ Auth::user()->school->name }} Events</h2>
-      <div class="bg-blue-300 p-4 mx-auto md:rounded dark:bg-[#1a1919] dark:text-slate-400 dark:border-2 dark:border-slate-600" id='calendar'></div>
+@extends('layouts.admin')
+@section('title', '| School Events List')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
+ <div class="max-w-screen h-screen">
+    <div class="w-full">
+        <div class="w-full text-center">
+            <h2 class="text-center my-4 border-bottom pb-3 uppercase">{{ Auth::user()->school->name }} Calendar Events</h2>
+            <div id='calendar' class="bg-stone-500 p-4 md:w-[600px] md:h-auto rounded mx-auto dark:bg-gray-800"></div>
+        </div>
+    </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection
 

@@ -14,6 +14,7 @@ use App\Models\StreamSubjectTeacher;
 use Illuminate\Http\Request;
 use App\Traits\FilesUploadTrait;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\NotesFormRequest as StoreRequest;
 
 class NotesController extends Controller
 {
@@ -25,8 +26,10 @@ class NotesController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:teacher');
-        $this->middleware('teacher2fa');
+        $this->middleware('auth');
+        $this->middleware('role:teacher');
+        $this->middleware('teacher-banned');
+        $this->middleware('checktwofa');
     }
 
     /**
@@ -38,14 +41,13 @@ class NotesController extends Controller
     public function storeNotes(Request $request)
     {
         //
-        $input = $request->all();
+        $input['desc'] = $request->desc;
         $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
         $input['school_id'] = Auth::user()->school->id;
         $input['stream_id'] = $request->stream_id;
-        $input['teacher_id'] = Auth::id();
-        $input['subject_id'] = $request->subject_id;
-        $subject = Subject::whereId($input['subject_id'])->first();
-        $input['department_id'] = $subject->department->id;
+        $input['teacher_id'] = Auth::user()->teacher->id;
+        $streamSubjectTeacher=StreamSubjectTeacher::where(['teacher_id'=>$input['teacher_id'],'stream_id'=>$input['stream_id']])->first();
+        $input['subject_id'] = $streamSubjectTeacher->subject_id;
         $note = Note::create($input);
 
         return redirect()->back()->withSuccess('The notes uploaded successfully!');

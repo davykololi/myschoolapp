@@ -115,7 +115,7 @@ class Exam extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','school','streams','year','term','marks','grades','general_grades')->latest()->get();
+        return $query->with('teachers','students','school','streams','year','term','marks','grades','general_grades');
     }
 
     public function grades(): HasMany

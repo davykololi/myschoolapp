@@ -6,7 +6,7 @@
                         <div class="w-full md:w-1/3 lg:w-1/3 px-2">
                             <div class="relative w-full mb-3">
                                 <label class="form-input-label-one" htmlfor="grid-password">ID Number</label>
-                                <input value="{{ old('id_no') }}" type="text" name="id_no" placeholder="ID Number" class="form-input-one">
+                                <input value="{{ old('id_no') }}" type="text" name="id_no" placeholder="ID Number" class="user-form-input">
                                 @error('id_no')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -16,7 +16,7 @@
                         <div class="w-full md:w-1/3 lg:w-1/3 px-2">
                             <div class="relative w-full mb-3">
                                 <label class="form-input-label-one">Employment Number:</label>
-                                <input value="{{ old('emp_no') }}" type="text" name="emp_no" placeholder="Employment Number" class="form-input-one">
+                                <input value="{{ old('emp_no') }}" type="text" name="emp_no" placeholder="Employment Number" class="user-form-input">
                                 @error('emp_no')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -26,7 +26,7 @@
                         <div class="w-full md:w-1/3 lg:w-1/3 px-2">
                             <div class="relative w-full mb-3">
                                 <label class="form-input-label-one">Profession:</label>
-                                <input type="text"  name="designation" value="{{ old('designation') }}" class="form-input-one" placeholder="Designation">
+                                <input type="text"  name="designation" value="{{ old('designation') }}" class="user-form-input" placeholder="Designation">
                                 @error('designation')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror

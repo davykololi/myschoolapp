@@ -1,18 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Teacher\TeacherTwoFAController;
-use App\Http\Controllers\Admin\AdminTwoFAController;
-use App\Http\Controllers\Librarian\LibrarianTwoFAController;
-use App\Http\Controllers\Superadmin\SuperadminTwoFAController;
-use App\Http\Controllers\Accountant\AccountantTwoFAController;
-use App\Http\Controllers\Matron\MatronTwoFAController;
-use App\Http\Controllers\Staff\StaffTwoFAController;
-use App\Http\Controllers\Student\StudentTwoFAController;
+use App\Http\Controllers\AuthCode\TwoFactorAuthController;
 use App\Http\Controllers\Admin\ReportExcelController;
 use App\Http\Controllers\Admin\Pdf\PdfSortResultsController;
 use App\Http\Controllers\Admin\Charts\ChartController;
-
+use App\Http\Controllers\Admin\Event\EventController;
+use App\Http\Controllers\Superadmin\ImpersonateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,57 +25,9 @@ Auth::routes(['register'=>false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/user/logout','Auth\LoginController@userLogout')->name('user.logout');
-//Superadmin 2FA
-Route::controller(SuperadminTwoFAController::class)->prefix('superadmin')->name('superadmin.')->group(function(){
-    Route::get('authentication-code', 'index')->name('2fa.index');
-    Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
-    Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
-});
 
-//Admin 2FA
-Route::controller(AdminTwoFAController::class)->prefix('admin')->name('admin.')->group(function(){
-    Route::get('authentication-code', 'index')->name('2fa.index');
-    Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
-    Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
-});
-
-//Teacher 2FA
-Route::controller(TeacherTwoFAController::class)->prefix('teacher')->name('teacher.')->group(function(){
-    Route::get('authentication-code', 'index')->name('2fa.index');
-    Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
-    Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
-});
-
-//Librarian 2FA
-Route::controller(LibrarianTwoFAController::class)->prefix('librarian')->name('librarian.')->group(function(){
-    Route::get('authentication-code', 'index')->name('2fa.index');
-    Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
-    Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
-});
-
-//Accountant 2FA
-Route::controller(AccountantTwoFAController::class)->prefix('accountant')->name('accountant.')->group(function(){
-    Route::get('authentication-code', 'index')->name('2fa.index');
-    Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
-    Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
-});
-
-//Matron 2FA
-Route::controller(MatronTwoFAController::class)->prefix('matron')->name('matron.')->group(function(){
-    Route::get('authentication-code', 'index')->name('2fa.index');
-    Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
-    Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
-});
-
-//Staff 2FA
-Route::controller(StaffTwoFAController::class)->prefix('staff')->name('staff.')->group(function(){
-    Route::get('authentication-code', 'index')->name('2fa.index');
-    Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
-    Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
-});
-
-//Student 2FA
-Route::controller(StudentTwoFAController::class)->prefix('student')->name('student.')->group(function(){
+//Two Factor Auth Controller
+Route::controller(TwoFactorAuthController::class)->middleware('auth')->group(function(){
     Route::get('authentication-code', 'index')->name('2fa.index');
     Route::post('authentication-code/store', 'twoFAstore')->name('2fa.store');
     Route::get('authentication-code/resend', 'resend')->name('2fa.resend');
@@ -89,26 +35,19 @@ Route::controller(StudentTwoFAController::class)->prefix('student')->name('stude
 
 //START OF PREVENT BACK HISTORY ROUTE MIDDLEWARE
 Route::group(['middleware' => 'prevent-back-history'], function(){
-Route::resource('users','Admin\UserController');
 Route::get('contact-us','User\PageController@contactForm')->name('contact.us');
 Route::post('contact-us','User\PageController@contactSave')->name('contact.save');
-Route::get('about-us','User\PageController@aboutUs')->name('about.page');
+Route::get('about-us','User\PageController@aboutUs')->name('about.us');
+
+//Change Password
+Route::get('change-password', 'User\ChangePasswordController@index')->name('changePassword.form');
+Route::post('change-password', 'User\ChangePasswordController@store')->name('change.password');
 
 //START OF SUPERADMIN ROUTES
-//Auth folder routes
-Route::prefix('superadmin')->name('superadmin.')->namespace('Auth')->group(function(){
-	Route::get('/login','SuperadminLoginController@showLoginForm')->name('login');
-	Route::post('/login','SuperadminLoginController@login')->name('login.submit');
-	Route::get('/logout','SuperadminLoginController@logout')->name('logout');
-	//superadmin password reset routes
-    Route::post('/password/email','SuperadminForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','SuperadminForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','SuperadminResetPasswordController@reset');
-    Route::get('/password/reset/{token}','SuperadminResetPasswordController@showResetForm')->name('password.reset');
-});
 //Superadmin folder routes
-Route::prefix('superadmin')->name('superadmin.')->namespace('Superadmin')->group(function(){
-	Route::get('/','SuperAdminController@index')->name('dashboard');
+Route::prefix('superadmin')->middleware(['auth','role:superadmin','impersonate.protect'])->name('superadmin.')->namespace('Superadmin')->group(function(){
+	Route::get('/dashboard','SuperAdminController@index')->name('dashboard');
+	Route::resource('users','UserController');
 	Route::resource('teachers','TeacherController');
 	Route::resource('years','YearController');
 	Route::resource('terms','TermController');
@@ -118,31 +57,30 @@ Route::prefix('superadmin')->name('superadmin.')->namespace('Superadmin')->group
 	Route::resource('librarians','LibrarianController');
 	Route::resource('accountants','AccountantController');
 	Route::resource('matrons','MatronController');
-	Route::resource('staffs','StaffController');
+	Route::resource('subordinates','SubordinateController');
 	Route::resource('stream-sections','StreamSectionController');
 	Route::resource('subjects','SubjectController');
 	Route::resource('streams','StreamController');
 	Route::resource('libraries','LibraryController');
 	Route::resource('dormitories','DormitoryController');
 	Route::resource('departments','DepartmentController');
+	Route::resource('department-sections','DepartmentSectionController');
 	Route::resource('halls','HallController');
 	Route::resource('farms','FarmController');
 	Route::resource('clubs','ClubController');
 	Route::resource('games','GameController');
 	Route::resource('intakes','IntakeController');
 	Route::resource('fields','FieldController');
+	Route::resource('sections','SectionController');
 	Route::get('/students','StudentController@students')->name('students');
 	Route::get('/parents','ParentController@parents')->name('parents');
 	Route::get('marksheet-form','ExcelController@marksheetsForm')->name('marksheet.form');
 	Route::get('/delete-class-marksheets','DeleteReportMarksheetController')->name('delete.classMarksheets');
-	//Superadmin Change Password Routes
-	Route::get('/change-password','SuperadminChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','SuperadminChangePasswordController@store')->name('change-password.save');
 	Route::get('/school-teachers/{school}','PdfController@schoolTeachers')->name('school.teachers');
 	Route::get('excel-schoolteachers','ExcelController@exportSchoolTeachers')->name('export.shool_teachers');
 	// Attach Subjects to teacher route
-	Route::get('remove/teacher/{id}','StreamSubjectTeacherController@removeStreamSubjectTeacher')->name('streamteacher.remove');
-	Route::post('/stream-subject-teacher/store','StreamSubjectTeacherController@store')->name('streamsubjectteacher.store');
+	Route::get('remove-subject/{id}','StreamSubjectController@removeStreamSubject')->name('streamsubject.remove');
+	Route::post('/stream-subject-teacher/store','StreamSubjectController@store')->name('streamsubject.store');
 	// Admin Bann Controller
 	Route::post('/admin-bann/{id}','AdminBannedController@bann')->name('admin.bann');
 	Route::post('/admin-unbann/{id}','AdminBannedController@unbann')->name('admin.unbann');
@@ -159,8 +97,8 @@ Route::prefix('superadmin')->name('superadmin.')->namespace('Superadmin')->group
 	Route::post('/librarian-bann/{id}','LibrarianBannedController@bann')->name('librarian.bann');
 	Route::post('/librarian-unbann/{id}','LibrarianBannedController@unbann')->name('librarian.unbann');
 	// Sub Staff Bann Controller
-	Route::post('/staff-bann/{id}','StaffBannedController@bann')->name('staff.bann');
-	Route::post('/staff-unbann/{id}','StaffBannedController@unbann')->name('staff.unbann');
+	Route::post('/subordinate-bann/{id}','SubordinateBannedController@bann')->name('subordinate.bann');
+	Route::post('/subordinate-unbann/{id}','SubordinateBannedController@unbann')->name('subordinate.unbann');
 	// Matron Bann Controller
 	Route::post('/matron-bann/{id}','MatronBannedController@bann')->name('matron.bann');
 	Route::post('/matron-unbann/{id}','MatronBannedController@unbann')->name('matron.unbann');
@@ -173,23 +111,36 @@ Route::prefix('superadmin')->name('superadmin.')->namespace('Superadmin')->group
 	// Parent Lock Controller
 	Route::post('/parent-lock/{id}','ParentLockController@lock')->name('parent.lock');
 	Route::post('/parent-unlock/{id}','ParentLockController@unlock')->name('parent.unlock');
-});
+	// Impersonation Route
+	Route::get('impersonate/{id}',[ImpersonateController::class,'impersonate'])->name('impersonate');
+
+	// SUPERADMIN ATTACHMENT DETACHMENT ROUTES
+	//Attach and Detach teacher to and from the class routes for Superadmin
+	Route::post('att-detach-teacher-stream/{id}','Stream\AttachDetachTeacherController@attachDetachTeacher')->name('attachDetachTeacher.stream');
+	//Attach and Detach subject to and from the class routes for admin
+	Route::post('att-detach-subject-stream/{id}','Stream\AttachDetachSubjectController@attachDetachSubject')->name('attachDetachSubject.stream');
+	//Attach and Detach teacher to and from the department routes(by Superadmin)
+	Route::post('att-detach-teacher-dept/{id}','Department\AttachDetachTeacherController@attachDetachTeacher')->name('attachDetachTeacher.dept');
+	//Attach and Detach subordinade staff to and from the department routes
+	Route::post('att-detach-sustaff-dept/{id}','Department\AttachDetachSubordinateController@attachDetachSubordinate')->name('attachDetachSubordinate.dept');
+	//Attach and Detach class to and from the teacher routes
+	Route::post('attach-detach-stream-teacher/{id}','Teacher\AttachDetachStreamController@attachDetachStream')->name('attachDetachStream.teacher');
+	//Attach and Detach subject to and from the teacher routes
+	Route::post('att-detach-subject-teacher/{id}','Teacher\AttachDetachSubjectController@attachDetachSubject')->name('attachDetachSubject.teacher');
+	//Attach and Detach student to and from the club routes
+	Route::post('att-detach-student-club/{id}','Club\AttachDetachStudentController@attachDetachStudent')->name('attachDetachStudent.club');
+	//Attach and Detach Subordinade Staff to and from the club routes
+	Route::post('att-detach-subordinate-club/{id}','Club\AttachDetachSubordinateController@attachDetachSubordinate')->name('attachDetachSubordinate.club');
+	//Attach and Detach teacher to and from the club routes
+	Route::post('att-detach-teacher-club/{id}','Club\AttachDetachTeacherController@attachDetachTeacher')->name('attachDetachTeacher.club');
+	//Attach and Detach meeting to and from the club routes
+	Route::post('att-detach-meeting-club/{id}','Club\AttachDetachMeetingController@attachDetachMeeting')->name('attachDetachMeeting.club');
+}); // END OF SUPERADMIN ROUTES
 
 //START OF ADMIN ROUTES
-//Auth folder routes
-Route::prefix('admin')->name('admin.')->namespace('Auth')->group(function(){
-	Route::get('/login','AdminLoginController@showLoginForm')->name('login');
-	Route::post('/login','AdminLoginController@login')->name('login.submit');
-	Route::get('/logout','AdminLoginController@logout')->name('logout');
-	//admin password reset routes
-    Route::post('/password/email','AdminForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','AdminForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','AdminResetPasswordController@reset');
-    Route::get('/password/reset/{token}','AdminResetPasswordController@showResetForm')->name('password.reset');
-});
 //Admin folder routes
-Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
-	Route::get('/','AdminController@index')->name('dashboard');
+Route::namespace('Admin')->prefix('admin')->middleware(['auth','role:admin','admin-banned'])->name('admin.')->group(function(){
+	Route::get('/dashboard','AdminController@index')->name('dashboard');
 	Route::get('/profile','AdminController@adminProfile')->name('profile');
 	Route::get('/school-pdf-docs','AdminController@schoolPdfDocs')->name('pdf.docs');
 	Route::get('/teachers','TeacherController@index')->name('teachers');
@@ -200,7 +151,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::get('/clubs/show/{id}','ClubController@show')->name('clubs.show');
 	Route::get('/school-students','PdfController@schoolStudents')->name('school.students');
 	Route::get('/school-teachers','PdfController@schoolTeachers')->name('school.teachers');
+	Route::get('/school-parents','PdfController@schoolParents')->name('school.parents');
 	Route::get('/stream-students','PdfController@streamStudents')->name('stream.students');
+	Route::get('/stream-register','PdfController@streamRegister')->name('stream.register');
 	Route::get('/class-teachers','PdfController@streamTeachers')->name('stream.teachers');
 	Route::get('/class-students','PdfController@classStudents')->name('class.students');
 	Route::get('/school-clubs','PdfController@schoolClubs')->name('school.clubs');
@@ -208,8 +161,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::get('/club-teachers','PdfController@clubTeachers')->name('club.teachers');
 	Route::get('/school-departments/','PdfController@schoolDepts')->name('school.depts');
 	Route::get('/department-teachers','PdfController@deptTeachers')->name('dept.teachers');
-	Route::get('/school-letters/{letter}','PdfController@letter')->name('school.letters');
-	Route::get('/school-staffs','PdfController@schoolStaffs')->name('school.staffs');
+	Route::get('/department-subordinates','PdfController@deptSubordinates')->name('dept.subordinates');
+	Route::get('/school-pdf-generation/{pdfGenerator}','PdfController@pdfGenerator')->name('pdf.generation');
+	Route::get('/school-subordinates','PdfController@schoolSubordinates')->name('school.subordinates');
+	Route::get('/dormitory-students','PdfController@dormitoryStudents')->name('dormitory.students');
 	Route::get('/pdf-student-details','PdfController@studentDetails')->name('student.details');
 	Route::get('/letter-head','PdfController@letterHead')->name('letter.head');
 	Route::get('/instant-download/{school}','PdfController@instantDownload')->name('instant.download');
@@ -225,12 +180,16 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	//Instant Download controller route
 	Route::get('/instant-download-form','Pdf\InstantDownloadController')->name('instantdownload.form');
 	//Event Controller Routes
-	Route::get('calendar-event', 'Event\EventController@index')->name('calendar.event');
-	Route::post('fullcalendar/create', 'Event\EventController@create');
-	Route::post('fullcalendar/update', 'Event\EventController@update');
-	Route::post('fullcalendar/delete', 'Event\EventController@destroy');
+	Route::get('fullcalendar', [EventController::class, 'index'])->name('events.calendar');
+	Route::post('fullcalendar-store', [EventController::class, 'store'])->name('event.store');
 	//Charts Routes
 	Route::get('student-chart', [ChartController::class, 'index']);
+	//Leave Impersonation Route
+	Route::get('impersonate-leave',[ImpersonateController::class,'impersonateLeave'])->name('impersonate-leave');
+
+	// PaymentLock Controller
+	Route::post('/lock-payment/{student}','PaymentLockController@lockPayment')->name('lock.payment');
+	Route::post('/unlock-payment/{student}','PaymentLockController@unlockPayment')->name('.unlock.payment');
 
 	// Student Info
 	Route::get('/student-info-form','StudentInfoController@studentInfo')->name('studentinfo.form');
@@ -258,9 +217,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::resource('timetables','TimetableController');
 	Route::resource('parents','MyParentController');
 	Route::resource('notes','NoteController');
-	Route::resource('letters','LetterController');
-	Route::resource('sections','SectionController');
-	Route::resource('galleries','GalleryController');
+	Route::resource('pdf-generators','PdfGeneratorController');
+	Route::resource('image-galleries','ImageGalleryController');
+	Route::resource('payment-sections','PaymentSectionController');
+	Route::resource('category-books','CategoryBookController');
+	Route::resource('books','BookController');
 	Route::get('std/teacher/{teacher}{stream}','StreamTeacherController@streamTeacher')->name('stream.teacher');
 	//Excel download and imports routes
 	Route::get('excel-students','ExportImportStudentController@exportStudents')->name('export.students');
@@ -282,9 +243,6 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	Route::post('reportcard-subject-grades','ExcelController@reportSubjectGradesStore')->name('report.subjectGrades');
 	//Report Mean Grades Gradesheet Import route
 	Route::post('reportcard-mean-grades','ExcelController@reportMeanGradesStore')->name('report.meangrades');
-	//Admin Change Password Routes
-	Route::get('/change-password','AdminChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','AdminChangePasswordController@store')->name('change-password.save');
 	//Mail Sent Route
 	Route::get('mail-form','SendMailController@mailForm')->name('mail.form');
 	Route::post('sent-mails','SendMailController@sendMail')->name('send.mail');
@@ -294,11 +252,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
 	});
 
 	//RoyceSMS Routes
-	Route::namespace('RoyceSMS')->group(function(){
+	Route::namespace('RoyceSMS')->middleware(['auth','role:admin','admin-banned'])->group(function(){
 	Route::get('roycesms/royceroute', ['uses' => 'RoyceSMSController@index']);
     Route::get('roycesms/dashboard', ['uses' => 'RoyceSMSController@messages']);
     Route::get('roycesms/', ['uses' => 'RoyceSMSController@messages']);
-    
     Route::get('roycesms/base', ['uses' => 'RoyceSMSController@base']);
     Route::post('roycesms/deliveryreport', ['uses' => 'RoyceSMSController@deliveryReport']);
     Route::get('roycesms/contacts', ['uses' => 'RoyceSMSController@contacts']);
@@ -309,7 +266,6 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
     Route::post('roycesms/single-text', ['uses' => 'RoyceSMSController@sendSingleText']);
     Route::get('roycesms/contacts-text', ['uses' => 'RoyceSMSController@contactsText']);
     Route::post('roycesms/contacts-text', ['uses' => 'RoyceSMSController@sendContactsText']);
-
     Route::get('roycesms/group-text', ['uses' => 'RoyceSMSController@groupText']);
     Route::post('roycesms/group-text', ['uses' => 'RoyceSMSController@sendGroupText']);
     Route::get('roycesms/delivery-report', ['uses' => 'RoyceSMSController@getDeliveryReport']);
@@ -331,23 +287,64 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
     // });
 	});
 
+
+	//ADMIN ATTACHMENT DETACHMENT ROUTES
+	//Attach and Detach an Assignment to and from the Subordinate Staff routes
+	Route::post('att-detach-assignment-subordinate/{id}','Subordinate\AttachDetachAssignmentController@attachDetachAssignment')->name('attachDetachAssignment.subordinate');
+	//Attach and Detach an assignment to and from the stream routes
+	Route::post('att-detach-assignment-stream/{id}','Stream\AttachDetachAssignmentController@attachDetachAssignment')->name('attachDetachAssignment.stream');
+	//Attach and Detach an exam to and from the stream routes
+	Route::post('att-detach-exam-stream/{id}','Stream\AttachDetachExamController@attachDetachExam')->name('attachDetachEexam.stream');
+	//Attach and Detach meeting to and from the stream routes
+	Route::post('att-detach-meeting-stream/{id}','Stream\AttachDetachMeetingController@attachDetachMeeting')->name('attachDetachMeeting.stream');
+	//Attach and Detach an award to and from the class routes
+	Route::post('att-detach-reward-stream/{id}','Stream\AttachDetachRewardController@attachDetachReward')->name('attachDetachReward.stream');
+	//Attach and Detach meeting to and from the department routes
+	Route::post('att-detach-meeting-dept/{id}','Department\AttachDetachMeetingController@attachDetachMeeting')->name('attachDetachMeeting.dept');
+	//Attach and Detach meeting to and from the club routes
+	Route::post('att-detach-meeting-club/{id}','Club\AttachDetachMeetingController@attachDetachMeeting')->name('attachDetachMeeting.club');
+	//Attach and Detach student to and from the club routes
+	Route::post('att-detach-student-club/{id}','Club\AttachDetachStudentController@attachDetachStudent')->name('attachDetachStudent.club');
+	//Attach and Detach teacher to and from the club routes
+	Route::post('att-detach-teacher-club/{id}','Club\AttachDetachTeacherController@attachDetachTeacher')->name('attachDetachTeacher.club');
+	//Attach and Detach Subordinade Staff to and from the club routes
+	Route::post('att-subordinate-club/{id}','Club\AttachDetachSubordinateController@attachDetachSubordinate')->name('attachDetachSubordinate.club');
+	//Attach and Detach an award to and from the student routes
+	Route::post('att-detach-reward-student/{id}','Student\AttachDetachRewardController@attachDetachReward')->name('attachDetachReward.student');
+	//Attach and Detach an assignment to and from the student routes
+	Route::post('att-detach-assign-student/{id}','Student\AttachDetachAssignmentController@attachDetachAssignment')->name('attachDetachAssignment.student');
+	//Attach and Detach subject to and from the student routes
+	Route::post('att-detach-subject-student/{id}','Student\AttachDetachSubjectController@attachDetachSubject')->name('attachDetachSubject.student');
+	//Attach and Detach meeting to and from the student routes
+	Route::post('att-detach-meeting-student/{id}','Student\AttachDetachMeetingController@attachDetachMeeting')->name('attachDetachMeeting.student');
+	//Attach and Detach teacher to and from the meeting routes
+	Route::post('att-detach-teacher-meeting/{id}','Meeting\AttachDetachTeacherController@attachDetachTeacher')->name('attachDetachTeacher.meeting');
+	//Attach and Detach student to and from the meeting routes
+	Route::post('att-detach-student-meeting/{id}','Meeting\AttachDetachStudentController@attachDetachStudent')->name('attachDetachStudent.meeting');
+	//Attach and Detach subordinade staff to and from the meeting routes
+	Route::post('att-detach-subordinate-meeting/{id}','Meeting\AttachDetachSubordinateController@attachDetachSubordinate')->name('attachDetachSubordinate.meeting');
+	//Attach and Detach class to and from the meeting routes
+	Route::post('att-detach-stream-meeting/{id}','Meeting\AttachDetachStreamController@attachDetachStream')->name('attachDetachStream.meeting');
+	//Attach and Detach club to and from the meeting routes
+	Route::post('att-detach-club-meeting/{id}','Meeting\AttachDetachClubController@attachDetachClub')->name('attachDetachClub.meeting');
+	//Attach student to and from the assignment routes
+	Route::post('att-detach-student-assignment/{id}','Assignment\AttachDetachStudentController@attachDetachStudent')->name('attachDetachStudent.assignment');
+	//Attach and Detach subject to and from the exam routes
+	Route::post('att-detach-subject-exam/{id}','Exam\AttachDetachSubjectController@attachDetachSubject')->name('attachDetachSubject.exam');
+	//Attach and Detach meeting to and from the dormitory routes
+	Route::post('att-detach-meeting-dom/{id}','Dormitory\AttachDetachMeetingController@attachDetachMeeting')->name('attachDetachMeeting.dormitory');
+	//Attach and Detach meeting to and from the library routes
+	Route::post('att-detach-meeting-lib/{id}','Library\AttachDetachMeetingController@attachDetachMeeting')->name('attachDetachMeeting.library');
+	//Attach and Detach an assignment to and from the teacher routes
+	Route::post('att-detach-assign-teacher/{id}','Teacher\AttachDetachAssignmentController@attachDetachAssignment')->name('attachDetachAssignmentTeacher');
+	//Attach and Detach an award to and from the teacher routes
+	Route::post('att-detach-reward-teacher/{id}','Teacher\AttachDetachRewardController@attachDetachReward')->name('attachDetachReward.teacher');
 }); //END OF ADMIN ROUTES
 
-//START OF TEACHER ROUTES
-//Auth folder routes
-Route::prefix('teacher')->name('teacher.')->namespace('Auth')->group(function(){
-	Route::get('/login','TeacherLoginController@showLoginForm')->name('login');
-	Route::post('/login','TeacherLoginController@login')->name('login.submit');
-	Route::get('/logout','TeacherLoginController@logout')->name('logout');
-	//teacher password reset routes
-    Route::post('/password/email','TeacherForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','TeacherForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','TeacherResetPasswordController@reset');
-    Route::get('/password/reset/{token}','TeacherResetPasswordController@showResetForm')->name('password.reset');
-});
 
-Route::prefix('teacher')->name('teacher.')->namespace('Teacher')->group(function(){
-	Route::get('/','TeacherController@index')->name('dashboard');
+//START OF TEACHER ROUTES
+Route::prefix('teacher')->middleware(['auth','role:teacher','teacher-banned'])->name('teacher.')->namespace('Teacher')->group(function(){
+	Route::get('/dashboard','TeacherController@index')->name('dashboard');
 	Route::get('/school-teachers','TeacherController@schoolTeachers')->name('school.teachers');
 	Route::get('/details/{teacher}','TeacherController@showTeacher')->name('show');
 	Route::get('/streams','TeacherController@streams')->name('streams');
@@ -363,26 +360,12 @@ Route::prefix('teacher')->name('teacher.')->namespace('Teacher')->group(function
 	Route::resource('assignments','AssignmentController');
 	Route::post('notes','NotesController@storeNotes')->name('store.notes');
 	Route::get('notes/{note}','NotesController@deleteNotes')->name('delete.notes');
-	//Teacher Change Password Routes
-	Route::get('/change-password','TeacherChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','TeacherChangePasswordController@store')->name('change-password.save');
 });//END OF TEACHER ROUTES
 
 //START OF STUDENT ROUTES
-//Auth folder routes
-Route::prefix('student')->name('student.')->namespace('Auth')->group(function(){
-	Route::get('/login','StudentLoginController@showLoginForm')->name('login');
-	Route::post('/login','StudentLoginController@login')->name('login.submit');
-	Route::get('/logout','StudentLoginController@logout')->name('logout');
-	//student password reset routes
-    Route::post('/password/email','StudentForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','StudentForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','StudentResetPasswordController@reset');
-    Route::get('/password/reset/{token}','StudentResetPasswordController@showResetForm')->name('password.reset');
-	});
 //Student folder routes
-Route::prefix('student')->name('student.')->namespace('Student')->group(function(){
-	Route::get('/','StudentController@index')->name('dashboard');
+Route::prefix('student')->middleware(['auth','role:student','student-banned'])->name('student.')->namespace('Student')->group(function(){
+	Route::get('/dashboard','StudentController@index')->name('dashboard');
 	Route::get('/stream/assignments','StudentController@streamAssignments')->name('stream.assignments');
 	Route::get('/stream/students','StudentController@streamStudents')->name('stream.students');
 	Route::get('/stream/teachers','StudentController@streamTeachers')->name('stream.teachers');
@@ -390,7 +373,8 @@ Route::prefix('student')->name('student.')->namespace('Student')->group(function
 	Route::get('/club/{id}','StudentController@showClub')->name('club');
 	Route::get('/stream/meetings','StudentController@streamMeetings')->name('stream.meetings');
 	Route::get('/stream/awards','StudentController@streamAwards')->name('stream.rewards');
-	Route::get('/subject/notes/{id}','StudentController@subjectNotes')->name('subject.notes');
+	Route::get('/subject/notes/{id}','StudentController@streamSubjectNotes')->name('subject.notes');
+	Route::get('/notes/{note}','StudentController@streamOnlineNotes')->name('online.notes');
 	Route::get('/library/books','StudentController@libraryBooks')->name('library.books');
 	Route::get('/school/fields','StudentController@schoolFields')->name('school.fields');
 	Route::get('/school/halls','StudentController@schoolHalls')->name('school.halls');
@@ -404,55 +388,27 @@ Route::prefix('student')->name('student.')->namespace('Student')->group(function
 	Route::get('/download-results','PdfMarksResultsController@downloadResults')->name('download.results');
 	//Teacher details route
 	Route::get('teacher/info/{id}','StudentController@teacherDetails')->name('teacher.details');
-	//Student Change Password Routes
-	Route::get('/change-password','StudentChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','StudentChangePasswordController@store')->name('change-password.save');
 });//END OF STUDENT ROUTES
 
 //START OF SURBODINADE STAFF ROUTES
-//Auth folder routes
-Route::prefix('staff')->name('staff.')->namespace('Auth')->group(function(){
-	Route::get('/login','StaffLoginController@showLoginForm')->name('login');
-	Route::post('/login','StaffLoginController@login')->name('login.submit');
-	Route::get('/logout','StaffLoginController@logout')->name('logout');
-	//substaff password reset routes
-    Route::post('/password/email','StaffForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','StaffForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','StaffResetPasswordController@reset');
-    Route::get('/password/reset/{token}','StaffResetPasswordController@showResetForm')->name('password.reset');
-	});
 //Staff folder routes
-Route::prefix('staff')->name('staff.')->namespace('Staff')->group(function(){
-	Route::get('/','StaffController@index')->name('dashboard');
-	Route::get('/assignments','StaffController@assignments')->name('assignments');
-	Route::get('/profile','StaffProfileController@staffProfile')->name('profile');
-    //Admin Change Password Routes
-	Route::get('/change-password','StaffChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','StaffChangePasswordController@store')->name('change-password.save');
+Route::prefix('subordinate')->middleware(['auth','role:subordinate','subordinate-banned'])->name('subordinate.')->namespace('Subordinate')->group(function(){
+	Route::get('/dashboard','SubordinateController@index')->name('dashboard');
+	Route::get('/assignments','SubordinateController@assignments')->name('assignments');
+	Route::get('/profile','SubordinateProfileController@subordinateProfile')->name('profile');
 	// Letter Head Route
 	Route::get('/letter-head/{school}','PdfController@letterHead')->name('letter.head');
 	//Instant Download Route
-	Route::get('/instant-download-form','StaffController@instantDownloadForm')->name('instantdownload.form');
+	Route::get('/instant-download-form','SubordinateController@instantDownloadForm')->name('instantdownload.form');
 	Route::get('/instant-download/{school}','PdfController@instantDownload')->name('instant.download');
 	// Search Student
-	Route::get('/search-student','StaffController@studentSearch')->name('search.student');
+	Route::get('/search-student','SubordinateController@studentSearch')->name('search.student');
 });//END OF SURBODINADE STAFF ROUTES
 
 //START OF PARENT ROUTES
-//Auth folder routes
-Route::prefix('parent')->name('parent.')->namespace('Auth')->group(function () {
-    Route::get('/login', 'ParentLoginController@showLoginForm')->name('login');
-    Route::post('/login', 'ParentLoginController@login')->name('login.submit');
-    Route::get('/logout','ParentLoginController@logout')->name('logout');
-    //parent password reset routes
-    Route::post('/password/email','ParentForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','ParentForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','ParentResetPasswordController@reset');
-    Route::get('/password/reset/{token}','ParentResetPasswordController@showResetForm')->name('password.reset');
-});
 //Parent folder routes
-Route::prefix('parent')->name('parent.')->namespace('Parent')->group(function () {
-	Route::get('/', 'ParentController@index')->name('dashboard');
+Route::prefix('parent')->middleware(['auth','role:parent','parent-banned'])->name('parent.')->namespace('Parent')->group(function () {
+	Route::get('/dashboard', 'ParentController@index')->name('dashboard');
 	Route::get('/children', 'ParentController@parentChildren')->name('children');
 	Route::get('/child/{child}', 'ParentController@showChild')->name('show.child');
 	Route::get('/student/stream/{stream}', 'ParentController@studentStream')->name('child.stream');
@@ -460,40 +416,24 @@ Route::prefix('parent')->name('parent.')->namespace('Parent')->group(function ()
 	Route::get('/teacher/{teacher}', 'ParentController@showTeacher')->name('show.teacher');
 	//Parent Profile Route
     Route::get('/profile','ParentProfileController@parentProfile')->name('profile');
-    //Admin Change Password Routes
-	Route::get('/change-password','ParentChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','ParentChangePasswordController@store')->name('change-password.save');
 	//Exam MarkSheet Download Route
-	Route::get('/download-results','PdfMarksResultsController@downloadResults')->name('download.results');
+	Route::get('/child-exam-results','PdfMarksResultsController@childExamResults')->name('download.examresults');
 });//END OF PARENT ROUTES
 
 //START OF ACCOUNTANT ROUTES
-//Auth folder routes
-Route::prefix('accountant')->name('accountant.')->namespace('Auth')->group(function () {
-    Route::get('/login', 'AccountantLoginController@showLoginForm')->name('login');
-    Route::post('/login', 'AccountantLoginController@login')->name('login.submit');
-    Route::get('/logout','AccountantLoginController@logout')->name('logout');
-    //accountant password reset routes
-    Route::post('/password/email','AccountantForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','AccountantForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','AccountantResetPasswordController@reset');
-    Route::get('/password/reset/{token}','AccountantResetPasswordController@showResetForm')->name('password.reset');
-});
 //Accountant folder routes
-Route::prefix('accountant')->name('accountant.')->namespace('Accountant')->group(function () {
-	Route::get('/', 'AccountantController@index')->name('dashboard');
+Route::prefix('accountant')->middleware(['auth','role:accountant','accountant-banned'])->name('accountant.')->namespace('Accountant')->group(function () {
+	Route::get('/dashboard', 'AccountantController@index')->name('dashboard');
 	Route::get('/fee-queries', 'AccountantController@feeBalance')->name('fee.balance');
 	//Accountant Profile Route
     Route::get('/profile','AccountantProfileController@accountantProfile')->name('profile');
     Route::resource('category-fees','CategoryFeeController');
-    //Admin Change Password Routes
-	Route::get('/change-password','AccountantChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','AccountantChangePasswordController@store')->name('change-password.save');
-	//Payment Routes
+	// Payment Routes
 	Route::resource('payments','PaymentController');
 	Route::resource('paymentrecords','PaymentRecordController');
 	// Student Profile
 	Route::get('/student-profile','StudentController@student')->name('student.profile');
+	Route::get('/make-payment/{id}','StudentController@makePayment')->name('make.payment');
 	//Student Payment Record Receipt Download Route
 	Route::get('/download-receipt/{paymentRecord}','PdfController@paymentReceipt')->name('download.receipt');
 	Route::get('/stream-fee-balances','PdfController@streamFeeBalances')->name('stream.balances');
@@ -503,23 +443,11 @@ Route::prefix('accountant')->name('accountant.')->namespace('Accountant')->group
 });//END OF ACCOUNTANT ROUTES
 
 //START OF LIBRARIAN ROUTES
-//Auth folder routes
-Route::prefix('librarian')->name('librarian.')->namespace('Auth')->group(function () {
-    Route::get('/login', 'LibrarianLoginController@showLoginForm')->name('login');
-    Route::post('/login', 'LibrarianLoginController@login')->name('login.submit');
-    Route::get('/logout','LibrarianLoginController@logout')->name('logout');
-    //librarian password reset routes
-    Route::post('/password/email','LibrarianForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','LibrarianForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','LibrarianResetPasswordController@reset');
-    Route::get('/password/reset/{token}','LibrarianResetPasswordController@showResetForm')->name('password.reset');
-});
 //Librarian folder routes
-Route::prefix('librarian')->name('librarian.')->namespace('Librarian')->group(function () {
-	Route::get('/', 'LibrarianController@index')->name('dashboard');
-	Route::resource('books','BookController');
+Route::prefix('librarian')->middleware(['auth','role:librarian','librarian-banned'])->name('librarian.')->namespace('Librarian')->group(function () {
+	Route::get('/dashboard', 'LibrarianController@index')->name('dashboard');
 	Route::resource('bookers','IssuedBooksController');
-	Route::resource('category-books','CategoryBookController');
+	
 	//Libraries
 	Route::get('school-libraries','LibrarianController@schoolLibraries')->name('school.libraries');
 	Route::get('school-library/{library}','LibrarianController@library')->name('school.library');
@@ -528,7 +456,7 @@ Route::prefix('librarian')->name('librarian.')->namespace('Librarian')->group(fu
 	//Accountant Profile Route
     Route::get('/profile','LibrarianProfileController@librarianProfile')->name('profile');
     //Library Books PDF
-    Route::get('/library-books/{school}','PdfController@libraryBooks')->name('library.books');
+    Route::get('/library-books','PdfController@libraryBooks')->name('library.books');
     //Library Borrowed Books PDF
     Route::get('/borrowed-pdf','PdfController@borrowedBooks')->name('borrowed.pdf');
     Route::get('/book-return-date','PdfController@issuedBooksByReturnDate')->name('issuedbook.returnDate');
@@ -540,9 +468,6 @@ Route::prefix('librarian')->name('librarian.')->namespace('Librarian')->group(fu
     Route::post('issued-book/{booker}/faulty','IssuedBookUpdateController@issuedBookFaulty')->name('issuedbook.faulty');
     Route::post('faulty-book/{booker}/cleared','IssuedBookUpdateController@clearFaultyBook')->name('faultybook.cleared');
     Route::post('book-not-returned/{booker}/reset','IssuedBookUpdateController@bookNotyetReturned')->name('notyetreturned.reset');
-    //Librarian Change Password Routes
-	Route::get('/change-password','LibrarianChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','LibrarianChangePasswordController@store')->name('change-password.save');
 	// Search Book
 	Route::get('/search-book','LibrarianController@book')->name('search.book');
 	// Search Student
@@ -552,93 +477,15 @@ Route::prefix('librarian')->name('librarian.')->namespace('Librarian')->group(fu
 });//END OF LIBRARIAN ROUTES
 
 //START OF MATRON ROUTES
-//Auth folder routes
-Route::prefix('matron')->name('matron.')->namespace('Auth')->group(function () {
-    Route::get('/login', 'MatronLoginController@showLoginForm')->name('login');
-    Route::post('/login', 'MatronLoginController@login')->name('login.submit');
-    Route::get('/logout','MatronLoginController@logout')->name('logout');
-    //matron password reset routes
-    Route::post('/password/email','MatronForgotPasswordController@sendResetLinkEmail')->name('password.email');
-    Route::get('/password/reset','MatronForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('/password/reset','MatronResetPasswordController@reset');
-    Route::get('/password/reset/{token}','MatronResetPasswordController@showResetForm')->name('password.reset');
-});
 //Matron folder routes
-Route::prefix('matron')->name('matron.')->namespace('Matron')->group(function () {
-	Route::get('/', 'MatronController@index')->name('dashboard');
+Route::prefix('matron')->middleware(['auth','role:matron','matron-banned'])->name('matron.')->namespace('Matron')->group(function () {
+	Route::get('/dashboard', 'MatronController@index')->name('dashboard');
 	Route::get('/dormitories', 'MatronController@dormitories')->name('dormitories');
 	Route::get('/dormitory/{id}', 'MatronController@dormitory')->name('dormitory');
 	Route::get('/dormitory-queries', 'MatronController@dormitoryQueries')->name('dormitory.queries');
+	Route::post('/student-bednumber','MatronController@studentBedNumber')->name('student.bednumber');
 	//Parent Profile Route
     Route::get('/profile','MatronProfileController@matronProfile')->name('profile');
-    //Matron Change Password Routes
-	Route::get('/change-password','MatronChangePasswordController@index')->name('change-password.form');
-	Route::post('/change-password','MatronChangePasswordController@store')->name('change-password.save');
 	Route::get('/dormitory-students','PdfController@dormitoryStudents')->name('dormitory.students');
 });//END OF MATRON ROUTES
-
-//ATTACH AND DETACH ADMIN BACKEND ROUTES
-//Attach and Detach teacher to and from the class routes for admin
-Route::post('att-teacher-stream/{id}','Stream\AttachTeacherController@attachTeacher')->name('attach.teacher.stream');
-//Attach and Detach teacher to and from the class routes for Superadmin
-Route::post('superadmin/att-teacher-stream/{id}','Stream\SuperadminAttachTeacherController@attachTeacher')->name('superadmin.attach.teacher.stream');
-//Attach and Detach subject to and from the class routes for admin
-Route::post('att-subject-stream/{id}','Stream\AttachSubjectController@attachSubject')->name('attach.subject.stream');
-//Attach and Detach subject to and from the class routes for Superadmin
-Route::post('superadmin/att-subject-stream/{id}','Stream\SuperadminAttachSubjectController@attachSubject')->name('superadmin.attach.subject.stream');
-//Attach and Detach an exam to and from the class routes
-Route::post('att-exam-stream/{id}','Stream\AttachExamController@attachExam')->name('attach.exam.stream');
-//Attach and Detach an assignment to and from the class routes
-Route::post('att-assign-stream/{id}','Stream\AttachAssignmentController@attachAssignment')->name('attach.assign.stream');
-//Attach and Detach meeting to and from the class routes
-Route::post('att-meeting-stream/{id}','Stream\AttachMeetingController@attachMeeting')->name('attach.meeting.stream');
-//Attach and Detach an award to and from the class routes
-Route::post('att-reward-stream/{id}','Stream\AttachRewardController@attachReward')->name('attach.reward.stream');
-//Attach and Detach teacher to and from the department routes(by Superadmin)
-Route::post('att-teacher-dept/{id}','Department\AttachTeacherController@attachTeacher')->name('attach.teacher.dept');
-//Attach and Detach subordinade staff to and from the department routes(by Superadmin)
-Route::post('att-sustaff-dept/{id}','Department\AttachStaffController@attachStaff')->name('attach.staff.dept');
-//Attach and Detach meeting to and from the department routes
-Route::post('att-meeting-dept/{id}','Department\AttachMeetingController@attachMeeting')->name('attach.meeting.dept');
-//Attach and Detach meeting to and from the club routes
-Route::post('att-meeting-club/{id}','Club\AttachMeetingController@attachMeeting')->name('attach.meeting.club');
-//Attach and Detach student to and from the club routes
-Route::post('att-student-club/{id}','Club\AttachStudentController@attachStudent')->name('attach.student.club');
-//Attach and Detach teacher to and from the club routes
-Route::post('att-teacher-club/{id}','Club\AttachTeacherController@attachTeacher')->name('attach.teacher.club');
-//Attach and Detach Subordinade Staff to and from the club routes
-Route::post('att-staff-club/{id}','Club\AttachStaffController@attachStaff')->name('attach.staff.club');
-//Attach and Detach an award to and from the student routes
-Route::post('att-reward-student/{id}','Student\AttachRewardController@attachReward')->name('attach.reward.student');
-//Attach and Detach an assignment to and from the student routes
-Route::post('att-assign-student/{id}','Student\AttachAssignmentController@attachAssignment')->name('attach.assign.student');
-//Attach and Detach subject to and from the student routes
-Route::post('att-subject-student/{id}','Student\AttachSubjectController@attachSubject')->name('attach.subject.student');
-//Attach and Detach meeting to and from the student routes
-Route::post('att-meeting-student/{id}','Student\AttachMeetingController@attachMeeting')->name('attach.meeting.student');
-//Attach and Detach class to and from the teacher routes
-Route::post('attach-stream/{id}','Teacher\AttachStreamController@attachStream')->name('attach.stream.teacher');
-//Attach and Detach subject to and from the teacher routes
-Route::post('att-subject-teacher/{id}','Teacher\AttachSubjectController@attachSubject')->name('attach.subject.teacher');
-//Attach and Detach an assignment to and from the teacher routes
-Route::post('att-assign-teacher/{id}','Teacher\AttachAssignmentController@attachAssignment')->name('attach.assign.teacher');
-//Attach and Detach an award to and from the teacher routes
-Route::post('att-reward-teacher/{id}','Teacher\AttachRewardController@attachReward')->name('attach.reward.teacher');
-//Attach and Detach teacher to and from the meeting routes
-Route::post('att-teacher-meeting/{id}','Meeting\AttachTeacherController@attachTeacher')->name('attach.teacher.meeting');
-//Attach and Detach student to and from the meeting routes
-Route::post('att-student-meeting/{id}','Meeting\AttachStudentController@attachStudent')->name('attach.student.meeting');
-//Attach and Detach subordinade staff to and from the meeting routes
-Route::post('att-staff-meeting/{id}','Meeting\AttachStaffController@attachStaff')->name('attach.staff.meeting');
-//Attach and Detach class to and from the meeting routes
-Route::post('att-std-meeting/{id}','Meeting\AttachStreamController@attachStream')->name('attach.stream.meeting');
-//Attach student to and from the assignment routes
-Route::post('att-student-assignment/{id}','Assignment\AttachStudentController@attachStudent')->name('attach.student.assignment');
-//Attach and Detach subject to and from the exam routes
-Route::post('att-subject-exam/{id}','Exam\AttachSubjectController@attachSubject')->name('attach.subject.exam');
-//Attach and Detach meeting to and from the dormitory routes
-Route::post('att-meeting-dom/{id}','Dormitory\AttachMeetingController@attachMeeting')->name('attach.meeting.dom');
-//Attach and Detach meeting to and from the library routes
-Route::post('att-meeting-lib/{id}','Library\AttachMeetingController@attachMeeting')->name('attach.meeting.lib');
-
 }); //END OF PREVENT BACK HISTORY ROUTE MIDDLEWARE

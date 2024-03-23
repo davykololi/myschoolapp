@@ -1,12 +1,15 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Add Timetable')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
 <div class="row">
     <div class="col-lg-12">
         @include('partials.errors')
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">CREATE TIMETABLE</h5> 
+                <h5 class="card-title">ADD TIMETABLE</h5> 
                 <a href="{{ route('admin.timetables.index') }}" class="btn btn-primary pull-right">Back</a>
             </div>
             <div class="card-body">
@@ -65,4 +68,4 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endsection

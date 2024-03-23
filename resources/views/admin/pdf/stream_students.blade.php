@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container"> 
-    <x-pdf-portrait-current-date/>
+    <div class="mt"><x-pdf-portrait-current-date/></div>
     <div><h2 class="title"><u>{{$title}}</u></h2></div>
     <h3>
         <span style="margin-left: 10px;margin-right: 10px;"><b>Total:</b> {{ $stream->students->count() }} <i>Students</i></span>
@@ -28,7 +28,7 @@
             <tr>
                 <td><b>NO</b></td>
                 <td><b>NAME</b></td>
-                <td><b>SEX</b></td>
+                <td><b>GDR</b></td>
                 <td><b>ADM NO</b></td>
             </tr>
         </thead>
@@ -37,7 +37,7 @@
             @forelse($streamStudents as $key => $value)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $value->full_name}}</td>
+                <td>{{ $value->user->full_name}}</td>
                 @if($value->gender === "Male")
                 <td class="table-left">{{ __('M') }}</td>
                 @elseif($value->gender === "Female")

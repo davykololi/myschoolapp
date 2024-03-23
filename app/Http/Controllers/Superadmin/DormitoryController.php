@@ -20,9 +20,9 @@ class DormitoryController extends Controller
      */
     public function __construct(DormService $dormService, MeetingService $meetingService)
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
         $this->dormService = $dormService;
         $this->meetingService = $meetingService;
     }
@@ -75,9 +75,9 @@ class DormitoryController extends Controller
     {
         //
         $dormitory = $this->dormService->getId($id);
-        $meetings = $this->meetingService->all()->pluck('name','id');
-        $dormitoryMeetings = $dormitory->meetings;
-        $dormitoryStudents = $dormitory->students()->with('school','dormitory')->get();
+        $meetings = $this->meetingService;
+        $dormitoryMeetings = $dormitory->meetings()->with('stream')->get();
+        $dormitoryStudents = $dormitory->students()->with('school','dormitory','stream','user')->get();
 
         return view('superadmin.dormitories.show',compact('dormitory','meetings','dormitoryMeetings','dormitoryStudents'));
     }

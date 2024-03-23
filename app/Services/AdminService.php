@@ -6,8 +6,8 @@ use Auth;
 use App\Repositories\AdminRepository;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\AdminFormRequest as StoreRequest;
-use App\Http\Requests\AdminFormRequest as UpdateRequest;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class AdminService
 {
@@ -47,10 +47,10 @@ class AdminService
 	{
 		$data = $request->validated();
         $data['password'] = Hash::make($request->password);
-        $data['superadmin_id'] = Auth::user()->id;
+        $data['superadmin_id'] = Auth::user()->superadmin->id;
 		$data['school_id'] = Auth::user()->school->id;
 		$data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->admin_role;
+        $data['position'] = $request->admin_position;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;
@@ -59,10 +59,10 @@ class AdminService
 	public function updateData(UpdateRequest $request)
 	{
         $data = $request->only('salutation','first_name','middle_name','last_name','email','image','gender','id_no','emp_no','dob','designation','address','phone_no','history');
-        $data['superadmin_id'] = Auth::user()->id;
+        $data['superadmin_id'] = Auth::user()->superadmin->id;
 		$data['school_id'] = Auth::user()->school->id;
 		$data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->admin_role;
+        $data['position'] = $request->admin_position;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;

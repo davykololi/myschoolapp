@@ -1,10 +1,14 @@
-<x-admin> 
+@extends('layouts.admin')
+@section('title', '| Admin Assignments List')
+
+@section('content')
+@role('admin')
+@can('academicRegistrar')
   <!-- frontend-main view -->
   <x-backend-main>
-    <div class="max-w-screen">
+    <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen">
     @include('partials.messages')
     <!-- Posts list -->
-    @if(!empty($assignments))
         <div class="w-full mt-4">
             <div class="px-2">
                 <div>
@@ -17,27 +21,28 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-col overflow-x-auto mt-12">
+        <div class="w-full flex flex-col overflow-x-auto mt-12">
             <div class="sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                     <div class="overflow-x-auto">
-                        <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">
+                        <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">
                             <!-- Table Headings -->
-                            <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
+                            <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900">
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">ASSIGNMENT</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">ASSIGNMENT</th>
                                     <th scope="col" class="px-2 py-4" width="20%">FROM</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">TO</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">TO</th>
                                     <th scope="col" class="px-2 py-4" width="10%">PUBLISHED</th>
                                     <th scope="col" class="px-2 py-4" width="10%">DEADLINE</th>
                                     <th scope="col" class="px-2 py-4" width="10%">FILE</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                            @foreach($assignments as $assignment)
+                                @if(!empty($assignments))
+                                @foreach($assignments as $assignment)
                                 <tr class="border-b dark:border-neutral-500">
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$loop->iteration}}</div>
@@ -49,15 +54,15 @@
                                         <div>
                                             @if($assignment->teachers->isNotEmpty())
                                             @foreach($assignment->teachers as $teacher)
-                                                {{$teacher->full_name}}
+                                                {{$teacher->user->salutation}} {{$teacher->user->full_name}}
                                             @endforeach
                                             @elseif($assignment->students->isNotEmpty())
                                             @foreach($assignment->students as $student)
-                                                {{$student->full_name}}
+                                                {{$student->user->full_name}}
                                             @endforeach
                                             @elseif($assignment->staffs->isNotEmpty())
                                             @foreach($assignment->staffs as $staff)
-                                                {{$staff->full_name}}
+                                                {{$staff->user->salutation}} {{$staff->user->full_name}}
                                             @endforeach
                                             @endif
                                         </div>
@@ -80,13 +85,13 @@
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $assignment->date }}</div>
+                                        <div>{{ $assignment->getDate() }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $assignment->deadline }}</div>
+                                        <div>{{ $assignment->getDeadline() }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <a href="{{route('admin.assignment.download',$assignment->id)}}" class="pdf">
+                                        <a href="{{route('admin.assignment.download',$assignment->id)}}">
                                             <x-pdf-svg/>
                                         </a>
                                     </td>
@@ -94,29 +99,40 @@
                                         <form action="{{route('admin.assignments.destroy',$assignment->id)}}" method="POST" class="flex flex-row">
                                             @csrf
                                             @method('DELETE')
-                                            <a href="{{ route('admin.assignments.show', $assignment->id) }}" class="show">
+                                            <a href="{{ route('admin.assignments.show', $assignment->id) }}">
                                                 <x-show-svg/>
                                             </a>
-                                            <a href="{{ route('admin.assignments.edit', $assignment->id) }}" class="edit">
+                                            <a href="{{ route('admin.assignments.edit', $assignment->id) }}">
                                                 <x-edit-svg/>
                                             </a>
-                                            <button type="submit"  class="delete"onclick="return confirm('Are you sure to delete {{$assignment->name}}?')">
+                                            <button type="submit" onclick="return confirm('Are you sure to delete {{$assignment->name}}?')">
                                                 <x-delete-svg/>
                                             </button>
                                         </form> 
                                     </td>
                                 </tr>
-                            @endforeach
+                                @endforeach
+                                @endif
                             </tbody>
+                            <tfoot>
+                                @if($assignments->isEmpty())
+                                <tr>
+                                    <td colspan="10" class="w-full text-center text-white bg-blue-900 uppercase tracking-tighter h-12 dark:bg-gray-800 dark:text-slate-400">
+                                        <div>Assignments Notyet populated.</div>
+                                    </td>
+                                </tr>
+                                @endif
+                            </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-    @endif
     </div>
   </x-backend-main>
-</x-admin>
+@endcan
+@endrole
+@endsection
 
 
 

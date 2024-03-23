@@ -54,7 +54,7 @@ class SchoolService
 
 	public function updateData(UpdateRequest $request)
 	{
-		$data = $request->only('name','initials','head','ass_head','motto','vision','email','postal_address','mission','core_values');
+		$data = $request->only('name','initials','head','ass_head','motto','vision','email','postal_address','mission','core_values','phone_no');
         $data['type'] = $request->school_type;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 

@@ -4,6 +4,7 @@
 @section('content')
   <!-- frontend-main view -->
   <x-auth-card>
+    @include('partials.login-title')
     <form method="POST" action="{{ route('student.login.submit') }}">
       <x-login-form-details/>
     </form>

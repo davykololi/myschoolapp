@@ -11,8 +11,10 @@
         .table-left{text-align: left;}
         .bgcolor-grey{background-color: grey}
         .uc{text-transform: uppercase;}
-        .school_margin{margin-top: -0.5em;margin-bottom: -0.5em;}
-        .email_margin{margin-top: 0.5em;}
+        .school_margin{margin-top: -0.8em;margin-bottom: -0.4em;margin-left: 44em;font-family: Arial Narrow;}
+        .email_margin{margin-top: 0.6em;margin-bottom: 10px;margin-left: 44em;}
+        .postal-mt {margin-top: -28px;margin-left: 44em;font-family: Arial Narrow;}
+        .main-heading {text-align: center;margin-right: 2.5cm;color: midnightblue;letter-spacing: 20px;}
         #table_style{page-break-inside: always;}
         .table_caption{text-transform: uppercase;text-align: center;margin-top: 1cm;}
         .table_row{text-transform: uppercase;}

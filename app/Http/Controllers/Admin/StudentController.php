@@ -6,6 +6,7 @@ use Auth;
 use Illuminate\Support\Facades\Notification;
 use App\Services\StudentService;
 use App\Models\School;
+use App\Models\User;
 use App\Services\StreamService;
 use App\Services\ParentService;
 use App\Models\Dormitory;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Traits\ImageUploadTrait;
 use App\Http\Requests\StudentFormRequest as StoreRequest;
 use App\Http\Requests\StudentFormRequest as UpdateRequest;
 use Illuminate\Support\Facades\Storage;
@@ -30,22 +32,23 @@ use Illuminate\Foundation\Validation\ValdatesRequests;
 
 class StudentController extends Controller
 {
+    use ImageUploadTrait;
     protected $studentService, $streamService, $subjectService, $parentService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(StudentService $studentService,StreamService $streamService,SubjectService $subjectService,Request $request, ParentService $parentService)
+    public function __construct(StudentService $studentService,StreamService $streamService,SubjectService $subjectService, ParentService $parentService)
     {
-        $this->middleware('auth:admin');
-        $this->middleware('banned');
-        $this->middleware('admin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:admin');
+        $this->middleware('admin-banned');
+        $this->middleware('checktwofa');
         $this->studentService = $studentService;
         $this->streamService = $streamService;
         $this->subjectService = $subjectService;
         $this->parentService = $parentService;
-        $this->request = $request;
     }
     /**
      * Display a listing of the resource.
@@ -85,12 +88,41 @@ class StudentController extends Controller
     public function store(StoreRequest $request)
     {
         //
-        $student = $this->studentService->create($request);
-        $student_id = $student->id;
-        $StudentInfo = $this->studentService->updateStudentInfo($request, $student_id);
-        event(new StudentRegistered($student));
+        $user = User::create([
+            'salutation' => $request->salutation,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'school_id' => Auth::user()->school->id,
+        ]);
 
-        return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info created successfully'));
+        $user->student()->create([
+            'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+            'gender' => $request->gender,
+            'blood_group' => $request->blood_group,
+            'adm_mark' => $request->adm_mark,
+            'admission_no' => auth()->user()->school->initials."/".$request->admission_no."/".date('Y'),
+            'phone_no' => $request->phone_no,
+            'dob' => $request->dob,
+            'doa' => $request->doa,
+            'position' => $request->position,
+            'stream_id' => $request->stream,
+            'intake_id' => $request->intake,
+            'dormitory_id' => $request->dormitory,
+            'school_id' => auth()->user()->school->id,
+            'admin_id' => Auth::user()->admin->id,
+            'parent_id' => $request->parent, 
+            'active' => 1,
+        ]);
+
+        $user->assignRole('student');
+        $student_id = $user->student->id;
+        $StudentInfo = $this->studentService->updateStudentInfo($request, $student_id);
+        event(new StudentRegistered($user));
+
+        return redirect()->route('admin.students.index')->withSuccess(ucwords($user->full_name." ".'info created successfully'));
     }
 
     /**
@@ -103,13 +135,13 @@ class StudentController extends Controller
     {
         //
         $student = $this->studentService->getId($id);
-        $subjects = $this->subjectService->all()->pluck('name','id');
+        $subjects = $this->subjectService->all();
         $studentSubjects = $student->subjects;
-        $rewards = Reward::all()->pluck('name','id');
+        $rewards = Reward::all();
         $studentRewards = $student->rewards;
-        $assignments = Assignment::all()->pluck('name','id');
+        $assignments = Assignment::all();
         $studentAssignments = $student->assignments;
-        $meetings = Meeting::all()->pluck('name','id');
+        $meetings = Meeting::all();
         $studentMeetings = $student->meetings;
         $vv = collect($student->stream->subjects()->pluck('name'));
         $streamSubjects = $vv->toArray();
@@ -145,14 +177,38 @@ class StudentController extends Controller
     public function update(UpdateRequest $request,$id)
     {
         //
-        $student = $this->studentService->getId($id);
+        $student = Student::findOrFail($id);
         if($student){
             Storage::delete('public/storage/'.$student->image);
-            $this->studentService->update($request,$id); 
-            $student_id = $student->id;
-            $StudentInfo = $this->studentService->updateStudentInfo($request, $student_id); 
+            $student->user()->update([
+                'salutation' => $request->salutation,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'school_id' => Auth::user()->school->id,
+            ]);
 
-            return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info updated successfully'));
+            $student->update([
+                'image' => $this->verifyAndUpload($request,'image','public/storage/'),
+                'gender' => $request->gender,
+                'blood_group' => $request->blood_group,
+                'adm_mark' => $request->adm_mark,
+                'admission_no' => $request->admission_no,
+                'phone_no' => $request->phone_no,
+                'dob' => $request->dob,
+                'doa' => $request->doa,
+                'position' => $request->position,
+                'stream_id' => $request->stream,
+                'intake_id' => $request->intake,
+                'dormitory_id' => $request->dormitory,
+                'school_id' => auth()->user()->school->id,
+                'admin_id' => Auth::user()->admin->id,
+                'parent_id' => $request->parent, 
+                'active' => $request->active,
+            ]);
+
+            return redirect()->route('admin.students.index')->withSuccess(ucwords($student->user->full_name." ".'info updated successfully'));
         }
     }
 
@@ -165,12 +221,15 @@ class StudentController extends Controller
     public function destroy($id)
     {
         //
-        $student = $this->studentService->getId($id);
+        $student = Student::findOrFail($id);
         if($student){
             Storage::delete('public/storage/'.$student->image);
-            $this->studentService->delete($id);
+            $user = User::findOrFail($student->user_id);
+            $user->student()->delete();
+            $user->delete();
+            $user->removeRole('student');
 
-            return redirect()->route('admin.students.index')->withSuccess(ucwords($student->name." ".'info deleted successfully'));
-        }
+            return redirect()->route('admin.admins.index')->withSuccess(ucwords($user->full_name." ".'info deleted successfully'));
+        }   
     }
 }

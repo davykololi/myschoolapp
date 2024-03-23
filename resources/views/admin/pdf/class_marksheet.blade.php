@@ -6,6 +6,7 @@
 
 @section('content')
 <div class="container-fluid box"> 
+    <x-pdf-landscape2-current-date/>
     <div><h2 class="title"><u>{{$title}}</u></h2></div> 
     <div>
            <table>
@@ -13,7 +14,7 @@
                     <tr>
                         <td class="table-left padding-10"><b>NO</b></td>
                         <td class="table-left padding-10"><b>NAME</b></td>
-                        <td class="table-left padding-10"><b>SEX</b></td>
+                        <td class="table-left padding-10"><b>GDR</b></td>
                         <td class="table-left padding-10"><b>STATUS</b></td>
                         <td class="table-left padding-10"><b>RATE</b></td>
                         <td class="table-left padding-10"><b>MATHS</b></td>
@@ -196,7 +197,7 @@
                     @endif
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr style="border-top: 5px solid black;">
                         <td class="table-left"><b>#</b></td>
                         <td class="table-left"><b>MEAN SCORES</b></td>
                         <td class="table-left"><b>#</b></td>
@@ -358,7 +359,7 @@
             <div style="margin-bottom: 2cm;">
                 <h4>{{ __('Summary')}}</h4>
                     <p>
-                        {{ $class->students->count() }} Students sat for exam, i.e ({{ $males }} Males & {{ $females }} Females)
+                        {{ $class->students->count() }} Students sat for this exam. That's ({{ $males }} Males & {{ $females }} Females).
                     </p>
                     <p>Highest mark: {{ $totals->max() }}</p>
                     <p>Median mark: {{ $totals->median() }}</p>
@@ -377,7 +378,7 @@
                     <p>Chemistry highest: {{ $chemistry->max() }}</p>
                     <p>Chemistry lowest: {{ $chemistry->min() }}</p>
                     
-                    <p>Certified by: {{ $mark->teacher->title }}. {{ $mark->teacher->full_name }}</p>
+                    <p>Certified by: {{ $mark->teacher->user->salutation }}. {{ $mark->teacher->user->full_name }}</p>
                 </p>
                 <div>{!! json_encode($totalMarksFrequencies) !!}</div>
                 <div id="chartDiv" class="pie-chart"></div>

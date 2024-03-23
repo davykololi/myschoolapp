@@ -1,6 +1,9 @@
-<x-admin>
-  <!-- frontend-main view -->
-  <x-backend-main>
+@extends('layouts.admin')
+@section('title', '| Admin Stream Details')
+
+@section('content')
+<!-- frontend-main view -->
+<x-backend-main>
     <div class="row">
     @include('partials.messages')
     @include('partials.errors')
@@ -287,4 +290,4 @@
         </div>
     </form>
 </x-backend-main>
-</x-admin>
+@endsection

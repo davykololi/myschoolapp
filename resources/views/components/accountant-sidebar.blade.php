@@ -1,3 +1,4 @@
+@role('accountant')
 <!-- Sidenav -->
 <nav
   id="sidenav-20"
@@ -32,9 +33,6 @@
         </span>
         <span>Overview</span>
       </a>
-    </li>
-    <li class="items-center justify-center text-blue-700 dark:text-slate-400">
-        <div class="px-4 mx-auto" id="example"></div>
     </li>
     <li class="relative pt-4">
       <span
@@ -126,7 +124,7 @@
               d="M12 20.25c2.685 0 5.19-.586 7.078-1.609a8.282 8.282 0 001.897-1.384c.016.121.025.244.025.368 0 2.692-4.03 4.875-9 4.875s-9-2.183-9-4.875c0-.124.009-.247.025-.368a8.284 8.284 0 001.897 1.384C6.809 19.664 9.315 20.25 12 20.25z" />
           </svg>
         </span>
-        <span>Querries</span>
+        <span>Payment Querries</span>
       </a>
     </li>
     <li class="relative">
@@ -400,4 +398,5 @@
   </ul>
 </nav>
 <!-- Sidenav -->
+@endrole
 

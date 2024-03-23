@@ -6,8 +6,8 @@ use Auth;
 use App\Repositories\LibrarianRepository;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\LibrarianFormRequest as StoreRequest;
-use App\Http\Requests\LibrarianFormRequest as UpdateRequest;
+use App\Http\Requests\CommonUserFormRequest as StoreRequest;
+use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class LibrarianService
 {
@@ -49,7 +49,7 @@ class LibrarianService
         $data['school_id'] = Auth::user()->school->id;
 		$data['library_id'] = $request->library;
 		$data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->librarian_role;
+        $data['position'] = $request->librarian_position;
         $data['password'] = Hash::make($request->password);
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
@@ -62,7 +62,7 @@ class LibrarianService
        	$data['school_id'] = Auth::user()->school->id;
 		$data['library_id'] = $request->library;
 		$data['blood_group'] = $request->blood_group;
-        $data['role'] = $request->librarian_role;
+        $data['position'] = $request->librarian_position;
        	$data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
 
         return $data;

@@ -17,9 +17,9 @@ class DeleteReportMarksheetController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:superadmin');
-        $this->middleware('banned');
-        $this->middleware('superadmin2fa');
+        $this->middleware('auth');
+        $this->middleware('role:superadmin');
+        $this->middleware('checktwofa');
     }
     /**
      * Handle the incoming request.

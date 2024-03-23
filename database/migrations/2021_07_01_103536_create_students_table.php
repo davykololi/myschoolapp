@@ -15,30 +15,27 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('salutation')->nullable();
-            $table->string('first_name');
-            $table->string('middle_name');
-            $table->string('last_name');
             $table->string('image')->nullable();
             $table->string('gender')->nullable();
-            $table->string('email')->unique()->nullable();
             $table->string('blood_group')->default('A');
             $table->string('adm_mark')->default('350');
             $table->string('admission_no');
             $table->string('phone_no')->nullable();
             $table->string('dob');
             $table->string('doa');
-            $table->string('role')->default('ordinarystudent');
-            $table->rememberToken();
+            $table->string('position')->default('Ordinary Student');
             $table->tinyInteger('active')->default(1);
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('stream_id')->constrained();
             $table->foreignId('intake_id')->constrained();
             $table->foreignId('dormitory_id')->constrained();
-            $table->foreignId('admin_id')->constrained();
-            $table->foreignId('parent_id')->constrained();
-            $table->string('password');
+            $table->bigInteger('admin_id')->unsigned();
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->bigInteger('parent_id')->unsigned();
+            $table->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade');
+            $table->foreignId('school_id')->constrained()->onDelete('cascade');
             $table->boolean('is_banned')->default(false);
+            $table->boolean('payment_locked')->default(true);
             $table->string('lock')->default('enabled');
             $table->timestamps();
         });
