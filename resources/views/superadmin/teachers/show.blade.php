@@ -2,10 +2,12 @@
 @section('title', '| Teacher Details')
 
 @section('content')
+@role('superadmin')
   <!-- frontend-main view -->
   <x-backend-main>
     <div class="row">
         @include('partials.messages')
+        @include('partials.errors')
     <div class="col-md-12 margin-tb">
         <div class="pull-left">
             <h2>TEACHER DETAILS</h2>
@@ -19,7 +21,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%;border: solid brown 5px;padding: 2px" src="/storage/storage/{{ $teacher->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{ $teacher->full_name }}">
+            <img style="width:15%;border: solid brown 5px;padding: 2px" src="/storage/storage/{{ $teacher->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{ $teacher->user->full_name }}">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -107,24 +109,20 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>{{ $teacher->user->salutation }} {{ $teacher->user->first_name }}'s Classes:</strong>
-            <ol>
-            @forelse($teacherStreams as $stream)
-            <a href="{{route('superadmin.streams.show',$stream->id)}}">
-                <li>
-                    {{ $stream->name }} -
                     @if(!empty($teacherStreamSubjects))
                     @forelse($teacherStreamSubjects as $strmSubject)
-                        <span class="text-green-800">{{ $strmSubject->subject->name }}</span>
+                    <ol>
+                        <li>
+                        <span class="text-green-800">
+                            <a href="{{route('superadmin.streams.show',$strmSubject->stream->id)}}">{{ $strmSubject->stream->name }}</a> 
+                            - {{ $strmSubject->subject->name }}
+                        </span>
+                        </li>
+                    </ol>
                     @empty
-                        {{ __('Not yet assigned to stream')}}
+                        {{ __('Subjects Notyet assigned to') }} {{ $teacher->user->salutation }} {{ $teacher->user->first_name }}
                     @endforelse
                     @endif
-                </li>
-            </a>
-            @empty
-            <p style="color: red">{{ $teacher->user->salutation }} {{ $teacher->user->first_name }} notyet assigned to any class.</p>
-            @endforelse
-            </ol>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -134,7 +132,7 @@
             @forelse($teacherSubjects as $subject)
                 <li>{{ $subject->name }}</li>
             @empty
-            <p style="color: red">No subject(s) assigned to {{ $teacher->title }} {{ $teacher->first_name }}.</p>
+            <p style="color: red">No subject(s) assigned to {{ $teacher->user->salutation }} {{ $teacher->user->first_name }}.</p>
             @endforelse
             </ol>
         </div>
@@ -159,16 +157,23 @@
     </div>
 </div>
 <br/>
-<div class="row">
-    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('superadmin.teacher.attach_detach_streamform')
+<div class="flex flex-col mb:flex-row lg:flex-row gap-4 mb-4">
+    <div class="w-full md:w-1/2 lg:w-1/2">
+        @include('superadmin.teacher.attach_stream_form')
+    </div>
+    <div class="w-full md:w-1/2 lg:w-1/2">
+        @include('superadmin.teacher.detach_stream_form')
     </div>
 </div>
 
-<div class="row">
-    <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        @include('superadmin.teacher.attach_detach_subjectform')
+<div class="flex flex-col mb:flex-row lg:flex-row gap-4 mb-4">
+    <div class="w-full md:w-1/2 lg:w-1/2">
+        @include('superadmin.teacher.attach_subject_form')
+    </div>
+    <div class="w-full md:w-1/2 lg:w-1/2">
+        @include('superadmin.teacher.detach_subject_form')
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

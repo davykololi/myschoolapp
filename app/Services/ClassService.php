@@ -22,6 +22,11 @@ class ClassService
 		return $this->classRepository->all();
 	}
 
+	public function paginated()
+	{
+		return $this->classRepository->paginated();
+	}
+
 	public function create(StoreRequest $request)
 	{
 		$data = $this->data($request);
@@ -43,7 +48,7 @@ class ClassService
 
 	public function data(StoreRequest $request)
 	{
-		$data = $request->all();
+		$data = $request->validated();
         $data['school_id'] = Auth::user()->school->id;
         $data['slug'] = Str::slug($request->name,'-');
 

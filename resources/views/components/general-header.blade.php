@@ -3,7 +3,8 @@
     <!--Header Container-->
     <div class="container flex items-center justify-between space-x-8 lg:space-x-16">
         <!--Logo Kısmı-->
-        <img style="width:10%" src="/static/school_logo.jpg" class="-mt-8 md:ml-4 rounded">
+        <img style="width:5%" src="/static/school_logo.png" class="-mt-8 md:ml-4 rounded">
+        <div class="ml-4 uppercase font-bold text-white">{{ config('app.name') }}</div>
         <!--Menu Icon For Small Screens-->
         <div class="block md:hidden pr-4">
           <div class="space-y-1 cursor-pointer">

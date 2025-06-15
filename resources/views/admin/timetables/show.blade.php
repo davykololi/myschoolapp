@@ -2,6 +2,7 @@
 @section('title', '| Timetable Details')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen h-screen">
@@ -58,4 +59,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

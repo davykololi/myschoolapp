@@ -1,9 +1,16 @@
 <nav class="border-b bg-blue-600 border-gray-200 sticky top-0 z-10 dark:bg-gray-900">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
-  <a href="{{ url('/matron/dashbpard') }}" class="flex items-center">
-      <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8" alt="school logo" />
-      <span class="self-center text-2xl font-semibold uppercase whitespace-nowrap dark:text-white">{{ config('app.name') }}</span>
-  </a>
+  <div class="flex text-white -ml-8">
+      <x-graduates-cap/>
+      @if(Auth::user()->hasRole('librarian'))
+      <a href="{{ url('/librarian/dashboard')}}">
+        <span class="self-center text-2xl font-semibold uppercase whitespace-nowrap text-white ml-4">
+          {{ config('app.name') }}
+        </span>
+      @endif
+      </a>
+      <x-sidenav-toggler-button/>
+  </div>
   <div class="flex items-center md:order-2">
       <button type="button" class="flex" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
         <span class="sr-only">Open user menu</span>
@@ -58,9 +65,15 @@
   </div>
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
     <ul class="flex flex-col font-bold p-4 md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 text-sm">
-      <li>
-        <x-sidenav-toggler-button/>
+      @if(session('impersonated_by'))
+      @impersonating($guard = null)
+      <li class="mt-2" @if(Request::is('librarian/impersonate-leave*')) @endif>
+          <a  href="{{route('librarian.impersonateLeave')}}" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+            BACK TO MY ACCOUNT
+          </a>
       </li>
+      @endImpersonating
+      @endif
       <li class="mt-2">
         <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">HOME</a>
       </li>

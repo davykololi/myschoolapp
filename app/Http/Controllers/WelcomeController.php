@@ -34,7 +34,7 @@ class WelcomeController extends Controller
      */
     public function index(Request $request)
     {
-        $title = "Kabianga High Scool";
+        $title = ucfirst(config('app.name'))." App";
         $desc = "School App Management System";
         $keywords = 'School, School App, School Management System';
         $logo = 'https://kabianga.edu/static/favicon.png';

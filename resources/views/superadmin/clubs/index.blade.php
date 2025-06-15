@@ -1,4 +1,6 @@
 <x-superadmin>
+
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -26,18 +28,20 @@
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="30%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">CLUB STUDENTS</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">CLUB TEACHERS</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">STUDENTS</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">TEACHERS</th>
                                     <th scope="col" class="px-2 py-4" width="20%">REG DATE</th>
                                     <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                            @foreach($clubs as $club)
+                            @foreach($clubs as $key => $club)
                                 <tr class="border-b dark:border-neutral-500 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{$loop->iteration}}</div>
+                                        <div>
+                                            {{ $clubs->perPage() * ($clubs->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$club->name}}</div>
@@ -78,4 +82,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 </x-superadmin>

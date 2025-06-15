@@ -2,6 +2,7 @@
 @section('title', '| Pdf Details')
 
 @section('content')
+@role('admin')
   <!-- frontend-main view -->
   <x-backend-main>
     <div class="row">
@@ -36,4 +37,5 @@
     </div>
 </div>
 </x-backend-main>
-</x-admin>
+@endrole
+@endsection

@@ -14,17 +14,18 @@ class CreateExamsTable extends Migration
     public function up()
     {
         Schema::create('exams', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('initials');
             $table->string('type')->default('End Term Exam');
             $table->string('code');
             $table->string('start_date');
             $table->string('end_date');
             $table->tinyInteger('status')->default(0);
             $table->boolean('results_published')->default(false);
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('year_id')->constrained()->onDelete('cascade');
-            $table->foreignId('term_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('year_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('term_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

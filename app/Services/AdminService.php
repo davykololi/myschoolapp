@@ -21,7 +21,7 @@ class AdminService
 
 	public function all()
 	{
-		return $this->adminRepo->all();
+		return $this->adminRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

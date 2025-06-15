@@ -20,7 +20,13 @@
                     <form action="{{ route('admin.parents.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
                         @include('ext._csrfdiv')
                         @include('ext.parent_registration_form')
-                        @include('ext._submit_register_button')
+                        <div class="flex flex-col mt-4">
+                            <div class="w-full md:w-[200px] items-center justify-center">
+                                <button type="submit" class="register-button">
+                                    {{ __('Register') }}
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

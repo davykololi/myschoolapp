@@ -7,6 +7,7 @@ use PDF;
 use App\Models\Year;
 use App\Models\Term;
 use App\Models\Stream;
+use App\Models\MyClass;
 use App\Models\Exam;
 use App\Models\Grade;
 use App\Models\GeneralGrade;
@@ -46,26 +47,61 @@ class PdfMarksResultsController extends Controller
         $examId = $currentExam->id;
         $streamId = Auth::user()->student->stream->id;
         $name = Auth::user()->full_name;
-        $marks = streamMarks($yearId,$termId,$examId,$streamId);
 
         $term = Term::where('id',$termId)->first();
         $exam = Exam::where('id',$examId)->first();
         $stream = Stream::where(['id'=>$streamId])->first();
+        $class = MyClass::whereId($stream->class_id)->firstOrFail();
+        $classId = $class->id;
         $school = auth()->user()->school;
 
-        if(($yearId === null) || ($termId === null) || ($examId === null) || ($streamId === null) || ($exam->year->id != $yearId) || ($exam->term->id != $termId) || ($examId != $exam->id) || ($marks->isEmpty())){
+        if(($yearId === null) || ($termId === null) || ($examId === null) || ($streamId === null) || ($exam->year->id != $yearId) || ($exam->term->id != $termId) || ($examId != $exam->id)){
             return back()->withErrors('It appears the resulst are not ready!');
         }
 
+        $marks = classMarks($yearId,$termId,$examId,$classId);
+        if($marks->isEmpty()){
+            return back()->withErrors('Marks notyet populated!');
+        }
         $mark = mark($yearId,$termId,$streamId,$name);
         $markName = $mark->name;
+
+        //  Start of student's class ranking
+        $totals = $marks->pluck('total','name');
+        $standings = $totals->toArray();
+        $rankings = array();
+        arsort($standings);
+        $rank = 1;
+        $tie_rank = 0;
+        $prev_score = -1;
+        foreach($standings as $name => $score){
+            if($score != $prev_score){
+                //this score is not a tie
+                $count = 0;
+                $prev_score = $score;
+                $rankings[$name] = array('score' => $score,'rank'=>$rank);
+            } else {
+                //this is a tie
+                $prev_score = $score;
+                $rank --;
+                if($count++ == 0){
+                    $tie_rank = $rank;
+                }
+                $rankings[$name] = array('score'=>$score,'rank'=>$tie_rank);
+            }
+            $rank++;
+        }
+        $rankings;
+        // End of Student's class ranking
+
         //Exam Grades
         $examGrades = Grade::with('class','year','term','subject','exam','teacher')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
         $generalGrades = GeneralGrade::with('class','year','term','exam')->where(['term_id'=>$termId,'exam_id'=>$examId,'class_id'=>$stream->class->id,'year_id'=>$yearId])->get();
 
         $title = $year->year." ".$term->name." ".$exam->name." ".'Results';
-        $downloadTitle = $school->name."."." ".$markName.":"." ".$title;
-        $pdf = PDF::loadView('student.pdf.student_results',compact('name','marks','year','term','exam','stream','school','title','markName','examGrades','generalGrades','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
+        $moreInquiries = ". For more inquiries, contact ".Auth::user()->school->phone_no;
+        $downloadTitle = $school->name."."." ".$markName.":"." ".$title.$moreInquiries;
+        $pdf = PDF::loadView('student.pdf.student_results',compact('name','marks','year','term','exam','stream','class','school','title','markName','rankings','examGrades','generalGrades','downloadTitle'))->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','portrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();

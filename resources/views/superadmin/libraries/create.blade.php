@@ -2,6 +2,7 @@
 @section('title', '| Add Library')
 
 @section('content')
+@role('superadmin')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
 <div class="row">
     <div class="col-lg-12">
@@ -45,4 +46,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

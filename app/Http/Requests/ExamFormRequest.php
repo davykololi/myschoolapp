@@ -28,20 +28,22 @@ class ExamFormRequest extends FormRequest
             return [
                 //
                 'name' => 'required|string|max:100',
+                'initials' => 'required|string|max:100',
                 'start_date' => 'required|string',
                 'end_date' => 'required|string',
-                'year' => 'required|integer|max:'.(date('Y')+1),
-                'term' => 'required|string|max:100',
+                'year_id'   => 'required|exists:years,id',
+                'term_id'   => 'required|exists:terms,id',
                 'status' => 'required|integer|max:3',
 
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
+                'initials' => 'required|string|max:100',
                 'start_date' => 'required|string',
                 'end_date' => 'required|string',
-                'year' => 'required|integer|max:'.(date('Y')+1),
-                'term' => 'required|string|max:100',
+                'year_id'   => 'required|exists:years,id',
+                'term_id'   => 'required|exists:terms,id',
                 'status' => 'required|integer|max:3',
             ];
         }
@@ -54,20 +56,22 @@ class ExamFormRequest extends FormRequest
             return [
                 //
                 'name.required' => 'The name of the exam is required',
+                'initials.required' => 'The exam initials are required',
                 'start_date.required' => 'The date of starting exam is required',
                 'end_date.required' => 'The date of ending exam is required',
-                'year.required' => 'The year for the exam is required',
-                'term.required' => 'The term for the exam is required',
+                'year_id.required' => 'The year for the exam is required',
+                'term_id.required' => 'The term for the exam is required',
                 'status.required' => 'The exam status is required',
             ];
         } else {
             return [
                 //
                 'name.required' => 'The name of the exam is required',
+                'initials.required' => 'The exam initials are required',
                 'start_date.required' => 'The date of starting exam is required',
                 'end_date.required' => 'The date of ending exam is required',
                 'year.required' => 'The year for the exam is required',
-                'term.required' => 'The term for the exam is required',
+                'term_id.required' => 'The term for the exam is required',
                 'status.required' => 'The exam status is required',
             ];
         }

@@ -16,7 +16,7 @@ export default function Clock() {
   };
    
   return (
-    <div>
+    <div style="marginLeft: 50px">
       <AnalogClock {...options} />
     </div>
   )

@@ -19,7 +19,7 @@ class GameService
 
 	public function all()
 	{
-		return $this->gameRepo->all();
+		return $this->gameRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

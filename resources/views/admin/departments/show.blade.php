@@ -2,6 +2,7 @@
 @section('title', '| Admin Department Details')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full mt-4">
@@ -18,10 +19,14 @@
                     @include('partials.errors')
                 </div>
                 <div class="flex flex-row" style="float: right">
-                    <x-back-button/>
-                    <a href="{{route('admin.dept.teachers',$department->id)}}">
-                        <x-pdf-svg/>
-                    </a>
+                    <x-button class="back-button">
+                        <x-back-svg-n-url/>
+                    </x-button>
+                    <form action="{{ route('admin.dept.teachers',$department->id) }}" method="get">
+                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                        <input type="hidden" name="department_id" value="{{ $department->id }}">
+                        <button><x-pdf-svg/></button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -90,7 +95,7 @@
         @forelse($deptTeachers as $teacher)
       <div class="mb-12 lg:mb-0 bg-gray-200 py-4 px-2 rounded dark:bg-[#1a1919]  dark:text-slate-400">
         <a href="{{route('admin.teachers.show',$teacher->id)}}">
-            <img class="mx-auto mb-6 rounded-lg shadow-lg dark:shadow-black/20 w-[150px]" src="{{ $teacher->image_url }}" alt="{{ $teacher->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'"/>
+            <img class="mx-auto mb-6 rounded-lg shadow-lg dark:shadow-black/20 w-[150px]" src="{{ $teacher->image_url }}" alt="{{ $teacher->user->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'"/>
         </a>
         <a href="{{route('admin.teachers.show',$teacher->id)}}">
             <h5 class="mb-1 text-lg font-bold">{{ $teacher->user->salutation }} {{ $teacher->user->full_name }}</h5>
@@ -181,4 +186,5 @@
 </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

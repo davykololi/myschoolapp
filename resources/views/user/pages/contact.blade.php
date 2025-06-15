@@ -3,7 +3,7 @@
 
 @section('content')
 <!-- ====== Contact Section Start -->
-<section class="relative overflow-hidden bg-white py-20 lg:py-[120px] border-t dark:bg-slate-990 dark:text-slate-400">
+<section class="relative overflow-hidden bg-white py-20 lg:py-[120px] dark:bg-slate-900 dark:text-slate-400">
   <div class="container mx-auto">
     <div class="-mx-4 flex flex-wrap lg:justify-between">
       <div class="w-full px-4 lg:w-1/2 xl:w-6/12">
@@ -92,7 +92,7 @@
         </div>
       </div>
       <div class="w-full px-4 lg:w-1/2 xl:w-5/12">
-        <div class="relative rounded-lg bg-white p-8 shadow-lg sm:p-12">
+        <div class="relative rounded-lg bg-white dark:bg-stone-500 p-8 shadow-lg sm:p-12">
           <form>
             <div class="mb-6">
               <input

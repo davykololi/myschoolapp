@@ -11,8 +11,8 @@
                 <div class="items-center justify-center">
                     <div class="text-center text-2xl font-bold uppercase">Librarian Dashboard</div>
  
-                    <div class="mt-4">
-                        You are logged in as a librarian!
+                    <div class="mt-4 text-center">
+                        You are logged in as a librarian with {{ Auth::user()->librarian->position->value }} Privileges!
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Number;
 use App\Models\PaymentRecord;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -26,7 +27,7 @@ function streamTotalBalance($stream)
     $streamBalancesToCollection = collect($streamStudentsBalances);
     $totalStreamBalance = $streamBalancesToCollection->sum();
 
-    return number_format($totalStreamBalance,2);
+    return Number::format($totalStreamBalance, precision:2);
 }
 
 function classStudents($class)
@@ -42,5 +43,12 @@ function classTotalBalance($class)
    $classBalancesToCollection = collect($classStudentsBalances);
    $totalClassBalance = $classBalancesToCollection->sum();
 
-   return number_format($totalClassBalance,2);
+   return Number::format($totalClassBalance, precision:2);
+}
+
+function paymentByRefNumberTotalSum($payments)
+{
+    $totalSum = collect($payments->pluck('amount')->toArray())->sum();
+
+    return Number::format($totalSum, precision:2);
 }

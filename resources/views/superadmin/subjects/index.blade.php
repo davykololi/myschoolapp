@@ -2,6 +2,7 @@
 @section('title', '| Subjects List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -28,27 +29,34 @@
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="10%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="30%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">CATEGORY</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">DEPARTMENT</th>
+                                    <th scope="col" class="px-2 py-4" width="25%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">CODE</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">CATEGORY</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">DEPARTMENT</th>
                                     <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                            @foreach($subjects as $key => $subject)
+                                @if($subjects->isNotEmpty())
+                                @foreach($subjects as $key => $subject)
                                 <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $loop->iteration }}</div>
+                                        <div>
+                                            {{ $subjects->perPage() * ($subjects->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{$subject->name}}</div>
+                                        <div>{{ $subject->name }}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{ $subject->code }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $subject->type }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{$subject->department->name}}</div>
+                                        <div>{{ $subject->department->name }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <form action="{{route('superadmin.subjects.destroy',$subject->id)}}" method="POST" class="flex flex-row">
@@ -66,10 +74,21 @@
                                         </form>
                                     </td>
                                 </tr>
-                            @endforeach
+                                @endforeach
+                                @endif
                             </tbody>
+                            <tfoot>
+                                @if($subjects->isEmpty())
+                                <tr>
+                                    <td colspan="12" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12 text-2xl">
+                                    No subjects populated to {{ Auth::user()->school->name }}.
+                                    </td>
+                                </tr>
+                                @endif
+                            </tfoot>
                         </table>
                     </div>
+                    <div class="my-4">{{ $subjects->links() }}</div>
                 </div>
             </div>
         </div>
@@ -77,4 +96,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

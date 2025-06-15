@@ -45,6 +45,7 @@ class ReportcardRemarksSheetImport implements ToModel,WithHeadingRow,WithBatchIn
             'year_id' => $this->yearId,
             'term_id' => $this->termId,
             'class_id' => $this->classId,
+            'school_id' => auth()->user()->school->id,
         ]);
     }
 

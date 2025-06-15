@@ -15,10 +15,8 @@ class CreateMeetingSubordinateTable extends Migration
     {
         Schema::create('meeting_subordinate', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('meeting_id')->unsigned();
-            $table->bigInteger('subordinate_id')->unsigned();
-            $table->foreign('meeting_id')->references('id')->on('meetings')->onDelete('cascade');
-            $table->foreign('subordinate_id')->references('id')->on('subordinates')->onDelete('cascade');
+            $table->foreignUuid('meeting_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subordinate_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

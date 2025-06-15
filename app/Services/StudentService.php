@@ -31,9 +31,9 @@ class StudentService
 		return $this->studentRepository->all();
 	}
 
-    public function paginate()
+    public function paginated()
     {
-        return $this->studentRepository->paginate();
+        return $this->studentRepository->paginated(15);
     }
 
 	public function create(StoreRequest $request)

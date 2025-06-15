@@ -1,4 +1,10 @@
-<x-frontend><!-- The layout -->
+@extends('layouts.frontend')
+
+@section('title')
+{{ $title }}
+@endsection
+
+@section('content')
 <!-- frontend-main view -->
 <x-home-main>
 <div class="max-w-screen">
@@ -1968,5 +1974,5 @@ TAILGRID ABOUT
 </div>
 <!-- NEWSLETTER SUBSCRIPTION END -->
 </x-home-main>
-</x-frontend>
+@endsection
 

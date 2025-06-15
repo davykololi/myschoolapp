@@ -14,6 +14,7 @@
                     <div class="panel-heading">
                         <h1 style="text-transform: uppercase;">My Children</h1>
                     </div>
+                    @include('partials.errors')
                     <div class="panel-body">
                         <ol>
                             @foreach($parentChildren as $child)
@@ -23,7 +24,7 @@
                                 <a href="{{route('parent.child.stream',$child->stream->id)}}">
                                     {{ $child->stream->name }}
                                 </a> 
-                                 <a href="{{route('parent.show.child',$child->id)}}">
+                                 <a href="{{route('parent.show.child',[ 'child' => $child->id])}}">
                                      <img style="margin-left: 2em" width="30" height="30" src="{{ $child->image_url }}">
                                  </a>
                             </li>

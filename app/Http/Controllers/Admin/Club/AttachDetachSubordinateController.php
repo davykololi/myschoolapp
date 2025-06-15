@@ -27,7 +27,7 @@ class AttachDetachSubordinateController extends Controller
     {
     	$club = $this->clubRepo->getId($id);
     	$subordinates = $request->subordinates;
-    	$club->subordinates()->attach($subordinates);
+    	$club->subordinates()->sync($subordinates);
 
     	return back()->withSuccess('Done Successfully');
     }

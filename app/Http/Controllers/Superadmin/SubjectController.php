@@ -35,7 +35,7 @@ class SubjectController extends Controller
     public function index()
     {
         //
-        $subjects = $this->subjectService->all();
+        $subjects = $this->subjectService->paginated();
 
         return view('superadmin.subjects.index',['subjects'=>$subjects]);
     }

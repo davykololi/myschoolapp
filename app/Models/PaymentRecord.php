@@ -10,16 +10,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class PaymentRecord extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $fillable =['student_id','payment_id','amount_paid','balance','payment_mode','payment_ref_code','barcode','payment_date','verified','ref_no','accountant_id'];
+    protected $fillable =['student_id','payment_id','payment_section_id','amount_paid','balance','payment_mode','payment_ref_code','barcode','payment_date','verified','ref_no','accountant_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function payment(): BelongsTo
     {
         return $this->belongsTo(Payment::class)->withDefault();
+    }
+
+    public function payment_section(): BelongsTo
+    {
+        return $this->belongsTo(PaymentSection::class)->withDefault();
     }
 
     public function student(): BelongsTo

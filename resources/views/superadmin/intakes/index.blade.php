@@ -2,6 +2,7 @@
 @section('title', '| Intakes List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl h-screen">
@@ -27,24 +28,30 @@
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow  dark:text-slate-400 dark:bg-black">
                                 <tr>
-                                    <th scope="col" class="px-2 py-4" width="10%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="35%">INTAKE NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="45%">DESCRIPTION</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="35%">DESCRIPTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">STUDENTS</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                            @foreach($intakes as $intake)
+                            @foreach($intakes as $key => $intake)
                                 <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-900">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $loop->iteration }}</div>
+                                        <div>
+                                            {{ $intakes->perPage() * ($intakes->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $intake->name }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $intake->desc }}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{ $intake->students->count() }}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <form action="{{route('superadmin.intakes.destroy',$intake->id)}}" method="POST" class="flex flex-row">
@@ -73,4 +80,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

@@ -65,7 +65,7 @@ class LibrarianController extends Controller
     {
         $user = auth()->user();
         if($user->hasRole('librarian')){
-            $bookId = $request->book;
+            $bookId = $request->book_id;
 
             if(is_null($bookId)){
                 return back()->withErrors('Please select the title of the book first!');

@@ -9,18 +9,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Notifications\SuperadminResetPasswordNotification;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Superadmin extends Model
 {
-    use Notifiable;
+    use Notifiable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'superadmins';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
+    
     protected $fillable = ['address','user_id','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function sendPasswordResetNotification($token)
     {

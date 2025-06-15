@@ -2,6 +2,7 @@
 @section('title', '| Fields List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -12,7 +13,9 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                <div class="pull-left">
+                    <x-h1-headings>
                      <h2>FIELD LIST</h2>
+                    </x-h1-headings>
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-success" href="{{route('superadmin.fields.create')}}">Create</a>
@@ -37,6 +40,11 @@
                             <tbody>
                             @foreach($fields as $key => $field)
                                 <tr class="border-b dark:border-neutral-500">
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>
+                                            {{ $fields->perPage() * ($fields->currentPage() - 1) + $key + 1 }}
+                                        </div>
+                                    </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$field->name}}</div>
                                     </td>
@@ -70,4 +78,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

@@ -19,7 +19,7 @@ class FarmService
 
 	public function all()
 	{
-		return $this->farmRepo->all();
+		return $this->farmRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

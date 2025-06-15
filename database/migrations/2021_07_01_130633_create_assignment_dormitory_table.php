@@ -15,10 +15,8 @@ class CreateAssignmentDormitoryTable extends Migration
     {
         Schema::create('assignment_dormitory', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('assignment_id')->unsigned();
-            $table->bigInteger('dormitory_id')->unsigned();
-            $table->foreign('assignment_id')->references('id')->on('assignments')->onDelete('cascade');
-            $table->foreign('dormitory_id')->references('id')->on('dormitories')->onDelete('cascade');
+            $table->foreignUuid('assignment_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('dormitory_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 @section('title', '| Halls List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -41,7 +42,9 @@
                             @foreach($halls as $key => $hall)
                                 <tr class="border-b dark:border-neutral-500 bg:bg-transparent dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $loop->iteration }}</div>
+                                        <div>
+                                            {{ $halls->perPage() * ($halls->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $hall->name }}</div>
@@ -79,4 +82,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

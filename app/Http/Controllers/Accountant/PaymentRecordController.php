@@ -62,20 +62,22 @@ class PaymentRecordController extends Controller
     public function store(CreateFormRequest $request)
     {
         //
-        $randomnNo = mt_rand(10000, 999999);
         $barcode = rand(1000000000,9999999999);
         $paymentRefNo = $request->payment_ref_no;
+        $originalRefCode = $request->payment_ref_code;
         $input = $request->validated();
         $input['balance'] = $request->payment_balance - $request->amount_paid;
         $input['verified'] = 1;
-        $input['ref_no'] = 'PR/'.$randomnNo."/".$paymentRefNo;
+        $input['ref_no'] = 'PR/'.$paymentRefNo."/".$originalRefCode."/".date("Y");
         $input['barcode'] = $barcode;
         $input['student_id'] = $request->student_id;
         $input['payment_id'] = $request->payment_id;
+        $input['payment_section_id'] = $request->payment_section_id;
         $input['accountant_id'] = Auth::user()->accountant->id;
         $paymentRecord = PaymentRecord::create($input);
+        $student = Student::whereId($input['student_id'])->first();
 
-        return redirect('accountant/student-profile')->withSuccess('payment updated successfully');
+        return redirect('accountant/student-profile'."?"."student_id"."=".$student->id)->withSuccess('payment updated successfully');
     }
 
     /**

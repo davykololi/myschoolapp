@@ -14,15 +14,14 @@ class CreateStreamsTable extends Migration
     public function up()
     {
         Schema::create('streams', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('class_teacher')->nullable();
+            $table->string('class_prefect')->nullable();
             $table->string('code');
-            $table->bigInteger('class_id')->unsigned();
-            $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
-            $table->bigInteger('stream_section_id')->unsigned();
-            $table->foreign('stream_section_id')->references('id')->on('stream_sections')->onDelete('cascade');
-            $table->bigInteger('school_id')->unsigned();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
+            $table->foreignUuid('class_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('stream_section_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

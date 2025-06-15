@@ -19,7 +19,7 @@ class DormitoryService
 
 	public function all()
 	{
-		return $this->dormRepo->all();
+		return $this->dormRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

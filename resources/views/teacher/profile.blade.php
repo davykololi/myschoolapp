@@ -2,6 +2,7 @@
 @section('title', '| Teacher Profile')
 
 @section('content')
+@role('teacher')
     <!-- frontend-main view -->
     <x-frontend-main>
     <div class="row">
@@ -15,7 +16,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
+            <x-user-profile-avatar/>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -130,4 +131,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

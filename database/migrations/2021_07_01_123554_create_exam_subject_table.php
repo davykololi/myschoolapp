@@ -15,10 +15,8 @@ class CreateExamSubjectTable extends Migration
     {
         Schema::create('exam_subject', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('exam_id')->unsigned();
-            $table->bigInteger('subject_id')->unsigned();
-            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
+            $table->foreignUuid('exam_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subject_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -14,14 +14,14 @@ class CreateAttendancesTable extends Migration
     public function up()
     {
         Schema::create('attendances', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('date');
             $table->string('time');
             $table->boolean('attendence_status');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('stream_id')->constrained()->onDelete('cascade');
-            $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

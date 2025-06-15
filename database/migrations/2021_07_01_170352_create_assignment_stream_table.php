@@ -15,10 +15,8 @@ class CreateAssignmentStreamTable extends Migration
     {
         Schema::create('assignment_stream', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('assignment_id')->unsigned();
-            $table->bigInteger('stream_id')->unsigned();
-            $table->foreign('assignment_id')->references('id')->on('assignments')->onDelete('cascade');
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
+            $table->foreignUuid('assignment_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

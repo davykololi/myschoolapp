@@ -2,6 +2,7 @@
 @section('title', '| Terms List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
@@ -15,8 +16,8 @@
                     <div class="pull-left">
                         <h2>TERMS LIST</h2>
                     </div>
-                    <div class="pull-right">
-                        <a class="btn btn-success" href="{{route('superadmin.terms.create')}}">Create Term</a>
+                    <div class="text-right">
+                        <a class="create-button" href="{{route('superadmin.terms.create')}}">Create</a>
                     </div>
                 </div>
             </div>
@@ -40,24 +41,32 @@
                                     @foreach($terms as $key => $term)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{$loop->iteration}}</div>
+                                            <div>
+                                                {{ $terms->perPage() * ($terms->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{$term->name}}</div>
                                         </td>
-                                        @if($term->status === 1)
-                                        <td class="whitespace-nowrap p-2 items-center justify-center">
-                                            <div class="bg-red-700 px-2 py-1 text-white text-center rounded w-[150px]">
-                                                {{ __('Current') }}
-                                            </div>
-                                        </td>
-                                        @else
                                         <td class="whitespace-nowrap p-2">
-                                            <div class="bg-[green] px-2 py-1 text-white text-center rounded w-[150px]">
-                                                {{ __('Reserved') }}
+                                            <div>
+                                                @if($term->status == 0)
+                                                <form action="{{ route('superadmin.current.term',$term->id) }}" method="POST">
+                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                    <button type="submit" class="text-white bg-green-800 px-4 py-1 rounded">
+                                                        RESERVED
+                                                    </button>
+                                                </form>
+                                                @elseif($term->status == 1)
+                                                <form action="{{ route('superadmin.current.term',$term->id) }}" method="POST">
+                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                    <button type="submit" class="text-white bg-red-700 px-4 py-1 rounded">
+                                                        CURRENT
+                                                    </button>
+                                                </form>
+                                                @endif
                                             </div>
                                         </td>
-                                        @endif
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{$term->code}}</div>
                                         </td>
@@ -89,4 +98,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

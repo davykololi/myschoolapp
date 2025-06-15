@@ -24,7 +24,7 @@
         <tbody>
             @if(!empty($studentPayments))
             @foreach($studentPayments as $key => $studentPayment)
-            <tr style="line-height: 3px;">
+            <tr style="line-height: 1px;">
                 <td>{{ $loop->iteration }}</td>
                 <td>
                     {{ $studentPayment->ref_no }}
@@ -43,7 +43,7 @@
                         <span style="float: right;">{{ number_format($paymentRecord->amount_paid,2) }}</span>
                     </p>
                 @empty
-                    <p>{{ __('----------------------------') }}</p>
+                    <p>{{ __('--------------------') }}</p>
                 @endforelse
                 @endif
                 </td>
@@ -52,7 +52,7 @@
                 @forelse($studentPayment->payment_records as $paymentRecord)
                     <p>{{ $paymentRecord->payment_date }}</p>
                 @empty
-                    <p>{{ __('----------------------------') }}</p>
+                    <p>{{ __('--------------------') }}</p>
                 @endforelse
                 @endif
                 </td>
@@ -61,7 +61,7 @@
                 @forelse($studentPayment->payment_records as $paymentRecord)
                     <p>{{ $paymentRecord->payment_ref_code }}</p>
                 @empty
-                    <p>{{ __('----------------------------') }}</p>
+                    <p>{{ __('--------------------') }}</p>
                 @endforelse
                 @endif
                 </td>
@@ -70,19 +70,24 @@
                 @forelse($studentPayment->payment_records as $paymentRecord)
                     <p>{{ $paymentRecord->payment_mode }}</p>
                 @empty
-                    <p>{{ __('----------------------------') }}</p>
+                    <p>{{ __('-------------------') }}</p>
                 @endforelse
                 @endif
                 </td>
                 <td>
                 @if(!empty($studentPayment->payment_records))
                 @forelse($studentPayment->payment_records as $paymentRecord)
+                    @if($loop->last)
                     <p>
                         <span style="float: left;"><b>Kshs:</b></span> 
                         <span style="float: right;">{{ number_format($paymentRecord->balance,2) }}</span>
                     </p>
+                    @endif
                 @empty
-                    <p>{{ __('----------------------------') }}</p>
+                    <p>
+                        <span style="float: left;"><b>Kshs:</b></span>
+                        <span style="float: right;">{{ number_format($studentPayment->balance,2) }}</span>
+                    </p>
                 @endforelse
                 @endif
                 </td>

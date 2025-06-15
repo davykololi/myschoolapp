@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use Auth;
+use App\Models\Book;
 use App\Services\BookService;
+use App\Services\IssuedBookService;
 use App\Services\SchoolService;
 use App\Services\LibraryService;
 use App\Models\CategoryBook;
@@ -14,13 +16,13 @@ use App\Http\Requests\Book\BookUpdateRequest;
 
 class BookController extends Controller
 {
-    protected $schoolService, $bookService, $libraryService;
+    protected $schoolService, $bookService, $libraryService, $issuedBookService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(SchoolService $schoolService, BookService $bookService, LibraryService $libraryService)
+    public function __construct(SchoolService $schoolService, BookService $bookService, LibraryService $libraryService, IssuedBookService $issuedBookService)
     {
         $this->middleware('auth');
         $this->middleware('role:admin');
@@ -28,6 +30,7 @@ class BookController extends Controller
         $this->middleware('checktwofa');
         $this->bookService = $bookService;
         $this->libraryService = $libraryService;
+        $this->issuedBookService = $issuedBookService;
     }
 
     /**
@@ -35,12 +38,31 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        $books = $this->bookService->all();
+        $search = strtolower($request->search);
+        if($user->hasRole('admin')){
+            if($search){
+                $books = Book::whereLike(['category_book.name', 'category_book.desc', 'title', 'rack_no', 'row_no','author','units', 'library.name'], $search)->eagerLoaded()->paginate(15);
 
-        return view('admin.books.index',compact('user','books'));
+                $arrayOfBooksUnits = $this->bookService->all()->pluck('units')->toArray();
+                $numberOfAllBooks = collect($arrayOfBooksUnits)->sum();
+                $numberOfissuedBooks = $this->issuedBookService->all()->count();
+                $numberOfAvailableBooks = $numberOfAllBooks - $numberOfissuedBooks;
+
+                return view('admin.books.index',compact('user','books','numberOfAllBooks','numberOfissuedBooks','numberOfAvailableBooks'));
+            } else {
+                $books = $this->bookService->paginated();
+                $arrayOfBooksUnits = $this->bookService->all()->pluck('units')->toArray();
+                $numberOfAllBooks = collect($arrayOfBooksUnits)->sum();
+                $numberOfissuedBooks = $this->issuedBookService->all()->count();
+                $numberOfAvailableBooks = $numberOfAllBooks - $numberOfissuedBooks;
+
+                return view('admin.books.index',compact('user','books','numberOfAllBooks','numberOfissuedBooks','numberOfAvailableBooks'));
+            }
+            
+        }
     }
 
     /**
@@ -52,10 +74,12 @@ class BookController extends Controller
     {
         //
         $user = Auth::user();
-        $libraries = $this->libraryService->all();
-        $bookCategories = CategoryBook::all();
+        if($user->hasRole('admin')){
+            $libraries = $this->libraryService->all();
+            $bookCategories = CategoryBook::all();
 
-        return view('admin.books.create',compact('user','libraries','bookCategories'));
+            return view('admin.books.create',compact('user','libraries','bookCategories'));
+        } 
     }
 
     /**
@@ -67,9 +91,12 @@ class BookController extends Controller
     public function store(BookStoreRequest $request)
     {
         //
-        $book = $this->bookService->create($request);
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $book = $this->bookService->create($request);
 
-        return redirect()->route('admin.books.index')->withSuccess('The Book info created successfully');
+            return redirect()->route('admin.books.index')->withSuccess('The Book info created successfully');
+        } 
     }
 
     /**
@@ -81,10 +108,12 @@ class BookController extends Controller
     public function show($id)
     {
         //
-        $book = $this->bookService->getId($id);
         $user = Auth::user();
-
-        return view('admin.books.show',compact('book','user'));
+        if($user->hasRole('admin')){
+            $book = $this->bookService->getId($id);
+        
+            return view('admin.books.show',compact('book','user'));
+        }
     }
 
     /**
@@ -96,12 +125,14 @@ class BookController extends Controller
     public function edit($id)
     {
         //
-        $book = $this->bookService->getId($id);
         $user = Auth::user();
-        $libraries = $this->libraryService->all();
-        $bookCategories = CategoryBook::all();
+        if($user->hasRole('admin')){
+            $book = $this->bookService->getId($id);
+            $libraries = $this->libraryService->all();
+            $bookCategories = CategoryBook::all();
 
-        return view('admin.books.edit',compact('book','user','libraries','bookCategories'));
+            return view('admin.books.edit',compact('book','user','libraries','bookCategories'));
+        }
     }
 
     /**
@@ -114,11 +145,14 @@ class BookController extends Controller
     public function update(BookUpdateRequest $request, $id)
     {
         //
-        $book = $this->bookService->getId($id);
-        if($book){
-            $this->bookService->update($request,$id);
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $book = $this->bookService->getId($id);
+            if($book){
+                $this->bookService->update($request,$id);
 
-            return redirect()->route('admin.books.index')->withSuccess('The Book info updated successfully');
+                return redirect()->route('admin.books.index')->withSuccess('The Book info updated successfully');
+            }
         }
     }
 
@@ -131,11 +165,14 @@ class BookController extends Controller
     public function destroy($id)
     {
         //
-        $book = $this->bookService->getId($id);
-        if($book){
-            $this->bookService->delete($id);
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $book = $this->bookService->getId($id);
+            if($book){
+                $this->bookService->delete($id);
 
-            return redirect()->route('admin.books.index')->withSuccess('The Book info deleted successfully'); 
-        } 
+                return redirect()->route('admin.books.index')->withSuccess('The Book info deleted successfully'); 
+            } 
+        }
     }
 }

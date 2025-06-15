@@ -20,7 +20,12 @@ class SchoolRepository implements SchoolInterface
 
     public function all()
     {
-        return $this->school->eagerLoaded();
+        return $this->school->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->school->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

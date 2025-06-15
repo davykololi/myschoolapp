@@ -15,10 +15,8 @@ class CreateExamIntakeTable extends Migration
     {
         Schema::create('exam_intake', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('exam_id')->unsigned();
-            $table->bigInteger('intake_id')->unsigned();
-            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->foreign('intake_id')->references('id')->on('intakes')->onDelete('cascade');
+            $table->foreignUuid('exam_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('intake_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -23,6 +23,11 @@ class YearRepository implements YearInterface
         return $this->year->latest('id')->get();
     }
 
+    public function paginated()
+    {
+        return $this->year->latest('id')->paginate(15);
+    }
+
     public function create(array $data)
     {
     	return $this->year->create($data);

@@ -2,6 +2,7 @@
 @section('title', '| Admin Stream Details')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen">
@@ -291,4 +292,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

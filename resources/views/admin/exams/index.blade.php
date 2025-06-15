@@ -9,6 +9,7 @@
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen">
     <div class="w-full">
     @include('partials.messages')
+    @include('partials.errors')
     <!-- Posts list -->
     @if(!empty($exams))
         <div class="flex flex-col overflow-x-auto">
@@ -33,13 +34,16 @@
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="10%">STATUS</th>
                                     <th scope="col" class="px-2 py-4" width="10%">START ON</th>
                                     <th scope="col" class="px-2 py-4" width="10%">END ON</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">?MARKS</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">?SBJCT GRADES</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">?GEN GRADES</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">STREAMS?</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">SUBJECTS?</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">MARKS?</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">SBJCT GRADES?</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">GEN GRADES?</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">PUBLISHED?</th>
                                     <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                 </tr>
                             </thead>
@@ -54,12 +58,24 @@
                                         <div class="uppercase">{{ $exam->name }}</div>
                                     </td>
                                     <td class="whitespace-nowrap p-2">
-                                        @if($exam->status === 1)
-                                        <div class="text-green-800 animate-pulse dark:text-green-400">{{ __('CURRENT') }}</div>
-                                        @else
-                                        <div class="text-red-700 dark:text-[red]">{{ __('RESERVED') }}</div>
-                                        @endif
-                                    </td>
+                                            <div>
+                                                @if($exam->status == 0)
+                                                <form action="{{ route('admin.current.exam',$exam->id) }}" method="POST">
+                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                    <button type="submit" class="success-button">
+                                                        RESERVED
+                                                    </button>
+                                                </form>
+                                                @elseif($exam->status == 1)
+                                                <form action="{{ route('admin.current.exam',$exam->id) }}" method="POST">
+                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                    <button type="submit" class="danger-button">
+                                                        CURRENT
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            </div>
+                                        </td>
                                     <td class="whitespace-nowrap p-2">
                                         <div>{{ $exam->start_date }}</div>
                                     </td>
@@ -67,28 +83,61 @@
                                         <div>{{ $exam->end_date }}</div>
                                     </td>
                                     <td class="whitespace-nowrap p-2">
-                                        @if($exam->marks->isNotEmpty())
-                                        <div class="text-green-800 dark:text-green-400">YES</div>
+                                        @if($exam->streams->isNotEmpty())
+                                        <div class="success-label">YES</div>
                                         @else
-                                        <div class="text-red-700 dark:text-[red]">NO</div>
+                                        <div class="dander-label">NO</div>
+                                        @endif
+                                    </td>
+                                    <td class="whitespace-nowrap p-2">
+                                        @if($exam->subjects->isNotEmpty())
+                                        <div class="success-label">YES</div>
+                                        @else
+                                        <div class="dander-label">NO</div>
+                                        @endif
+                                    </td>
+                                    <td class="whitespace-nowrap p-2">
+                                        @if($exam->marks->isNotEmpty())
+                                        <div class="success-label">YES</div>
+                                        @else
+                                        <div class="dander-label">NO</div>
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap p-2">
                                         @if($exam->grades->isNotEmpty())
-                                        <div class="text-green-800 dark:text-green-400">YES</div>
+                                        <div class="success-label">YES</div>
                                         @else
-                                        <div class="text-red-700 dark:text-[red]">NO</div>
+                                        <div class="dander-label">NO</div>
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap p-2">
                                         @if($exam->general_grades->isNotEmpty())
-                                        <div class="text-green-800 dark:text-green-400">YES</div>
+                                        <div class="success-label">YES</div>
                                         @else
-                                        <div class="text-red-700 dark:text-[red]">NO</div>
+                                        <div class="dander-label">NO</div>
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap p-2">
-                                        <form action="{{route('admin.exams.destroy',$exam->id)}}" method="POST" class="inline-flex">
+                                            <div>
+                                                @if($exam->results_published == 0)
+                                                <form action="{{ route('admin.publishExamResults',$exam->id) }}" method="POST">
+                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                    <button type="submit" class="success-button">
+                                                        PUBLISH
+                                                    </button>
+                                                </form>
+                                                @elseif($exam->results_published == 1)
+                                                <form action="{{ route('admin.unpublishExamResults',$exam->id) }}" method="POST">
+                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                    <button type="submit" class="danger-button">
+                                                        UNPUBLISH
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            </div>
+                                    </td>
+                                    <td class="whitespace-nowrap p-2 items-center flex flex-row">
+                                        <form action="{{route('admin.exams.destroy',$exam->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <a type="button" href="{{ route('admin.exams.show', $exam->id) }}">

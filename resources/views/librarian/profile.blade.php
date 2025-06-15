@@ -2,6 +2,7 @@
 @section('title', '| Librarian Profile')
 
 @section('content')
+@role('librarian')
 <x-frontend-main>
 <div class="row">
     <div class="col-md-12 margin-tb">
@@ -14,7 +15,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%;border: 10px double brown;" src="/storage/storage/{{ Auth::user()->librarian->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{$user->full_name}}">
+            <x-user-profile-avatar/>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -74,4 +75,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

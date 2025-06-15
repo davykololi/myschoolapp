@@ -20,10 +20,10 @@ return new class extends Migration
             $table->float('points');
             $table->integer('from_mark');
             $table->integer('to_mark');
-            $table->foreignId('year_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('term_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('exam_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('class_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('year_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('term_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('exam_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('class_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

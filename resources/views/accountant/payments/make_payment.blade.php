@@ -2,6 +2,7 @@
 @section('title', '| Make Payment')
 
 @section('content')
+@role('accountant')
 <!-- frontend-main view -->
 <x-frontend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
@@ -9,14 +10,17 @@
         <div class="mx-2 md:mx-8 lg:mx-8">
             <div class="rounded-t bg-transparent mb-0 px-6 py-6 dark:bg-slate-900">
                 <div class="text-center flex justify-between">
-                    <h6 class="text-blueGray-700 text-xl font-bold uppercase dark:text-slate-300">
+                    <h1 class="text-blueGray-700 text-xl font-bold uppercase dark:text-slate-300">
                         Make Payment
-                    </h6>
-                    <x-back-button/>
+                    </h1>
+
+                    <x-button class="back-button mt-8">
+                        <x-back-svg-n-url/>
+                    </x-button>
                 </div>
             </div>
             @include('partials.messages')
-            <div class="uppercase leading-tight w-full md:w-1/3 lg:w-1/3 border rounded bg-white dark:bg-slate-900 p-2 md:scale-y-75 text-sm">
+            <div class="uppercase leading-tight w-full md:w-1/3 lg:w-1/3 border rounded dark:bg-slate-900 p-2 md:scale-y-75 text-sm">
                 <p class="text-left">
                     <span class="font-bold">Student Name:</span> {{ $payment->student->user->full_name }} 
                 </p>
@@ -46,6 +50,7 @@
                     @include('ext._csrfdiv')
                     <input type="hidden" name="student_id" id="student_id" class="form-control" value="{{ $payment->student->id }}">
                     <input type="hidden" name="payment_id" id="payment_id" class="form-control" value="{{ $payment->id }}">
+                    <input type="hidden" name="payment_section_id" id="payment_section_id" class="form-control" value="{{ $payment->payment_section_id }}">
                     <input type="hidden" name="payment_ref_no" id="payment_ref_no" class="form-control" value="{{ $payment->ref_no }}">
                     <input type="hidden" name="payment_balance" id="payment_balance" class="form-control" value="{{ $payment->balance }}">
                     <div class="w-full flex flex-col md:flex-row lg:flex-row">   
@@ -71,7 +76,7 @@
                         <div class="w-full md:w-1/2 lg:w-1/2 md:mr-32 lg:mr-32">
                             <label class="uppercase">Payment Serial/Code</label>
                             <div class="flex-1 relative mb-4 flex flex-wrap items-stretch">
-                                <input type="text" name="payment_ref_code" id="payment_ref_code" class="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary" value="{{ old('payment_ref_code') }}" autocomplete="off" placeholder="Payment Serial/Code">
+                                <input type="text" name="payment_ref_code" id="payment_ref_code" class="form-input-two" value="{{ old('payment_ref_code') }}" autocomplete="off" placeholder="Payment Serial/Code">
                                 @error('payment_ref_code')
                                 <span class="text-red-700">{{ $message }}</span>
                                 @enderror
@@ -94,4 +99,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

@@ -6,10 +6,13 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Attendance extends Model
 {
     //
+    use HasUuids;
+    
     protected $table = 'attendances';
     protected $fillable = [
         'date',
@@ -20,6 +23,15 @@ class Attendance extends Model
         'student_id',
         'attendence_status',
     ];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     /**
      * @return BelongsToMany

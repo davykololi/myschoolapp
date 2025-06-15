@@ -15,7 +15,7 @@ class UpdateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'year' => 'required',
+            'year_id'   => 'required|exists:years,id',
         ];
     }
 
@@ -24,7 +24,7 @@ class UpdateFormRequest extends FormRequest
 
         return [
                 //
-                'year.required' => 'The year is required',   
+                'year_id.required' => 'The year is required',   
             ];
     }
 }

@@ -2,6 +2,7 @@
 @section('title', '| Dormitories List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -28,19 +29,22 @@
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900 flex-grow">
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                    <th scope="col" class="px-2 py-4" width="25%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">STUDENTS NO.</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">BED NO.</th>
-                                    <th scope="col" class="px-2 py-4" width="20%">DORM HEAD</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">NAME</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">STUDENTS NO.</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">BED NO.</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">HEAD</th>
+                                    <th scope="col" class="px-2 py-4" width="20%">DEPUTY HEAD</th>
                                     <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                            @foreach($dormitories as $dormitory)
+                            @foreach($dormitories as $key => $dormitory)
                                 <tr class="border-b dark:border-neutral-500 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{$loop->iteration}}</div>
+                                        <div>
+                                            {{ $dormitories->perPage() * ($dormitories->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$dormitory->name}}</div>
@@ -53,6 +57,9 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$dormitory->dom_head}}</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-2 py-4">
+                                        <div>{{$dormitory->ass_head}}</div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <form action="{{route('superadmin.dormitories.destroy',$dormitory->id)}}" method="POST" class="flex flex-row">
@@ -81,4 +88,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

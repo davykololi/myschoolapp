@@ -38,7 +38,7 @@ class ClassMarksExport implements FromCollection, WithHeadings, WithMapping ,Sho
                 'CRE',
                 'ISLAM',
                 'HISTORY',
-                'GHC',
+                'GEOGRAPHY',
             ];
     }
 
@@ -55,7 +55,7 @@ class ClassMarksExport implements FromCollection, WithHeadings, WithMapping ,Sho
             $mark->cre,
             $mark->islam,
             $mark->history,
-            $mark->ghc,
+            $mark->geography,
          ];
     }
 }

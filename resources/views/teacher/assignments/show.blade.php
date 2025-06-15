@@ -2,6 +2,7 @@
 @section('title', '| Teacher Assignment Details')
 
 @section('content')
+@role('teacher')
     <!-- frontend-main view -->
     <x-frontend-main>
     @include('partials.messages')
@@ -65,4 +66,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

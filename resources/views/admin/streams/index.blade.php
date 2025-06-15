@@ -1,7 +1,8 @@
 @extends('layouts.admin')
 @section('title', '| Admin Streams List')
 
-@section('content') 
+@section('content')
+@role('admin') 
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="row">
@@ -12,7 +13,7 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>STREAMS</h2>
+                    <h2>STREAMS LIST</h2>
                 </div>
             </div>
         </div>
@@ -59,4 +60,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

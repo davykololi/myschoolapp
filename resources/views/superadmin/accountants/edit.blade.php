@@ -2,6 +2,7 @@
 @section('title', '| Edit Accountant')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
     <section class="max-w-full py-1 bg-blueGray-50">
         <div class="w-full px-4 mx-auto mt-6">
@@ -104,7 +105,7 @@
                             <div class="w-full md:w-1/3 lg:w-1/3">
                                 <label class="" >Position</label>
                                 <div class="flex flex-col">
-                                    @include('ext._attach_accountant_position')
+                                    @include('ext._attach_position')
                                 </div>
                             </div>
                         </div>
@@ -152,11 +153,12 @@
                                 </div>        
                             </div>
                         </div>
-                        @include('ext._submit_update_button')
+                        <button type="submit" class="update-button">UPDATE</button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
-</x-backend-main>   
+</x-backend-main>
+@endrole   
 @endsection

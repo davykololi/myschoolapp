@@ -12,34 +12,48 @@
         @include('partials.errors')
         {!! Session::forget('success') !!}
     </div>
+
     <div class="py-4 md:px-2 justify-evenly">
-    <form action="{{ route('admin.twoexams.classtotals') }}" class="shadowed-border" method="post">
+    <form action="{{ route('admin.twoExams.reportCardSettings') }}" class="shadowed-border" method="post">
         {{ csrf_field() }}
-        <div class="text-blue-800 font-bold mb-2 dark:text-slate-400">STEP:1 GERATE OVERAL CLASS POSITIONS</div>
-        
-        <div class="flex flex-col md:flex-row gap-2 md:gap-16 mb-2">
-            <div class="w-full md:w-1/3">
+        <h4 class="marksheet-h4">STEP:1 CHOOSE EXAMS</h4> 
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4 mb-2">
+            <div class="w-full md:w-1/4 lg:w-1/4">
                 <div class="flex flex-col">
                     <label>Select Exams: <span class="text-[red]">*</span></label>
                     @include('ext._attach_examdiv')
                 </div>
             </div>
-            <div class="w-full md:w-1/3">
+        </div>
+        <div class="flex flex-col md:flex-row mt-8">
+            <div class="w-fit">
+                <div class="block">
+                    <x-button class="generate-button">SET</x-button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+
+
+    <div class="py-4 md:px-2 justify-evenly">
+    <form action="{{ route('admin.twoexams.classtotals') }}" class="shadowed-border" method="post">
+        {{ csrf_field() }}
+        <h4 class="marksheet-h4">STEP:2 GERATE OVERAL CLASS POSITIONS</h4> 
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4 mb-2">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Year: <span class="text-[red]">*</span></label>
                     @include('ext._attach_yeardiv')
                 </div>
             </div>
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Term: <span class="text-[red]">*</span></label>
                     @include('ext._get_term_id')
                 </div>
             </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row gap-2 md:gap-16 mb-2">
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Class: <span class="text-[red]">*</span></label>
                     <div class="block md:mr-11 lg:mr-11">
@@ -48,11 +62,11 @@
                 </div>
             </div>
         </div>
-        
+   
         <div class="flex flex-col md:flex-row mt-8">
             <div class="w-fit">
                 <div class="block">
-                    <x-generate-button/>
+                    <x-button class="generate-button">GENERATE</x-button>
                 </div>
             </div>
         </div>
@@ -62,30 +76,21 @@
     <div class="py-4 md:px-2 justify-evenly">
     <form id="marksheets_form" action="{{ route('admin.twoexams.streamtotals') }}" class="shadowed-border" method="post">
         {{ csrf_field() }}
-        <div class="text-blue-800 font-bold mb-2 dark:text-slate-400">STEP:2 GENERATE STREAM POSITIONS</div>
-        <div class="flex flex-col md:flex-row gap-2 md:gap-16 mb-2">
-            <div class="w-full md:w-1/3">
-                <div class="flex flex-col">
-                    <label>Select Exams: <span class="text-[red]">*</span></label>
-                    @include('ext._attach_examdiv')
-                </div>
-            </div>
-            <div class="w-full md:w-1/3">
+        <h4 class="marksheet-h4">STEP:3 GENERATE STREAM POSITIONS</h4>
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4 mb-2">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Year: <span class="text-[red]">*</span></label>
                     @include('ext._attach_yeardiv')
                 </div>
             </div>
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Term: <span class="text-[red]">*</span></label>
                     @include('ext._get_term_id')
                 </div>
             </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row gap-2 md:gap-16 mb-2">
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Stream: <span class="text-[red]">*</span></label>
                     <div class="block md:mr-11 lg:mr-11">
@@ -94,10 +99,11 @@
                 </div>
             </div>
         </div>
+        
         <div class="flex flex-col md:flex-row mt-8">
             <div class="w-fit">
                 <div class="block">
-                    <x-generate-button/>
+                    <x-button class="generate-button">GENERATE</x-button>
                 </div>
             </div>
         </div>
@@ -107,11 +113,11 @@
     <div class="py-4 md:px-2 justify-evenly">
     <form id="marksheets_form" action="{{ route('admin.report.subjectGrades') }}" class="shadowed-border" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <div class="font-bold mb-4">UPLOAD REPORT CARD SUBJECTS AVERAGE GRADES </div>
+        <h4 class="marksheet-h4">STEP:4 UPLOAD REPORT CARD SUBJECTS AVERAGE GRADES </h4>
         @include('ext._reportcardsubjectgrades_importsheet')
         <div class="w-full">
             <div class="mt-4">
-                <x-upload-button/>
+                <x-button class="style-one-button">UPLOAD</x-button>
             </div>
         </div>
     </form>
@@ -120,11 +126,11 @@
     <div class="py-4 md:px-2 justify-evenly">
     <form id="marksheets_form" action="{{ route('admin.report.meangrades') }}" class="shadowed-border" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <div class="font-bold mb-4">UPLOAD REPORT CARD GENERAL GRADES </div>
+        <h4 class="marksheet-h4">STEP:5 UPLOAD REPORT CARD GENERAL GRADES </h4>
         @include('ext._reportcardgeneralgrades_importsheet')
         <div class="w-full">
             <div class="mt-4">
-                <x-upload-button/>
+                <x-button class="style-one-button">UPLOAD</x-button>
             </div>
         </div>
     </form>
@@ -133,7 +139,7 @@
     <div class="py-4 md:px-2 justify-evenly">
     <form id="marksheets_form" action="{{ route('admin.reportcard.remarks') }}" class="shadowed-border" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <div class="text-blue-800 font-bold mb-2 dark:text-slate-400">UPLOAD REPORT CARD COMMENTS</div>
+        <h4 class="marksheet-h4">STEP:6 UPLOAD REPORT CARD GENERAL REMARKS</h4>
         <div class="flex flex-col md:flex-row gap-2 mb-2">
             <div class="w-full md:w-1/3">
                 <div class="block">
@@ -157,15 +163,60 @@
         <div class="flex flex-col md:flex-row gap-2 mb-2">
             <div class="w-full md:w-1/3">
                 <div class="block">
-                    <label>UPLOAD REMARKS FILE:<span class="text-[red]">*</span></label>
-                    <input type="file" name="file" 
-                            class="w-full text-black text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded" />
+                    <label>UPLOAD GENERAL REMARKS FILE:<span class="text-[red]">*</span></label>
+                    <input type="file" name="file" class="form-file-upload" />
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-2 mt-4 mb-2">
+            <div class="w-full md:w-1/3">
+                <x-button class="style-one-button">UPLOAD</x-button>
+            </div>
+        </div>
+    </form>
+    </div>
+
+    <div class="py-4 md:px-2 justify-evenly">
+    <form id="marksheets_form" action="{{ route('admin.import.subjectRemarks') }}" class="shadowed-border" method="post" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        <h4 class="marksheet-h4">STEP:7 UPLOAD REPORT CARD REMARKS FOR MARKS IN SPECIFIC SUBJECTS</h4>
+        <div class="flex flex-col md:flex-row gap-2 mb-2">
+            <div class="w-full md:w-1/4 lg:w-1/4">
+                <div class="block">
+                    <label>Year: <span class="text-[red]">*</span></label>
+                    @include('ext._attach_yeardiv')
+                </div>
+            </div>
+            <div class="w-full md:w-1/4 lg:w-1/4">
+                <div class="block">
+                    <label>Term: <span class="text-[red]">*</span></label>
+                    @include('ext._get_term_id')
+                </div>
+            </div>
+            <div class="w-full md:w-1/4 lg:w-1/4">
+                <div class="block">
+                    <label>Stream: <span class="text-[red]">*</span></label>
+                    @include('ext._get_streams_ids')
+                </div>
+            </div>
+            <div class="w-full md:w-1/4 lg:w-1/4">
+                <div class="block">
+                    <label>Teacher: <span class="text-[red]">*</span></label>
+                    @include('ext._get_teachers_ids')
                 </div>
             </div>
         </div>
         <div class="flex flex-col md:flex-row gap-2 mb-2">
+            <div class="w-full md:w-1/4">
+                <div class="block">
+                    <label>UPLOAD GENERAL REMARKS FILE:<span class="text-[red]">*</span></label>
+                    <input type="file" name="file" class="form-file-upload" />
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-2 mt-4 mb-2">
             <div class="w-full md:w-1/3">
-                <x-upload-button/>
+                <x-button class="style-one-button">UPLOAD</x-button>
             </div>
         </div>
     </form>
@@ -174,21 +225,15 @@
     <div class="py-4 md:px-2 justify-evenly">
     <form id="marksheets_form" action="{{ route('admin.twoexams.reportcard') }}" class="shadowed-border" method="get" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <div class="text-blue-800 font-bold mb-2 dark:text-slate-400">STEP:3 GENERATE REPORT CARD</div>
+        <h4 class="marksheet-h4">STEP:8 GENERATE REPORT CARD</h4>
         <div class="flex flex-col md:flex-row gap-2 md:gap-8 mb-4">
-            <div class="w-full md:w-1/3">
-                <div class="flex flex-col">
-                    <label>Select Exams: <span class="text-[red]">*</span></label>
-                    @include('ext._attach_examdiv')
-                </div>
-            </div>
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Year: <span class="text-[red]">*</span></label>
                     @include('ext._attach_yeardiv')
                 </div>
             </div>
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Term: <span class="text-[red]">*</span></label>
                     @include('ext._get_term_id')
@@ -197,7 +242,7 @@
         </div>
 
         <div class="flex flex-col md:flex-row gap-2 md:gap-4 mb-4">
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Stream: <span class="text-[red]">*</span></label>
                     <div class="block md:mr-6 lg:mr-6">
@@ -205,7 +250,7 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/3 lg:w-1/3">
                 <div class="block">
                     <label>Student Name: <span class="text-[red]">*</span></label>
                     <div class="block md:mr-6 lg:mr-6">
@@ -235,7 +280,7 @@
         </div>
         <div class="flex flex-col md:flex-row gap-2 mb-2">
             <div class="w-full md:w-1/3">
-                <x-generate-button/>
+                <x-button class="generate-button">GENERATE</x-button>
             </div>
         </div>
     </form>

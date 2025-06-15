@@ -20,7 +20,12 @@ class AccountantRepository implements AccountantInterface
 
     public function all()
     {
-        return $this->acc->eagerLoaded();
+        return $this->acc->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->acc->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

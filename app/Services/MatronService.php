@@ -21,7 +21,7 @@ class MatronService
 
 	public function all()
 	{
-		return $this->matRepo->all();
+		return $this->matRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

@@ -59,4 +59,9 @@ class Grade extends Model
     {
         return $query->whereBetween([$this->from_mark,$this->to_mark])->with('exam','class','year','term')->get();
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('class','year','term','subject','exam','teacher');
+    }
 }

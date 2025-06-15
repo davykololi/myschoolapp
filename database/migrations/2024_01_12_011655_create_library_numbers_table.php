@@ -12,12 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('library_numbers', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('number')->nullable();
-            $table->bigInteger('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->bigInteger('library_id')->unsigned();
-            $table->foreign('library_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('library_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

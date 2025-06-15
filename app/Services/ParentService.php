@@ -21,17 +21,7 @@ class ParentService
 
     public function all()
     {
-        return $this->parentRepo->all();
-    }
-
-    public function eagerLoaded()
-    {
-        return $this->parentRepo->eagerLoaded();
-    }
-
-    public function paginate()
-    {
-        return $this->parentRepo->paginate();
+        return $this->parentRepo->paginated();
     }
 
     public function create(StoreRequest $request)

@@ -2,8 +2,9 @@
 @section('title', '| Admin Details')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
-<div class="max-w-screen">
+<div class="max-w-screen page-container">
 <div class="w-full">
 <div class="row">
     <div class="col-md-12 margin-tb">
@@ -19,7 +20,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $admin->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{ $admin->full_name }}">
+            <img style="width:15%" src="/storage/storage/{{ $admin->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{ $admin->user->full_name }}">
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -98,4 +99,5 @@
 </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

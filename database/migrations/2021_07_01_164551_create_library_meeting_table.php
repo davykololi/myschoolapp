@@ -15,10 +15,8 @@ class CreateLibraryMeetingTable extends Migration
     {
         Schema::create('library_meeting', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('library_id')->unsigned();
-            $table->bigInteger('meeting_id')->unsigned();
-            $table->foreign('library_id')->references('id')->on('libraries')->onDelete('cascade');
-            $table->foreign('meeting_id')->references('id')->on('meetings')->onDelete('cascade');
+            $table->foreignUuid('library_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('meeting_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

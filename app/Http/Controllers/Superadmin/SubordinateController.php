@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\SubordinatePositionEnum;
 use App\Http\Requests\CommonUserFormRequest as StoreRequest;
 use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
@@ -36,12 +37,22 @@ class SubordinateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request)
     {
         //
-        $subordinates = $this->subordinateService->all();
+        $user = Auth::user();
+        if($user->hasRole('superadmin')){
+            $search = strtolower($request->search);
+            if($search){
+                $subordinates = Subordinate::whereLike(['user.first_name', 'user.middle_name', 'user.last_name', 'user.email', 'phone_no','emp_no','position', 'id_no', 'designation','departments.name','clubs.name'], $search)->eagerLoaded()->paginate(15);
 
-        return view('superadmin.subordinates.index',compact('subordinates'));
+                return view('superadmin.subordinates.index',compact('subordinates'));
+            } else {
+                $subordinates = $this->subordinateService->all();
+
+                return view('superadmin.subordinates.index',compact('subordinates'));
+            } 
+        }
     }
 
     /**
@@ -52,7 +63,8 @@ class SubordinateController extends Controller
     public function create()
     {
         //
-        return view('superadmin.subordinates.create');
+        $positions = SubordinatePositionEnum::cases();
+        return view('superadmin.subordinates.create',compact('positions'));
     }
 
     /**
@@ -119,8 +131,9 @@ class SubordinateController extends Controller
     {
         //
         $subordinate = $this->subordinateService->getId($id);
+        $positions = SubordinatePositionEnum::cases();
 
-        return view('superadmin.subordinates.edit',compact('subordinate'));
+        return view('superadmin.subordinates.edit',compact('subordinate','positions'));
     }
 
     /**

@@ -20,8 +20,8 @@ class BookUpdateRequest extends FormRequest
             'row_no' => 'required|integer',
             'author' => 'required|string',
             'units' => 'required|integer',
-            'library' => 'required|exists:libraries,id',
-            'book_category' => 'required|exists:category_books,id',
+            'library_id' => 'required|exists:libraries,id',
+            'category_book_id' => 'required|exists:category_books,id',
         ];
     }
 
@@ -35,8 +35,8 @@ class BookUpdateRequest extends FormRequest
                 'row_no.required' => 'The row number is required',
                 'author.required' => 'The name of the author is required',
                 'units.required' => 'The number of available units is required',
-                'library.required' => 'The name of the library is required',
-                'book_category.required' => 'The category the book belongs to is required',   
+                'library_id.required' => 'The name of the library is required',
+                'category_book_id.required' => 'The category the book belongs to is required',   
             ];
     }
 }

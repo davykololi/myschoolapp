@@ -16,7 +16,7 @@ class ReportRemark extends Model
     use HasFactory;
 
     protected $table = 'report_remarks';
-    protected $fillable = ['remark','remark_id','from_total','to_total','class_id','exam_id','school_id','year_id','term_id'];
+    protected $fillable = ['remark','remark_id','from_total','to_total','class_id','school_id','year_id','term_id'];
 
     public function school(): BelongsTo
     {
@@ -31,11 +31,6 @@ class ReportRemark extends Model
     public function term(): BelongsTo
     {
         return $this->belongsTo(Term::class)->withDefault();
-    }
-
-    public function exam(): BelongsTo
-    {
-        return $this->belongsTo(Exam::class)->withDefault();
     }
 
     public function class(): BelongsTo

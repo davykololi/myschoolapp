@@ -21,6 +21,11 @@ class PaymentSectionService
         return $this->paymentSectionRepo->all();
     }
 
+    public function paginated()
+    {
+        return $this->paymentSectionRepo->paginated();
+    }
+
     public function create(StoreRequest $request)
     {
         $data = $this->createData($request);

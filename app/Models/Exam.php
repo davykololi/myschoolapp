@@ -24,12 +24,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Exam extends Model implements Searchable
 {
     //
+    use HasUuids;
     protected $table = 'exams';
-    protected $fillable = ['name','code','type','start_date','end_date','status','results_published','school_id','year_id','term_id'];
+    protected $fillable = ['name','initials','code','type','start_date','end_date','status','results_published','school_id','year_id','term_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -115,7 +126,7 @@ class Exam extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','school','streams','year','term','marks','grades','general_grades');
+        return $query->with('teachers','students','school','streams','year','term','marks','grades','general_grades','subjects');
     }
 
     public function grades(): HasMany
@@ -133,15 +144,17 @@ class Exam extends Model implements Searchable
         return $this->hasMany('App\Models\ReportGeneralGrade','exam_id','id');
     }
 
-    public function report_remarks(): HasMany
-    {
-        return $this->hasMany(ReportRemark::class,'exam_id','id');
-    }
-
     public function name(): Attribute 
     {               
         return  new Attribute(                                                           
-            get: fn ($value) => ucfirst($value),                
+            get: fn ($value) => ucwords($value),                
+        ); 
+    }
+
+    public function initials(): Attribute 
+    {               
+        return  new Attribute(                                                           
+            get: fn ($value) => strtoupper($value),                
         ); 
     }
 }

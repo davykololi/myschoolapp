@@ -9,8 +9,8 @@
     <div class="w-full">
         <div class="mx-2 md:mx-8 lg:mx-8">
             <div>
-                <div class="-mt-4">
-                    <h2 class="uppercase text-center text-purple-700 font-bold text-lg dark:text-slate-400">
+                <div class="mt-4">
+                    <h2 class="uppercase text-center font-bold text-lg dark:text-slate-400">
                         {{ $student->user->full_name }} Accounts Profile
                     </h2>
                 </div>
@@ -20,26 +20,23 @@
                 </div>
             </div>
 
-            <div><h3 class="uppercase text-center text-lg font-bold underline mt-4">{{ __('Personal Details') }}</h3></div>
+            <div><h3 class="uppercase text-center text-lg font-bold underline mt-4 -mb-6">{{ __('Personal Details') }}</h3></div>
             <!-- User Card -->
             <div class="pt-4 -mb-4">
-                <div class="mx-2 md:mx-16 lg:mx-16 py-4">
-                    <div class="flex flex-col md:flex-row lg:flex-row">
-                        <div class="w-full md:w-1/2 lg:w-1/2 bg-white md:rounded-l md:py-4 lg:py-4">
+                <div class="mx-2 md:mx-8 lg:mx-8 py-4">
+                    <div class="flex flex-col md:flex-row lg:flex-row border rounded-lg">
+                        <div class="w-full md:w-1/2 lg:w-1/2 md:rounded-l md:py-4 lg:py-4 flex-wrap">
                             <div class="mx-2 md:mx-auto">
-                                <div class="mx-2 md:mx-4">
-                                    <img class="w-32 h-32 md:hover:scale-150" src="{{ $student->image_url }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{ $student->user->full_name  }}">
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="mx-2 md:mx-4">
-                                    <div class="uppercase">
-                                        {{ $student->user->full_name  }}
-                                    </div>
+                                <div class="mx-auto md:mx-4">
+                                    @if($student->gender === "Male")
+                                    <img class="w-64 h-64 md:hover:scale-150 border border-4 border-gray-700" src="{{ $student->image_url }}" onerror="this.src='{{asset('static/avatar.png')}}'" alt="{{ $student->user->full_name  }}">
+                                    @elseif($student->gender === "Female")
+                                    <img class="w-64 h-64 md:hover:scale-150 border-8 border-yellow-800 p-4" src="{{ $student->image_url }}" onerror="this.src='{{asset('static/female_avatar.png')}}'" alt="{{ $student->user->full_name  }}">
+                                    @endif
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full md:w-1/2 lg:w-1/2 bg-white md:rounded-r md:py-4 lg:py-4">
+                        <div class="w-full md:w-1/2 lg:w-1/2 md:rounded-r md:py-4 lg:py-4">
                             <div class="card-footer">
                                 <div class="mx-2 md:mx-4">
                                     <div>
@@ -51,11 +48,17 @@
                                         <p>
                                             @if($student->total_payment_amount > $student->paid_amount)
                                             Clearance: 
-                                            <span class="bg-red-700 text-white px-4 mx-auto mt-2 animate-pulse">
-                                                {{ __('PENDING')}}
+                                            <span class="bg-[red] text-white px-4 py-0.5 mx-auto my-4 animate-pulse">
+                                                Status: {{ __('Pending')}}
+                                            </span>
+                                            @elseif($student->payments->isEmpty())
+                                            <span class="bg-[red] text-white px-4 py-2 mx-auto mt-4 rounded">
+                                                Status: {{ __('Payments Notyet Assigned To ') }} {{ $student->user->full_name }}
                                             </span>
                                             @else
-                                            <span class="bg-green-800 text-white px-4 mx-auto mt-2 rounded">{{ __('CLEARED')}}</span>
+                                            <span class="bg-[green] text-white px-4 mx-auto mt-2 rounded">
+                                                Status: {{ __('Cleared')}}
+                                            </span>
                                             @endif
                                         </p>
                                     </div>
@@ -111,7 +114,7 @@
                                 <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                     <tr>
                                         <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                        <th scope="col" class="px-2 py-4" width="15%">TITLE</th>
+                                        <th scope="col" class="px-2 py-4" width="10%">TITLE</th>
                                         <th scope="col" class="px-2 py-4" width="5%">YEAR</th>
                                         <th scope="col" class="px-2 py-4" width="15%">TERM</th>
                                         <th scope="col" class="px-2 py-4" width="10%">AMOUNT</th>
@@ -122,12 +125,14 @@
                                         @endif
                                         @endcan
                                         <th scope="col" class="px-2 py-4" width="5%">PAID</th>
-                                        <th scope="col" class="px-2 py-4" width="5%">BALANCE</th>
+                                        <th scope="col" class="px-2 py-4" width="10%">BALANCE</th>
                                         <th scope="col" class="px-2 py-4" width="5%">STATUS</th>
                                         <th scope="col" class="px-2 py-4" width="5%">PAID DETAILS</th>
-                                        <th scope="col" class="px-2 py-4" width="10%">REF NO</th>
+                                        <th scope="col" class="px-2 py-4" width="10%">RECEIPT</th>
                                         <th scope="col" class="px-2 py-4" width="5%">BAL DETAILS</th>
+                                        @can('seniorAccountant')
                                         <th scope="col" class="px-2 py-4" width="5%">DELETE</th>
+                                        @endcan
                                     </tr>
                                 </thead>
                                 <!-- Table Body -->
@@ -182,12 +187,14 @@
                                         @endif
                                         @endcan
                                         <td class="whitespace-nowrap p-2">
-                                            <div class="text-green-800 dark:text-white">
+                                            <div class="text-white dark:text-slate-400">
                                                 Kshs:{{ number_format($payment->paid,2) }}
                                             </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
-                                            <div class="text-[red]">Kshs:{{ number_format($payment->balance,2) }}</div>
+                                            <div class="text-[red]">
+                                                Kshs:{{ number_format($payment->balance,2) }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             @if($payment->amount > $payment->paid)
@@ -215,12 +222,12 @@
                                             @endforelse
                                             @endif
                                         </td>
-                                        <td class="whitespace-nowrap p-2 justify-center">
+                                        <td class="whitespace-nowrap p-2">
                                             @if(!empty($payment->payment_records))
                                             @forelse($payment->payment_records as $paymentRecord)
-                                            <div class="bg-inherit px-2 mx-auto mt-2">
-                                                <a href="{{ route('accountant.download.receipt',$paymentRecord->id)}}">
-                                                    {{ $paymentRecord->ref_no }}
+                                            <div class="bg-black text-white px-2 mx-auto mt-1 rounded-md">
+                                                <a href="{{ route('accountant.download.receipt',$paymentRecord->id)}}" class="px-4">
+                                                    {{ __('Receipt') }}
                                                 </a>
                                             </div>
                                             @empty
@@ -231,9 +238,11 @@
                                         <td class="whitespace-nowrap p-2 justify-center">
                                             @if(!empty($payment->payment_records))
                                             @forelse($payment->payment_records as $paymentRecord)
+                                            @if($loop->last)
                                             <div class="bg-red-700 text-white px-2 mx-auto mt-1">
                                                 Kshs:{{ number_format($paymentRecord->balance,2) }}
                                             </div>
+                                            @endif
                                             @empty
                                             <div class="bg-red-700 text-white px-2 mx-auto mt-1">
                                                 Kshs:{{ number_format($payment->balance,2) }}
@@ -241,6 +250,7 @@
                                             @endforelse
                                             @endif
                                         </td>
+                                        @can('seniorAccountant')
                                         <td class="whitespace-nowrap p-2">
                                             @if(!empty($payment->payment_records))
                                             @forelse($payment->payment_records as $paymentRecord)
@@ -258,6 +268,7 @@
                                             @endforelse
                                             @endif
                                         </td>
+                                        @endcan
                                     </tr>
                                     @endforeach
                                     @endif
@@ -267,6 +278,59 @@
                                     <tr>
                                         <td colspan="16" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter h-12 dark:bg-[#3a3a3f] dark:text-slate-400">
                                             {{ $student->user->full_name }} {{ __('Payments Notyet Initiated') }}
+                                        </td>
+                                    </tr>
+                                    @endif
+
+                                    @if($studentPayments->isNotEmpty())
+                                    <tr class="bg-black">
+                                        <td>
+                                            <p class="ml-2 py-2">#</p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">#</p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">#</p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">#</p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">
+                                                Kshs:{{ number_format($student->total_payment_amount,2) }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">
+                                                Kshs:{{ number_format($student->paid_amount,2) }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">
+                                                Kshs:{{ number_format($student->fee_balance,2) }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">#</p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">
+                                                Kshs:{{ number_format($student->paid_amount,2) }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">#</p>
+                                        </td>
+                                        <td>
+                                            <p class="ml-2 py-2">
+                                                Kshs:{{ number_format($student->fee_balance,2) }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            @can('seniorAccountant')
+                                            <p class="ml-2 py-2">#</p>
+                                            @endcan
                                         </td>
                                     </tr>
                                     @endif
@@ -281,7 +345,7 @@
 
             @can('seniorAccountant')
             <div class="w-full mt-4 md:p-8">
-                @if($student->payment_locked === 'false')
+                @if($student->payment_locked === 0)
                 <button class="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] mb-2" type="button" data-te-collapse-init
                 data-te-ripple-init data-te-ripple-color="light" data-te-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                     Add Payment

@@ -31,9 +31,9 @@ abstract class CommonUserInformation extends Model
         return $this->belongsToMany('App\Models\Meeting')->withTimestamps();
     }
 
-    public function rewards(): BelongsToMany
+    public function awards(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
+        return $this->belongsToMany('App\Models\Award')->withTimestamps();
     }
 
     public function getAgeAttribute()       

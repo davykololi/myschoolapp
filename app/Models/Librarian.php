@@ -13,16 +13,26 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CommonUserInformation;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Librarian extends CommonUserInformation implements Searchable
 {
-    use Notifiable;
+    use Notifiable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'librarians';
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> LibrarianPositionEnum::class];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -38,11 +48,6 @@ class Librarian extends CommonUserInformation implements Searchable
     public function libraries(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Library')->withTimestamps();
-    }
-
-    public function scopeEagerLoaded($query)
-    {
-        return $query->with('school','user')->get();
     }
 
     public function seniorLibrarian()
@@ -63,5 +68,10 @@ class Librarian extends CommonUserInformation implements Searchable
     public function ordinaryLibrarian()
     {
         return $this->position === LibrarianPositionEnum::OL;
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school','user','libraries');
     }
 }

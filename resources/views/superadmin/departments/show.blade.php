@@ -2,6 +2,7 @@
 @section('title', '| Deparment Details')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
 <div class="max-w-screen mx-2 md:mx-16 mb-8">
     <div class="w-full">
@@ -12,6 +13,7 @@
                 </div>
                 <div class="text-center mt-8">
                     @include('partials.messages')
+                    @include('partials.errors')
                 </div>
                 <div class="pull-right">
                     <a href="{{ url()->previous() }}" class="label label-primary pull-right"> Back</a>
@@ -86,17 +88,32 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row lg:flex-row">
-                <div class="w-full md:w-1/3 lg:w-1/3">
+            <div class="flex flex-col md:flex-row lg:flex-row gap-4 mt-4">
+                <div class="w-full md:w-1/2 lg:w-1/2">
                     <div class="flex flex-col">
                         <label class="uppercase mb-2" for="teachers">{{ __('Attach Teachers') }}</label>
-                        @include('superadmin.department.attach_detach_teacherform')
+                        @include('superadmin.department.attach_teacher_form')
                     </div>
                 </div>
-                <div class="w-full md:w-1/3 lg:w-1/3">
+                <div class="w-full md:w-1/2 lg:w-1/2">
                     <div class="flex flex-col">
-                        <label class="uppercase mb-2" for="staffs">{{ __('Attach Sub Staffs') }}</label>
-                        @include('superadmin.department.attach_detach_subordinateform')
+                        <label class="uppercase mb-2" for="staffs">{{ __('Detach Teachers') }}</label>
+                        @include('superadmin.department.detach_teacher_form')
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row lg:flex-row gap-4 mt-4">
+                <div class="w-full md:w-1/2 lg:w-1/2">
+                    <div class="flex flex-col">
+                        <label class="uppercase mb-2" for="teachers">{{ __('Attach Sub Staffs') }}</label>
+                        @include('superadmin.department.attach_subordinate_form')
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 lg:w-1/2">
+                    <div class="flex flex-col">
+                        <label class="uppercase mb-2" for="staffs">{{ __('Detach Sub Staffs') }}</label>
+                        @include('superadmin.department.detach_subordinate_form')
                     </div>
                 </div>
             </div>
@@ -104,4 +121,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

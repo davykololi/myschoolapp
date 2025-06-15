@@ -7,12 +7,24 @@ use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Hall extends Model implements Searchable
 {
     //
+    use HasUuids;
+    
     protected $table = 'halls';
     protected $fillable = ['name','type','code','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -62,6 +74,6 @@ class Hall extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school')->get();
+        return $query->with('school');
     }
 }

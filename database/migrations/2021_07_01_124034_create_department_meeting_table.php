@@ -15,10 +15,8 @@ class CreateDepartmentMeetingTable extends Migration
     {
         Schema::create('department_meeting', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('department_id')->unsigned();
-            $table->bigInteger('meeting_id')->unsigned();
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
-            $table->foreign('meeting_id')->references('id')->on('meetings')->onDelete('cascade');
+            $table->foreignUuid('department_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('meeting_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

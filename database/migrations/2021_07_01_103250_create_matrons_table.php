@@ -14,10 +14,10 @@ class CreateMatronsTable extends Migration
     public function up()
     {
         Schema::create('matrons', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('image')->nullable();
+            $table->string('gender');
             $table->string('emp_no')->nullable();
-            $table->string('gender')->nullable();
             $table->string('id_no');
             $table->string('dob');
             $table->string('designation');
@@ -26,9 +26,9 @@ class CreateMatronsTable extends Migration
             $table->string('phone_no')->nullable();
             $table->string('position')->default('Ordinary Matron');
             $table->longText('history',2000);
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('blood_group')->default('A');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->boolean('is_banned')->default(false);
             $table->timestamps();
         });

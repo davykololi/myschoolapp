@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Superadmin;
 
+use Auth;
+use App\Models\Student;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use App\Services\StudentService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -26,11 +30,21 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function students()
+    public function students(Request $request)
     {
         //
-        $students = $this->studentService->paginate();
-        
-        return view('superadmin.students.students',compact('students'));
+        $user = Auth::user();
+        $search = strtolower($request->search);
+        if($user->hasRole('superadmin')){
+            if($search){
+                $students = Student::whereLike(['user.first_name','user.middle_name','user.last_name','user.email','admission_no','doa','position','dob','adm_mark','phone_no','stream.name','dormitory.name'], $search)->eagerLoaded()->paginate(15);
+    
+                return view('superadmin.students.students',compact('students'));
+            } else {
+                $students = $this->studentService->paginated();
+
+                return view('superadmin.students.students',compact('students'));
+            } 
+        }
     }
 }

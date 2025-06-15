@@ -2,6 +2,7 @@
 @section('title', '| Libraries List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
@@ -39,10 +40,12 @@
                                 <!-- Table Body -->
                                 <tbody>
                                     @if($libraries->isNotEmpty())
-                                    @foreach($libraries as $library)
+                                    @foreach($libraries as $key => $library)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{$loop->iteration}}</div>
+                                            <div>
+                                                {{ $libraries->perPage() * ($libraries->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{$library->name}}</div>
@@ -96,4 +99,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

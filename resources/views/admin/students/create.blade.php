@@ -21,7 +21,13 @@
                     <form id="ajax-reg" method="post" enctype="multipart/form-data" action="{{ route('admin.students.store') }}">
                         @csrf
                         @include('ext.student_registration_form')
-                        @include('ext._submit_register_button')
+                        <div class="flex flex-col mt-4">
+                            <div class="w-full md:w-[200px] items-center justify-center">
+                                <button type="submit" class="register-button">
+                                    {{ __('Register') }}
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

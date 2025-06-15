@@ -2,6 +2,7 @@
 @section('title', '| Years List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen">
@@ -40,24 +41,25 @@
                                     @foreach($years as $key => $year)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{$loop->iteration}}</div>
+                                            <div>
+                                                {{ $years->perPage() * ($years->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{$year->year}}</div>
                                         </td>
-                                        @if($year->year === date('Y'))
+                                        
                                         <td class="whitespace-nowrap p-2">
+                                            @if($year->year === date('Y'))
                                             <div class="bg-red-700 px-2 py-1 text-white text-center rounded w-[150px]">
                                                 {{__('Current')}}
                                             </div>
-                                        </td>
-                                        @else
-                                        <td class="whitespace-nowrap p-2">
-                                            <div class="bg-[green] px-2 py-1 text-white text-center rounded w-[150px]">
+                                            @else
+                                            <div class="bg-green-700 px-2 py-1 text-white text-center rounded w-[150px]">
                                                 {{__('Reserved')}}
                                             </div>
+                                            @endif
                                         </td>
-                                        @endif
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{$year->desc}}</div>
                                         </td>
@@ -89,5 +91,6 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection
 

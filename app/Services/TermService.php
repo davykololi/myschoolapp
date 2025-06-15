@@ -20,7 +20,7 @@ class TermService
 
 	public function all()
 	{
-		return $this->termRepo->all();
+		return $this->termRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

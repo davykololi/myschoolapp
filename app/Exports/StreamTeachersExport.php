@@ -23,12 +23,13 @@ class StreamTeachersExport implements FromCollection, WithHeadings, WithMapping 
     */
     public function collection()
     {
-        return $this->stream->standard_subjects()->with('school','teacher')->get();
+        return $this->stream->stream_subjects()->eagerLoaded()->get();
     }
 
     public function headings(): array
     {
         return [
+                'NO',
                 'NAME',
                 'PHONE',
                 'EMAIL',
@@ -39,9 +40,10 @@ class StreamTeachersExport implements FromCollection, WithHeadings, WithMapping 
     public function map($standardSubject): array
     {
         return [
-            $standardSubject->teacher->full_name,
+            $standardSubject->id,
+            $standardSubject->teacher->user->full_name,
             $standardSubject->teacher->phone_no,
-            $standardSubject->teacher->email,
+            $standardSubject->teacher->user->email,
             $standardSubject->subject->name,
          ];
     }

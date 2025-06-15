@@ -6,7 +6,7 @@ interface ParentInterface
 {
 	public function all();
 
-	public function eagerLoaded();
+	public function paginated();
 
 	public function create(array $data);
 
@@ -15,6 +15,4 @@ interface ParentInterface
 	public function update(array $data,$id);
 
 	public function delete($id);
-
-	public function paginate();
 }

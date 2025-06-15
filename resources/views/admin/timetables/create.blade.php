@@ -2,24 +2,27 @@
 @section('title', '| Add Timetable')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
-<div class="row">
-    <div class="col-lg-12">
+<div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
+    <div class="w-full">
         @include('partials.errors')
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title">ADD TIMETABLE</h5> 
-                <a href="{{ route('admin.timetables.index') }}" class="btn btn-primary pull-right">Back</a>
+        <div class="mx-2 md:mx-8 lg:mx-8">
+            <h1 class="front-h1 my-4">ADD TIMETABLE</h1>
+            <div style="float: right;" class="mb-8">
+                <x-button class="back-button">
+                    <x-back-svg-n-url> <a href="{{ route('admin.timetables.index') }}">Back</a></x-back-svg-n-url>
+                </x-button>
             </div>
-            <div class="card-body">
+            <div class="mt-12">
                 <form action="{{ route('admin.timetables.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
                     @include('ext._csrfdiv')
-                    <div class="flex flex-col md:flex-row lg:flex-row">
-                        <div class="w-full md:w-1/2 lg:w-1/2 mb-2">
+                    <div class="flex flex-col md:flex-row lg:flex-row gap-4">
+                        <div class="w-full md:w-1/2 lg:w-1/2 mb-4">
                             <label class="" >Upload Timetable</label>
                             <div class="w-full block">
-                                <input type="file" name="file" id="file" class="form-control" placeholder="Upload Timetable">
+                                <input type="file" name="file" id="file" class="form-input-one-photo-upload py-0 w-fit" placeholder="Upload Timetable">
                                 @error('file')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -35,7 +38,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex flex-col md:flex-row lg:flex-row">
+                    <h4 class="my-4">NOTE: SELECT THE APPROPRIATE TIMETABLE SECTION</h4>
+                    <div class="flex flex-col md:flex-row lg:flex-row gap-4">
                         <div class="w-full md:w-1/4 lg:w-1/4 mb-2">
                             <label class="" >Select Stream</label>
                             <div class="w-full block">
@@ -68,4 +72,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

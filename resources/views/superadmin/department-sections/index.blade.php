@@ -2,6 +2,7 @@
 @section('title', '| Department Sections')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -29,17 +30,19 @@
                                 <tr>
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="35%">NAME</th>
-                                    <th scope="col" class="px-2 py-4" width="30%">DESCRIPTION</th>
+                                    <th scope="col" class="px-2 py-4" width="35%">DESCRIPTION</th>
                                     <th scope="col" class="px-2 py-4" width="15%">CODE</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                            @foreach($deptSections as $deptSection)
+                            @foreach($deptSections as $key => $deptSection)
                                 <tr class="border-b dark:border-neutral-500 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{$loop->iteration}}</div>
+                                        <div>
+                                            {{ $deptSections->perPage() * ($deptSections->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $deptSection->name }}</div>
@@ -77,4 +80,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

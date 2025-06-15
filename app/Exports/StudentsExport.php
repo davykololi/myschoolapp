@@ -17,7 +17,7 @@ class StudentsExport implements FromCollection, WithHeadings, WithMapping, Shoul
     */
     public function collection()
     {
-    	return Student::with('stream','school','dormitory')->get();
+    	return Student::with('user','stream','school','dormitory')->get();
     }
 
     public function headings(): array
@@ -35,12 +35,12 @@ class StudentsExport implements FromCollection, WithHeadings, WithMapping, Shoul
     public function map($student): array
     {
         return [
-            $student->full_name,
+            $student->user->full_name,
             $student->admission_no,
             $student->stream->name,
             $student->phone_no,
             $student->dormitory->name,
-            $student->email,
+            $student->user->email,
          ];
     }
 }

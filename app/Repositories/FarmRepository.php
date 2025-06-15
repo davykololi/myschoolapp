@@ -20,7 +20,12 @@ class FarmRepository implements FarmInterface
 
     public function all()
     {
-        return $this->farm->eagerLoaded();
+        return $this->farm->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->farm->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

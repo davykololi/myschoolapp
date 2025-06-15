@@ -31,7 +31,7 @@ class UserFormRequest extends FormRequest
                 'first_name' => 'required','string','max:100',new CapitalLetter(),
                 'middle_name' => 'required','string','max:100',new CapitalLetter(),
                 'last_name' => 'required','string','max:100',new CapitalLetter(),
-                'email'             => 'required|string|email|max:255|unique:users',
+                'email'=> 'required|string|email|max:255|unique:users',
                 'password'=>['required','string','confirmed',Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
                 'password_confirmation' => ['required'],
             ];
@@ -41,7 +41,7 @@ class UserFormRequest extends FormRequest
                 'first_name' => 'required','string','max:100',new CapitalLetter(),
                 'middle_name' => 'required','string','max:100',new CapitalLetter(),
                 'last_name' => 'required','string','max:100',new CapitalLetter(),
-                'email'             => 'required|string|email|max:255|unique:users',
+                'email' => 'required|string|email|max:255|unique:users',
             ];
         }
     }

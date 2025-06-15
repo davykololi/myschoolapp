@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use Auth;
+use App\Models\Student;
+use App\Models\Stream;
+use App\Models\MyClass;
+use App\Models\School;
 use App\Models\PaymentSection;
 use App\Repositories\PaymentRepository as PaymentRepo;
 use Illuminate\Support\Str;
@@ -50,32 +54,142 @@ class PaymentService
 
 	public function createData(CreateFormRequest $request)
 	{
-		$data = $request->validated();
-		$data['payment_section_id'] = $request->payment_section;
-		$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
-		$data['amount'] = $paymentSection->payment_amount;
-		$data['ref_no'] = $paymentSection->ref_no;
-		$data['description'] = $paymentSection->description;
-        $data['student_id'] = $request->student;
-        $data['year_id'] = $request->year;
-        $data['school_id'] = Auth::user()->school->id;
+		$studentId = $request->student_id;
+		$streamId = $request->stream_id;
+		$classId = $request->class_id;
+		$schoolId = Auth::user()->school->id;
 
-        return $data;
+		if($studentId){
+			$student = Student::whereId($studentId)->first();
+			$data = $request->validated();
+			$data['payment_section_id'] = $request->payment_section;
+			$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
+			$data['amount'] = $paymentSection->payment_amount;
+			$data['ref_no'] = $paymentSection->ref_no;
+			$data['description'] = $paymentSection->description;
+        	$data['student_id'] = $student->id;
+        	$data['year_id'] = $request->year_id;
+        	$data['school_id'] = Auth::user()->school->id;
+
+        	return $data;
+    	}
+
+    	if($streamId){
+    		$stream = Stream::whereId($streamId)->first();
+    		$streamStudents = $stream->students;
+
+    		foreach($streamStudents as $student){
+				$data = $request->validated();
+				$data['payment_section_id'] = $request->payment_section;
+				$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
+				$data['amount'] = $paymentSection->payment_amount;
+				$data['ref_no'] = $paymentSection->ref_no;
+				$data['description'] = $paymentSection->description;
+        		$data['student_id'] = $student->id;
+        		$data['year_id'] = $request->year_id;
+        		$data['school_id'] = Auth::user()->school->id;
+
+        		return $data;
+        	}
+    	}
+
+    	if($classId){
+    		$class = MyClass::whereId($classId)->first();
+    		$classStudents = $class->students;
+
+    		foreach($classStudents as $student){
+				$data = $request->validated();
+				$data['payment_section_id'] = $request->payment_section;
+				$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
+				$data['amount'] = $paymentSection->payment_amount;
+				$data['ref_no'] = $paymentSection->ref_no;
+				$data['description'] = $paymentSection->description;
+        		$data['student_id'] = $student->id;
+        		$data['year_id'] = $request->year_id;
+        		$data['school_id'] = Auth::user()->school->id;
+
+        		return $data;
+        	}
+    	}
+
+    	if($schoolId){
+    		$school = School::whereId($schoolId)->first();
+    		$schoolStudents = $school->students;
+
+    		foreach($schoolStudents as $student){
+				$data = $request->validated();
+				$data['payment_section_id'] = $request->payment_section;
+				$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
+				$data['amount'] = $paymentSection->payment_amount;
+				$data['ref_no'] = $paymentSection->ref_no;
+				$data['description'] = $paymentSection->description;
+        		$data['student_id'] = $student->id;
+        		$data['year_id'] = $request->year_id;
+        		$data['school_id'] = Auth::user()->school->id;
+
+        		return $data;
+        	}
+    	}
 	}
 
 	public function updateData(UpdateFormRequest $request)
 	{
-		$data = $request->validated();
-		$data['payment_section_id'] = $request->payment_section;
-		$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
-		$data['amount'] = $paymentSection->payment_amount;
-		$data['ref_no'] = $paymentSection->ref_no;
-		$data['description'] = $paymentSection->description;
-        $data['student_id'] = $request->student;
-        $data['year_id'] = $request->year;
-        $data['school_id'] = Auth::user()->school->id;
+		$studentId = $request->student_id;
+		$streamId = $request->stream_id;
+		$classId = $request->class_id;
 
-        return $data;
+		if($studentId){
+			$student = Student::whereId($studentId)->first();
+			$data = $request->validated();
+			$data['payment_section_id'] = $request->payment_section;
+			$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
+			$data['amount'] = $paymentSection->payment_amount;
+			$data['ref_no'] = $paymentSection->ref_no;
+			$data['description'] = $paymentSection->description;
+        	$data['student_id'] = $student->id;
+        	$data['year_id'] = $request->year_id;
+        	$data['school_id'] = Auth::user()->school->id;
+
+        	return $data;
+    	}
+
+    	if($streamId){
+    		$stream = Stream::whereId($streamId)->first();
+    		$streamStudents = $stream->students;
+
+    		foreach($streamStudents as $student){
+				$data = $request->validated();
+				$data['payment_section_id'] = $request->payment_section;
+				$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
+				$data['amount'] = $paymentSection->payment_amount;
+				$data['ref_no'] = $paymentSection->ref_no;
+				$data['description'] = $paymentSection->description;
+        		$data['student_id'] = $student->id;
+        		$data['year_id'] = $request->year_id;
+        		$data['school_id'] = Auth::user()->school->id;
+
+        		return $data;
+        	}
+    	}
+
+    	if($classId){
+    		$class = MyClass::whereId($classId)->first();
+    		$classStudents = $class->students;
+
+    		foreach($classStudents as $student){
+				$data = $request->validated();
+				$data['payment_section_id'] = $request->payment_section;
+				$paymentSection = PaymentSection::where('id',$data['payment_section_id'])->first();
+				$data['amount'] = $paymentSection->payment_amount;
+				$data['ref_no'] = $paymentSection->ref_no;
+				$data['description'] = $paymentSection->description;
+        		$data['student_id'] = $student->id;
+        		$data['year_id'] = $request->year_id;
+        		$data['school_id'] = Auth::user()->school->id;
+
+        		return $data;
+        	}
+    	}
 	}
 
 	public function delete($id)

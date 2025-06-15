@@ -2,6 +2,7 @@
 @section('title', '| Departments List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -42,7 +43,9 @@
                             @foreach($departments as $key => $department)
                                 <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $loop->iteration }}</div>
+                                        <div>
+                                            {{ $departments->perPage() * ($departments->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $department->name }}</div>
@@ -89,4 +92,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

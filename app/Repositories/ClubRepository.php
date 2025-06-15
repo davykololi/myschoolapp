@@ -20,7 +20,12 @@ class ClubRepository implements ClubInterface
 
     public function all()
     {
-        return $this->club->eagerLoaded();
+        return $this->club->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->club->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

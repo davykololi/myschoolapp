@@ -19,7 +19,7 @@ class ClubService
 
 	public function all()
 	{
-		return $this->clubRepo->all();
+		return $this->clubRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

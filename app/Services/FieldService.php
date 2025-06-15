@@ -19,7 +19,7 @@ class FieldService
 
 	public function all()
 	{
-		return $this->fieldRepo->all();
+		return $this->fieldRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

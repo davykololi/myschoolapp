@@ -2,6 +2,7 @@
 @section('title', '| Add Librarian')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
     <section class="max-w-full py-1 bg-blueGray-50">
         <div class="w-full px-4 mx-auto mt-6">
@@ -19,14 +20,6 @@
                         @include('ext._csrfdiv')
                         @include('ext._first_common_detailsdiv')
                         @include('ext._second_common_detailsdiv')
-                        <div class="flex flex-col md:flex-row lg:flex-row my-4">
-                            <div class="w-full md:w-1/3">
-                                <div class="flex flex-col mx-2 md:mr-2">
-                                    <label>Position: <span class="text-danger">*</span></label>
-                                    @include('ext._attach_librarian_position')
-                                </div>
-                            </div>
-                        </div>
 
                         <hr class="mt-6 border-b-1 border-blueGray-300">
                         <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
@@ -52,11 +45,18 @@
                         <div class="flex flex-col md:flex-row lg:flex-row gap-2">
                             @include('ext._passworddiv')
                         </div>
-                        @include('ext._submit_register_button')
+                        <div class="flex flex-col mt-4">
+                            <div class="w-full md:w-[200px] items-center justify-center">
+                                <button type="submit" class="register-button">
+                                    {{ __('Register') }}
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </section>
-</x-backend-main> 
+</x-backend-main>
+@endrole 
 @endsection

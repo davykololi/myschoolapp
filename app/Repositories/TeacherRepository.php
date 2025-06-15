@@ -23,6 +23,11 @@ class TeacherRepository implements TeacherInterface
         return $this->teacher->eagerLoaded()->get();
     }
 
+    public function paginated()
+    {
+        return $this->teacher->eagerLoaded()->paginate(15);
+    }
+
     public function create(array $data)
     {
     	return $this->teacher->create($data);

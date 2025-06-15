@@ -2,6 +2,7 @@
 @section('title', '| Edit Librarian')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
     <section class="max-w-full py-1 bg-blueGray-50">
         <div class="w-full px-4 mx-auto mt-6">
@@ -115,7 +116,7 @@
                             <div class="w-full md:w-1/4 lg:w-1/4">
                                 <label class="control-label col-sm-2" >Position</label>
                                 <div class="flex flex-col">
-                                    @include('ext._attach_librarian_position')
+                                    @include('ext._attach_position')
                                 </div>
                             </div>
                         </div>
@@ -171,5 +172,6 @@
             </div>
         </div>
     </section>
-</x-backend-main>     
+</x-backend-main>
+@endrole     
 @endsection

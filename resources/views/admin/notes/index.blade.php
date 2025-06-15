@@ -10,6 +10,7 @@
     <div class="w-full">
         <div class="mx-2 md:mx-8 lg:mx-8">
             @include('partials.messages')
+            @include('partials.errors')
             <!-- Posts list -->
             <div class="row">
                 <div class="col-lg-12 margin-tb">
@@ -43,29 +44,29 @@
                                     @if(!empty($notes))
                                     @foreach($notes as $note)
                                     <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             <div>{{ $loop->iteration }}</div>
                                         </td>
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             <div>{{$note->teacher->user->salutation}} {{$note->teacher->user->full_name}}</div>
                                         </td>
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             <div>{{$note->stream->name}}</div>
                                         </td>
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             <div>{{$note->subject->name}}</div>
                                         </td>
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             <div>{{$note->desc}}</div>
                                         </td>
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             <div>
                                                 <a href="{{route('admin.notes.download',$note->id)}}" class="btn btn-outline-warning">
                                                     Download
                                                 </a>
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             <form action="{{route('admin.notes.destroy',$note->id)}}" method="POST" class="inline-flex">
                                                 @csrf
                                                 @method('DELETE')
@@ -87,8 +88,8 @@
                                 <tfoot>
                                     @if($notes->isEmpty())
                                     <tr>
-                                        <td colspan="16" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter h-12 dark:bg-[#3a3a3f] dark:text-slate-400">
-                                            Notes notyet gin at the moment.
+                                        <td colspan="16" class="w-full text-2xl font-bold text-center text-white bg-red-700 uppercase tracking-tighter h-12 dark:bg-[#3a3a3f] dark:text-slate-400">
+                                            Notes notyet given at the moment.
                                         </td>
                                     </tr>
                                     @endif

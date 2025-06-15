@@ -14,10 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('user_email_codes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('code');
-            $table->bigInteger('user_id')->unsigned()->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

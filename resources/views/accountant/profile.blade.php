@@ -2,6 +2,7 @@
 @section('title', '| Accountant Profile')
 
 @section('content')
+@role('accountant')
 <!-- frontend-main view -->
 <x-frontend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen">
@@ -73,4 +74,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

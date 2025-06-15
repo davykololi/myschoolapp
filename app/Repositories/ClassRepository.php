@@ -20,7 +20,12 @@ class ClassRepository implements ClassInterface
 
     public function all()
     {
-        return $this->clas->eagerLoaded();
+        return $this->clas->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->clas->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

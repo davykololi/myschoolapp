@@ -13,17 +13,26 @@ use	Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CommonUserInformation;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Admin extends CommonUserInformation
 {
-    use Notifiable;
+    use Notifiable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'admins';
-    protected $primaryKey = 'id';
+    
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
     public $incrementing = false;
+    
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> AdminPositionEnum::class];
 
     public function students(): HasMany
@@ -39,11 +48,6 @@ class Admin extends CommonUserInformation
     public function assignments(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Assignment')->withTimestamps();
-    }
-
-    public function scopeEagerLoaded($query)
-    {
-        return $query->with('superadmin','school','user')->get();
     }
 
     public function seniorAdmin()
@@ -94,5 +98,10 @@ class Admin extends CommonUserInformation
     public function galleries(): HasMany
     {
         return $this->hasMany(Gallery::class,'admin_id','id');
+    }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('school','user');
     }
 }

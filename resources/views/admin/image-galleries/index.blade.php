@@ -6,8 +6,8 @@
 @can('dataOfficer')
 <!-- frontend-main view -->
 <x-backend-main>
-<div class="row">
-    <div class="col-lg-12">
+<div class="max-w-screen min-h-screen">
+    <div class="w-full mx-2 md:mx-8 lg:mx-8">
     @include('partials.messages')
     <!-- Posts list -->
     @if(!empty($imageGalleries))

@@ -5,6 +5,7 @@
 @endsection
 
 @section('content') 
+@role('subordinate')
 <!-- frontend-main view -->
 <x-frontend-main>
 @can('schoolSecretary')
@@ -23,7 +24,11 @@
         </div>
         <div class="w-full flex flex-col md:flex-row lg:flex-row mt-8 mx-4 md:mx-24">
             <div class="w-full flex-auto md:w-1/4 lg:w-1/4">
+                @if($student->gender === "Male")
                 <img class="w-full md:w-64 md:h-64 border-2 p-4 bg-gray-700" src="{{ $student->image_url }}" onerror="this.src='{{asset('static/avatar.png')}}'">
+                @elseif($student->gender === "Female")
+                <img class="w-full md:w-64 md:h-64 border-2 p-4 bg-gray-700" src="{{ $student->image_url }}" onerror="this.src='{{asset('static/female_avatar.png')}}'">
+                @endif
             </div>
             <div class="w-full flex-auto md:w-3/4 lg:w-3/4 mt-4">
                 <h3 class="underline uppercase font-extrabold md:-mt-4">{{ __('Student Details') }}</h3>
@@ -41,6 +46,7 @@
 </div>
 @endcan
 </x-frontend-main>
+@endrole
 @endsection
 
 

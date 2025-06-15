@@ -4,7 +4,7 @@
             <div class="w-full md:w-1/3 lg:w-1/3 mx-auto">
                 <div class="uppercase text-2xl text-center font-bold">Change Password</div>
    
-                <div class="mt-4 border p-8 bg-gray-400 rounded">
+                <div class="mt-4 border p-8 bg-transparent rounded">
                     <form method="POST" action="{{ route('change.password') }}">
                         @csrf 
    

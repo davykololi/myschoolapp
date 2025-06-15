@@ -56,8 +56,8 @@ use App\Interfaces\ExamInterface;
 use App\Repositories\ExamRepository;
 use App\Interfaces\MeetingInterface;
 use App\Repositories\MeetingRepository;
-use App\Interfaces\RewardInterface;
-use App\Repositories\RewardRepository;
+use App\Interfaces\AwardInterface;
+use App\Repositories\AwardRepository;
 use App\Interfaces\HallInterface;
 use App\Repositories\HallRepository;
 use App\Interfaces\TimetableInterface;
@@ -74,6 +74,8 @@ use App\Interfaces\PaymentInterface;
 use App\Repositories\PaymentRepository;
 use App\Interfaces\ParentInterface;
 use App\Repositories\ParentRepository;
+use App\Interfaces\IssuedBookInterface;
+use App\Repositories\IssuedBookRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -112,7 +114,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(AssignmentInterface::class,AssignmentRepository::class);
         $this->app->bind(ExamInterface::class,ExamRepository::class);
         $this->app->bind(MeetingInterface::class,MeetingRepository::class);
-        $this->app->bind(RewardInterface::class,RewardRepository::class);
+        $this->app->bind(AwardInterface::class,AwardRepository::class);
         $this->app->bind(HallInterface::class,HallRepository::class);
         $this->app->bind(TimetableInterface::class,TimetableRepository::class);
         $this->app->bind(NotesInterface::class,NotesRepository::class);
@@ -121,6 +123,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PaymentSectionInterface::class,PaymentSectionRepository::class);
         $this->app->bind(PaymentInterface::class,PaymentRepository::class);
         $this->app->bind(ParentInterface::class,ParentRepository::class);
+        $this->app->bind(IssuedBookInterface::class,IssuedBookRepository::class);
     }
 
     /**

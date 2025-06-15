@@ -20,7 +20,12 @@ class FieldRepository implements FieldInterface
 
     public function all()
     {
-        return $this->field->eagerLoaded();
+        return $this->field->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->field->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

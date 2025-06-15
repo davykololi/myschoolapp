@@ -2,6 +2,7 @@
 @section('title', '| Marksheet Form')
 
 @section('content')
+@role('superadmin')
 <div class="container">
     @include('partials.messages')
     @include('partials.errors')
@@ -18,5 +19,6 @@
         </div>        
     </form>
 </div>
+@endrole
 @endsection
 

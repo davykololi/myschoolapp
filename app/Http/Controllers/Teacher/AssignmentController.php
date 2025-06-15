@@ -39,7 +39,7 @@ class AssignmentController extends Controller
     public function index()
     {
         //
-        $assignments = Auth::user()->teacher->assignments()->with('school','teachers','departments','subjects','streams')->latest()->get();
+        $assignments = Auth::user()->teacher->assignments()->eagerLoaded()->latest()->paginate(10);
 
         return view('teacher.assignments.index',compact('assignments'));
     }
@@ -68,7 +68,7 @@ class AssignmentController extends Controller
     public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
+        $input = $request->validated();
         $input['school_id'] = auth()->user()->school->id;
         $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
         $assignment = Assignment::create($input);
@@ -126,7 +126,7 @@ class AssignmentController extends Controller
         //
         if($assignment){
             Storage::delete('public/files/'.$assignment->file);
-            $input = $request->all();
+            $input = $request->validated();
             $input['school_id'] = auth()->user()->school->id;
             $input['file'] = $this->verifyAndUpload($request,'file','public/files/');
             $assignment->update($input);

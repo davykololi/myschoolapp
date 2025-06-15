@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\Stream;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -248,6 +249,11 @@ class AuthServiceProvider extends ServiceProvider
         /* define ordinary librarian role */
         Gate::define('ordinaryLibrarian',function(User $user){
             return $user->librarian->ordinaryLibrarian();
+        });
+
+        /* define stream head teacher */
+        Gate::define('streamHeadTeacher',function(User $user,Stream $stream){
+            return $user->full_name === $stream->class_teacher;
         });
     }
 }

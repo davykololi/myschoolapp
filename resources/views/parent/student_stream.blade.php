@@ -1,6 +1,7 @@
 @extends('layouts.parent')
 
 @section('content')
+@role('parent')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
     @include('partials.messages')
     <div class="row">
@@ -18,10 +19,10 @@
         <div class="form-group">
             <strong>{{ $stream->name }} Teachers:</strong>
             <ol>
-            @forelse($stream->teachers as $teacher)
+            @forelse($streamSubjects as $streamSubject)
                 <li>
-                    <a href="{{route('admin.stream.teacher',[$teacher->id,$stream->id])}}">
-                        {{ $teacher->title }} {{ $teacher->full_name }} {{ $teacher->phone_no }}
+                    <a href="{{route('admin.stream.teacher',[$streamSubject->teacher->id,$stream->id])}}">
+                        {{ $streamSubject->teacher->user->salutation }} {{ $streamSubject->teacher->user->full_name }} {{ $streamSubject->teacher->phone_no }} Facilitates {{ $streamSubject->subject->name }}
                     </a>
                 </li>
             @empty
@@ -36,7 +37,7 @@
             <ol>
             @forelse($stream->assignments as $assignment)
                 <li>
-                    {{ $assignment->name }} Given: {{ $assignment->date }} 
+                    {{ $assignment->name }} Given: {{ $assignment->date_given }} 
                     Deadline: {{ $assignment->deadline }} 
                     <a href="{{route('admin.assignment.download',$assignment->id)}}" class="btn btn-outline-warning">
                         Download
@@ -44,7 +45,7 @@
                     @foreach($assignment->teachers as $teacher)
                         <span style="color: blue">By:</span> 
                         <a href="{{route('parent.show.teacher',$teacher->id)}}">
-                            {{$teacher->title}} {{$teacher->full_name}} {{$teacher->phone_no}}.
+                            {{$teacher->user->salutation}} {{$teacher->user->full_name}} {{$teacher->phone_no}}.
                         </a>
                     @endforeach
                 </li>
@@ -102,27 +103,7 @@
             </ol>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="form-group">
-            <strong>{{ $stream->name }} Facilitators:</strong>
-            <ol>
-            @if(!empty($standardSubjects))
-                @forelse($standardSubjects as $standardSubject)
-                <li>
-                    <span style="color: orange">
-                        <a href="{{route('parent.show.teacher',$standardSubject->teacher->id)}}">
-                            {{$standardSubject->teacher->full_name}} {{$standardSubject->teacher->phone_no}}
-                        </a>
-                    </span> - 
-                    {{$standardSubject->subject->name}}
-                </li>
-            @empty
-                <p style="color: red"> The Facilitators Notyet Assigned to {{ $user->stream->name Subjects.</p>
-            @endforelse
-            </ol>
-            @endif
-        </div>
-    </div>
 </div>
 </main>
+@endrole
 @endsection

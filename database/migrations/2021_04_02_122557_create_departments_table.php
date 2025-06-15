@@ -14,7 +14,7 @@ class CreateDepartmentsTable extends Migration
     public function up()
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('code');
             $table->string('phone_no');
@@ -23,10 +23,8 @@ class CreateDepartmentsTable extends Migration
             $table->string('motto');
             $table->string('vision');
             $table->string('mission');
-            $table->bigInteger('dept_section_id')->unsigned();
-            $table->foreign('dept_section_id')->references('id')->on('department_sections')->onDelete('cascade');
-            $table->bigInteger('school_id')->unsigned();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
+            $table->foreignUuid('department_section_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -3,6 +3,7 @@
 namespace App\Charts;
 
 use Auth;
+use App\Models\User;
 use App\Models\Student;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 
@@ -17,14 +18,13 @@ class StudentsChart
 
     public function build(): \ArielMejiaDev\LarapexCharts\BarChart
     {
-        
-        $females = Student::where('user_id',Auth::id())->where('gender','Female')->count();
-        $males = Student::where('user_id',Auth::id())->where('gender','Male')->count();
+        $maleStudents = Auth::user()->school->male_students();
+        $femaleStudents = Auth::user()->school->female_students();
 
         return $this->chart->barChart()
-            ->setTitle('School Students Bar Chart.')
+            ->setTitle('School Students Gender Bar Chart.')
             ->setSubtitle('The chart for students gender.')
-            ->addData('Gender', [ $females, $males ])
+            ->addData('Count', [ $femaleStudents, $maleStudents ])
             ->setXAxis(['Female', 'Male']);
     }
 }

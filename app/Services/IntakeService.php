@@ -19,7 +19,7 @@ class IntakeService
 
 	public function all()
 	{
-		return $this->intakeRepo->all();
+		return $this->intakeRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

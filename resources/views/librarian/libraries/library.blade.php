@@ -2,6 +2,7 @@
 @section('title', '| Librarian View Library')
 
 @section('content')
+@role('librarian')
 <x-frontend-main>
     @include('partials.messages')
     <div class="row">
@@ -32,4 +33,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

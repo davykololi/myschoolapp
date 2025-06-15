@@ -29,7 +29,7 @@ class StudentInfoController extends Controller
 
     public function getStudentClass(Request $request)
     {
-        $streamId = $request->stream;
+        $streamId = $request->stream_id;
         $name = $request->name;
         $admissionNumber = $request->admission_no;
         $student = Student::when($streamId,function($query,$streamId){

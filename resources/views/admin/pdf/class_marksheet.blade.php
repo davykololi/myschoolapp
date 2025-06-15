@@ -17,16 +17,58 @@
                         <td class="table-left padding-10"><b>GDR</b></td>
                         <td class="table-left padding-10"><b>STATUS</b></td>
                         <td class="table-left padding-10"><b>RATE</b></td>
-                        <td class="table-left padding-10"><b>MATHS</b></td>
+                        @if(!is_null($maths))
+                        <td class="table-left padding-10"><b>MTHS</b></td>
+                        @else
+                        @endif
+
+                        @if(!is_null($english))
                         <td class="table-left padding-10"><b>ENG</b></td>
-                        <td class="table-left padding-10"><b>KISW</b></td>
+                        @else
+                        @endif
+                        
+                        <td class="table-left padding-10"><b>KIS</b></td>
                         <td class="table-left padding-10"><b>CHEM</b></td>
                         <td class="table-left padding-10"><b>BIO</b></td>
-                        <td class="table-left padding-10"><b>PHYSICS</b></td>
+                        <td class="table-left padding-10"><b>PHY</b></td>
                         <td class="table-left padding-10"><b>CRE</b></td>
-                        <td class="table-left padding-10"><b>ISLAM</b></td>
-                        <td class="table-left padding-10"><b>HIST</b></td>
+                        <td class="table-left padding-10"><b>ISLM</b></td>
+
+                        @if(!is_null($historyAndGovernment))
+                        <td class="table-left padding-10"><b>H&G</b></td>
+                        @else
+                        @endif
+
+                        @if(!is_null($geography))
                         <td class="table-left padding-10"><b>GEOG</b></td>
+                        @else
+                        @endif
+
+                        @if(!is_null($artAndDesign))
+                        <td class="table-left padding-10"><b>A&D</b></td>
+                        @else
+                        @endif
+
+                        @if(!is_null($agriculture))
+                        <td class="table-left padding-10"><b>AGR</b></td>
+                        @else
+                        @endif
+
+                        @if(!is_null($businessStudies))
+                        <td class="table-left padding-10"><b>BST</b></td>
+                        @else
+                        @endif
+
+                        @if(!is_null($computerStudies))
+                        <td class="table-left padding-10"><b>CST</b></td>
+                        @else
+                        @endif
+
+                        @if(!is_null($french))
+                        <td class="table-left padding-10"><b>FR</b></td>
+                        @else
+                        @endif
+
                         <td class="table-left padding-10"><b>TOTAL</b></td>
                         <td class="table-left padding-10"><b>MEAN</b></td>
                         <td class="table-left padding-10"><b>STRM</b></td>
@@ -42,7 +84,7 @@
                         <td class="table-left">{{ $pos['rank'] }}</td>
                         @endif
                         @endforeach
-                        <td class="table-left" style="text-transform: uppercase;">{{ $mark->name }}</td>
+                        <td class="table-left">{{ $mark->name }}</td>
                         
                         <!-- Gender -->
                         @foreach($mark->class->students as $st)
@@ -145,10 +187,10 @@
                             @endforeach
                         @endif
                         </td>
-                        <td class="table-left">{{ $mark->history ?? '-' }}
+                        <td class="table-left">{{ $mark->history_and_government ?? '-' }}
                         @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'History' ) && ($grade->from_mark <= $mark->history) && ($grade->to_mark >= $mark->history))
+                            @if(($grade->subject->name === 'History And Government' ) && ($grade->from_mark <= $mark->history_and_government) && ($grade->to_mark >= $mark->history_and_government))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -158,6 +200,51 @@
                         @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
                             @if(($grade->subject->name === 'Geography' ) && ($grade->from_mark <= $mark->geography) && ($grade->to_mark >= $mark->geography))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                        @endif
+                        </td>
+                        <td class="table-left">{{ $mark->art_and_design ?? '-' }}
+                        @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Art And Design' ) && ($grade->from_mark <= $mark->art_and_design) && ($grade->to_mark >= $mark->art_and_design))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                        @endif
+                        </td>
+                        <td class="table-left">{{ $mark->agriculture ?? '-' }}
+                        @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Agriculture' ) && ($grade->from_mark <= $mark->agriculture) && ($grade->to_mark >= $mark->agriculture))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                        @endif
+                        </td>
+                        <td class="table-left">{{ $mark->business_studies ?? '-' }}
+                        @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Business Studies' ) && ($grade->from_mark <= $mark->business_studies) && ($grade->to_mark >= $mark->business_studies))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                        @endif
+                        </td>
+                        <td class="table-left">{{ $mark->computer_studies ?? '-' }}
+                        @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Computer Studies' ) && ($grade->from_mark <= $mark->computer_studies) && ($grade->to_mark >= $mark->computer_studies))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                        @endif
+                        </td>
+                        <td class="table-left">{{ $mark->french ?? '-' }}
+                        @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'French' ) && ($grade->from_mark <= $mark->french) && ($grade->to_mark >= $mark->french))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -301,10 +388,10 @@
                         </td>
                         <td class="table-left">
                             <b>
-                            {{ round($history->avg(),1) }}
+                            {{ round($historyAndGovernment->avg(),1) }}
                             @if(!empty($examGrades))
                             @foreach($examGrades as $grade)
-                            @if(($grade->subject->name === 'History') && ($grade->from_mark <= round($history->avg(),0)) && ($grade->to_mark >= round($history->avg(),0)))
+                            @if(($grade->subject->name === 'History And Government') && ($grade->from_mark <= round($historyAndGovernment->avg(),0)) && ($grade->to_mark >= round($historyAndGovernment->avg(),0)))
                             {{ $grade->grade }}
                             @endif
                             @endforeach
@@ -323,8 +410,67 @@
                             @endif
                             </b>
                         </td>
+                        <td class="table-left">
+                            <b>
+                            {{ round($artAndDesign->avg(),1) }}
+                            @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Art And Design') && ($grade->from_mark <= round($artAndDesign->avg(),0)) && ($grade->to_mark >= round($artAndDesign->avg(),0)))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                            @endif
+                            </b>
+                        </td>
+                        <td class="table-left">
+                            <b>
+                            {{ round($agriculture->avg(),1) }}
+                            @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Agriculture') && ($grade->from_mark <= round($agriculture->avg(),0)) && ($grade->to_mark >= round($agriculture->avg(),0)))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                            @endif
+                            </b>
+                        </td>
+                        <td class="table-left">
+                            <b>
+                            {{ round($businessStudies->avg(),1) }}
+                            @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Business Studies') && ($grade->from_mark <= round($businessStudies->avg(),0)) && ($grade->to_mark >= round($businessStudies->avg(),0)))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                            @endif
+                            </b>
+                        </td>
+                        <td class="table-left">
+                            <b>
+                            {{ round($computerStudies->avg(),1) }}
+                            @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'Computer Studies') && ($grade->from_mark <= round($computerStudies->avg(),0)) && ($grade->to_mark >= round($computerStudies->avg(),0)))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                            @endif
+                            </b>
+                        </td>
+                        <td class="table-left">
+                            <b>
+                            {{ round($french->avg(),1) }}
+                            @if(!empty($examGrades))
+                            @foreach($examGrades as $grade)
+                            @if(($grade->subject->name === 'French') && ($grade->from_mark <= round($french->avg(),0)) && ($grade->to_mark >= round($french->avg(),0)))
+                            {{ $grade->grade }}
+                            @endif
+                            @endforeach
+                            @endif
+                            </b>
+                        </td>
                         <td class="table-left"><b>{{ round($totals->avg(),0) }}</b></td>
-
                         <td class="table-left">
                             <b>
                                 {{ round($classMinscore,1) }}
@@ -349,6 +495,7 @@
                     @if(!is_null($passMark))
                     <li><span style="margin: 20px">PASS MARK: {{ $passMark }} MARKS</span></li>
                     <li><span style="color: green;margin: 20px">P</span>: PASS </li>
+                    <li><span style="color: green;margin: 20px">ST.MEAN</span>: STUDENT MEAN SCORE </li>
                     <li><span style="color: red;margin: 20px">F</span>: FAIL </li>
                     @else
                     <li><span style="margin: 20px">NO PASS MARK PROVIDED</span></li>
@@ -359,7 +506,7 @@
             <div style="margin-bottom: 2cm;">
                 <h4>{{ __('Summary')}}</h4>
                     <p>
-                        {{ $class->students->count() }} Students sat for this exam. That's ({{ $males }} Males & {{ $females }} Females).
+                        {{ $class->students->count() }} {{ $class->name }} Students sat for {{ $exam->name }}. That's ({{ $males }} Males & {{ $females }} Females).
                     </p>
                     <p>Highest mark: {{ $totals->max() }}</p>
                     <p>Median mark: {{ $totals->median() }}</p>
@@ -382,6 +529,17 @@
                 </p>
                 <div>{!! json_encode($totalMarksFrequencies) !!}</div>
                 <div id="chartDiv" class="pie-chart"></div>
+
+
+                <div class="text-black">
+                    <span class="container relative" style="position: relative; width: 500px; height:300px;">
+                        <img src="data:image/png;base64,{!! base64_encode($subjectsMiniscoresChart->container()) !!}"/>
+                    </span>
+                </div>
+
+                <script src="{{ $subjectsMiniscoresChart->cdn() }}"></script>
+                {{ $subjectsMiniscoresChart->script() }}
+
             </div>
     </div>
 </div>
@@ -410,7 +568,7 @@
             ['CRE', {{ $cre->avg() }}],
             ['Islam', {{ $islam->avg() }}],
             ['Geography', {{ $geography->avg() }}],
-            ['History', {{ $history->avg() }}]
+            ['History', {{ $historyAndGovernment->avg() }}]
         ]);
    
         var options = {

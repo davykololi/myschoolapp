@@ -2,6 +2,7 @@
 @section('title', '| Matron Details')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
 <div class="max-w-full p-4 md:p-8 lg:p-8 shadow-lg">
 <div class="row">   
@@ -109,4 +110,5 @@
 </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

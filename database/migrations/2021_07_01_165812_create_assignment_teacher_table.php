@@ -15,10 +15,8 @@ class CreateAssignmentTeacherTable extends Migration
     {
         Schema::create('assignment_teacher', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('assignment_id')->unsigned();
-            $table->bigInteger('teacher_id')->unsigned();
-            $table->foreign('assignment_id')->references('id')->on('assignments')->onDelete('cascade');
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreignUuid('assignment_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

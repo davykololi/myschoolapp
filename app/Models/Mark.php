@@ -14,6 +14,7 @@ use App\Models\Stream;
 use App\Models\Grade;
 use App\Models\Year;
 use App\Models\Term;
+use App\Enums\ClassInitialsEnum;
 use HiFolks\Statistics\Stat;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,11 +23,11 @@ use Illuminate\Database\Eloquent\Model;
 class Mark extends Model
 {
     use HasFactory;
+    
     protected $table = 'marks';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $fillable = ['name','admission_no','exam_no','mathematics','english','kiswahili','chemistry','biology','physics','cre','islam','history','geography','class_id','stream_id','exam_id','student_id','school_id','teacher_id','term_id','year_id'];
-    protected $appends = ['total','student_minscore'];
+
+    protected $fillable = ['name','admission_no','exam_no','mathematics','english','kiswahili','chemistry','biology','physics','cre','islam','history_and_government','geography','home_science','art_and_design','agriculture','business_studies','computer_studies','drawing_and_design','french','german','arabic','sign_language','music','wood_work','metal_work','building_construction','power_mechanics','electricity','aviation_technology','class_id','stream_id','exam_id','student_id','school_id','teacher_id','term_id','year_id'];
+    protected $appends = ['total','student_minscore','out_of'];
 
     public function subject(): BelongsTo
     {
@@ -88,43 +89,50 @@ class Mark extends Model
         $phy = $this->physics;
         $cre = $this->cre;
         $is = $this->islam;
-        $hist = $this->history;
+        $histAndGovernment = $this->history_and_government;
         $geography = $this->geography;
+        $homeScience = $this->home_science;
+        $artAndDesign = $this->art_and_design;
+        $agric = $this->agriculture;
+        $businessStudies = $this->business_studies;
+        $computerStudies = $this->computer_studies;
+        $drawingAndDesign = $this->drawing_and_design;
+        $french = $this->french;
+        $german = $this->german;
+        $arabic = $this->arabic;
+        $signLanguage = $this->sign_language;
+        $music = $this->music;
+        $woodWork = $this->wood_work;
+        $metalWork = $this->metal_work;
+        $buildConstr = $this->building_construction;
+        $pwrMechanics = $this->power_mechanics;
+        $electricity = $this->electricity;
+        $aviationTech = $this->aviation_technology;
 
-        return  collect([$math,$eng,$kis,$chem,$bio,$phy,$cre,$is,$hist,$geography])->sum();
+        return  collect([$math,$eng,$kis,$chem,$bio,$phy,$cre,$is,$histAndGovernment,$geography,$homeScience,$artAndDesign,$agric,$businessStudies,$computerStudies,$drawingAndDesign,$french,$german,$arabic,$signLanguage,$music,$woodWork,$metalWork,$buildConstr,$pwrMechanics,$electricity,$aviationTech])->sum();
     }
 
     public function getStudentMinscoreAttribute()
     {
-        $math = $this->mathematics;
-        $eng = $this->english;
-        $kis = $this->kiswahili;
-        $chem = $this->chemistry;
-        $bio = $this->biology;
-        $phy = $this->physics;
-        $cre = $this->cre;
-        $is = $this->islam;
-        $hist = $this->history;
-        $geography = $this->geography;
+        $sum = $this->total;
+        $subjectsPerClass = $this->class->number_of_subjects_per_class;
 
-        $sum = collect([$math,$eng,$kis,$chem,$bio,$phy,$cre,$is,$hist,$geography])->sum();
-
-        return  round($sum/5,1);
+        return  round($sum/$subjectsPerClass,1);
     }
 
-    public function getExamGradesAttribute()
+    public function getOutOfAttribute()
     {
-        $examGrades = $this->grades->where(['year_id'=>$this->year_id,'term_id'=>$this->term_id,'exam_id'=>$this->exam_id,'class_id'=>$this->class_id,'stream_id'=>$this->stream_id])->get();
+        if(($this->class->initials->value === ClassInitialsEnum::FORM1->value) || ($this->class->initials->value === ClassInitialsEnum::FORM2->value)){
+            return (string)config('constants.f1_and_f2_out_of_marks');
+        }
 
-        foreach($examGrades as $gr){
-            if($gr->subject->name === $this->subject->id){
-                return $gr->name;
-            }
-        } 
+        if(($this->class->initials->value === ClassInitialsEnum::FORM3->value) || ($this->class->initials->value === ClassInitialsEnum::FORM4->value)){
+            return (string)config('constants.f3_and_f4_out_of_marks');
+        }
     }
 
-    public function outOf()
+    public function scopeEagerLoaded($query)
     {
-        return '/500';
+        return $query->with('class','year','term','teacher','school','exam','subject');
     }
 }

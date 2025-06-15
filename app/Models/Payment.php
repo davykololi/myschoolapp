@@ -8,13 +8,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Payment extends Model
 {
     //
+    use HasUuids;
+    
     protected $table = 'payments';
-    protected $fillable = ['description','amount','ref_no','student_id','payment_section_id','school_id','year_id','lock'];
-    protected $appends = ['amount','balance'];
+    protected $fillable = ['description','amount','ref_no','student_id','payment_section_id','special_id','school_id','year_id','lock'];
+    protected $appends = ['paid','balance'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
     
     public function student(): BelongsTo
     {
@@ -58,7 +70,7 @@ class Payment extends Model
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','student','year','term','payment_records');
+        return $query->with('school','student','year','terms','payment_records','payment_section');
     }
 
     public function getPaidAttribute()

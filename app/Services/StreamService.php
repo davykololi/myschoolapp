@@ -22,6 +22,11 @@ class StreamService
 		return $this->streamRepository->all();
 	}
 
+	public function paginated()
+	{
+		return $this->streamRepository->paginated();
+	}
+
 	public function create(StoreRequest $request)
 	{
 		$data = $this->createData($request);
@@ -45,7 +50,7 @@ class StreamService
 	{
 		$data = $request->validated();
         $data['code'] = strtoupper(auth()->user()->school->initials.'/'.Str::random(5).'/'.now()->year);
-        $data['class_id'] = $request->class;
+        $data['class_id'] = $request->class_id;
         $data['stream_section_id'] = $request->stream_section;
         $data['school_id'] = auth()->user()->school->id;
 
@@ -54,11 +59,11 @@ class StreamService
 
 	public function updateData(UpdateRequest $request)
 	{
-        $data = $request->only(['name']);
+        $data = $request->only(['name','class_teacher','class_prefect']);
         $data['school_id'] = auth()->user()->school->id;
         $data['stream_section_id'] = $request->stream_section;
         $data['code'] = strtoupper(auth()->user()->school->initials.'/'.Str::random(5).'/'.now()->year);
-        $data['class_id'] = $request->class;
+        $data['class_id'] = $request->class_id;
 
         return $data;
 	}

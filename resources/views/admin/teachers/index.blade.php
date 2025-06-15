@@ -23,13 +23,13 @@
             <div class="w-full flex flex-col overflow-x-auto mt-12">
                 <div class="sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                        <div class="overflow-x-auto">
-                            <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">
+                        <div class="overflow-x-auto" data-twe-datatable-init>
+                            <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly" id="default-table">
                                 <!-- Table Headings -->
                                 <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                     <tr>
                                         <th scope="col" class="px-2 py-4" width="5%">NO</th>
-                                        <th scope="col" class="px-2 py-4" width="20%">NAME</th>
+                                        <th scope="col" class="px-2 py-4" width="20%" data-twe-attributes data-twe-sort="false">NAME</th>
                                         <th scope="col" class="px-2 py-4" width="20%">EMAIL</th>
                                         <th scope="col" class="px-2 py-4" width="15%">ID NO.</th>
                                         <th scope="col" class="px-2 py-4" width="15%">EMP NO.</th>

@@ -14,7 +14,7 @@ class CreateSyllabusesTable extends Migration
     public function up()
     {
         Schema::create('syllabuses', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->timestamps();
         });
     }

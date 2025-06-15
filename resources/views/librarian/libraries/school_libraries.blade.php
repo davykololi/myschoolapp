@@ -2,6 +2,7 @@
 @section('title', '| Librarian School Libraries')
 
 @section('content')
+@role('librarian')
 <x-frontend-main>
     <div class="max-w-screen mb-8 h-screen">
         <div class="w-full">
@@ -28,4 +29,5 @@
         </div>
     </div>
 </x-frontend-main>
+@endrole
 @endsection

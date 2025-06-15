@@ -15,10 +15,8 @@ class CreateStudentSubjectTable extends Migration
     {
         Schema::create('student_subject', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->bigInteger('subject_id')->unsigned();
-            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subject_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

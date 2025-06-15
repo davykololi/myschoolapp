@@ -15,10 +15,8 @@ class CreateLibrarianLibraryTable extends Migration
     {
         Schema::create('librarian_library', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('librarian_id')->unsigned();
-            $table->bigInteger('library_id')->unsigned();
-            $table->foreign('librarian_id')->references('id')->on('librarians')->onDelete('cascade');
-            $table->foreign('library_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreignUuid('librarian_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('library_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

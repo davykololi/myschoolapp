@@ -15,10 +15,8 @@ class CreateStreamTeacherTable extends Migration
     {
         Schema::create('stream_teacher', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('stream_id')->unsigned();
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
-            $table->bigInteger('teacher_id')->unsigned();
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

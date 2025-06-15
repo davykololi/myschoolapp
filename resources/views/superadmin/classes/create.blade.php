@@ -2,6 +2,7 @@
 @section('title', '| Create Class')
 
 @section('content')
+@role('superadmin')
   <!-- frontend-main view -->
   <x-backend-main>
             <div class="card-header">
@@ -26,7 +27,8 @@
                     @include('ext._submit_create_button')
                 </form>
             </div>   
-  </x-backend-main> 
+  </x-backend-main>
+@endrole 
 @endsection
 
 

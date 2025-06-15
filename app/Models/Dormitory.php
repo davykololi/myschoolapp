@@ -8,14 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Dormitory extends Model implements Searchable
 {
     //
+    use HasUuids;
+    
     protected $table = 'dormitories';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
+    
     protected $fillable = ['name','code','bed_no','dom_head','ass_head','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -53,13 +64,13 @@ class Dormitory extends Model implements Searchable
         return $this->belongsToMany('App\Models\Assignment')->withTimestamps();
     }
 
-    public function rewards(): BelongsToMany
+    public function awards(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
+        return $this->belongsToMany('App\Models\Award')->withTimestamps();
     }
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('students','school');
+        return $query->with('students','school','meetings','assignments','awards','bed_numbers');
     }
 }

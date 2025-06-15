@@ -21,7 +21,7 @@
                 <td class="padding-10"><b>CLASS</b></td>
                 <td class="padding-10"><b>TITLE</b></td>
                 <td class="padding-10"><b>SERIAL NO</b></td>
-                <td class="padding-10"><b>BORROWED</b></td>
+                <td class="padding-10"><b>ISSUED</b></td>
                 <td class="padding-10"><b>RETURN</b></td>
             </tr>
         </thead>

@@ -14,12 +14,11 @@ class CreateDepartmentSectionsTable extends Migration
     public function up()
     {
         Schema::create('department_sections', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('description');
             $table->string('code');
-            $table->bigInteger('school_id')->unsigned();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

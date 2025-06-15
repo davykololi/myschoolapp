@@ -11,24 +11,25 @@ use Illuminate\Http\Request;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Enums\MatronPositionEnum;
 use App\Http\Requests\CommonUserFormRequest as StoreRequest;
 use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class MatronController extends Controller
 {
     use ImageUploadTrait;
-    protected $matService;
+    protected $matronService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(MatService $matService)
+    public function __construct(MatService $matronService)
     {
         $this->middleware('auth');
         $this->middleware('role:superadmin');
         $this->middleware('checktwofa');
-        $this->matService = $matService;
+        $this->matronService = $matronService;
     }
 
     /**
@@ -36,12 +37,22 @@ class MatronController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $matrons = $this->matService->all();
+        $user = Auth::user();
+        if($user->hasRole('superadmin')){
+            $search = strtolower($request->search);
+            if($search){
+                $matrons = Matron::whereLike(['user.first_name', 'user.middle_name', 'user.last_name', 'user.email', 'phone_no','emp_no','position', 'id_no', 'designation'], $search)->eagerLoaded()->paginate(15);
 
-        return view('superadmin.matrons.index',compact('matrons'));
+                return view('superadmin.matrons.index',compact('matrons'));
+            } else {
+                $matrons = $this->matronService->all();
+
+                return view('superadmin.matrons.index',compact('matrons'));
+            } 
+        }
     }
 
     /**
@@ -52,7 +63,8 @@ class MatronController extends Controller
     public function create()
     {
         //
-        return view('superadmin.matrons.create');
+        $positions = MatronPositionEnum::cases();
+        return view('superadmin.matrons.create',compact('positions'));
     }
 
     /**
@@ -119,8 +131,9 @@ class MatronController extends Controller
     {
         //
         $matron = $this->matService->getId($id);
+        $positions = MatronPositionEnum::cases();
 
-        return view('superadmin.matrons.edit',compact('matron'));
+        return view('superadmin.matrons.edit',compact('matron','positions'));
     }
 
     /**

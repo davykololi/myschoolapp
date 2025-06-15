@@ -20,7 +20,12 @@ class TimetableRepository implements TimetableInterface
 
     public function all()
     {
-        return $this->timetable->eagerLoaded();
+        return $this->timetable->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->timetable->eagerLoaded()->paginate(50);
     }
 
     public function create(array $data)

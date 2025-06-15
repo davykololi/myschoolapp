@@ -15,10 +15,8 @@ class CreateExamStreamTable extends Migration
     {
         Schema::create('exam_stream', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('stream_id')->unsigned();
-            $table->bigInteger('exam_id')->unsigned();
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
-            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('exam_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

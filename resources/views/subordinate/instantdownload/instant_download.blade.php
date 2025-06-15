@@ -2,6 +2,7 @@
 @section('title', '| Instant Pdf Generation')
 
 @section('content')
+@role('subordinate')
 <!-- frontend-main view -->
 <x-frontend-main>
 <div class="max-w-screen h-screen">
@@ -37,6 +38,7 @@
     </div>
 </div>   
 </x-frontend-main>
+@endrole
 @endsection
 
 

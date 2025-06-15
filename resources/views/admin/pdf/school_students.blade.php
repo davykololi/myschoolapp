@@ -9,16 +9,16 @@
     <div style="font-family: Harrington;margin-bottom: 10px;">
         <b>Total:</b> 
         <span class="dotted-underline">{{ $students->count() }} <i>Students</i> -
-            @if($males > 1)
-             {{ $males }} <i>Males</i>
+            @if($maleStudents > 1)
+             {{ $maleStudents }} <i>Males</i>
             @else
-             {{ $males }} <i>Male</i>
+             {{ $maleStudents }} <i>Male</i>
             @endif
         
-            @if($females > 1)
-             {{ $females }} <i>Females</i>
+            @if($femaleStudents > 1)
+             {{ $femaleStudents }} <i>Females</i>
             @else
-             {{ $females }} <i>Female</i>
+             {{ $femaleStudents }} <i>Female</i>
             @endif
         </span>
     </div>
@@ -39,9 +39,9 @@
             <tr>
                 <td>{{ $loop->iteration}}</td>
                 <td class="table-left">{{ $student->user->full_name }}</td>
-                @if($student->gender === "Male")
+                @if($student->user->gender === "Male")
                 <td class="table-left">{{ __('M') }}</td>
-                @elseif($student->gender === "Female")
+                @elseif($student->user->gender === "Female")
                 <td class="table-left">{{ __('F') }}</td>
                 @endif
                 <td class="table-left">{{ $student->stream->name }}</td>

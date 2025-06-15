@@ -30,9 +30,9 @@
                             <input type="text" name="desc" id="desc" class="form-control" value="{{ $note->desc }}">
                         </div>
                     </div>
+                    @include('ext._get_subjects_ids')
                     @include('ext._get_streams_ids')
                     @include('ext._get_teachers_ids')
-                    @include('ext._get_subjects_ids')
                     @include('ext._submit_update_button')
                 </form>
             </div>

@@ -14,13 +14,15 @@ class CreateNotesTable extends Migration
     public function up()
     {
         Schema::create('notes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('file');
-            $table->string('desc');
-            $table->foreignId('stream_id')->constrained()->onDelete('cascade');
-            $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
-            $table->foreignId('subject_id')->constrained()->onDelete('cascade');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->string('desc')->unique();
+            $table->foreignUuid('class_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subject_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('stream_subject_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

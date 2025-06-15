@@ -23,7 +23,7 @@ class StudentRepository implements StudentInterface
         return $this->student->eagerLoaded()->get();
     }
 
-    public function paginate()
+    public function paginated()
     {
         return $this->student->eagerLoaded()->paginate(15);
     }

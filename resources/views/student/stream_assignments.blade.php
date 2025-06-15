@@ -10,7 +10,7 @@
 <div class="max-w-screen h-fit md:h-screen lg:h-screen mb-8">
     <div class="w-full">
         <div class="mx-2 md:mx-8 lg:mx-8">
-            <div class="-mt-4">
+            <div class="">
                 <h2 class="uppercase text-2xl font-bold text-center underline">{{ Auth::user()->student->stream->name}} Assignments</h2>
             </div>
             <div class="flex flex-col md:flex-row">
@@ -23,7 +23,7 @@
                 <div class="sm:-mx-6 md:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                         <div class="overflow-x-auto">
-                            <table class=" text-left text-sm font-light bg-gray-100 w-full mx-auto justify-evenly">        
+                            <table class=" text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly">        
                                 <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                     <tr>
                                         <td scope="col" class="px-2 py-4">NO</td>
@@ -32,39 +32,47 @@
                                         <td scope="col" class="px-2 py-4">PHONE</td>
                                         <td scope="col" class="px-2 py-4">EMAIL</td>
                                         <td scope="col" class="px-2 py-4">GIVEN ON</td>
-                                        <td scope="col" class="px-2 py-4">DEADLINE</td>
+                                        <td scope="col" class="px-2 py-4">SUBMIT ON</td>
                                         <td scope="col" class="px-2 py-4">DOWNLOAD</td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(!empty($streamAssignments))
-                                    @forelse($streamAssignments as $assignment)
+                                    @if($streamAssignments->isNotEmpty())
+                                    @foreach($streamAssignments as $assignment)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-900">
-                                        <td class="whitespace-nowrap px-2 py-4">{{ $loop->iteration }}</td>
-                                        <td class="whitespace-nowrap px-2 py-4">{{ $assignment->name }}</td>
+                                        <td class="whitespace-nowrap p-2">{{ $loop->iteration }}</td>
+                                        <td class="whitespace-nowrap p-2">{{ $assignment->name }}</td>
                                         @foreach($assignmentTeachers as $teacher)
-                                        <td class="whitespace-nowrap px-2 py-4">
+                                        <td class="whitespace-nowrap p-2">
                                             {{ $teacher->user->salutation }} {{ $teacher->user->full_name }}
                                         </td>
-                                        <td class="whitespace-nowrap px-2 py-4">{{ $teacher->phone_no }}</td>
-                                        <td class="whitespace-nowrap px-2 py-4">{{ $teacher->user->email }}</td>
+                                        <td class="whitespace-nowrap p-2">{{ $teacher->phone_no }}</td>
+                                        <td class="whitespace-nowrap p-2">{{ $teacher->user->email }}</td>
                                         @endforeach
-                                        <td class="whitespace-nowrap px-2 py-4">{{ $assignment->getDate() }}</td>
-                                        <td class="whitespace-nowrap px-2 py-4">{{ $assignment->getDeadline() }}</td>
-                                        <td class="whitespace-nowrap px-2 py-4 items-center justify-center">
+                                        <td class="whitespace-nowrap p-2">{{ $assignment->getDate() }}</td>
+                                        <td class="whitespace-nowrap p-2">{{ $assignment->getDeadline() }}</td>
+                                        <td class="whitespace-nowrap p-2 items-center justify-center">
                                             <a href="{{route('student.assignment.download',$assignment->id)}}">
                                                 <x-download-button/>
                                             </a>
                                         </td>
-                                    @empty
-                                        <td colspan="10" class="w-full text-center text-white bg-blue-900 uppercase tracking-tighter dark:text-slate-400 dark:bg-stone-900 h-12">
-                                            No assignments given to this stream at the moment.
-                                        </td>
                                     </tr>
-                                    @endforelse
+                                    @endforeach
                                     @endif
                                 </tbody>
+                                <tfoot>
+                                    @if($streamAssignments->isEmpty())
+                                    <tr>
+                                        <td colspan="10" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:text-slate-400 dark:bg-stone-900 h-12 text-2xl">
+                                            No assignments given to {{ Auth::user()->student->stream->name }} at the moment.
+                                        </td>
+                                    </tr>
+                                    @endif
+                                </tfoot>
                             </table>
+                        </div>
+                        <div class="my-4 bg-gray-200">
+                            {{ $streamAssignments->links() }}
                         </div>
                     </div>
                 </div>

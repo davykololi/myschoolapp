@@ -5,14 +5,27 @@ namespace App\Models;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Book extends Model implements Searchable
 {
     //
+    use HasUuids;
+    
 	protected $table = 'books';
-    protected $fillable = ['title','rack_no','row_no','author','units','school_id','library_id','category_book_id',];
+    protected $fillable = ['title','rack_no','row_no','author','units','book_id','school_id','library_id','book_genre_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -25,9 +38,9 @@ class Book extends Model implements Searchable
             );
     }
 
-    public function category_book(): BelongsTo
+    public function book_genre(): BelongsTo
     {
-    	return $this->belongsTo('App\Models\CategoryBook')->withDefault();
+    	return $this->belongsTo('App\Models\BookGenre')->withDefault();
     }
 
     public function library(): BelongsTo
@@ -52,7 +65,7 @@ class Book extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','category_book','library','issuedbooks');
+        return $query->with('school','book_genre','library','issuedbooks')->latest('id');
     }
 
     public function getIssuedBooksAttribute()
@@ -75,5 +88,19 @@ class Book extends Model implements Searchable
         $availableBooks = $this->units - $countIssuedBooks;
 
         return $availableBooks;
+    }
+
+    public function title(): Attribute 
+    {               
+        return  new Attribute(                                                           
+            set: fn ($value) => ucwords($value),                
+        ); 
+    }
+
+    public function author(): Attribute 
+    {               
+        return  new Attribute(                                                           
+            set: fn ($value) => ucwords($value),                
+        ); 
     }
 }

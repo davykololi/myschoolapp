@@ -15,6 +15,7 @@ use App\Services\YearService;
 use App\Services\TermService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Number;
 use App\Http\Requests\Payment\CreateFormRequest;
 use App\Http\Requests\Payment\UpdateFormRequest;
 
@@ -42,15 +43,15 @@ class StudentController extends Controller
     public function student(Request $request)
     {
         $user = Auth::user();
-        if($user->hasRole('accountant')){
-            $studendId = $request->student;
+        if(Auth::check() && $user->hasRole('accountant')){
+            $studendId = $request->student_id;
             if(is_null($studendId)){
-                toastr()->error(ucwords('Please select the student name first!'));
+                flash()->error(ucwords('Please select the student name first!'));
                 return back();
             }
 
             $student = Student::where('id',$studendId)->first();
-            $studentPayments = $student->payments()->with('payment_records','student','school','year','terms')->latest('id')->get();
+            $studentPayments = $student->payments()->with('payment_records','student','school','year','terms','payment_section')->latest('id')->get();
             $years = $this->yearService->all();
             $terms = $this->termService->all();
             $paymentSections = $this->paymentSectionService->all();
@@ -62,7 +63,7 @@ class StudentController extends Controller
     public function makePayment($id)
     {
         $user = Auth::user();
-        if($user->hasRole('accountant')){
+        if(Auth::check() && $user->hasRole('accountant')){
             $payment = $this->paymentService->getId($id);
             return view('accountant.payments.make_payment',compact('payment'));
         }

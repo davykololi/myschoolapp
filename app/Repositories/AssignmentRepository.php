@@ -20,7 +20,12 @@ class AssignmentRepository implements AssignmentInterface
 
     public function all()
     {
-        return $this->assignment->eagerLoaded();
+        return $this->assignment->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->assignment->eagerLoaded()->paginate(10);
     }
 
     public function create(array $data)

@@ -15,10 +15,8 @@ class CreateLibraryStudentTable extends Migration
     {
         Schema::create('library_student', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('library_id')->unsigned();
-            $table->foreign('library_id')->references('id')->on('libraries')->onDelete('cascade');
-            $table->bigInteger('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreignUuid('library_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

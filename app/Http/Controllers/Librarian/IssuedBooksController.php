@@ -2,25 +2,31 @@
 
 namespace App\Http\Controllers\Librarian;
 
+use Auth;
 use App\Models\Student;
 use App\Models\Book;
+use App\Services\IssuedBookService;
 use App\Http\Controllers\Controller;
 use App\Models\IssuedBook;
 use Illuminate\Http\Request;
+use App\Http\Requests\IssuedBookFormRequest as StoreRequest;
+use App\Http\Requests\IssuedBookFormRequest as UpdateRequest;
 
 class IssuedBooksController extends Controller
 {
+    protected $issuedBookService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(IssuedBookService $issuedBookService)
     {
         $this->middleware('auth');
         $this->middleware('role:librarian');
         $this->middleware('librarian-banned');
         $this->middleware('checktwofa');
+        $this->issuedBookService = $issuedBookService;
     }
     
     /**
@@ -28,12 +34,22 @@ class IssuedBooksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request)
     {
         //
-        $bookers = IssuedBook::with('student.user','book')->get();
+        $user = Auth::user();
+        $search = strtolower($request->search);
+        if($user->hasRole('librarian')){
+            if($search){
+                $issuedBooks = IssuedBook::whereLike(['issued_date','return_date','serial_no', 'book.title', 'book.author','book.rack_no', 'book.row_no','student.admission_no'], $search)->eagerLoaded()->paginate(15);
 
-        return view('librarian.bookers.index',compact('bookers'));
+                return view('librarian.issued-books.index',compact('issuedBooks'));
+            } else {
+                $issuedBooks = $this->issuedBookService->paginated();
+
+                return view('librarian.issued-books.index',compact('issuedBooks'));
+            }
+        }
     }
 
     /**
@@ -48,7 +64,7 @@ class IssuedBooksController extends Controller
         $books = Book::all();
         $title = 'Issue Book To Student';
 
-        return view('librarian.bookers.create',compact('students','books','title'));
+        return view('librarian.issued-books.create',compact('students','books','title'));
     }
 
     /**
@@ -57,15 +73,12 @@ class IssuedBooksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
-        $input = $request->all();
-        $input['student_id'] = $request->student;
-        $input['book_id'] = $request->book;
-        IssuedBook::create($input);
+        $issuedBook = $this->issuedBookService->create($request);
 
-        return redirect()->route('librarian.bookers.index')->withSuccess('The issued book saved successfully');
+        return back()->withSuccess('The issued book saved successfully'); 
     }
 
     /**
@@ -74,10 +87,12 @@ class IssuedBooksController extends Controller
      * @param  \App\Models\IssuedBook  $issuedBook
      * @return \Illuminate\Http\Response
      */
-    public function show(IssuedBook $booker)
+    public function show($id)
     {
         //
-        return view('librarian.bookers.show',compact('booker'));
+        $issuedBook = $this->issuedBookService->getId($id);
+
+        return view('librarian.issued-books.show',compact('issuedBook'));
     }
 
     /**
@@ -86,14 +101,15 @@ class IssuedBooksController extends Controller
      * @param  \App\Models\IssuedBook  $issuedBook
      * @return \Illuminate\Http\Response
      */
-    public function edit(IssuedBook $booker)
+    public function edit($id)
     {
         //
+        $issuedBook = $this->issuedBookService->getId($id);
         $students = Student::with('user')->get();
         $books = Book::all();
         $title = 'Edit Issued Book';
 
-        return view('librarian.bookers.edit',compact('booker','students','books','title'));
+        return view('librarian.issued-books.edit',compact('issuedBook','students','books','title'));
     }
 
     /**
@@ -103,15 +119,15 @@ class IssuedBooksController extends Controller
      * @param  \App\Models\IssuedBook  $issuedBook
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, IssuedBook $booker)
+    public function update(UpdateRequest $request, $id)
     {
         //
-        $input = $request->all();
-        $input['student_id'] = $request->student;
-        $input['book_id'] = $request->book;
-        $booker->update($input);
+        $issuedBook = $this->issuedBookService->getId($id);
+        if($issuedBook){
+            $this->issuedBookService->update($request,$id);
 
-        return redirect()->route('librarian.bookers.index')->withSuccess('The issued book updated successfully');
+            return redirect()->route('librarian.search.student')->withSuccess('The issued book updated successfully');
+        }
     }
 
     /**
@@ -120,17 +136,20 @@ class IssuedBooksController extends Controller
      * @param  \App\Models\IssuedBook  $issuedBook
      * @return \Illuminate\Http\Response
      */
-    public function destroy(IssuedBook $booker)
+    public function destroy($id)
     {
         //
-        if($booker->returned == 0){
-            return redirect()->route('librarian.bookers.index')->withErrors(__('This book has not been returned, therefore can\'t be deleted.'));
+        $issuedBook = $this->issuedBookService->getId($id);
+        $brBook = IssuedBook::whereId($issuedBook)->firstOrFail();
+        if(($issuedBook) && ($brBook->returned === 0)){
+            return back()->withErrors(__('This book has not been returned, therefore can\'t be cleared.'));
         }
-        if($booker->returned_status == 0){
-            return redirect()->route('librarian.bookers.index')->withErrors(__('This book returned in bad condition. To be cleared first before being deleted!!'));
+        if(($issuedBook) && ($brBook->returned_status === 0)){
+            return redirect()->route('librarian.issued-books.index')->withErrors(__('This book returned in bad condition. To be cleared first before being deleted!!'));
         }
-        $booker->delete();
-
-        return redirect()->route('librarian.bookers.index')->withSuccess('The issued book deleted successfully');
+        if($issuedBook){
+            $this->issuedBookService->delete($id);
+            return back()->withSuccess('The issued book deleted successfully');
+        }
     }
 }

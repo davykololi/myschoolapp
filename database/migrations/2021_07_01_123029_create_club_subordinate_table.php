@@ -15,10 +15,8 @@ class CreateClubSubordinateTable extends Migration
     {
         Schema::create('club_subordinate', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('club_id')->unsigned();
-            $table->bigInteger('subordinate_id')->unsigned();
-            $table->foreign('club_id')->references('id')->on('clubs')->onDelete('cascade');
-            $table->foreign('subordinate_id')->references('id')->on('subordinates')->onDelete('cascade');
+            $table->foreignUuid('club_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subordinate_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

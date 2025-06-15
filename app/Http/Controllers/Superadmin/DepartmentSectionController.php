@@ -61,7 +61,7 @@ class DepartmentSectionController extends Controller
     {
         //
         $deptSection = $this->deptSectionService->getId($id);
-        $deptSectionDepartments = $deptSection->departments()->with('department_section')->get();
+        $deptSectionDepartments = $deptSection->departments()->with('dept_section')->get();
 
         return view('superadmin.department-sections.show',compact('deptSection','deptSectionDepartments'));
     }

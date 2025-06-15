@@ -14,14 +14,13 @@ class CreateLibrariesTable extends Migration
     public function up()
     {
         Schema::create('libraries', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('code');
             $table->string('phone_no');
             $table->string('lib_head');
             $table->string('lib_asshead');
-            $table->bigInteger('school_id')->unsigned();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

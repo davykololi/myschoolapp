@@ -35,7 +35,7 @@ class StudentProfileController extends Controller
         $currentYear = date('Y');
         $year = Year::where('year',$currentYear)->first();
         $currentTerm = Term::where('status',1)->first();
-        $currentExam = Exam::where(['status'=>1,'year_id'=>$year->id,'term_id'=>$currentTerm->id])->first();
+        $currentExam = Exam::where(['status'=>1,'year_id'=>$year->id,'term_id'=>$currentTerm->id,'results_published'=>1])->first();
         $streamSubjectFacilitators = $user->student->stream->stream_subjects()->with('teacher.user','stream','school','subject')->get();
         $vv = collect($user->student->stream->subjects()->pluck('name'));
         $streamSubjects = $vv->toArray(); 

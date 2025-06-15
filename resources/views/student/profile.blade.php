@@ -7,272 +7,221 @@
 @section('content')
 <!-- frontend-main view -->
 <x-frontend-main>
-<div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
-    <div class="w-full">
-        <div class="mx-2 md:mx-8 lg:mx-8">
-            <div>
-                <div class="row">
-                    <div class="col-md-12 margin-tb">
-                        <div class="pull-left">
-                            <h2 style="text-transform: uppercase;">My Profile</h2>
-                            <br/>
-                        </div>
-                    </div>
+<div class="max-w-screen-xl mx-auto py-8 px-4 lg:py-16 lg:px-6">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl tracking-tight font-bold text-primary-800">My Profile</h1>
+    </div>
+
+    <div class="flex flex-col md:flex-row">
+        <!-- can help image -->
+        <div class="mr-0 md:mr-8 mb-6 md:mb-0 w-full md:1/3 lg:w-1/3 mt-4 md:mt-12 lg:mt-12">
+            <div class="border-4 border-yellow-600">
+                <x-user-profile-picture/>
+            </div>
+        </div>
+        <!-- end can help image -->
+
+        <div class="flex-1 flex flex-col sm:flex-row flex-wrap -mb-4 -mx-2">
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">Personal Details</h3>
+                    <p class="text-sm">Name: {{ $user->full_name }}</p>
+                    <p class="text-sm">Email: {{ $user->email }}</p>
+                    <p class="text-sm">DOB: {{ $user->student->getDob() }}</p>
+                    <p class="text-sm">Age: {{ $user->student->age }} Years</p>
+                    <p class="text-sm">Guardian: {{ $user->student->parent->user->full_name }}</p>
+                    <p class="text-sm">Current Address: {{ $user->student->parent->current_address }}</p>
+                    <p class="text-sm">Permanent Address: {{ $user->student->parent->permanent_address }}</p>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <img style="width:25%" src="/storage/storage/{{ Auth::user()->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" class="border-4 border-yellow-800 p-4" alt="{{ Auth::user()->full_name }}">
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Name:</strong>
-                            {{ $user->full_name }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Position:</strong>
-                            {{ $user->student->position->value }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Email:</strong>
-                            {{ $user->email }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Adm. No:</strong>
-                            {{ $user->student->admission_no }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>DOB:</strong>
-                            {{ $user->student->getDob() }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Age:</strong>
-                            {{ $user->student->age }} years.
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Active Parent:</strong>
-                            {{ $user->student->parent->user->full_name }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Current Address:</strong>
-                            {{ $user->student->parent->current_address }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Permanent Address:</strong>
-                            {{ $user->student->parent->permanent_address }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Stream:</strong>
-                            {{ $user->student->stream->name }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Intake:</strong>
-                            {{ $user->student->getAdmissionMonth() }} Intake
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>DOA:</strong>
-                            {{ $user->student->getDoa() }} 
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Dormitory:</strong>
-                            {{ $user->student->dormitory->name }}
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Fee Balance:</strong>
-                            Kshs: <span class="text-[red]">{{ number_format($user->student->fee_balance,2) }}</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Parents Info:</strong>
-                            @if($user->student->student_info != null)
-                            @if($user->student->student_info->fathers_name != null)
-                            <li>
-                                <span style="color: green">Father's Name:</span> {{ $user->student->student_info->fathers_name }}
-                            </li>
-                            @else
-                            @endif
-
-                            @if($user->student->student_info->fathers_occupation != null)
-                            <li>
-                                <span style="color: green">Father's Occupation:</span> {{ $user->student->student_info->fathers_occupation }} 
-                            </li>
-                            @else
-                            @endif
-
-                            @if($user->student->student_info->mothers_name != null)
-                            <li>
-                                <span style="color: green">Mothers's Name:</span> {{$user->student->student_info->mothers_name }}
-                            </li>
-                            @else
-                            @endif
-
-                            @if($user->student->student_info->mothers_occupation != null)
-                            <li>
-                                <span style="color: green">Mothers's Occupation:</span> {{ $user->student->student_info->mothers_occupation }}
-                            </li>
-                            @else
-                            @endif
-
-                            @if($user->student->student_info->mothers_annual_income != null)
-                            <li>
-                                <span style="color: green">Mothers's Annual Income:</span> {{ $user->student->student_info->mothers_annual_income }}
-                            </li>
-                            @else
-                            @endif
-
-                            @if($user->student->student_info->guardian_name != null)
-                            <li>
-                                <span style="color: green">Guardian Name:</span> {{ $user->student->guardian_name }}
-                            </li>
-                            @else
-                            @endif
-
-                            @if($user->student->student_info->guardian_occupation != null)
-                            <li>
-                                <span style="color: green">Guardian Occupation:</span> {{ $user->student->guardian_occupation }}
-                            </li>
-                            @else
-                            @endif
-            
-                            @else
-                            <li>
-                                <span> {{ __('No Information') }} </span>
-                            </li>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Stream Subjects:</strong>
-                            @if(!empty($streamSubjects))
-                                {!! \Arr::join($streamSubjects, ', ', ', and ') !!}.
-                            @else
-                                <span style="color: red">No subjects assigned to your class at the moment.</span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Subjects Facilitators:</strong>
-                            <ol>
-                                @forelse($streamSubjectFacilitators as $streamSubjectFacilitator)
-                                <li>
-                                    {{ $streamSubjectFacilitator->teacher->user->full_name }}: {{ $streamSubjectFacilitator->subject->name }}
-                                </li>
-                                @empty
-                                    <span style="color: red">No teacher(s) assigned to your class at the moment.</span>
-                                @endforelse
-                            </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong> Individual Assignments:</strong>
-                            <ol>
-                                @forelse(Auth::user()->student->assignments as $assignment)
-                                <li>
-                                    {{$assignment->name}}  
-                                    <i style="color: blue">Published:</i> 
-                                    {{ \Carbon\Carbon::parse($assignment->date)->format('d-m-Y') }} 
-                                    <i style="color: red">Deadline</i> {{ \Carbon\Carbon::parse($assignment->deadline)->format('d-m-Y') }} 
-                                    @foreach($assignment->teachers as $teacher)
-                                        By: {{$teacher->salutation}} {{$teacher->user->full_name}} {{$teacher->phone_no}}
-                                    @endforeach
-                                    <a href="{{route('student.assignment.download',$assignment->id)}}" class="btn btn-outline-warning">
-                                        Download
-                                    </a>
-                                </li>
-                                @empty
-                                    <span style="color: red">You don't have any assignment yet.</span>
-                                @endforelse
-                            </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Awards:</strong>
-                            <ol>
-                            @forelse($user->student->rewards as $reward)
-                                <li>
-                                    {{$reward->name}}. Purpose: {{$reward->purpose}}.
-                                </li>
-                            @empty
-                                <span style="color: red">You have notyet recieved any award. Work hard for one!!</span>
-                            @endforelse
-                            </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Meetings:</strong>
-                            <ol>
-                            @forelse($user->student->meetings as $meeting)
-                                <li>
-                                    {{$meeting->name}} to be held on {{ date("jS,F,Y",strtotime($meeting->date)) }}. 
-                                    <span style="color: green">Agenda:</span> {{$meeting->agenda}}.
-                                </li>
-                            @empty
-                                <span style="color: red">You have  not been assigned to any meeting(s).</span>
-                            @endforelse
-                            </ol>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <strong>Clubs:</strong>
-                            <ol>
-                            @forelse($user->student->clubs as $club)
-                                <li>
-                                    <a href="{{ route('student.club', $club->id) }}">{{$club->name}}</a>
-                                </li>
-                            @empty
-                                <span style="color: red">You have  not been assigned to any club(s).</span>
-                            @endforelse
-                            </ol>
-                        </div>
-                    </div>
+            </div>
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">School Details</h3>
+                    <p class="text-sm">DOA: {{ $user->student->getDoa() }}</p>
+                    <p class="text-sm">Intake: {{ $user->student->getAdmissionMonth() }} Intake</p>
+                    <p class="text-sm">Admission No: {{ $user->student->admission_no }}</p>
+                    <p class="text-sm">Class: {{ $user->student->stream->name }}</p>
+                    <p class="text-sm">Dormitory: {{ $user->student->dormitory->name }}</p>
+                    <p class="text-sm">Role: {{ $user->student->position->value }}</p>
                 </div>
+            </div>
 
-                <div class="mt-4">
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">More Guardian Information</h3>
+                    @if($user->student->student_info != null)
+                    @if($user->student->student_info->fathers_name != null)
+                    <p><span style="color: green">Father's Name:</span> {{ $user->student->student_info->fathers_name }}</p>
+                    @else
+                    @endif
+
+                    @if($user->student->student_info->fathers_occupation != null)
+                    <p><span style="color: green">Father's Occupation:</span> 
+                        {{ $user->student->student_info->fathers_occupation }} 
+                    </p>
+                    @else
+                    @endif
+
+                    @if($user->student->student_info->mothers_name != null)
+                    <p><span style="color: green">Mothers's Name:</span> {{$user->student->student_info->mothers_name }}</p>
+                    @else
+                    @endif
+
+                    @if($user->student->student_info->mothers_occupation != null)
+                    <p>
+                        <span style="color: green">Mothers's Occupation:</span> {{ $user->student->student_info->mothers_occupation }}
+                    </p>
+                    @else
+                    @endif
+
+                    @if($user->student->student_info->mothers_annual_income != null)
+                    <p>
+                        <span style="color: green">Mothers's Annual Income:</span> {{ $user->student->student_info->mothers_annual_income }}
+                    </p>
+                    @else
+                    @endif
+
+                    @if($user->student->student_info->guardian_name != null)
+                    <p>
+                        <span style="color: green">Guardian Name:</span> {{ $user->student->guardian_name }}
+                    </p>
+                    @else
+                    @endif
+
+                    @if($user->student->student_info->guardian_occupation != null)
+                    <p>
+                        <span style="color: green">Guardian Occupation:</span> {{ $user->student->guardian_occupation }}
+                    </p>
+                    @else
+                    @endif
+
+                    @else
+                    <p><span> {{ __('No Information Provided') }} </span></p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">{{ $user->student->stream->name }} Subjects</h3>
+                    <h5>The following are subjects taken by students in {{ $user->student->stream->name }}:</h5>
+                    <p class="text-sm">
+                    @if(!empty($streamSubjects))
+                        {!! \Arr::join($streamSubjects, ', ', ', and ') !!}.
+                    @else
+                        <span style="color: red">No subjects assigned to your class at the moment.</span>
+                    @endif
+                    </p>
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">{{ $user->student->stream->name }} Teachers</h3>
+                    @forelse($streamSubjectFacilitators as $streamSubjectFacilitator)
+                    <ol>
+                        <li class="text-sm">
+                            {{ $streamSubjectFacilitator->teacher->user->full_name }} - {{ $streamSubjectFacilitator->teacher->phone_no }}: {{ $streamSubjectFacilitator->subject->name }}
+                        </li>
+                    </ol>
+                    @empty
+                        <p><span style="color: red">No teacher(s) assigned to your class at the moment.</span></p>
+                    @endforelse
+                    
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">Individual Assignments</h3>
+                    @forelse(Auth::user()->student->assignments as $assignment)
+                    <p class="text-sm">
+                    {{$assignment->name}}  
+                        <i style="color: blue">Published:</i> 
+                        {{ \Carbon\Carbon::parse($assignment->date)->format('d-m-Y') }} 
+                        <i style="color: red">Deadline</i> {{ \Carbon\Carbon::parse($assignment->deadline)->format('d-m-Y') }} 
+                        @foreach($assignment->teachers as $teacher)
+                        By: {{$teacher->salutation}} {{$teacher->user->full_name}} {{$teacher->phone_no}}
+                        @endforeach
+                        <a href="{{route('student.assignment.download',$assignment->id)}}" class="btn btn-outline-warning">
+                            Download
+                        </a>
+                    </p>
+                    @empty
+                    <p><span style="color: red">You don't have any individual assignment yet.</span></p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">Awards</h3>
+                    @forelse($user->student->awards as $award)
+                    <p>
+                        {{$award->name}}.
+                    </p>
+                    <p>
+                        Purpose: {{$award->purpose}}.
+                    </p>
+                    @empty
+                    <p>
+                        <span style="color: red">You have notyet recieved any award. Work hard for one!!</span>
+                    </p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">Meetings</h3>
+                    @forelse($user->student->meetings as $meeting)
+                    <p>
+                        {{$meeting->name}} to be held on {{ date("jS,F,Y",strtotime($meeting->date)) }}. 
+                        <span style="color: green">Agenda:</span> {{$meeting->agenda}}.
+                    </p>
+                    @empty
+                    <p><span style="color: red">You have  not been assigned to any meeting(s).</span></p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">Clubs</h3>
+                    @forelse($user->student->clubs as $club)
+                    <p>
+                        <a href="{{ route('student.club', $club->id) }}">{{$club->name}}</a>
+                    </p>
+                    @empty
+                    <p><span style="color: red">You have  not been assigned to any club(s).</span></p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
+                    <h3 class="text-2xl font-bold text-md mb-6">Fee Balance</h3>
+                    @if(Auth::user()->student->fee_balance > 0)
+                    <p class="text-[red]">
+                        Kshs: {{ number_format(Auth::user()->student->fee_balance,2) }}
+                    </p>
+                    @elseif(Auth::user()->student->total_payment_amount === null)
+                    <p class="bg-white text-green-800 py-1 px-2 rounded-md">{{ __('Payments Notyet Commensed') }}</p>
+                    @elseif(Auth::user()->student->fee_balance === 0)
+                    <p class="bg-white text-green-800 py-1 px-2 rounded-md">{{ __('Fee Cleared') }}</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="w-full sm:w-1/2 mb-4 px-2 ">
+                <div class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl">
                     @if(!is_null($currentExam))
                     <form id="marksheets_form" action="{{ route('student.download.results') }}" class="form-horizontal" method="get">
                         {{ csrf_field() }}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div><label>{{ $results }}</label></div>
-                                <button type="submit">
-                                    <x-pdf-svg/>
-                                </button>
-                            </div>
-                        </div>
+                        <h3 class="text-2xl font-bold text-md mb-6">{{ $results }}</h3>
+                        <button type="submit">
+                            <x-pdf-svg/>
+                        </button>
                     </form>
                     @else
                     @endif

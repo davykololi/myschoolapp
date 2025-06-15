@@ -21,7 +21,7 @@ class SubordinateService
 
 	public function all()
 	{
-		return $this->subordinateRepo->all();
+		return $this->subordinateRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

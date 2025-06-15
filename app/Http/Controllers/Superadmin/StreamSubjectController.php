@@ -30,7 +30,7 @@ class StreamSubjectController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
+        $data ['desc']= $request->desc;
         $data['school_id'] = Auth::user()->school->id;
         $data['stream_id'] = $request->stream_id;
         $data['teacher_id'] = $request->teacher_id;
@@ -52,11 +52,11 @@ class StreamSubjectController extends Controller
     public function update(Request $request, $id)
     {
         $strmSubject = StreamSubject::find($id);
-        $data = $request->all();
+        $data ['desc']= $request->desc;
         $data['school_id'] = Auth::user()->school->id;
-        $data['stream_id'] = $request->stream;
-        $data['teacher_id'] = $request->teacher;
-        $data['subject_id'] = $request->subject;
+        $data['stream_id'] = $request->stream_id;
+        $data['teacher_id'] = $request->teacher_id;
+        $data['subject_id'] = $request->subject_id;
         $strmSubject->update($data);
 
         return redirect()->back();

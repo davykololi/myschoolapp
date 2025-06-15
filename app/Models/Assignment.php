@@ -7,11 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Assignment extends Model
 {
     //
+    use HasUuids;
+
     protected $table = 'assignments';
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
+    
     protected $fillable = ['name','date_given','deadline','file','school_id'];
 
     public function students(): BelongsToMany
@@ -98,6 +111,6 @@ class Assignment extends Model
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','teachers','departments','subjects','streams','subordinates')->latest()->get();
+        return $query->with('school','teachers','departments','subjects','streams','subordinates');
     }
 }

@@ -18,14 +18,14 @@
               <div class="max-w-full overflow-x-auto">
                 <table class="w-full table-auto border-l border-transparent">
                   <caption class="table_caption">
-                    <h2 class="mb-4 uppercase font-extrabold text-2xl text-[#25215F] dark:text-slate-400"><u>{{$title}}</u></h2>
+                    <h2 class="mb-4 uppercase font-extrabold text-2xl text-white dark:text-slate-400"><u>{{$title}}</u></h2>
                   </caption>
                   <thead>
                     <tr class="bg-black text-center dark:bg-stone-600">
-                      <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 10%;" >
+                      <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 5%;" >
                         NO
                       </th>
-                      <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 25%;">
+                      <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 40%;">
                         TITLE
                       </th>
                       <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 15%;">
@@ -34,8 +34,8 @@
                       <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 15%;">
                         RETURN
                       </th>
-                      <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 35%;">
-                        REM TIME
+                      <th class="min-w-[160px] py-2 px-3 text-lg font-semibold text-white lg:px-4" style="width: 25%;">
+                        REM DAYS
                       </th>
                     </tr>
                   </thead>
@@ -56,18 +56,21 @@
                         {{ $borrowedBook->return_date }}
                       </td>
                       <td class="text-[#25215F] border-b border-[#E8E8E8] bg-[#F3F6FF] p-2 text-center text-base font-medium dark:bg-slate-900 dark:text-slate-400">
-                        {{ now()->diffInDays(\Carbon\Carbon::createFromFormat('d/m/Y',$borrowedBook->return_date)->format('d-m-Y H:i')) }} Days
-                          {{ now()->diff(\Carbon\Carbon::createFromFormat('d/m/Y',$borrowedBook->return_date)->format('d-m-Y H:i'))->format('%H Hours %I Minutes %S Seconds') }}
+                        @if($borrowedBook->converted_return_date < now())
+                        <div class="bg-[red] py-2 text-white">Time Elapsed</div>
+                        @else
+                        {{ number_format(\Carbon\Carbon::parse(\Carbon\Carbon::now())->floatDiffInDays($borrowedBook->converted_return_date),0) }} Days.
+                        @endif
                       </td>
                     </tr>
                     @endforeach
                     @endif
                   </tbody>
                   <tfoot>
-                    @if(empty($borrowedBooks))
+                    @if($borrowedBooks->isEmpty())
                     <tr>
                       <td colspan="12" class="w-full text-center text-white bg-blue-900 uppercase tracking-tighter h-12 dark:bg-gray-800 dark:text-slate-400 h-12">
-                        No borrowed books from the library at the moment (Ensure you utilize the library well)
+                        {{ __("You haven't borrowed books from the library at the moment (Ensure you utilize the library well)") }}
                       </td>
                     </tr>
                     @endif

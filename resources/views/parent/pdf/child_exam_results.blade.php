@@ -51,6 +51,8 @@
                             </tr>
                             @else
                             @endif
+
+                            @if(!is_null($mark->english))
                             <tr>
                                 <th class="table-left">ENGLISH</th>
                                 <td class="table-left">
@@ -64,6 +66,10 @@
                                     @endif
                                 </td>
                             </tr>
+                            @else
+                            @endif
+
+                            @if(!is_null($mark->kiswahili))
                             <tr>
                                 <th class="table-left">KISWAHILI</th>
                                 <td class="table-left">
@@ -77,6 +83,8 @@
                                     @endif
                                 </td>
                             </tr>
+                            @else
+                            @endif
 
                             @if(!is_null($mark->chemistry))
                             <tr>
@@ -216,6 +224,16 @@
                                         @endif  
                                     </b>    
                                 </td>
+                            </tr>
+                            <tr>
+                                <th class="table-left"><b>POSITION</b></th>
+                                @foreach($rankings as $name=>$pos)
+                                @if($name === $mark->name && $pos['score'] === $mark->total)
+                                <td class="table-left">
+                                    {{ $pos['rank'] }}/{{ $class->students->count() }}
+                                </td>
+                                @endif
+                                @endforeach
                             </tr>
                         </tfoot>
                         @endif

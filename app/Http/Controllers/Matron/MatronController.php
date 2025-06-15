@@ -59,7 +59,7 @@ class MatronController extends Controller
         $user = Auth::user();
         if($user->hasRole('matron')){
             $dormitory = $this->dormService->getId($id);
-            $dormitoryStudents = $dormitory->students()->with('stream','user')->get();
+            $dormitoryStudents = $dormitory->students()->with('stream','user','bed_number')->get();
 
             return view('matron.dormitory',compact('dormitory','dormitoryStudents'));
         }
@@ -81,7 +81,7 @@ class MatronController extends Controller
         $user = Auth::user();
         if($user->hasRole('matron')){
             $number = $request->number;
-            $studentId = $request->student;
+            $studentId = $request->student_id;
             $student = Student::where('id',$studentId)->first();
             $dormitoryId = $student->dormitory_id;
         

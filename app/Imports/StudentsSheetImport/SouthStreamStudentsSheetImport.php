@@ -3,6 +3,7 @@
 namespace App\Imports\StudentsSheetImport;
 
 use Auth;
+use App\Models\User;
 use App\Models\Student;
 use App\Models\StudentInfo;
 use App\Models\Myclass;
@@ -16,18 +17,16 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class NorthStreamStudentsSheetImport implements OnEachRow, WithHeadingRow,WithChunkReading,WithUpserts
+class SouthStreamStudentsSheetImport implements OnEachRow, WithHeadingRow,WithChunkReading,WithUpserts
 {
-    protected $streamId, $dormId, $intakeId, $southId;
-
-        /**
+    protected $dormId, $intakeId,$southId;
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct($streamId, $dormId, $intakeId,$southId)
+    public function __construct($dormId, $intakeId,$southId)
     {
-        $this->streamId = $streamId;
         $this->dormId = $dormId;
         $this->intakeId = $intakeId;
         $this->southId = $southId;
@@ -52,90 +51,104 @@ class NorthStreamStudentsSheetImport implements OnEachRow, WithHeadingRow,WithCh
 
         $row = $row->toArray();
 
-        $student = [
-            'title' => $row[__('title')],
+        $user = [
+            'salutation' => $row[__('salutation')],
             'first_name' => $row[__('first_name')],
             'middle_name' => $row[__('middle_name')],
             'last_name' => $row[__('last_name')],
+            'email' => $row[__('email')],
+            'gender' => $row[__('gender')],
+            'password' => Hash::make($row[__('password')]),
+            'school_id' => auth()->user()->school->id,
+
+        ];
+
+        $usertb = User::create($user);
+
+        $student = [
+            'user_id' => $usertb->id,
             'image' => asset('static/avatar.png'),
             'gender' => $row[__('gender')],
-            'email' => $row[__('email')],
-            'role' => 'Ordinary Student',
+            'position' => 'Ordinary Student',
             'blood_group' => $row[__('blood_group')],
             'adm_mark' => $row[__('adm_mark')],
             'admission_no' => $row[__('admission_no')],
             'phone_no' => $row[__('phone_no')],
             'dob' => $row[__('dob')],
             'doa' => $row[__('doa')],
-            'password' => Hash::make($row[__('password')]),
             'active' => 1,
-            'school_id'      => auth()->user()->school->id,
-            'stream_id'     => $this->getStreamId(),
-            'intake_id'    => $this->getIntakeId(),
-            'dormitory_id'    => $this->getDormId(),
-            'admin_id'    => auth()->user()->id,
+            'stream_id' => $this->getStreamId(),
+            'admin_id' => auth()->user()->id,
+            'dorm_id' => $this->getDormId(),
+            'parent_id' => 1,
+            'intake_id' => $this->getIntakeId(),
+            'school_id' => auth()->user()->school->id,
+            'is_banned' => false,
+            'payment_locked' => true,
+            'lock' => 'enabled',
         ];
 
-        $tb = create(Student::class, $student);
+        $tb = Student::create($student);
 
         $student_info = [
-            'student_id'           => $tb->id,
-            'religion'             => $row[__('religion')] ?? '',
-            'fathers_name'          => $row[__('fathers_name')] ?? '',
-            'fathers_phone_number'  => $row[__('fathers_phone_number')] ?? '',
-            'fathers_national_id'   => $row[__('fathers_national_id')] ?? '',
-            'fathers_occupation'    => $row[__('fathers_occupation')] ?? '',
-            'fathers_designation'   => $row[__('fathers_designation')] ?? '',
+            'student_id'  => $tb->id,
+            'admin_id' => 1,
+            'religion' => $row[__('religion')] ?? '',
+            'fathers_name' => $row[__('fathers_name')] ?? '',
+            'fathers_phone_number' => $row[__('fathers_phone_number')] ?? '',
+            'fathers_national_id' => $row[__('fathers_national_id')] ?? '',
+            'fathers_occupation' => $row[__('fathers_occupation')] ?? '',
+            'fathers_designation' => $row[__('fathers_designation')] ?? '',
             'fathers_annual_income' => $row[__('fathers_annual_income')] ?? 0,
-            'mothers_name'          => $row[__('mothers_name')],
-            'mothers_phone_number'  => $row[__('mothers_phone_number')] ?? '',
-            'mothers_national_id'   => $row[__('mothers_national_id')] ?? '',
-            'mothers_occupation'    => $row[__('mothers_occupation')] ?? '',
-            'mothers_designation'   => $row[__('mothers_designation')] ?? '',
+            'mothers_name' => $row[__('mothers_name')],
+            'mothers_phone_number' => $row[__('mothers_phone_number')] ?? '',
+            'mothers_national_id' => $row[__('mothers_national_id')] ?? '',
+            'mothers_occupation' => $row[__('mothers_occupation')] ?? '',
+            'mothers_designation' => $row[__('mothers_designation')] ?? '',
             'mothers_annual_income' => $row[__('mothers_annual_income')] ?? 0,
+            'guardian_name' => $row[__('guardian_name')] ?? 0,
+            'guardian_relationship' => $row[__('guardian_relationship')] ?? 0,
+            'guardian_phone_number' => $row[__('guardian_phone_number')] ?? 0,
+            'guardian_occupation' => $row[__('guardian_occupation')] ?? 0,
+            'home_email_address' => $row[__('home_email_address')] ?? 0,
+            'home_postal_address' => $row[__('home_postal_address')] ?? 0,
+            
         ];
         
-        create(StudentInfo::class, $student_info);
+        StudentInfo::create($student_info);
     }
 
-    public function getSectionId()
+    public function rules(): array
     {
-        if(!empty($this->class) && !empty($this->section)){
-            $class_id = Myclass::bySchool(auth()->user()->school_id)->where('class_number', $this->class)->pluck('id')->first();
-
-            $section = Section::where('class_id', $class_id)->where('section_number', $this->section)->pluck('id')->first();
-
-            return $section;
-        } else {
-            return 0;
-        }
-    }
-
-    public function getDormId()
-    {
-        $dormId = Dormitory::where(['id'=>$this->dormitoryId,'school_id'=>Auth::user()->school->id])->pluck('id')->first();
-
-        return $dormId;
-    }else{
-        return 0;
-    }
-
-    public function getIntakeId()
-    {
-        $intakeId = Intake::where(['id'=>$this->intakeId,'school_id'=>Auth::user()->school->id])->pluck('id')->first();
-
-        return $intakeId;
-    }else{
-        return 0;
+        return [
+            'salutation' => 'required|string',
+            'first_name' => 'required|string',
+            'middle_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => 'required|string',
+            'gender' => 'required|string',
+        ];
     }
 
     public function getStreamId()
     {
-        $streamId = Stream::where(['id'=>$this->streamId,'school_id'=>Auth::user()->school->id])->pluck('id')->first();
+        $streamId = Stream::where(['id'=>$this->southId,'school_id'=>Auth::user()->school->id])->firstOrFail();
 
         return $streamId;
-    }else{
-        return 0;
+    }
+
+    public function getDormId()
+    {
+        $dormId = Dormitory::where(['id'=>$this->dormId,'school_id'=>Auth::user()->school->id])->firstOrFail();
+
+        return $dormId;
+    }
+
+    public function getIntakeId()
+    {
+        $intakeId = Intake::where(['id'=>$this->intakeId,'school_id'=>Auth::user()->school->id])->firstOrFail();
+
+        return $intakeId;
     }
 
     public function chunkSize(): int

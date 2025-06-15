@@ -23,19 +23,21 @@
                             <span class="dotted-underline">{{$stream->name}}</span>
                         </span>
                     </div>
-                    <div style="margin-top: 40px;">
+                    <div class="report-table">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th class="table-left"><b>SUBJECTS</b></th>
-                                <th class="table-left"><b style="text-transform: uppercase;">{{ $examOneMark->exam->name }}</b></th>
-                                <th class="table-left"><b style="text-transform: uppercase;">{{ $examTwoMark->exam->name }}</b></th>
+                                <th class="table-left"><b style="text-transform: uppercase;">{{ $examOneMark->exam->initials }}</b></th>
+                                <th class="table-left"><b style="text-transform: uppercase;">{{ $examTwoMark->exam->initials }}</b></th>
                                 <th class="table-left"><b>MEAN</b></th>
+                                <th class="table-left"><b>REMARK</b></th>
+                                <th class="table-left"><b>TEACHER</b></th>
                             </tr>
                         </thead>
                         @if(!empty($streamStudents))
-                            @foreach($streamStudents as $st)
-                                @if((strtolower($st->user->full_name) === $name) && ($st->stream->id === $stream->id) && ($st->admission_no === $mark->admission_no))
+                        @foreach($streamStudents as $st)
+                        @if((strtolower($st->user->full_name) === $name) && ($st->stream->id === $stream->id) && ($st->admission_no === $mark->admission_no))
                         <tbody>
                             <tr>
                                 <td class="table-left"><b>MATHEMATICS</b></td>
@@ -56,6 +58,12 @@
                                     @endif
                                     @endforeach
                                     @endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($mathsSubjectRemarks)){{ $mathsSubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamMathematicsTeacher)){{ $streamMathematicsTeacher }}@endif
                                 </td>
                             </tr>
                             <tr>
@@ -78,6 +86,12 @@
                                     @endforeach
                                     @endif
                                 </td>
+                                <td class="table-left">
+                                    @if(!is_null($englishSubjectRemarks)){{ $englishSubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamEnglishTeacher)){{ $streamEnglishTeacher }}@endif
+                                </td>
                             </tr>
                             <tr>
                                 <td class="table-left"><b>KISWAHILI</b></td>
@@ -98,6 +112,12 @@
                                     @endif
                                     @endforeach
                                     @endif
+                                </td>
+                                <td class="table-left">
+                                    @if(!is_null($kiswahiliSubjectRemarks)){{ $kiswahiliSubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamKiswahiliTeacher)){{ $streamKiswahiliTeacher }}@endif
                                 </td>
                             </tr>
 
@@ -121,6 +141,12 @@
                                     @endif
                                     @endforeach
                                     @endif
+                                </td>
+                                <td class="table-left">
+                                    @if(!is_null($chemistrySubjectRemarks)){{ $chemistrySubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamChemistryTeacher)){{ $streamChemistryTeacher }}@endif
                                 </td>
                             </tr>
                             @else
@@ -147,6 +173,12 @@
                                     @endforeach
                                     @endif
                                 </td>
+                                <td class="table-left">
+                                    @if(!is_null($biologySubjectRemarks)){{ $biologySubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamBiologyTeacher)){{ $streamBiologyTeacher }}@endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -171,6 +203,12 @@
                                     @endif
                                     @endforeach
                                     @endif
+                                </td>
+                                <td class="table-left">
+                                    @if(!is_null($physicsSubjectRemarks)){{ $physicsSubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamPhysicsTeacher)){{ $streamPhysicsTeacher }}@endif
                                 </td>
                             </tr>
                             @else
@@ -197,6 +235,12 @@
                                     @endforeach
                                     @endif
                                 </td>
+                                <td class="table-left">
+                                    @if(!is_null($creSubjectRemarks)){{ $creSubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamCRETeacher)){{ $streamCRETeacher }}@endif
+                                </td>
                             </tr>
                             @else
                             @endif
@@ -222,30 +266,42 @@
                                     @endforeach
                                     @endif
                                 </td>
+                                <td class="table-left">
+                                    @if(!is_null($islamSubjectRemarks)){{ $islamSubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamIslamTeacher)){{ $streamIslamTeacher }}@endif
+                                </td>
                             </tr>
                             @else
                             @endif
 
-                            @if(!is_null($examOneMark->history) || !is_null($examTwoMark->history))
+                            @if(!is_null($examOneMark->history_and_government) || !is_null($examTwoMark->history_and_government))
                             <tr>
                                 <td class="table-left"><b>HISTORY</b></td>
                                 <td class="table-left">
-                                    {{ $examOneMark->history ?? '-' }}
-                                    @if(!is_null($examOneHistGrade)){{ $examOneHistGrade }}@endif
+                                    {{ $examOneMark->history_and_government ?? '-' }}
+                                    @if(!is_null($examOneHistoryAndGovernmentGrade)){{ $examOneHistoryAndGovernmentGrade }}@endif
                                 </td>
                                 <td class="table-left">
                                     {{ $examTwoMark->history ?? '-' }}
-                                    @if(!is_null($examTwoHistGrade)){{ $examTwoHistGrade }}@endif
+                                    @if(!is_null($examTwoHistoryAndGovernmentGrade)){{ $examTwoHistoryAndGovernmentGrade }}@endif
                                 </td>
                                 <td class="table-left">
-                                    {{ round($histAvg,1) ? : null ?? '-' }}
+                                    {{ round($histAndGovernmentAvg,1) ? : null ?? '-' }}
                                     @if(!empty($reportSubjectGrades))
                                     @foreach($reportSubjectGrades as $grade)
-                                    @if(($grade->subject->name === 'History') && ($grade->from_mark <= round($histAvg,0)) && ($grade->to_mark >= round($histAvg,0)))
+                                    @if(($grade->subject->name === 'History And Government') && ($grade->from_mark <= round($histAndGovernmentAvg,0)) && ($grade->to_mark >= round($histAndGovernmentAvg,0)))
                                     {{ $grade->grade }}
                                     @endif
                                     @endforeach
                                     @endif
+                                </td>
+                                <td class="table-left">
+                                    @if(!is_null($historyAndGovernmentSubjectRemarks)){{ $historyAndGovernmentSubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamHistoryAndGovernmentTeacher)){{ $streamHistoryAndGovernmentTeacher }}@endif
                                 </td>
                             </tr>
                             @else
@@ -256,11 +312,11 @@
                                 <td class="table-left"><b>GEOGRAPHY</b></td>
                                 <td class="table-left">
                                     {{ $examOneMark->geography ?? '-' }}
-                                    @if(!is_null($examOneGeogGrade)){{ $examOneGeogGrade }}@endif
+                                    @if(!is_null($examOneGeographyGrade)){{ $examOneGeographyGrade }}@endif
                                 </td>
                                 <td class="table-left">
                                     {{ $examTwoMark->geography ?? '-' }}
-                                    @if(!is_null($examTwoGeogGrade)){{ $examTwoGeogGrade }}@endif
+                                    @if(!is_null($examTwoGeographyGrade)){{ $examTwoGeographyGrade }}@endif
                                 </td>
                                 <td class="table-left">
                                     {{ round($geogAvg,1) ? : null ?? '-' }}
@@ -272,6 +328,12 @@
                                     @endforeach
                                     @endif
                                 </td>
+                                <td class="table-left">
+                                    @if(!is_null($geographySubjectRemarks)){{ $geographySubjectRemarks }}@endif
+                                </td>
+                                <td class="table-left" style="font-size: 16px;">
+                                    @if(!is_null($streamGeographyTeacher)){{ $streamGeographyTeacher }}@endif
+                                </td>
                             </tr>
                             @else
                             @endif 
@@ -281,66 +343,70 @@
                                 <td class="table-left"><b>MEAN SCORES</b></td>
                                 <td class="table-left">
                                     <b>
-                                        {{ $examOneTotal/5 }} @if(!is_null($examOneGenGrade)) {{ $examOneGenGrade }} @endif
+                                        {{ $examOneTotal/$subjectsTakenPerStream }} @if(!is_null($examOneGenGrade)) {{ $examOneGenGrade }} @endif
                                     </b>    
                                 </td>
                                 <td class="table-left">
                                     <b>
-                                        {{ $examTwoTotal/5 }} @if(!is_null($examTwoGenGrade)) {{ $examTwoGenGrade }} @endif
-                                    </b>
-                                    
-                                        
+                                        {{ $examTwoTotal/$subjectsTakenPerStream }} @if(!is_null($examTwoGenGrade)) {{ $examTwoGenGrade }} @endif
+                                    </b>    
                                 </td>
                                 <td class="table-left">
                                     <b>
-                                        {{ round($overalTotalAvg/5,1) }}
+                                        {{ round($overalTotalAvg/$subjectsTakenPerStream,1) }}
                                         @if(!empty($reportMeanGrades))
                                         @foreach($reportMeanGrades as $meanGrade)
-                                        @if(($meanGrade->from_mark <= round($overalTotalAvg/5,0)) && ($meanGrade->to_mark >= round($overalTotalAvg/5,0)))
+                                        @if(($meanGrade->from_mark <= round($overalTotalAvg/$subjectsTakenPerStream,0)) && ($meanGrade->to_mark >= round($overalTotalAvg/$subjectsTakenPerStream,0)))
                                         {{ $meanGrade->grade }}
                                         @endif
                                         @endforeach
                                         @endif
                                     </b>
                                 </td>
+                                <td class="table-left"><b>#</b></td>
+                                <td class="table-left"><b>#</b></td>
                             </tr>
                             <tr>
                                 <td class="table-left"><b>TOTAL MARKS</b></td>
                                 <td class="table-left"></td>
                                 <td class="table-left"></td>
-                                <td class="table-left"><b>{{ round($overalTotalAvg,0) }}/500</b></td>
+                                <td class="table-left"><b>{{ round($overalTotalAvg,0) }}/{{ $outOfMarksConstant }}</b></td>
+                                <td class="table-left"><b>#</b></td>
+                                <td class="table-left"><b>#</b></td>
                             </tr>
                             <tr>
                                 <td class="table-left"><b>GPA</b></td>
                                 <td class="table-left"></td>
                                 <td class="table-left"></td>
-                                <td class="table-left"><b>{{ $overalGPA }}</b></td>
+                                <td class="table-left"><b>{{ $overalGPA }} PTS</b></td>
+                                <td class="table-left"><b>#</b></td>
+                                <td class="table-left"><b>#</b></td>
                             </tr> 
                         </tfoot>
-                                @endif
-                            @endforeach
+                        @endif
+                        @endforeach
                         @endif
                     </table>
                     </div>
                     <div style="margin-top:15px">
-                        <span colspan="2" width="50%" style="text-align: left;"><b>CLASS POSITION:</b> 
+                        <span colspan="2" width="50%" style="text-align: left;"><b>Overal Position:</b> 
                             @if(!is_null($overalPosition ))
-                            <span style="margin-right: 400px;">
+                            <span style="margin-right: 400px;" class="dotted-underline">
                                 {{ $overalPosition }}/{{ $stream->class->students->count() }}
                             </span>
                             @else
                             <b>{{ __('______') }}</b>
                             @endif   
                         </span>
-                        <span colspan="2" width="50%" style="margin-left: 500px;"><b>STREAM POSITION:</b>
+                        <span colspan="2" width="50%" style="float: right;margin-right: 20px"><b>Stream Position:</b>
                             @if(!is_null($streamPosition))
-                            <span>{{ $streamPosition }}/{{ $stream->students->count() }}</span>
+                            <span class="dotted-underline">{{ $streamPosition }}/{{ $stream->students->count() }}</span>
                             @else
                             <b>{{ __('______') }}</b>
                             @endif
                         </span>
                     </div>
-                    <div><p><b>General Remark:</b> <i>{{ $reportGeneralRemark }}.</i></p></div>
+                    <div><p><b>General Remark:</b> <i class="dotted-underline">{{ $reportGeneralRemark }}.</i></p></div>
                     <div class="col-lg-12" style="margin-top: -15px;">
                         <p style="width: 100%;line-height: 0.5cm;line-height: 0.7cm;">
                             <b>Individual Remark(s):</b> ...........................................................................................................................
@@ -377,7 +443,7 @@
                         </div>
                         <p style="font-size: 20px;margin-top: 1cm;">
                             <i> 
-                                <b>NB:</b> All students are supposed to report back to school before <b>5.00pm</b> on {{ $openingDate }}. This should be adhered to strictly.
+                                <b>NB:</b> <span class="mnb">All students are supposed to report back to school before <b>5.00pm</b> on {{ $openingDate }}. This should be adhered to strictly.</span>
                             </i>
                         </p>
                 </div>

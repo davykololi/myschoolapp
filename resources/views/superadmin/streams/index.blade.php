@@ -2,6 +2,7 @@
 @section('title', '| Streams List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
@@ -30,32 +31,58 @@
                                 <!-- Table Headings -->
                                 <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                     <tr>
-                                        <th scope="col" class="px-2 py-4" width="10%">NO</th>
-                                        <th scope="col" class="px-2 py-4" width="30%">STREAM</th>
-                                        <th scope="col" class="px-2 py-4" width="20%">STUDENTS</th>
-                                        <th scope="col" class="px-2 py-4" width="15%">MALES</th>
-                                        <th scope="col" class="px-2 py-4" width="15%">FEMALES</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">NO</th>
+                                        <th scope="col" class="px-2 py-4" width="20%">STREAM</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">STUDENTS</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">TEACHERS</th>
+                                        <th scope="col" class="px-2 py-4" width="20%">C.TEACHER</th>
+                                        <th scope="col" class="px-2 py-4" width="20%">C.PREFECT</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">MALES</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">FEMALES</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">FACILT</th>
                                         <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                     </tr>
                                 </thead>
                                 <!-- Table Body -->
                                 <tbody>
-                                    @foreach($streams as $stream)
+                                    @foreach($streams as $key => $stream)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{ $loop->iteration }}</div>
+                                            <div>
+                                                {{ $streams->perPage() * ($streams->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{ $stream->name }}</div>
+                                            <div>
+                                                <a type="button" href="{{ route('superadmin.streams.show',$stream->id) }}">
+                                                    {{ $stream->name }}
+                                                </a>
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{ $stream->students->count() }}</div>
+                                        </td>
+                                        <td class="whitespace-nowrap p-2">
+                                            <div>{{ $stream->stream_subjects->count() }}</div>
+                                        </td>
+                                        <td class="whitespace-nowrap p-2">
+                                            <div>{{ $stream->class_teacher }}</div>
+                                        </td>
+                                        <td class="whitespace-nowrap p-2">
+                                            <div>{{ $stream->class_prefect }}</div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{ $stream->males() }}</div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{ $stream->females() }}</div>
+                                        </td>
+                                        <td class="whitespace-nowrap p-2">
+                                            @if($stream->stream_subjects->isNotEmpty())
+                                            <div class="success-label">YES</div>
+                                            @else
+                                            <div class="danger-label">NO</div>
+                                            @endif
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <form action="{{route('superadmin.streams.destroy',$stream->id)}}" method="POST" class="inline-flex">
@@ -85,4 +112,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

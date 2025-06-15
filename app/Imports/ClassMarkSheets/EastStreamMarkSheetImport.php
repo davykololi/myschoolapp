@@ -43,6 +43,8 @@ class EastStreamMarkSheetImport implements ToModel,WithHeadingRow,WithBatchInser
     */
     public function model(array $row)
     {
+        $student = Student::where('admission_no',$row['admission_no'])->first();
+
         return new Mark([
             //
             'name' => $row['name'],
@@ -51,15 +53,20 @@ class EastStreamMarkSheetImport implements ToModel,WithHeadingRow,WithBatchInser
             'mathematics' => $row['maths'],
             'english' => $row['eng'],
             'kiswahili' => $row['kisw'],
+            'biology' => $row['bio'],
+            'physics' => $row['phy'],
             'islam' => $row['islam'],
             'geography' => $row['geog'],
+            'agriculture' => $row['agric'],
+            'business_studies' => $row['bst'],
+            'french' => $row['fr'],
             'year_id' => $this->yearId,
             'term_id' => $this->termId,
-            'exam_id' => $this->getExamId(),
+            'exam_id' => $this->examId,
             'teacher_id' => $this->teacherId,
             'stream_id' => $this->getStreamId(),
             'class_id' => $this->classId,
-            'student_id' => $this->getStudentId(),
+            'student_id' => $student->id,
             'school_id' => auth()->user()->school->id,
         ]);
     }
@@ -74,28 +81,10 @@ class EastStreamMarkSheetImport implements ToModel,WithHeadingRow,WithBatchInser
         return 1000;
     }
 
-    public function getExamId()
-    {
-        $exam = Exam::where(['id'=>$this->examId,'year_id'=>$this->yearId,'term_id'=>$this->termId])->first();
-
-        return $exam->id;
-    }
-
     public function getStreamId()
     {
         $stream = Stream::where(['stream_section_id'=>$this->eastId,'class_id'=>$this->classId])->first();
 
         return $stream->id;
-    }
-
-    public function getStudentId()
-    {
-        $stream = Stream::where(['stream_section_id'=>$this->eastId,'class_id'=>$this->classId])->first();
-        $strStudents = $stream->students()->leftJoin('marks','marks.admission_no','=','students.admission_no')->get()->pluck('id');
-        foreach($strStudents as $st){
-            $studentId = $st;
-
-            return $st;
-        } 
     }
 }

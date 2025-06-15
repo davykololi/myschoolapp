@@ -19,7 +19,7 @@ class StreamSubjectService
 
 	public function all()
 	{
-		return $this->streamSubjectRepo->all();
+		return $this->streamSubjectRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

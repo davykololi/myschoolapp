@@ -8,12 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Library extends Model implements Searchable
 {
     //
+    use HasUuids;
+    
     protected $table = 'libraries';
     protected $fillable = ['name','code','phone_no','lib_head','lib_asshead','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -46,9 +58,9 @@ class Library extends Model implements Searchable
         return $this->belongsToMany('App\Models\Meeting')->withTimestamps();
     }
 
-    public function rewards(): BelongsToMany
+    public function awards(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
+        return $this->belongsToMany('App\Models\Award')->withTimestamps();
     }
 
     public function books(): HasMany
@@ -68,6 +80,6 @@ class Library extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('meetings','rewards','books','librarians','school','students')->get();
+        return $query->with('meetings','awards','books','librarians','school','students')->latest();
     }
 }

@@ -2,6 +2,7 @@
 @section('title', '| Department Section Details')
 
 @section('content')
+@role('superadmin')
 <main class="container max-w-screen">
     <div class="row">
     @include('partials.messages')
@@ -44,4 +45,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

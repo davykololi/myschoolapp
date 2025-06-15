@@ -23,6 +23,11 @@ class BookRepository implements BookInterface
         return $this->book->eagerLoaded()->get();
     }
 
+    public function paginated()
+    {
+        return $this->book->eagerLoaded()->paginate(50);
+    }
+
     public function create(array $data)
     {
     	return $this->book->create($data);

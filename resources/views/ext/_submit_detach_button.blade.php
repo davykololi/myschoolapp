@@ -1,5 +1,3 @@
-	<div class="form-group row mb-0">
-        <div class="col-md-6 offset-md-4">
-            <button type="submit" class="btn btn-primary">Detach</button>
+        <div class="justify-center mt-4">
+            <button class="attach-button">Detach</button>
         </div>
-    </div>

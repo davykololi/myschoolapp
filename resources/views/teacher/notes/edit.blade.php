@@ -1,6 +1,7 @@
 @extends('layouts.teacher')
 
 @section('content')
+@role('teacher')
     <!-- frontend-main view -->
     <x-frontend-main>
 <div class="row">
@@ -37,4 +38,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

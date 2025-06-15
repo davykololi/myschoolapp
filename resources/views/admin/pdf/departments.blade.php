@@ -24,7 +24,7 @@
             <tr>
                 <td class="left">{{ $loop->iteration }}</td>
                 <td class="left">{{ $schoolDept->name }}</td>
-                <td class="left">{{ $schoolDept->dept_section->name }}</td>
+                <td class="left">{{ $schoolDept->department_section->name }}</td>
                 <td class="left">{{ $schoolDept->phone_no }}</td>
                 <td class="left">{{ $schoolDept->head_name }}</td>
                 <td class="left">{{ $schoolDept->asshead_name }}</td>

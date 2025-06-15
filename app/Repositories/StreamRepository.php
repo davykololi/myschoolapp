@@ -23,6 +23,11 @@ class StreamRepository implements StreamInterface
         return $this->stream->eagerLoaded()->get();
     }
 
+    public function paginated()
+    {
+        return $this->stream->eagerLoaded()->paginate(10);
+    }
+
     public function create(array $data)
     {
     	return $this->stream->create($data);

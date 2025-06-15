@@ -2,6 +2,7 @@
 @section('title', '| Show Year')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
 <div role="main" class="container"  style="margin-top: 5px" id="main">
     @include('partials.messages')
@@ -39,4 +40,5 @@
 </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

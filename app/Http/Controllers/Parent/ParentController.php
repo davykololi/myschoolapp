@@ -42,7 +42,7 @@ class ParentController extends Controller
     public function parentChildren()
     {
         $user = Auth::user();
-        $parentChildren = $user->parent->children()->with('school','libraries','teachers','class','stream','clubs','payments','payment_records','user')->get();
+        $parentChildren = $user->parent->children()->with('school','libraries','teachers','stream','clubs','payments','payment_records','user')->get();
 
         return view('parent.children',compact('user','parentChildren'));
     }
@@ -52,23 +52,33 @@ class ParentController extends Controller
         $currentYear = date('Y');
         $year = Year::where('year',$currentYear)->first();
         $currentTerm = Term::where('status',1)->first();
-        $currentExam = Exam::where(['status'=>1,'year_id'=>$year->id,'term_id'=>$currentTerm->id])->first();
+
+        if(!$currentTerm){
+            return back()->withErrors('Major details notyet set. Keep checking later!');
+        }
+
+        $currentExam = Exam::where(['status'=>1,'year_id'=>$year->id,'term_id'=>$currentTerm->id,'results_published'=>1])->first();
         $vv = collect($child->stream->subjects()->pluck('name'));
         $streamSubjects = $vv->toArray();
 
+        $childAwards = $child->awards()->with('student.user')->get();
+        $childAsignments = $child->assignments()->with('student.user','teacher')->get();
+        $childClubs = $child->clubs()->with('student.user')->get();
+        $childMeetings = $child->meetings()->with('student.user')->get();
+
         if(!is_null($currentExam)){
             $results = $currentExam->name." "."Results";
-            return view('parent.show_child',compact('child','streamSubjects','currentExam','streamSubjects','results'));
+            return view('parent.show_child',compact('child','streamSubjects','currentExam','streamSubjects','results','childAwards','childAsignments','childClubs','childMeetings'));
         }
 
-        return view('parent.show_student',compact('child','streamSubjects','currentExam'));
+        return view('parent.show_child',compact('child','streamSubjects','currentExam','childAwards','childAsignments','childClubs','childMeetings'));
     }
 
     public function studentStream(Stream $stream)
     {
-        $standardSubjects = $stream->standard_subjects;
+        $streamSubjects = $stream->stream_subjects()->with('teacher.user','subject')->get();
 
-        return view('parent.student_stream',compact('stream','standardSubjects'));
+        return view('parent.student_stream',compact('stream','streamSubjects'));
     }
 
     public function schoolTeachers()

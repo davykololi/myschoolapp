@@ -2,6 +2,7 @@
 @section('title', '| Admin Clubs List')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full container">
@@ -80,4 +81,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

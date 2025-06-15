@@ -15,10 +15,8 @@ class CreateGameStreamTable extends Migration
     {
         Schema::create('game_stream', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('stream_id')->unsigned();
-            $table->bigInteger('game_id')->unsigned();
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
-            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('game_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -22,13 +22,19 @@
                 <form action="{{ route('admin.exams.store') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
                     @include('ext._csrfdiv')
                     <div class="w-full flex flex-col md:flex-row lg:flex-row mb-4 gap-2">
-                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
                             <label class="control-label col-sm-2" >Exam Name</label>
                             <div class="flex flex-col">
                                 <input type="text" name="name" id="name" class="lib-form-input" placeholder="Exam Name">
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
+                            <label class="control-label col-sm-2" >Exam Initials</label>
+                            <div class="flex flex-col">
+                                <input type="text" name="initials" id="initials" class="lib-form-input" placeholder="Exam Initials">
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
                             <label class="control-label col-sm-2" >Start Date</label>
                             <div class="flex flex-col">
                                 <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
@@ -36,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
                             <label class="control-label col-sm-2" >End Date</label>
                             <div class="flex flex-col">
                                 <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>

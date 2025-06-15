@@ -197,7 +197,7 @@
                                 <label class="form-input-label-one" for="position">
                                     Student Position: 
                                 </label>
-                                @include('ext._attach_student_position')
+                                @include('ext._attach_position')
                             </div>
                         </div>
                         <div class="w-full md:w-1/4 lg:w-1/4 px-2">

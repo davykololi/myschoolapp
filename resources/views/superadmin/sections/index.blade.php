@@ -2,6 +2,7 @@
 @section('title', '| Sections List')
 
 @section('content')
+@role('superadmin')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
 <div class="row">
     <div class="col-lg-12">
@@ -24,14 +25,20 @@
                 <table class="table table-bordered table-head-bg-info table-bordered-bd-info">
                     <!-- Table Headings -->
                     <thead>
-                        <th width="30%">NAME</th>
+                        <th width="5"></th>
+                        <th width="25%">NAME</th>
                         <th width="40%">DESCRIPTION</th>
                         <th width="30%">ACTION</th>
                     </thead>
                     <!-- Table Body -->
                     <tbody>
-                    @foreach($sections as $section)
+                    @foreach($sections as $key => $section)
                         <tr>
+                            <td class="table-text">
+                                <div>
+                                    {{ $sections->perPage() * ($sections->currentPage() - 1) + $key + 1 }}
+                                </div>
+                            </td>
                             <td class="table-text">
                                 <div>{{$section->name}}</div>
                             </td>
@@ -59,4 +66,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

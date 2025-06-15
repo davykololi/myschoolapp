@@ -18,7 +18,7 @@ class DepartmentSectionService
 
 	public function all()
 	{
-		return $this->deptSectionRepo->all();
+		return $this->deptSectionRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

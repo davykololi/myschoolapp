@@ -38,7 +38,7 @@ class AccountantController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if($user->hasRole('accountant')){
+        if(Auth::check() && $user->hasRole('accountant')){
             return view('accountant.accountant');
         } 
     }
@@ -46,7 +46,7 @@ class AccountantController extends Controller
     public function feeBalance(Request $request)
     {
         $user = Auth::user();
-        if($user->hasRole('accountant')){
+        if(Auth::check() && $user->hasRole('accountant')){
             $students = $this->studentService->all();
             $classes = $this->classService->all();
             $streams = $this->streamService->all();

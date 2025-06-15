@@ -11,9 +11,9 @@
         .table-left{text-align: left;}
         .bgcolor-grey{background-color: grey}
         .uc{text-transform: uppercase;}
-        .school_margin{margin-top: -0.8em;margin-bottom: -0.4em;margin-left: 32em;font-family: Arial Narrow;}
-        .email_margin{margin-top: 0.5em;margin-bottom: 10px;margin-left: 32em;}
-        .postal-mt {margin-top: -28px;margin-left: 32em;font-family: Arial Narrow;}
+        .school_margin{margin-top: -0.8em;margin-bottom: -0.4em;text-align: center;font-family: Arial Narrow;}
+        .email_margin{margin-top: 0.5em;margin-bottom: 10px;text-align: center;}
+        .postal-mt {margin-top: -28px;text-align: center;font-family: Arial Narrow;}
         .main-heading {text-align: center;margin-right: 1.5cm;color: midnightblue;letter-spacing: 7px;}
         #table_style{page-break-inside: always;}
         .table_caption{text-transform: uppercase;text-align: center;}

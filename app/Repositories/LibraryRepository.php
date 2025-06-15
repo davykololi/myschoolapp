@@ -20,7 +20,12 @@ class LibraryRepository implements LibraryInterface
 
     public function all()
     {
-        return $this->libo->eagerLoaded();
+        return $this->libo->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->libo->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

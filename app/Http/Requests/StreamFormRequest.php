@@ -28,13 +28,13 @@ class StreamFormRequest extends FormRequest
             return [
                 //
                 'name' => 'required|string|max:100',
-                'class' => 'required|exists:classes,id',
+                'class_id' => 'required|exists:classes,id',
                 'stream_section' => 'required|exists:stream_sections,id', 
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
-                'class' => 'required|exists:classes,id',
+                'class_id' => 'required|exists:classes,id',
                 'stream_section' => 'required|exists:stream_sections,id',
             ];
         }
@@ -47,14 +47,14 @@ class StreamFormRequest extends FormRequest
             return [
                 //
                 'name.required' => 'The name of the stream is required',
-                'class.required' => 'The class this stream belongs to is required',
+                'class_id.required' => 'The class this stream belongs to is required',
                 'stream_section.required' => 'The stream section this stream belongs to is required',
             ];
         } else {
             return [
                 //
                 'name.required' => 'The class stream is required',
-                'class.required' => 'The class this stream belongs to is required',
+                'class_id.required' => 'The class this stream belongs to is required',
                 'stream_section.required' => 'The stream section this stream belongs to is required',
                 
             ];

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Auth;
+use App\Models\Timetable;
 use App\Services\TimetableService;
 use App\Services\StreamService;
 use App\Services\ClassService;
@@ -39,12 +41,22 @@ class TimetableController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $timetables = $this->timetableService->all();
+        $user = Auth::user();
+        $search = strtolower($request->search);
+        if($user->hasRole('admin')){
+            if($search){
+                $timetables = Timetable::whereLike(['exam.name', 'exam.type', 'exam.start_date', 'exam.end_date','stream.name', 'class.name'], $search)->eagerLoaded()->paginate(15);
 
-        return view('admin.timetables.index',['timetables'=>$timetables]);
+                return view('admin.timetables.index',['timetables'=>$timetables]);
+            } else {
+                $timetables = $this->timetableService->paginated();
+
+                return view('admin.timetables.index',['timetables'=>$timetables]);
+            }
+        }
     }
 
     /**
@@ -74,7 +86,7 @@ class TimetableController extends Controller
         //
         $timetable = $this->timetableService->create($request);
 
-        return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->name." ".'info created successfully'));
+        return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->desc." ".'info created successfully'));
     }
 
     /**
@@ -125,7 +137,7 @@ class TimetableController extends Controller
             Storage::delete('public/files/'.$timetable->file);
             $this->timetableService->update($request,$id);
 
-            return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->name." ".'info updated successfully'));
+            return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->desc." ".'info updated successfully'));
         }
     }
 
@@ -143,7 +155,7 @@ class TimetableController extends Controller
             Storage::delete('public/files/'.$timetable->file);
             $this->timetableService->delete($id);
 
-            return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->name." ".'info deleted successfully'));
+            return redirect()->route('admin.timetables.index')->withSuccess(ucwords($timetable->desc." ".'info deleted successfully'));
         }
     }
 }

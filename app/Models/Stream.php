@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use App\Models\Subject;
 use App\Models\StandardSubject;
 use App\Models\Book;
@@ -17,15 +18,24 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Stream extends Model implements Searchable
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+    
     protected $table = 'streams';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $fillable = ['name','code','stream_section_id','school_id','class_id'];
+    protected $fillable = ['name','class_teacher','class_prefect','code','stream_section_id','school_id','class_id'];
     protected $append = ['balances'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -103,9 +113,9 @@ class Stream extends Model implements Searchable
         return $this->belongsToMany('App\Models\Meeting')->withTimestamps();
     }
 
-    public function rewards(): BelongsToMany
+    public function awards(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
+        return $this->belongsToMany('App\Models\Award')->withTimestamps();
     }
 
     public function clubs(): BelongsToMany
@@ -145,7 +155,7 @@ class Stream extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','school','class','stream_subjects','stream_section','timetables');
+        return $query->with('teachers','students','school','class','stream_subjects','stream_section','timetables')->latest();
     }
 
     public function grades(): HasManyThrough
@@ -161,5 +171,20 @@ class Stream extends Model implements Searchable
     public function females(): int
     {
         return $this->hasMany('App\Models\Student','stream_id','id')->where(['gender'=>'Female'])->count();
+    }
+
+    public function teacherAssignedToStream()
+    {
+        return $this->stream_subjects()->where('teacher_id','=',Auth::user()->teacher->id)->where('stream_id','=',$this->id)->exists();
+    }
+
+    public function stream_head_teachers(): HasMany
+    {
+        return $this->hasMany(StreamHeadTeacher::class,'stream_id','id');
+    }
+
+    public function subject_remarks(): HasMany
+    {
+        return $this->hasMany(SubjectRemark::class,'stream_id','id');
     }
 }

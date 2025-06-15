@@ -58,27 +58,41 @@ class TeacherController extends Controller
     public function streams(Request $request)
     {
         $user = Auth::user();
-        $streams = $this->streamService->all();
-        $teacherStreamSubjects = $user->teacher->stream_subjects()->with('teacher','stream','subject')->get();
+        $search = strtolower($request->search);
+        if($user->hasRole('teacher')){
+            if($search){
+                $streams = Stream::whereLike(['class.name', 'class.initials', 'name', 'class_teacher', 'class_prefect','code'], $search)->eagerLoaded()->paginate(15);
+                $streamTeacher = StreamSubject::where('teacher_id',$user->teacher->id)->firstOrFail();
+                $teacherStreamSubjects = $streamTeacher->teacher->stream_subjects()->with('teacher','stream','subject')->get();
         
-        return view('teacher.streams',compact('user','streams','teacherStreamSubjects'));
+                return view('teacher.streams',compact('user','streams','streamTeacher','teacherStreamSubjects'));
+            } else {
+                $streams = $this->streamService->paginated();
+                $streamTeacher = StreamSubject::where('teacher_id',$user->teacher->id)->firstOrFail();
+                $teacherStreamSubjects = $streamTeacher->teacher->stream_subjects()->with('teacher','stream','subject')->get();
+        
+                return view('teacher.streams',compact('user','streams','streamTeacher','teacherStreamSubjects'));
+            }
+        }
+        
     }
 
     public function showStream(Stream $stream)
     {
         $user = Auth::user();
         $streamSubject = StreamSubject::with('teacher.streams','teacher.user','stream','school','subject')->where(['teacher_id'=>$user->teacher->id,'stream_id'=>$stream->id])->first();
-        $teacherStreamSubjects = $user->teacher->stream_subjects()->with('teacher','stream','subject')->get();
+        $teacherStreamSubjects = $stream->stream_subjects()->with('teacher.user','stream','subject')->get();
 
         if($streamSubject === null){
-            return redirect()->route('teacher.streams')->withErrors("Not Authorized");
+            $authUserDetails = Auth::user()->salutation." ".Auth::user()->first_name;
+            return redirect()->route('teacher.streams')->with("error","Sorry"." ".$authUserDetails."You haven't been assigned to this class, therefore access denied!");
         }
-        $subjects = Subject::with('teachers','students','school','department')->get();
+        $streamSubjects = $stream->subjects()->eagerLoaded()->get();
         $streamTimetables = $stream->timetables()->with('stream')->get();
-        $teacherNotes = $user->teacher->notes()->with('subject.department','stream')->get();
+        $teacherNotes = $streamSubject->teacher->notes()->with('subject.department','stream')->get();
         $streamStudents = $stream->students()->with('user')->get();
         
-        return view('teacher.show_stream',compact('user','teacherStreamSubjects','streamSubject','stream','subjects','streamTimetables','teacherNotes','streamStudents')); 
+        return view('teacher.show_stream',compact('user','teacherStreamSubjects','streamSubject','stream','streamSubjects','streamTimetables','teacherNotes','streamStudents')); 
     }
 
     public function showStudent(Student $student)

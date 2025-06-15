@@ -11,13 +11,15 @@
     <div class="w-full">
         <div class="mx-2 md:mx-8 lg:mx8">
             <div>
-                <div>
-                    <h2 class="uppercase text-center font-hairline text-2xl mb-4">
-                        {{ Auth::user()->student->stream->name }} Exam Schedule
-                    </h2>
-                </div>
-                <div style="float: right;margin-right: 110px;">
-                    <div class="absolute"><x-back-button/></div>
+                <h2 class="uppercase text-center font-hairline text-2xl mb-4">
+                    {{ Auth::user()->student->stream->name }} Exam Schedule
+                </h2>
+            </div>
+            <div style="float: right;margin-right: 108px;">
+                <div class="absolute mb-6">
+                    <x-button class="back-button" data-te-ripple-init data-te-ripple-color="light">
+                        <x-back-svg-n-url/>
+                    </x-button>
                 </div>
             </div>
             <div class="flex flex-col overflow-x-auto mt-12">
@@ -36,7 +38,8 @@
                                 </thead>
                                 <tbody>
                                     @if(!empty($streamExams))
-                                    @forelse($streamExams as $exam)
+                                    @foreach($streamExams as $exam)
+                                    @if($exam->status === 1)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap px-2 py-4">{{ $loop->iteration }}</td>
                                         <td class="whitespace-nowrap px-2 py-4">{{ $exam->name }}</td>
@@ -57,7 +60,9 @@
                                         </td>
                                         @else
                                         <td class="whitespace-nowrap px-2 py-4">
-                                            <span class="text-red-700">{{ __('Exam Timetable Notyet Uploaded') }}</span>
+                                            <x-button class="bg-red-700 text-white py-1 px-2 rounded">
+                                                {{ __('Notyet Uploaded') }}
+                                            </x-button>
                                         </td>
                                         @endif
                                         @endforeach
@@ -65,17 +70,23 @@
 
                                         @if($examTimetables->isEmpty())
                                         <td class="whitespace-nowrap px-2 py-4">
-                                            <span class="text-red-700">{{ __('Exam Timetable Notyet Uploaded') }}</span>
+                                            <button class="bg-red-700 text-white py-1 px-2 rounded">
+                                                {{ __('Notyet Uploaded') }}
+                                            </button>
                                         </td>
                                         @endif
-                                    @empty
-                                        <td colspan="12" class="w-full text-center text-white bg-blue-900 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12">
-                                            This class has no exam schedule at the moment.
-                                        </td>
                                     </tr>
-                                    @endforelse
+                                    @endif
+                                    @endforeach
                                     @endif
                                 </tbody>
+                                <tfoot>
+                                    @if($streamExams->isEmpty())
+                                    <td colspan="12" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12 text-2xl">
+                                        {{ Auth::user()->student->stream->name }} has no exam schedule at the moment.
+                                    </td>
+                                    @endif
+                                </tfoot>
                             </table>
                         </div>
                     </div>

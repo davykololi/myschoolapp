@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accountant;
 
 use PDF;
+use Auth;
 use Carbon\Carbon;
 use App\Models\School;
 use App\Models\Payment;
@@ -10,6 +11,7 @@ use App\Models\MyClass;
 use App\Models\Stream;
 use App\Models\Student;
 use App\Models\PaymentRecord;
+use Illuminate\Support\Number;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -37,10 +39,13 @@ class PdfController extends Controller
         $school = auth()->user()->school;
         $studentName = $paymentRecord->student->user->full_name;
         $stream =  $paymentRecord->student->stream->name;
-    	$title = "Payment Receipt";
-        $qrcode = $school->name."."." ".$studentName." "."payment reciept for"." ".$paymentRecord->payment->payment_section->name."."." "."Paid: ".$paymentRecord->amount_paid.","."Balance :".$paymentRecord->balance;
-        $downloadTitle = $school->name."."." ".$studentName." "."payment reciept for"." ".$paymentRecord->payment->payment_section->name;
-    	$pdf = PDF::loadView('accountant.pdf.student_receipt',['paymentRecord'=>$paymentRecord,'school'=>$school,'title'=>$title,'studentName'=>$studentName,'stream'=>$stream,'downloadTitle'=>$downloadTitle,'qrcode'=>$qrcode])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
+    	$title = "Official Payment Receipt";
+        $inquiryInfo = ". Consult: ".Auth::user()->accountant->phone_no;
+        $paymentFor = date('Y')." School Fees";
+        $qrcode = $school->name."."." ".$studentName." "."'s Receipt For"." ".$paymentFor."."." "."Paid: "." Ksh ".number_format($paymentRecord->amount_paid,2).", "."Bal:"." Kshs ".number_format($paymentRecord->student->fee_balance,2)." ".". Paid via: ".$paymentRecord->payment_mode." on:".$paymentRecord->payment_date.". Ref :".$paymentRecord->payment_ref_code." ".$inquiryInfo; 
+        $downloadTitle = $school->name."."." ".$studentName." "."payment for"." ".$paymentFor;
+        $amountPaidInWords = Number::spell($paymentRecord->amount_paid);
+    	$pdf = PDF::loadView('accountant.pdf.student_receipt',['paymentRecord'=>$paymentRecord,'school'=>$school,'title'=>$title,'studentName'=>$studentName,'stream'=>$stream,'downloadTitle'=>$downloadTitle,'qrcode'=>$qrcode,'paymentFor'=>$paymentFor,'amountPaidInWords'=>$amountPaidInWords])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a5','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();
@@ -59,10 +64,10 @@ class PdfController extends Controller
 
     public function streamFeeBalances(Request $request)
     {
-        $streamId = $request->stream;
+        $streamId = $request->stream_id;
         
         if(is_null($streamId)){
-            return back()->withErrors('Please select the stream first!');
+            return back()->withErrors('Please select the stream name first!');
         }
 
         $stream = Stream::where('id',$streamId)->first();
@@ -72,10 +77,18 @@ class PdfController extends Controller
             return back()->withErrors('Students notyet assigned to'." ".$stream->name);
         }
 
+        $studentsIds = $streamStudents->pluck('id');
+        $studentsIdArray = $studentsIds->toArray();
+        $existsStreamPayments = PaymentRecord::whereIn('student_id', $studentsIdArray)->exists();
+
+        if(!$existsStreamPayments){
+            return back()->withErrors('No payments initiated for students in'." ".$stream->name);
+        }
+
         $streamTotalBalance = streamTotalBalance($stream);
         $school = auth()->user()->school;
         $title = $stream->name." "."Fee Balances";
-        $downloadTitle = $school->name." "."-"." ".$stream->name." "."Fee Balances";
+        $downloadTitle = $school->name." "."-"." ".$stream->name." "."Fee Balances"." ".". Consult: ".Auth::user()->accountant->phone_no." where necessary. Thank you.";
         $pdf = PDF::loadView('accountant.pdf.stream_fee_balances',['stream'=>$stream,'streamStudents'=>$streamStudents,'streamTotalBalance'=>$streamTotalBalance,'school'=>$school,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','portrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -90,10 +103,10 @@ class PdfController extends Controller
 
     public function classFeeBalances(Request $request)
     {
-        $classId = $request->class;
+        $classId = $request->class_id;
         
         if(is_null($classId)){
-            return back()->withErrors('Please select the class first!');
+            return back()->withErrors('Please select the class name first!');
         }
 
         $class = MyClass::where('id',$classId)->first();
@@ -103,10 +116,18 @@ class PdfController extends Controller
             return back()->withErrors('Students notyet assigned to'." ".$class->name);
         }
 
+        $studentsIds = $classStudents->pluck('id');
+        $studentsIdArray = $studentsIds->toArray();
+        $existsClassPayments = PaymentRecord::whereIn('student_id', $studentsIdArray)->exists();
+
+        if(!$existsClassPayments){
+            return back()->withErrors('No payments initiated for students in'." ".$class->name);
+        }
+
         $classTotalBalance = classTotalBalance($class);
         $school = auth()->user()->school;
         $title = $class->name." "."Fee Balances";
-        $downloadTitle = $school->name." "."-"." ".$class->name." "."Fee Balances";
+        $downloadTitle = $school->name." "."-"." ".$class->name." "."Fee Balances."." "."Consult: ".Auth::user()->accountant->phone_no." where necessary. Thank you.";
         $pdf = PDF::loadView('accountant.pdf.class_fee_balances',['class'=>$class,'classStudents'=>$classStudents,'classTotalBalance'=>$classTotalBalance,'school'=>$school,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','portrait');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -121,20 +142,25 @@ class PdfController extends Controller
 
     public function studentPaymentStatement(Request $request)
     {
-        $studentId = $request->student;
+        $studentId = $request->student_id;
         if(is_null($studentId)){
-            return back()->withErrors('Please select student first!');
+            return back()->withErrors('Please select student name first!');
         }
 
         $student = Student::where('id',$studentId)->first();
+        $existsStudentPayments = PaymentRecord::where('student_id',$student->id)->exists();
+        if(!$existsStudentPayments){
+            return back()->withErrors('No payments initiated for'." ".$student->user->full_name);
+        }
+
         $studentPayments = $student->payments()->with('payment_records','student','year','terms')->get();
         
         if(($student->payment_records->isEmpty() || $student->payments->isEmpty())){
             return back()->withErrors('This student has no payment records at all !');
         }
         $school = auth()->user()->school;
-        $title = $student->user->full_name." "."Payment Statement";
-        $downloadTitle = $school->name." "."-"." ".$title;
+        $title = $student->user->full_name." "."Fee Payment Statement.";
+        $downloadTitle = $school->name." "."-"." ".$title." "." Consult: ".Auth::user()->accountant->phone_no." where necessary.";
         $pdf = PDF::loadView('accountant.pdf.student_payment_statement',['student'=>$student,'studentPayments'=>$studentPayments,'school'=>$school,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -157,11 +183,12 @@ class PdfController extends Controller
         if($payments->isEmpty()){
             return back()->withErrors('No payments with the provided reference number found!');
         }
-        
+
+        $totalSum = paymentByRefNumberTotalSum($payments);
         $school = auth()->user()->school;
         $title = $paymentRefNo." "."Payment List";
         $downloadTitle = $school->name." "."-"." ".$title;
-        $pdf = PDF::loadView('accountant.pdf.payments_by_refno',['payments'=>$payments,'school'=>$school,'title'=>$title,'downloadTitle'=>$downloadTitle])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','portrait');
+        $pdf = PDF::loadView('accountant.pdf.payments_by_refno',['payments'=>$payments,'school'=>$school,'title'=>$title,'downloadTitle'=>$downloadTitle,'totalSum'=>$totalSum])->setOptions(['dpi'=>150,'defaultFont'=>'sans-serif','isRemoteEnabled' => true,'isHtml5ParserEnabled' => true])->setPaper('a4','landscape');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         $height = $canvas->get_height();

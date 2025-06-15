@@ -19,7 +19,7 @@ class HallService
 
 	public function all()
 	{
-		return $this->hallRepo->all();
+		return $this->hallRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

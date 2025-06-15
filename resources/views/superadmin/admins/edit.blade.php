@@ -2,8 +2,9 @@
 @section('title', '| Edit Admin')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
-    <section class="max-w-full py-1 bg-blueGray-50">
+    <section class="max-w-screen py-1 bg-blueGray-50">
         <div class="w-full px-4 mx-auto mt-6">
             <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0 dark:bg-stone-700 dark:text-slate-200">
                 <div class="rounded-t bg-white mb-0 px-6 py-6 dark:bg-gray-200">
@@ -11,7 +12,9 @@
                         <h6 class="text-blueGray-700 text-xl font-bold uppercase dark:text-slate-800">
                             Edit Admin Details
                         </h6>
-                        <x-back-button/>
+                        <x-button class="back-button">
+                            <x-back-svg-n-url/>
+                        </x-button>
                     </div>
                 </div>
                 <div class="flex-auto px-4 lg:px-10 py-10 pt-4 bg-gray-400 dark:bg-stone-500">
@@ -115,7 +118,7 @@
                             <div class="w-full md:w-1/4 lg:w-1/4">
                                 <label class="control-label col-sm-2" >Position</label>
                                 <div class="flex flex-col">
-                                    @include('ext._attach_admin_position')
+                                    @include('ext._attach_position')
                                 </div>
                             </div> 
                         </div>
@@ -170,4 +173,5 @@
         </div>
     </section>
 </x-backend-main> 
+@endrole
 @endsection

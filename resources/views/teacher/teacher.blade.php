@@ -2,6 +2,7 @@
 @section('title', '| Teacher Dashboard')
 
 @section('content')
+@role('teacher')
     <!-- frontend-main view -->
     <x-frontend-main>
             <div class="container max-w-screen h-screen">
@@ -11,7 +12,7 @@
                             <div class="text-center text-2xl font-bold uppercase">Teacher Dashboard</div>
 
                             <div class="mt-8">
-                                You are logged in as a Teacher! Welcome {{ Auth::user()->salutation }} {{Auth::user()->first_name}}
+                                Welcome {{ Auth::user()->salutation }} {{Auth::user()->first_name}}. You are logged in as a Teacher!
                             </div>
 
                             <label class="swap swap-flip text-9xl mt-12">
@@ -31,4 +32,5 @@
                 </div>
             </div>
     </x-frontend-main>
+@endrole
 @endsection

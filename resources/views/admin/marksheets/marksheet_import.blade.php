@@ -11,10 +11,10 @@
         <div class="mx-2 md:mx-8 lg:mx-8">
             <div class="w-full mx-auto text-center mb-4 mt-8">
                 <h2 class="admin-h2 md:scale3d-150 lg:scale3d-150">MARKSHEETS UPLOAD & RESULTS DOWNLOAD</h2>
-                <div class="pt-4 font-hairline mt-8">
-                    @include('partials.messages')
-                    @include('partials.errors')
-                </div>
+            </div>
+            <div class="mx-2 md:mx-16 lg:mx-16 font-hairline my-8">
+                @include('partials.messages')
+                @include('partials.errors')
             </div>
             <div>
                 <form id="marksheets_form" action="{{ route('admin.stream.marksheet') }}" class="card-one" method="get">
@@ -70,17 +70,6 @@
                     </div>
                 </form>
 
-                <form id="marksheets_form" action="{{ route('admin.classmarksheet.pdfchart') }}" class="card-one" method="get">
-                    {{ csrf_field() }}
-                    <h3 class="form-h2">CLASS RESULTS PDF CHART DOWNLOAD</h3>
-                    @include('ext._class_results_form')
-                    <div class="w-full">
-                        <div class="mt-4">
-                            <x-generate-pdf/>
-                        </div>
-                    </div>
-                </form>
-
                 <form id="marksheets_form" action="{{ route('admin.class.excelMarksheet') }}" class="card-one" method="get">
                     {{ csrf_field() }}
                     <h3 class="form-h2">CLASS RESULTS EXCEL DOWNLOAD</h3>
@@ -98,7 +87,7 @@
                     @include('ext._marksheet_upload_form')
                     <div class="w-full">
                         <div class="mt-4">
-                            <x-upload-button/>
+                            <x-button class="style-one-button">UPLOAD</x-button>
                         </div>
                     </div>
                 </form>
@@ -109,7 +98,7 @@
                     @include('ext._gradesheets_upload_form')
                     <div class="w-full">
                         <div class="mt-4">
-                            <x-upload-button/>
+                            <x-button class="style-one-button">UPLOAD</x-button>
                         </div>
                     </div>
                 </form>
@@ -120,7 +109,7 @@
                     @include('ext._general_gradesheets_upload_form')
                     <div class="w-full">
                         <div class="mt-4">
-                            <x-upload-button/>
+                            <x-button class="style-one-button">UPLOAD</x-button>
                         </div>
                     </div>
                 </form>

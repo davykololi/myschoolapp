@@ -52,7 +52,7 @@ class UserService
 
 	public function updateData(UpdateRequest $request)
 	{
-        $data = $request->only('salutation','first_name','middle_name','last_name','email');
+        $data = $request->only('salutation','first_name','middle_name','last_name','email','gender');
 		$data['school_id'] = Auth::user()->school->id;
 
         return $data;

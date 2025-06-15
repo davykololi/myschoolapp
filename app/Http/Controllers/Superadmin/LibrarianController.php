@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\LibrarianPositionEnum;
 use App\Http\Requests\CommonUserFormRequest as StoreRequest;
 use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
@@ -37,12 +38,22 @@ class LibrarianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $librarians = $this->librnService->all();
+        $user = Auth::user();
+        if($user->hasRole('superadmin')){
+            $search = strtolower($request->search);
+            if($search){
+                $librarians = Librarian::whereLike(['user.first_name', 'user.middle_name', 'user.last_name', 'user.email', 'phone_no','emp_no','position', 'id_no', 'designation','libraries.name'], $search)->eagerLoaded()->paginate(15);
 
-        return view('superadmin.librarians.index',compact('librarians'));
+                return view('superadmin.librarians.index',compact('librarians'));
+            } else {
+                $librarians = $this->librnService->all();
+
+                return view('superadmin.librarians.index',compact('librarians'));
+            } 
+        }
     }
 
     /**
@@ -54,8 +65,9 @@ class LibrarianController extends Controller
     {
         //
         $libraries = Library::all();
+        $positions = LibrarianPositionEnum::cases();
 
-        return view('superadmin.librarians.create',compact('libraries'));
+        return view('superadmin.librarians.create',compact('libraries','positions'));
     }
 
     /**
@@ -123,8 +135,9 @@ class LibrarianController extends Controller
         //
         $librarian = $this->librnService->getId($id);
         $libraries = Library::all();
+        $positions = LibrarianPositionEnum::cases();
 
-        return view('superadmin.librarians.edit',compact('librarian','libraries'));
+        return view('superadmin.librarians.edit',compact('librarian','libraries','positions'));
     }
 
     /**

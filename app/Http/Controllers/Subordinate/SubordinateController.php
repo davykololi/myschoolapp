@@ -50,7 +50,7 @@ class SubordinateController extends Controller
     {
         $user = Auth::user();
         if($user->hasRole('subordinate')){
-            $studendId = $request->student;
+            $studendId = $request->student_id;
 
             if(is_null($studendId)){
                 return back()->withErrors('Please select the name first!');

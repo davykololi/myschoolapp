@@ -15,10 +15,8 @@ class CreateClubStreamTable extends Migration
     {
         Schema::create('club_stream', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('stream_id')->unsigned();
-            $table->bigInteger('club_id')->unsigned();
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
-            $table->foreign('club_id')->references('id')->on('clubs')->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('club_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

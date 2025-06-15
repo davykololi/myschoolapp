@@ -1,6 +1,7 @@
 @extends('layouts.parent')
 
 @section('content')
+@role('parent')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
 <div class="row">
     @include('partials.messages')
@@ -95,9 +96,8 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Parent Info:</strong>
-            <span style="color: green">Name:</span> {{ $child->parent->salutation }} {{ $child->parent->full_name }} 
+            <span style="color: green">Name:</span> {{ $child->parent->user->salutation }} {{ $child->parent->user->full_name }} 
             <span style="color: green">Phone:</span> {{ $child->parent->phone_no }}
-            <span style="color: green">Job:</span> {{ $child->parent->designation }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -124,8 +124,8 @@
         <div class="form-group">
             <strong>{{ $child->user->first_name }}'s Awards:</strong>
             <ol>
-            @forelse($child->rewards as $reward)
-                <li>{{ $reward->name }} <span style="color: blue">Purpose:</span> {{ $reward->purpose }}.</li>
+            @forelse($childAwards as $award)
+                <li>{{ $award->name }} <span style="color: blue">Purpose:</span> {{ $award->purpose }}.</li>
             @empty
             <p>{{ $child->user->full_name }} has notyet recieved any award.</p>
             @endforelse
@@ -136,7 +136,7 @@
         <div class="form-group">
             <strong>{{ $child->user->first_name }}'s Assignments:</strong>
             <ol>
-            @forelse($child->assignments as $assignment)
+            @forelse($childAsignments as $assignment)
                 <li>
                     {{ $assignment->name }} {{ $assignment->file}} <span style="color: blue">Given:</span> 
                     {{ date("jS,F,Y,g:i a",strtotime($assignment->date)) }} <span style="color: red">Deadline:</span> 
@@ -152,7 +152,7 @@
         <div class="form-group">
             <strong>{{ $child->user->first_name }}'s Clubs:</strong>
             <ol>
-            @forelse($child->clubs as $club)
+            @forelse($childClubs as $club)
                 <li>{{ $club->name }}</li>
             @empty
             <p>{{ $child->user->full_name }} has notyet been assigned to any club.</p>
@@ -164,7 +164,7 @@
         <div class="form-group">
             <strong>{{ $child->user->first_name }}'s Meetings:</strong>
             <ol>
-            @forelse($child->meetings as $key => $meeting)
+            @forelse($childMeetings as $key => $meeting)
                 <li>
                     {{ $meeting->name }} to be held on {{ date("jS,F,Y",strtotime($meeting->date)) }}.
                     <span style="color: green"> Agenda:</span> {{ $meeting->agenda }}.
@@ -176,7 +176,7 @@
         </div>
     </div>
 
-    <div class="mt-4">
+    <div class="my-4">
     @if(!is_null($currentExam))
     <form id="marksheets_form" action="{{ route('parent.download.examresults') }}" class="form-horizontal" method="get">
         {{ csrf_field() }}
@@ -196,4 +196,5 @@
 </div>
 </div>
 </main>
+@endrole
 @endsection

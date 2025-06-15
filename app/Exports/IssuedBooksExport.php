@@ -17,7 +17,7 @@ class IssuedBooksExport implements FromCollection, WithHeadings, WithMapping ,Sh
     */
     public function collection()
     {
-        return Issuedbook::with('student')->get();
+        return Issuedbook::with('book','student.user','student.stream')->get();
     }
 
     public function headings(): array
@@ -25,22 +25,22 @@ class IssuedBooksExport implements FromCollection, WithHeadings, WithMapping ,Sh
         return [
                 'NAME',
                 'CLASS',
-                'BORROWED BOOK',
+                'BOOK TITLE',
                 'SERIAL NO',
-                'BORROWED DATE',
+                'ISSUED DATE',
                 'RETURN DATE',
             ];
     }
 
-    public function map($booker): array
+    public function map($issuedBook): array
     {
         return [
-            $booker->student->full_name,
-            $booker->student->standard->name,
-            $booker->book->title,
-            $booker->serial_no,
-            \Carbon\Carbon::parse($booker->issued_date)->format('d-m-Y'),
-            \Carbon\Carbon::parse($booker->return_date)->format('d-m-Y'),
+            $issuedBook->student->user->full_name,
+            $issuedBook->student->stream->name,
+            $issuedBook->book->title,
+            $issuedBook->serial_no,
+            $issuedBook->issued_date,
+            $issuedBook->return_date,
          ];
     }
 }

@@ -18,13 +18,18 @@
         .bgcolor-grey{background-color: grey;text-align: left;}
         .uc{text-transform: uppercase;margin-right: 1.5cm}
         .main-heading {text-align: center;margin-right: 1.5cm;color: midnightblue;font-size: 40px;}
-        .school_margin{margin-top: -1em;margin-bottom: -0.6em;margin-left: 22em;font-family: Arial Narrow;}
-        .email_margin{margin-top: 0.5em;margin-bottom: 10px;margin-left: 22em;}
-        .postal-mt {margin-top: -25px;margin-left: 22em;font-family: Arial Narrow;}
+        .school_margin{margin-top: -1em;margin-bottom: -0.6em;font-family: Arial Narrow;}
+        .email_margin{margin-top: 0.5em;margin-bottom: 10px;}
+        .postal-mt {margin-top: -25px;font-family: Arial Narrow;}
         .table_caption{text-transform: uppercase;text-align: center;margin-top: 0;margin-bottom: -04em;}
-        .title{text-transform: uppercase;text-align: center;margin-top: 10px;font-style: Arial Narrow}
+        .title{text-transform: uppercase;text-align: center;margin-top: 6px;font-style: Arial Narrow}
         .uppercase{text-transform: uppercase;}
         .dotted-underline{border-bottom: 2px dotted #000;}
+        .blue{color: blue;}
+        .mnb{color: midnightblue;}
+        .fs16px{font-size: 16px;}
+        .report-table{font-size: 20px;margin-top: 40px;}
+        .report-td{font-size: 16px;}
     </style>
     <!-- Styles -->
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">

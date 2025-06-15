@@ -5,23 +5,25 @@
 <div class="container"> 
     <div class="mt"><x-pdf-portrait-current-date/></div>
     <div><h2 class="title"><u>{{$title}}</u></h2></div>
-    <h3>
-        <span style="margin-left: 10px;margin-right: 10px;"><b>Total:</b> {{ $stream->students->count() }} <i>Students</i></span>
-        <span style="margin-left: 10px;margin-right: 10px;">
+    <p>
+        <span style="margin-left: 10px;margin-right: 10px;"><b>Total:</b> <i class="dotted-underline">
+            {{ $stream->students->count() }} Students;</i>
+        </span>
+        <span style="margin-left: 10px;margin-right: 10px;" class="dotted-underline">
             @if($males > 1)
              {{ $males }} <i>Males</i>
             @else
              {{ $males }} <i>Male</i>
             @endif
         </span>
-        <span style="margin-left: 10px;margin-right: 10px;">
+        <span style="margin-left: 10px;margin-right: 10px;" class="dotted-underline">
             @if($females > 1)
              {{ $females }} <i>Females</i>
             @else
              {{ $females }} <i>Female</i>
             @endif
         </span>
-    </h3> 
+    </p> 
     <div>
     <table>
         <thead>

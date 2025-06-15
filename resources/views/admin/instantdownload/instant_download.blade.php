@@ -2,13 +2,18 @@
 @section('title', '| Admin Instant Pdf Generation')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
     <div>
         <div>
             <div>
                 <h5 class="uppercase text-center text-2xl font-hairline">INSTANT PDF GENERATION</h5> 
-                <x-back-button/>
+                <div>
+                    <x-button class="back-button">
+                        <x-back-svg-n-url/>
+                    </x-button>
+                </div>
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.instant.download',Auth::user()->school->id) }}" method="get" class="form-horizontal" enctype="multipart/form-data">
@@ -21,7 +26,7 @@
                     </div>
                     <div class="w-full">
                     <div class="mt-4">
-                        <x-generate-button/>
+                        <x-button class="generate-button">GENERATE</x-button>
                     </div>
             </div>
                 </form>
@@ -29,6 +34,7 @@
         </div>
     </div>
 </x-backend-main> 
+@endrole
 @endsection
 
 

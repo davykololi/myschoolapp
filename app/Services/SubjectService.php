@@ -22,6 +22,11 @@ class SubjectService
 		return $this->subjectRepository->all();
 	}
 
+	public function paginated()
+	{
+		return $this->subjectRepository->paginated();
+	}
+
 	public function create(StoreRequest $request)
 	{
 		$data = $this->createData($request);

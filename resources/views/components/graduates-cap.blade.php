@@ -1,0 +1,1 @@
+<x-bi-mortarboard class="w-8 h-8"/>

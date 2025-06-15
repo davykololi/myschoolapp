@@ -20,7 +20,12 @@ class DepartmentRepository implements DepartmentInterface
 
     public function all()
     {
-        return $this->dept->eagerLoaded();
+        return $this->dept->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->dept->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

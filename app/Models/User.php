@@ -14,17 +14,20 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, Impersonate;
+    use Notifiable, HasRoles, Impersonate, HasUuids;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['salutation','first_name', 'middle_name', 'last_name', 'email', 'password','school_id'];
+    protected $fillable = ['salutation','first_name', 'middle_name', 'last_name', 'email', 'gender', 'password','school_id'];
+
+    protected $appends = ['full_name'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -43,6 +46,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     /**
      * Write code on Method

@@ -19,36 +19,36 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Title</label>
                         <div class="col-sm-10">
-                            <input type="text" name="title" id="title" class="form-control" value="{{$book->title}}">
+                            <input type="text" name="title" id="title" class="form-h3" value="{{$book->title}}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Author</label>
                         <div class="col-sm-10">
-                            <input type="text" name="author" id="author" class="form-control" value="{{$book->author}}">
+                            <input type="text" name="author" id="author" class="form-h3" value="{{$book->author}}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Units</label>
                         <div class="col-sm-10">
-                            <input type="number" name="units" id="units" class="form-control" value="{{$book->units}}">
+                            <input type="number" name="units" id="units" class="form-h3" value="{{$book->units}}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Rack No.</label>
                         <div class="col-sm-10">
-                            <input type="number" name="rack_no" id="rack_no" class="form-control" value="{{$book->rack_no}}">
+                            <input type="number" name="rack_no" id="rack_no" class="form-h3" value="{{$book->rack_no}}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Row No.</label>
                         <div class="col-sm-10">
-                            <input type="number" name="row_no" id="row_no" class="form-control" value="{{$book->row_no}}">
+                            <input type="number" name="row_no" id="row_no" class="form-h3" value="{{$book->row_no}}">
                         </div>
                     </div>
                     @include('ext._attach_book_catdiv')
                     @include('ext._attach_librarydiv')
-                    @include('ext._submit_update_button')
+                    <button type="submit" class="update-button">UPDATE</button>
                 </form>
             </div>
         </div>

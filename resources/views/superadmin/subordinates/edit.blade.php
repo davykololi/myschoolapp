@@ -2,6 +2,7 @@
 @section('title', '| Edit Subordinate Staff')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
     <section class="max-w-full py-1 bg-blueGray-50">
         <div class="w-full px-4 mx-auto mt-6">
@@ -11,7 +12,9 @@
                         <h6 class="text-blueGray-700 text-xl font-bold uppercase dark:text-slate-800">
                             Edit Subordinate Staff Details
                         </h6>
-                        <x-back-button/>
+                        <x-button class="back-button">
+                            <x-back-svg-n-url/>
+                        </x-button>
                     </div>
                 </div>
                 <div class="flex-auto px-4 lg:px-10 py-10 pt-4 bg-gray-400 dark:bg-stone-500">
@@ -25,5 +28,6 @@
             </div>
         </div>
     </section>
-</x-backend-main>        
+</x-backend-main>
+@endrole        
 @endsection

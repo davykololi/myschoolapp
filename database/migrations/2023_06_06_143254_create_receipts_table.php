@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('receipts', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->unsignedInteger('pr_id');
             $table->Integer('amount_paid');
             $table->Integer('balance');

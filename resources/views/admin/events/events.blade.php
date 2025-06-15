@@ -2,6 +2,7 @@
 @section('title', '| School Events List')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
  <div class="max-w-screen h-screen">
@@ -13,5 +14,6 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection
 

@@ -39,7 +39,7 @@
   }
 
   .password-form-input {
-    @apply w-full text-center font-bold rounded;
+    @apply w-full text-black text-center font-bold  dark:text-slate-400;
   }
 
   .form-input {
@@ -63,7 +63,7 @@
   }
 
   .form-input-two {
-    @apply relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary
+    @apply relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:bg-black focus:text-white focus:z-[3] focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm dark:bg-gray-600 dark:placeholder-slate-200 dark:text-slate-400;
   }
 
   .form-input-one-photo-upload {
@@ -91,7 +91,7 @@
   }
 
   .shadowed-border {
-    @apply bg-white border p-4 mb-6 mx-4 rounded-md md:mx-0 dark:bg-gray-800;
+    @apply bg-transparent border border-4 p-4 mb-6 mx-4 rounded-md md:mx-0 dark:bg-gray-800;
   }
 
   .shadowed-border-payment {
@@ -108,6 +108,14 @@
 
   .input-div-two {
     @apply flex-1 flex-wrap items-stretch
+  }
+
+  .input-three {
+    @apply w-full text-black border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm dark:bg-gray-600 dark:placeholder-slate-200 dark:text-slate-400;
+  }
+
+  .search-input {
+    @apply w-full outline-none bg-white text-gray-600 text-sm px-4 py-2 placeholder:text-purple-600;
   }
 
   .payment-input {
@@ -135,11 +143,39 @@
   }
 
   .create-button {
-    @apply inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+    @apply inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white dark:bg-stone-500 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+  }
+
+  .issue-button {
+    @apply inline-block rounded bg-transparent px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-purple-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-white hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-gray-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-purple-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
   }
 
   .back-button {
     @apply flex items-center rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+  }
+
+  .impersonate-button {
+    @apply text-white bg-black px-4 py-1 rounded border border-white;
+  }
+
+  .ban-button {
+    @apply text-white bg-red-700 px-4 py-1 rounded;
+  }
+
+  .danger-button {
+    @apply text-white bg-red-700 px-4 py-1 rounded;
+  }
+
+  .success-button {
+    @apply text-white bg-green-700 px-4 py-1 rounded;
+  }
+
+  .register-button {
+    @apply bg-black text-white px-2 py-1 rounded;
+  }
+
+  .update-button {
+    @apply bg-gray-900 md:hover:bg-white md:hover:text-black md:hover:border-green-800 items-center text-white px-6 py-0.5 border-2 mt-2 border-white rounded-md;
   }
 
   .sidebar-toggler-button {
@@ -150,8 +186,20 @@
     @apply inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
   }
 
+  .generate-pdf-button-one {
+    @apply w-16 h-8 bg-orange-500 text-white px-4 py-1 rounded mx-1 shadow-lg;
+  }
+
+  .generate-excel-button-one {
+    @apply px-4 excel shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-green-500 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-green-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+  }
+
   .form-h2 {
-    @apply font-bold mb-4 text-black dark:text-slate-400;
+    @apply font-bold mb-1 text-black dark:text-slate-400;
+  }
+
+  .form-h3 {
+    @apply bg-transparent text-white rounded placeholder-gray-100 dark:text-slate-400;
   }
 
   .otp-holder {
@@ -203,7 +251,7 @@
   }
 
   .card-one {
-    @apply p-4 mb-6 mx-2 border bg-white rounded-md md:mx-0 dark:bg-gray-800;
+    @apply p-4 mb-6 mx-2 border bg-transparent rounded-md md:mx-0 dark:bg-gray-800;
   }
 
   .attach-button {
@@ -224,6 +272,50 @@
 
   .file {
     @apply w-full text-black text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded;
+  }
+
+  .form-file-upload {
+    @apply w-full text-black text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded;
+  }
+
+  .style-one-button {
+    @apply px-2 py-2 min-w-[140px] shadow-lg shadow-blue-200 rounded text-black text-sm tracking-wider font-medium outline-none border-2 border-blue-600 active:shadow-inner dark:text-white;
+  }
+
+  .generate-button {
+    @apply inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+  }
+
+  .front-h1 {
+    @apply uppercase font-bold text-3xl text-center my-4;
+  }
+
+  .front-h2 {
+    @apply uppercase font-bold text-2xl text-center my-4;
+  }
+
+  .user-profile-picture {
+    @appy w-1/2 md:w-full mx-auto;
+  }
+
+  .danger-label {
+    @apply bg-[red] text-white w-full px-2 text-center rounded-md;
+  }
+
+  .success-label {
+    @apply bg-[green] text-white w-full px-2 text-center rounded-md;
+  }
+
+  .marksheet-h4 {
+    @apply text-blue-800 font-bold mb-2 dark:text-slate-400;
+  }
+
+  .front-marksheet-h4 {
+    @apply text-white font-bold mb-2 dark:text-slate-400 text-sm;
+  }
+
+  .teacher-assignment-forms {
+    @apply md:p-4 md:mx-8 border-4 border-white rounded my-4 h-full dark:border-slate-600 dark:text-slate-400;
   }
 }
 

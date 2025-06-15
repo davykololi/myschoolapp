@@ -23,6 +23,11 @@ class TimetableService
 		return $this->timetableRepo->all();
 	}
 
+	public function paginated()
+	{
+		return $this->timetableRepo->paginated();
+	}
+
 	public function create(StoreRequest $request)
 	{
 		$data = $this->data($request);
@@ -47,10 +52,10 @@ class TimetableService
 		$data = $request->validated();
         $data['file'] = $this->verifyAndUpload($request,'file','public/files/');
         $data['school_id'] = auth()->user()->school->id;
-        $data['stream_id'] = $request->stream;
-        $data['class_id'] = $request->class;
-        $data['teacher_id'] = $request->teacher;
-        $data['exam_id'] = $request->exam;
+        $data['stream_id'] = $request->stream_id;
+        $data['class_id'] = $request->class_id;
+        $data['teacher_id'] = $request->teacher_id;
+        $data['exam_id'] = $request->exam_id;
 
         return $data;
 	}

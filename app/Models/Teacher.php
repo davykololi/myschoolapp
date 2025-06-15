@@ -6,6 +6,7 @@ use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Str;
 use App\Models\ReportSubjectGrade;
+use App\Models\SubjectRemark;
 use App\Enums\TeacherPositionEnum;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -19,10 +20,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\CommonUserInformation;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Teacher extends CommonUserInformation implements Searchable
 {
-    use Notifiable;
+    use Notifiable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
@@ -34,6 +36,15 @@ class Teacher extends CommonUserInformation implements Searchable
      * @var array
      */
     protected $casts = ['email_verified_at' => 'datetime','created_at' => 'datetime:d-m-Y H:i','position'=> TeacherPositionEnum::class];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -125,6 +136,11 @@ class Teacher extends CommonUserInformation implements Searchable
         return substr(strip_tags($this->history), 0, 100);
     }
 
+    public function getImageUrlAttribute()       
+    { 
+        return URL::asset('/storage/storage/'.$this->image);   
+    }
+
     public function getDob()
     {
         $dob = $this->dob;
@@ -143,7 +159,7 @@ class Teacher extends CommonUserInformation implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('streams','students','departments','user');
+        return $query->with('user','school','streams','students','departments')->latest('id');
     }
 
     public function grades(): HasMany
@@ -214,5 +230,10 @@ class Teacher extends CommonUserInformation implements Searchable
     public function report_subject_grades(): HasMany
     {
         return $this->hasMany(ReportSubjectGrade::class,'teacher_id','id');
+    }
+
+    public function subject_remarks(): HasMany
+    {
+        return $this->hasMany(SubjectRemark::class,'teacher_id','id');
     }
 }

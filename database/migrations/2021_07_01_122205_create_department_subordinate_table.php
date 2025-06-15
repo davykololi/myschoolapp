@@ -15,10 +15,8 @@ class CreateDepartmentSubordinateTable extends Migration
     {
         Schema::create('department_subordinate', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('department_id')->unsigned();
-            $table->bigInteger('subordinate_id')->unsigned();
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
-            $table->foreign('subordinate_id')->references('id')->on('subordinates')->onDelete('cascade');
+            $table->foreignUuid('department_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subordinate_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

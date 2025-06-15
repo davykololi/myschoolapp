@@ -17,7 +17,7 @@ class DownloadAssignmentController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('role:student');
-        $this->middleware('admin-banned');
+        $this->middleware('student-banned');
         $this->middleware('checktwofa');
     }
     

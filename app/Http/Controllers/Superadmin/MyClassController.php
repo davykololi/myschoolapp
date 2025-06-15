@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Services\ClassService;
 use App\Models\School;
+use App\Models\MyClass;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClassFormRequest as StoreRequest;
 use App\Http\Requests\ClassFormRequest as UpdateRequest;
@@ -32,11 +34,12 @@ class MyClassController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $classes = $this->classService->all();
-
-        return view('superadmin.classes.index',compact('classes'));
+        $studentsWithUnlockedStatus = Student::where('lock','=','enabled')->exists();
+        
+        return view('superadmin.classes.index',compact('classes','studentsWithUnlockedStatus'));
     }
 
     /**

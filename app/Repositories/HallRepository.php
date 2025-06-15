@@ -20,7 +20,12 @@ class HallRepository implements HallInterface
 
     public function all()
     {
-        return $this->hall->eagerLoaded();
+        return $this->hall->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->hall->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

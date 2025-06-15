@@ -15,10 +15,8 @@ class CreateDormitoryMeetingTable extends Migration
     {
         Schema::create('dormitory_meeting', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('dormitory_id')->unsigned();
-            $table->bigInteger('meeting_id')->unsigned();
-            $table->foreign('dormitory_id')->references('id')->on('dormitories')->onDelete('cascade');
-            $table->foreign('meeting_id')->references('id')->on('meetings')->onDelete('cascade');
+            $table->foreignUuid('dormitory_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('meeting_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

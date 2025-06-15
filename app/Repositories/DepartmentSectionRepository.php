@@ -23,6 +23,11 @@ class DepartmentSectionRepository implements DepartmentSectionInterface
         return $this->deptSection->eagerLoaded()->get();
     }
 
+    public function paginated()
+    {
+        return $this->deptSection->eagerLoaded()->paginate(15);
+    }
+
     public function create(array $data)
     {
     	return $this->deptSection->create($data);

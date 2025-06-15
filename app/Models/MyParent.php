@@ -12,16 +12,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Notifications\ParentResetPasswordNotification;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class MyParent extends Model implements Searchable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'parents';
     protected $fillable = ['image','gender','id_no','phone_no','current_address','permanent_address','is_banned','lock','user_id','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function sendPasswordResetNotification($token)
     {

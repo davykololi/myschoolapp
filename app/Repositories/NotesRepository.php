@@ -23,6 +23,11 @@ class NotesRepository implements NotesInterface
         return $this->notes->eagerLoaded()->get();
     }
 
+    public function paginated()
+    {
+        return $this->notes->eagerLoaded()->paginate(50);
+    }
+
     public function create(array $data)
     {
     	return $this->notes->create($data);

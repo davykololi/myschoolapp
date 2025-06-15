@@ -38,7 +38,7 @@ class StreamMarksExport implements FromCollection, WithHeadings, WithMapping ,Sh
                 'CRE',
                 'ISLAM',
                 'HISTORY',
-                'GHC',
+                'GEOGRAPHY',
             ];
     }
 
@@ -55,7 +55,7 @@ class StreamMarksExport implements FromCollection, WithHeadings, WithMapping ,Sh
             $mark->cre,
             $mark->islam,
             $mark->history,
-            $mark->ghc,
+            $mark->geography,
          ];
     }
 }

@@ -20,7 +20,12 @@ class AdminRepository implements AdminInterface
 
     public function all()
     {
-        return $this->admin->eagerLoaded();
+        return $this->admin->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->admin->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

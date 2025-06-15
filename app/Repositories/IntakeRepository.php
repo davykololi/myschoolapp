@@ -20,7 +20,12 @@ class IntakeRepository implements IntakeInterface
 
     public function all()
     {
-        return $this->intake->eagerLoaded();
+        return $this->intake->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->intake->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

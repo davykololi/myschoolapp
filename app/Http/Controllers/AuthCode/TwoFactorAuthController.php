@@ -32,7 +32,7 @@ class TwoFactorAuthController extends Controller
         $generatedCode= auth()->user()->generateCode();
         $title = "ENTER AND SUBMIT THE CODE";
 
-        return view('two-factor-auth.2fa',compact('title'));
+        return view('two_factor_auth.2fa',compact('title'));
     }
   
     /**
@@ -63,43 +63,45 @@ class TwoFactorAuthController extends Controller
 
             $user = auth()->user();
             if($user->hasRole('superadmin')){
-                return redirect()->intended('superadmin/dashboard');
+                return redirect()->route('superadmin.dashboard');
             }
 
             if($user->hasRole('admin')){
-                return redirect()->intended('admin/dashboard');
+                return redirect()->route('admin.dashboard');
             }
 
             if($user->hasRole('teacher')){
-                return redirect()->intended('teacher/dashboard');
+                return redirect()->route('teacher.dashboard');
             }
 
             if($user->hasRole('accountant')){
-                return redirect()->intended('accountant/dashboard');
+                return redirect()->route('accountant.dashboard');
             }
 
             if($user->hasRole('student')){
-                return redirect()->intended('student/dashboard');
+                return redirect()->route('student.dashboard');
             }
 
             if($user->hasRole('librarian')){
-                return redirect()->intended('librarian/dashboard');
+                return redirect()->route('librarian.dashboard');
             }
 
             if($user->hasRole('matron')){
-                return redirect()->intended('matron/dashboard');
+                return redirect()->route('matron.dashboard');
             }
 
             if($user->hasRole('parent')){
-                return redirect()->intended('parent/dashboard');
+                return redirect()->route('parent.dashboard');
             }
 
             if($user->hasRole('subordinate')){
-                return redirect()->intended('subordinate/dashboard');
+                return redirect()->route('subordinate.dashboard');
             }
         }
+
+        flash()->error('You entered the wrong code.');
   
-        return back()->withErrors('You entered wrong code.');
+        return back()->withError('You entered the wrong code.');
     }
     /**
      * Write code on Method
@@ -109,7 +111,9 @@ class TwoFactorAuthController extends Controller
     public function resend()
     {
         auth()->user()->generateCode();
+
+        flash()->success('We re-sent code to your email.');
   
-        return back()->withSuccess('We re-sent code to on your email.');
+        return back()->with("success", 'We re-sent code to your email.');
     }
 }

@@ -20,7 +20,7 @@ class SchoolService
 
 	public function all()
 	{
-		return $this->schoolRepo->all();
+		return $this->schoolRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

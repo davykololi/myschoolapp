@@ -1,4 +1,4 @@
-                            <select id="dormitory" type="text" value="{{old('dormitory',)}}" class="form-input-one" name="dormitory" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Dormitory">
+                            <select id="dormitory_id" type="text" value="{{old('dormitory_id',)}}" class="form-input-one" name="dormitory_id" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Dormitory">
                                 @foreach ($dormitories as $dormitory)
                                 <option value="{{ $dormitory->id }}">
                                     {{$dormitory->name}}
@@ -6,8 +6,8 @@
                                 @endforeach
                             </select>
 
-                            @if($errors->has('dormitory'))
+                            @if($errors->has('dormitory_id'))
                                 <span class="help-block">
-                                    <span class="text-danger">{{$errors->first('dormitory')}}</span>
+                                    <span class="text-danger">{{$errors->first('dormitory_id')}}</span>
                                 </span>
                             @endif

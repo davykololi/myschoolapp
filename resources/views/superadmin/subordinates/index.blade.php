@@ -2,22 +2,20 @@
 @section('title', '| Subordinate Staff List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
-<div class="max-w-screen mb-8">
+<div class="max-w-screen mb-8 min-h-screen">
     <div class="w-full">
         <div class="mx-2 md:mx-8 lg:mx-8">
             @include('partials.messages')
             <!-- Posts list -->
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <h2>SUBORDINATE STAFF LIST</h2>
-                    </div>
-                    <div class="pull-right">
-                        <a class="btn btn-success" href="{{route('superadmin.subordinates.create')}}">Create</a>
-                    </div>
-                </div>
+            <h2 class="front-h2">SUBORDINATE STAFFS</h2>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <x-search-form/>
+                <a href="{{route('superadmin.subordinates.create')}}" class="sm:mt-4">
+                    <x-button class="create-button">CREATE</x-button>
+                </a>
             </div>
             <div class="flex flex-col overflow-x-auto mt-12">
                 <div class="sm:-mx-6 lg:-mx-8">
@@ -31,21 +29,24 @@
                                         <th scope="col" class="px-2 py-4" width="15%">NAME</th>
                                         <th scope="col" class="px-2 py-4" width="15%">ROLE</th>
                                         <th scope="col" class="px-2 py-4" width="10%">EMAIL</th>
-                                        <th scope="col" class="px-2 py-4" width="10%">EMP NO.</th>
+                                        <th scope="col" class="px-2 py-4" width="10%">EMPNO.</th>
                                         <th scope="col" class="px-2 py-4" width="10%">ID</th>
-                                        <th scope="col" class="px-2 py-4" width="10%">PHONE NO.</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">TEL.</th>
                                         <th scope="col" class="px-2 py-4" width="5%">BANNED</th>
                                         <th scope="col" class="px-2 py-4" width="10%">STATUS</th>
+                                        <th scope="col" class="px-2 py-4" width="10%">IMPERSONATE</th>
                                         <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                     </tr>
                                 </thead>
                                 <!-- Table Body -->
                                 <tbody>
                                     @if(!empty($subordinates))
-                                    @foreach($subordinates as $subordinate)
+                                    @foreach($subordinates as $key => $subordinate)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap px-2 py-4">
-                                            <div>{{$loop->iteration}}</div>
+                                            <div>
+                                                {{ $subordinates->perPage() * ($subordinates->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap px-2 py-4">
                                             <div>{{ $subordinate->user->salutation }} {{ $subordinate->user->full_name }}</div>
@@ -77,7 +78,7 @@
                                                 @if($subordinate->is_banned == 0)
                                                 <form action="{{ route('superadmin.subordinate.bann',$subordinate->id) }}" method="POST">
                                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                                    <button type="submit" class="text-white bg-red-700 px-4 py-1 rounded">BAN</button>
+                                                    <button type="submit" class="ban-button">BAN</button>
                                                 </form>
                                                 @elseif($subordinate->is_banned == 1)
                                                 <form action="{{ route('superadmin.subordinate.unbann',$subordinate->id) }}" method="POST">
@@ -88,6 +89,13 @@
                                                 </form>
                                                 @endif
                                             </div>
+                                        </td>
+                                        <td class="whitespace-nowrap p-2">
+                                            @canBeImpersonated($subordinate->user,$guard=null)
+                                            <a href="{{route('superadmin.impersonate',$subordinate->user->id)}}" data-toggle='tooltip' data-placement='top' title="Impersonate" class="icon-style">
+                                                <button type="submit" class="impersonate-button">IMPERSONATE</button>
+                                            </a> 
+                                            @endCanBeImpersonated
                                         </td>
                                         <td class="whitespace-nowrap px-2 py-4">
                                             <form action="{{route('superadmin.subordinates.destroy',$subordinate->id)}}" method="POST" class="flex flex-row">
@@ -108,7 +116,17 @@
                                     @endforeach
                                     @endif
                                 </tbody>
+                                <tfoot>
+                                    @if($subordinates->isEmpty())
+                                    <td colspan="12" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12 text-2xl">
+                                        {{ __('The Subordinates Notyet Populated')}}.
+                                    </td>
+                                    @endif
+                                </tfoot>
                             </table>
+                        </div>
+                        <div class="my-4">
+                            {{ $subordinates->links() }}
                         </div>
                     </div>
                 </div>
@@ -117,4 +135,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

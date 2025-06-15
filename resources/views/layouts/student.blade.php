@@ -10,5 +10,6 @@
     <x-general-footer/>
     <x-back-to-top-button/>
     <x-frontend-scripts/>
+    @stack('scripts')
 </body>
 </html>

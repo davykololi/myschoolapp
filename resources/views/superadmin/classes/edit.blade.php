@@ -2,6 +2,7 @@
 @section('title', '| Edit Class')
 
 @section('content')
+@role('superadmin')
   <!-- frontend-main view -->
   <x-backend-main>
             <div class="panel-heading">
@@ -27,6 +28,7 @@
                 </form>
             </div>
   </x-backend-main>
+@endrole
 @endsection
 
 

@@ -6,6 +6,8 @@ interface LibraryInterface
 {
 	public function all();
 
+	public function paginated();
+
 	public function create(array $data);
 
 	public function getId($id);

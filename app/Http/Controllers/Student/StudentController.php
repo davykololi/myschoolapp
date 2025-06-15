@@ -16,19 +16,22 @@ use App\Services\TeacherService;
 use App\Services\StreamService;
 use App\Services\SubjectService;
 use App\Services\StreamSubjectService;
+use App\Services\TimetableService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Charts\StudentExamsMiniScoresChart;
+use App\Charts\StudentExamSubjectsResultsChart;
 use Facades\jpmurray\LaravelCountdown\Countdown;
 
 class StudentController extends Controller
 {
-    protected $clubService, $teacherService, $streamService, $subjectService, $streamSubjectService;
+    protected $clubService, $teacherService, $streamService, $subjectService, $streamSubjectService, $studentExamsMiniScoresChart, $studentExamSubjectsResultsChart, $timetableService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct( ClubService $clubService,TeacherService $teacherService,StreamService $streamService,SubjectService $subjectService,StreamSubjectService $streamSubjectService)
+    public function __construct( ClubService $clubService,TeacherService $teacherService,StreamService $streamService,SubjectService $subjectService,StreamSubjectService $streamSubjectService,StudentExamsMiniScoresChart $studentExamsMiniScoresChart,StudentExamSubjectsResultsChart $studentExamSubjectsResultsChart,TimetableService $timetableService)
     {
         $this->middleware('auth');
         $this->middleware('role:student');
@@ -39,14 +42,25 @@ class StudentController extends Controller
         $this->streamService = $streamService;
         $this->subjectService = $subjectService;
         $this->streamSubjectService = $streamSubjectService;
+        $this->studentExamsMiniScoresChart = $studentExamsMiniScoresChart;
+        $this->studentExamSubjectsResultsChart = $studentExamSubjectsResultsChart;
+        $this->timetableService = $timetableService;
     }
 
     public function index()
     {
         $user = Auth::user();
         if($user->hasRole('student')){
-            $marks = Mark::with('exam')->where(['admission_no'=>auth()->user()->student->admission_no,'name'=>auth()->user()->full_name])->get();
-            return view('student.student',compact('marks'));
+            $marks = Mark::with('exam')->where(['admission_no'=>$user->student->admission_no,'name'=>$user->full_name])->get();
+            if($marks->isNotEmpty()){
+                $studentExamsMiniScoresChart = $this->studentExamsMiniScoresChart;
+                $studentExamSubjectsResultsChart = $this->studentExamSubjectsResultsChart;
+
+                return view('student.student_dashboard_with_results',['studentExamsMiniScoresChart'=>$studentExamsMiniScoresChart->build(),'studentExamSubjectsResultsChart'=>$studentExamSubjectsResultsChart->build()]);
+            } else {
+                return view('student.student_dashboard_without_results');
+            }
+            
         }
     }
 
@@ -54,7 +68,7 @@ class StudentController extends Controller
     {
         $user = Auth::user();
         if($user->hasRole('student')){
-            $streamAssignments = $user->student->stream->assignments()->with('teachers')->latest('id')->get();
+            $streamAssignments = $user->student->stream->assignments()->with('teachers')->latest('id')->paginate(15);
             $title = $user->student->stream->name. " "."Assignments";
 
             if(!empty($streamAssignments)){
@@ -85,7 +99,13 @@ class StudentController extends Controller
             $streamTimetables = $user->student->stream->timetables;
             $streamSubjects = $user->student->stream->stream_subjects()->eagerLoaded()->get();
             $title = $user->student->stream->name. " "."Teachers";
-            return view('student.stream_teachers',['user'=>$user,'streamTimetables'=>$streamTimetables,'streamSubjects'=>$streamSubjects,'title'=>$title]);
+
+            $timetables = $this->timetableService->all();
+            $filteredTimetable = $timetables->filter(function($timetable,$key){
+                return ($timetable->stream_id === Auth::user()->student->stream_id) && ($timetable->exam_id === null);
+            });
+
+            return view('student.stream_teachers',['user'=>$user,'streamTimetables'=>$streamTimetables,'streamSubjects'=>$streamSubjects,'title'=>$title,'filteredTimetable'=>$filteredTimetable]);
         } 
     }
 
@@ -95,7 +115,7 @@ class StudentController extends Controller
         if($user->hasRole('student')){
             $streamExams = $user->student->stream->exams()->eagerLoaded()->get();
             $examTimetables = $user->student->stream->timetables()->with('exam')->get();
-            $title = $user->student->stream->name. " "."Exams";
+            $title = $user->student->stream->name. " "."Exam Schedule";
             return view('student.stream_exams',compact('user','streamExams','examTimetables','title'));
         }
     }
@@ -104,7 +124,7 @@ class StudentController extends Controller
     {
         $user = Auth::user();
         if($user->hasRole('student')){
-            $club = $this->clubService->getId($id)->with('school')->first();
+            $club = $this->clubService->getId($id)->with('school')->firstOrFail();
             $title = $club->name;
             return view('student.student_club',['user'=>$user,'club'=>$club,'title'=>$title]);
         }
@@ -124,33 +144,27 @@ class StudentController extends Controller
         $user = Auth::user();
         if($user->hasRole('student')){
             $title = $user->student->stream->name. " "."Awards";
-            return view('student.stream_rewards',['user'=>$user,'title'=>$title]);
+            $streamAwards = $user->student->stream->awards;
+            return view('student.stream_awards',compact('user','title','streamAwards'));
         }
     }
 
-    public function teacherDetails($id)
+    public function streamSubjectNotes(Request $request,Subject $subject, Teacher $teacher)
     {
         $user = Auth::user();
-        if($user->hasRole('student')){
-            $teacher = $this->teacherService->getId($id);
-            $stream = $this->streamService->getId($id);
-            $title = "Teacher Details";
-            return view('student.teacher_details',compact('teacher','stream','title'));
-        }
-    }
-
-    public function streamSubjectNotes($id)
-    {
-        $user = Auth::user();
-        $subject = Subject::where('id',$id)->first();
-        $teacher = Teacher::where('id',$id)->first();
+        $search = strtolower($request->search);
         if($user->hasRole('student')){
             $streamSubject = StreamSubject::where(['subject_id'=>$subject->id,'stream_id'=>$user->student->stream_id,'teacher_id'=>$teacher->id])->first();
-            if(!is_null($streamSubject)){
-                $streamSubjectNotes = $streamSubject->teacher->notes()->with('teacher','stream')->latest('id')->get();
-                return view('student.subject_notes',compact('user','streamSubject','streamSubjectNotes'));
+            if($search){
+                $streamSubjectNotes = $streamSubject->subject->notes()->eagerLoaded()->where('desc','like',"%$search%")->paginate(50);
+
+                return view('student.subject_notes',compact('subject','teacher','user','streamSubject','streamSubjectNotes'));
+            } else {
+                $streamSubjectNotes = $streamSubject->subject->notes()->eagerLoaded()->latest('id')->paginate(50);
+
+                return view('student.subject_notes',compact('subject','teacher','user','streamSubject','streamSubjectNotes'));
             }
-        } 
+        }
     }
 
     public function streamOnlineNotes(Note $note)
@@ -162,11 +176,16 @@ class StudentController extends Controller
         }
     }
 
-    public function libraryBooks()
+    public function libraryBooks(Request $request)
     {
         $user = Auth::user();
-        if($user->hasRole('student')){
-            $books = Book::with('library','category_book')->get();
+        $search = strtolower($request->search);
+        if(($user->hasRole('student')) && ($search)){
+            $books = Book::with('library','category_book')->whereLike(['title', 'author', 'rack_no', 'row_no', 'category_book.name','library.name'], $search)->eagerLoaded()->paginate(15);
+            $title = "Search Library Books";
+            return view('student.library_books',compact('user','books','title'));
+        } elseif($user->hasRole('student')) {
+            $books = Book::eagerLoaded()->paginate(15);
             $title = "Library Books";
             return view('student.library_books',compact('user','books','title'));
         }
@@ -196,7 +215,7 @@ class StudentController extends Controller
     {
         $user = Auth::user();
         if($user->hasRole('student')){
-            $borrowedBooks = $user->issued_books;
+            $borrowedBooks = $user->student->issued_books;
             $title = "Borrowed Books";
             return view('student.library_borrowedbooks',compact('user','borrowedBooks','title'));
         }  

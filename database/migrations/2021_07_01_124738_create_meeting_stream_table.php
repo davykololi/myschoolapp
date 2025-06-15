@@ -15,10 +15,8 @@ class CreateMeetingStreamTable extends Migration
     {
         Schema::create('meeting_stream', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('stream_id')->unsigned();
-            $table->bigInteger('meeting_id')->unsigned();
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
-            $table->foreign('meeting_id')->references('id')->on('meetings')->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('meeting_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

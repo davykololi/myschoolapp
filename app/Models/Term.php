@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\ReportRemark;
 use App\Models\ReportSubjectGrade;
 use App\Models\ReportGeneralGrade;
+use App\Models\SubjectRemark;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,14 +13,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Term extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+    
     protected $table = 'terms';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
+    
     protected $fillable = ['name','code','status','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function school(): BelongsTo
     {
@@ -68,6 +79,11 @@ class Term extends Model
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school')->get();
+        return $query->with('school');
+    }
+
+    public function subject_remarks(): HasMany
+    {
+        return $this->hasMany(SubjectRemark::class,'term_id','id');
     }
 }

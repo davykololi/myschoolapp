@@ -32,7 +32,7 @@
                     @if($student->bed_number != null)
                     {{ $student->bed_number->number }}
                     @else
-                    {{ __('...........') }}
+                    {{ __('....................') }}
                     @endif
                 </td>
                 <td>{{ $student->stream->name}}</td>

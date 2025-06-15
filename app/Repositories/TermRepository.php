@@ -20,7 +20,12 @@ class TermRepository implements TermInterface
 
     public function all()
     {
-        return $this->term->eagerLoaded();
+        return $this->term->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->term->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

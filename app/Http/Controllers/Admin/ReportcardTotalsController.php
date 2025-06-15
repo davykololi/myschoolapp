@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Auth;
-use App\Models\ClassTotal;
-use App\Models\StreamTotal;
+use Session;
 use App\Models\MyClass;
 use App\Models\Stream;
 use App\Models\Exam;
@@ -33,24 +32,17 @@ class ReportcardTotalsController extends Controller
 
     public function twoExamsClassTotalsStore(Request $request)
     {
-        ClassTotal::query()->truncate();
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $classId = $request->class_id;
 
-        $yearId = $request->year;
-        $termId = $request->term;
-        $classId = $request->class;
-
-        if((is_null($yearId)) || (is_null($termId)) || (is_null($classId)) || (is_null(Auth::user()->school->image))){
-            toastr()->error(ucwords('Please ensure you have filled all the required details!'));
-            return back();
+        //Class totals general required requests not done well error
+        if((is_null($yearId)) || (is_null($termId)) || (is_null($classId))){
+            return back()->withErrors(ucwords('Please ensure you have filled all the required details!'));
         }
-
-        //Get Exam Ids
-        $examIds = Exam::whereIn('id',$request->exams)->get();
-        if(is_null($examIds)){
-            return back()->withErrors('Exams Not Selected!');
-        }
-
-        $array = $examIds->toArray();
+        
+        //Obtained exams ids to array
+        $array = Session::get('AdminRtExams');
         $examOneId = $array[0];
         $examTwoId = $array[1];
 
@@ -58,72 +50,115 @@ class ReportcardTotalsController extends Controller
         $term = Term::where('id',$termId)->first();
         $year = Year::where('id',$yearId)->first();
 
-        if(($yearId === null) || ($termId === null) || ($classId === null) || ($examOneId === null) || ($examTwoId === null)){
-            return back()->withErrors('Please populate class marks first!');
+        if(session()->exists("classTotal")){
+            session()->forget("classTotal");
         }
 
         $classStudents = $class->students()->with('user')->get();
-        foreach($classStudents as $student){
-            $name = $student->user->full_name;
-            $mark = Mark::when($yearId,function($query,$yearId){
-                    return $query->where('year_id',$yearId);
-                })->when($termId,function($query,$termId){
-                    return $query->where('term_id',$termId);
-                })->when($classId,function($query,$classId){
-                    return $query->where('class_id',$classId);
-                })->when($name,function($query,$name){
-                    return $query->where('name','like',"%$name%");
-                })->firstOrFail();
+        if($classStudents->isNotEmpty()){
+            foreach($classStudents as $student){
+                $name = $student->user->full_name;
+                $mark = Mark::when($yearId,function($query,$yearId){
+                        return $query->where('year_id',$yearId);
+                    })->when($termId,function($query,$termId){
+                        return $query->where('term_id',$termId);
+                    })->when($classId,function($query,$classId){
+                        return $query->where('class_id',$classId);
+                    })->when($name,function($query,$name){
+                        return $query->where('name','like',"%$name%");
+                    })->firstOrFail();
 
-            $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examOneId])->first();
-            $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examTwoId])->first();
+                $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examOneId])->first();
+                $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examTwoId])->first();
 
-            $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics]);
-            $mathsAvg = $maths->avg();
-            $eng = collect([$examOneMark->english,$examTwoMark->english]);
-            $engAvg = $eng->avg();
-            $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili]);
-            $kiswAvg = $kisw->avg();
-            $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry]);
-            $chemAvg = $chem->avg();
-            $bio = collect([$examOneMark->biology,$examTwoMark->biology]);
-            $bioAvg = $bio->avg();
-            $physics = collect([$examOneMark->physics,$examTwoMark->physics]);
-            $physicsAvg = $physics->avg();
-            $cre = collect([$examOneMark->cre,$examTwoMark->cre]);
-            $creAvg = $cre->avg();
-            $islam = collect([$examOneMark->islam,$examTwoMark->islam]);
-            $islamAvg = $islam->avg();
-            $hist = collect([$examOneMark->history,$examTwoMark->history]);
-            $histAvg = $hist->avg();
-            $geog = collect([$examOneMark->geography,$examTwoMark->geography]);
-            $geogAvg = $geog->avg();
+                $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics]);
+                $mathsAvg = $maths->avg();
+                $eng = collect([$examOneMark->english,$examTwoMark->english]);
+                $engAvg = $eng->avg();
+                $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili]);
+                $kiswAvg = $kisw->avg();
+                $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry]);
+                $chemAvg = $chem->avg();
+                $bio = collect([$examOneMark->biology,$examTwoMark->biology]);
+                $bioAvg = $bio->avg();
+                $physics = collect([$examOneMark->physics,$examTwoMark->physics]);
+                $physicsAvg = $physics->avg();
+                $cre = collect([$examOneMark->cre,$examTwoMark->cre]);
+                $creAvg = $cre->avg();
+                $islam = collect([$examOneMark->islam,$examTwoMark->islam]);
+                $islamAvg = $islam->avg();
+                $historyAndGoverment = collect([$examOneMark->history_and_government,$examTwoMark->history_and_government]);
+                $histAndGovernmentAvg = $historyAndGoverment->avg();
+                $geog = collect([$examOneMark->geography,$examTwoMark->geography]);
+                $geogAvg = $geog->avg();
+                $homeScience = collect([$examOneMark->home_science,$examTwoMark->home_science]);
+                $homeScienceAvg = $homeScience->avg();
+                $artAndDesign = collect([$examOneMark->art_and_design,$examTwoMark->art_and_design]);
+                $artAndDesignAvg = $artAndDesign->avg();
+                $agriculture = collect([$examOneMark->agriculture,$examTwoMark->agriculture]);
+                $agricultureAvg = $agriculture->avg();
+                $businessStudies = collect([$examOneMark->business_studies,$examTwoMark->business_studies]);
+                $businessStudiesAvg = $businessStudies->avg();
+                $computerStudies = collect([$examOneMark->computer_studies,$examTwoMark->computer_studies]);
+                $computerStudiesAvg = $computerStudies->avg();
+                $drawingAndDesign = collect([$examOneMark->drawing_and_design,$examTwoMark->drawing_and_design]);
+                $drawingAndDesignAvg = $drawingAndDesign->avg();
+                $french = collect([$examOneMark->french,$examTwoMark->french]);
+                $frenchAvg = $french->avg();
+                $german = collect([$examOneMark->german,$examTwoMark->german]);
+                $germanAvg = $german->avg();
+                $arabic = collect([$examOneMark->arabic,$examTwoMark->arabic]);
+                $arabicAvg = $arabic->avg();
+                $signLanguage = collect([$examOneMark->sign_language,$examTwoMark->sign_language]);
+                $signLanguageAvg = $signLanguage->avg();
+                $music = collect([$examOneMark->music,$examTwoMark->music]);
+                $musicAvg = $music->avg();
+                $woodWork = collect([$examOneMark->wood_work,$examTwoMark->wood_work]);
+                $woodWorkAvg = $woodWork->avg();
+                $metalWork = collect([$examOneMark->metal_work,$examTwoMark->metal_work]);
+                $metalWorkAvg = $metalWork->avg();
+                $buildingConstruction = collect([$examOneMark->building_construction,$examTwoMark->building_construction]);
+                $buildingConstructionAvg = $buildingConstruction->avg();
+                $powerMechanics = collect([$examOneMark->power_mechanics,$examTwoMark->power_mechanics]);
+                $powerMechanicsAvg = $powerMechanics->avg();
+                $electricity = collect([$examOneMark->electricity,$examTwoMark->electricity]);
+                $electricityAvg = $electricity->avg();
+                $aviationTechnology = collect([$examOneMark->aviation_technology,$examTwoMark->aviation_technology]);
+                $aviationTechnologyAvg = $aviationTechnology->avg();
 
-            $examOneTotal = $examOneMark->total;
-            $examTwoTotal = $examTwoMark->total;
-            $overalTotal = collect([$examOneTotal,$examTwoTotal]);
-            $overalTotalAvg = $overalTotal->avg();
+                $examOneTotal = $examOneMark->total;
+                $examTwoTotal = $examTwoMark->total;
+                $overalTotal = collect([$examOneTotal,$examTwoTotal]);
+                $overalTotalAvg = $overalTotal->avg();
 
-                ClassTotal::upsert([
-                            'name' => $mark->name,
-                            'mark_total' => round($overalTotalAvg,0),
-                            'admission_no' => $mark->admission_no,
-                ],['admission_no'],['name','mark_total']);
+                $data = [
+                    'name' => $mark->name,
+                    'mark_total' => round($overalTotalAvg,0),
+                    'admission_no' => $mark->admission_no,
+                ];
+
+                Session::push("classTotal",$data);
+            }
+
+            return back()->withSuccess('You are good to go!');
+        } else {
+            return back()->withErrors($class->name." "."has no students at the moment");
         }
-
-        return back()->withSuccess('You are good to go!');
     }
 
     public function threeExamsClassTotalsStore(Request $request)
     {
-        ClassTotal::query()->truncate();
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $classId = $request->class_id;
 
-        $yearId = $request->year;
-        $termId = $request->term;
-        $classId = $request->class;
-        //Get Exam Ids
-        $examIds = Exam::whereIn('id',$request->exams)->get();
-        $array = $examIds->toArray();
+        //Class totals general required requests not done well error
+        if((is_null($yearId)) || (is_null($termId)) || (is_null($classId))){
+            return back()->withErrors(ucwords('Please ensure you have filled all the required details!'));
+        }
+        
+        //Obtained exams ids to array
+        $array = Session::get('AdminRtExams');
         $examOneId = $array[0];
         $examTwoId = $array[1];
         $examThreeId = $array[2];
@@ -132,74 +167,117 @@ class ReportcardTotalsController extends Controller
         $term = Term::where('id',$termId)->first();
         $year = Year::where('id',$yearId)->first();
 
-        if(($yearId === null) || ($termId === null) || ($classId === null) || ($examOneId === null) || ($examTwoId === null) || ($examThreeId === null)){
-            return back()->withErrors('Please populate class marks first!');
+        if(session()->exists("classTotal")){
+            session()->forget("classTotal");
         }
 
         $classStudents = $class->students()->with('user')->get();
-        foreach($classStudents as $student){
-            $name = $student->user->full_name;
-            $mark = Mark::when($yearId,function($query,$yearId){
-                    return $query->where('year_id',$yearId);
-                })->when($termId,function($query,$termId){
-                    return $query->where('term_id',$termId);
-                })->when($classId,function($query,$classId){
-                    return $query->where('class_id',$classId);
-                })->when($name,function($query,$name){
-                    return $query->where('name','like',"%$name%");
-                })->firstOrFail();
+        if($classStudents->isNotEmpty()){
+            foreach($classStudents as $student){
+                $name = $student->user->full_name;
+                $mark = Mark::when($yearId,function($query,$yearId){
+                        return $query->where('year_id',$yearId);
+                    })->when($termId,function($query,$termId){
+                        return $query->where('term_id',$termId);
+                    })->when($classId,function($query,$classId){
+                        return $query->where('class_id',$classId);
+                    })->when($name,function($query,$name){
+                        return $query->where('name','like',"%$name%");
+                    })->firstOrFail();
 
-            $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examOneId])->first();
-            $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examTwoId])->first();
-            $examThreeMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examThreeId])->first();
+                $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examOneId])->first();
+                $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examTwoId])->first();
+                $examThreeMark = Mark::where(['name'=>$name,'class_id'=>$classId,'exam_id'=>$examThreeId])->first();
 
-            $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics,$examThreeMark->mathematics]);
-            $mathsAvg = $maths->avg();
-            $eng = collect([$examOneMark->english,$examTwoMark->english,$examThreeMark->english]);
-            $engAvg = $eng->avg();
-            $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili,$examThreeMark->kiswahili]);
-            $kiswAvg = $kisw->avg();
-            $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry,$examThreeMark->chemistry]);
-            $chemAvg = $chem->avg();
-            $bio = collect([$examOneMark->biology,$examTwoMark->biology,$examThreeMark->biology]);
-            $bioAvg = $bio->avg();
-            $physics = collect([$examOneMark->physics,$examTwoMark->physics,$examThreeMark->physics]);
-            $physicsAvg = $physics->avg();
-            $cre = collect([$examOneMark->cre,$examTwoMark->cre,$examThreeMark->cre]);
-            $creAvg = $cre->avg();
-            $islam = collect([$examOneMark->islam,$examTwoMark->islam,$examThreeMark->islam]);
-            $islamAvg = $islam->avg();
-            $hist = collect([$examOneMark->history,$examTwoMark->history,$examThreeMark->history]);
-            $histAvg = $hist->avg();
-            $geog = collect([$examOneMark->geography,$examTwoMark->geography,$examThreeMark->geography]);
-            $geogAvg = $geog->avg();
+                $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics,$examThreeMark->mathematics]);
+                $mathsAvg = $maths->avg();
+                $eng = collect([$examOneMark->english,$examTwoMark->english,$examThreeMark->english]);
+                $engAvg = $eng->avg();
+                $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili,$examThreeMark->kiswahili]);
+                $kiswAvg = $kisw->avg();
+                $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry,$examThreeMark->chemistry]);
+                $chemAvg = $chem->avg();
+                $bio = collect([$examOneMark->biology,$examTwoMark->biology,$examThreeMark->biology]);
+                $bioAvg = $bio->avg();
+                $physics = collect([$examOneMark->physics,$examTwoMark->physics,$examThreeMark->physics]);
+                $physicsAvg = $physics->avg();
+                $cre = collect([$examOneMark->cre,$examTwoMark->cre,$examThreeMark->cre]);
+                $creAvg = $cre->avg();
+                $islam = collect([$examOneMark->islam,$examTwoMark->islam,$examThreeMark->islam]);
+                $islamAvg = $islam->avg();
+                $historyAndGoverment = collect([$examOneMark->history_and_government,$examTwoMark->history_and_government,$examThreeMark->history_and_government]);
+                $histAndGovernmentAvg = $historyAndGoverment->avg();
+                $geog = collect([$examOneMark->geography,$examTwoMark->geography,$examThreeMark->geography]);
+                $geogAvg = $geog->avg();
+                $homeScience = collect([$examOneMark->home_science,$examTwoMark->home_science,$examThreeMark->home_science]);
+                $homeScienceAvg = $homeScience->avg();
+                $artAndDesign = collect([$examOneMark->art_and_design,$examTwoMark->art_and_design,$examThreeMark->art_and_design]);
+                $artAndDesignAvg = $artAndDesign->avg();
+                $agriculture = collect([$examOneMark->agriculture,$examTwoMark->agriculture,$examThreeMark->agriculture]);
+                $agricultureAvg = $agriculture->avg();
+                $businessStudies = collect([$examOneMark->business_studies,$examTwoMark->business_studies,$examThreeMark->business_studies]);
+                $businessStudiesAvg = $businessStudies->avg();
+                $computerStudies = collect([$examOneMark->computer_studies,$examTwoMark->computer_studies,$examThreeMark->computer_studies]);
+                $computerStudiesAvg = $computerStudies->avg();
+                $drawingAndDesign = collect([$examOneMark->drawing_and_design,$examTwoMark->drawing_and_design,$examThreeMark->drawing_and_design]);
+                $drawingAndDesignAvg = $drawingAndDesign->avg();
+                $french = collect([$examOneMark->french,$examTwoMark->french,$examThreeMark->french]);
+                $frenchAvg = $french->avg();
+                $german = collect([$examOneMark->german,$examTwoMark->german,$examThreeMark->german]);
+                $germanAvg = $german->avg();
+                $arabic = collect([$examOneMark->arabic,$examTwoMark->arabic,$examThreeMark->arabic]);
+                $arabicAvg = $arabic->avg();
+                $signLanguage = collect([$examOneMark->sign_language,$examTwoMark->sign_language,$examThreeMark->sign_language]);
+                $signLanguageAvg = $signLanguage->avg();
+                $music = collect([$examOneMark->music,$examTwoMark->music,$examThreeMark->music]);
+                $musicAvg = $music->avg();
+                $woodWork = collect([$examOneMark->wood_work,$examTwoMark->wood_work,$examThreeMark->wood_work]);
+                $woodWorkAvg = $woodWork->avg();
+                $metalWork = collect([$examOneMark->metal_work,$examTwoMark->metal_work,$examThreeMark->metal_work]);
+                $metalWorkAvg = $metalWork->avg();
+                $buildingConstruction = collect([$examOneMark->building_construction,$examTwoMark->building_construction,$examThreeMark->building_construction]);
+                $buildingConstructionAvg = $buildingConstruction->avg();
+                $powerMechanics = collect([$examOneMark->power_mechanics,$examTwoMark->power_mechanics,$examThreeMark->power_mechanics]);
+                $powerMechanicsAvg = $powerMechanics->avg();
+                $electricity = collect([$examOneMark->electricity,$examTwoMark->electricity,$examThreeMark->electricity]);
+                $electricityAvg = $electricity->avg();
+                $aviationTechnology = collect([$examOneMark->aviation_technology,$examTwoMark->aviation_technology,$examThreeMark->aviation_technology]);
+                $aviationTechnologyAvg = $aviationTechnology->avg();
 
-            $examOneTotal = $examOneMark->total;
-            $examTwoTotal = $examTwoMark->total;
-            $examThreeTotal = $examThreeMark->total;
-            $overalTotal = collect([$examOneTotal,$examTwoTotal,$examThreeTotal]);
-            $overalTotalAvg = $overalTotal->avg();
+                $examOneTotal = $examOneMark->total;
+                $examTwoTotal = $examTwoMark->total;
+                $examThreeTotal = $examThreeMark->total;
+                $overalTotal = collect([$examOneTotal,$examTwoTotal,$examThreeTotal]);
+                $overalTotalAvg = $overalTotal->avg();
 
-                ClassTotal::upsert([
-                            'name' => $mark->name,
-                            'mark_total' => round($overalTotalAvg,0),
-                            'admission_no' => $mark->admission_no,
-                ],['admission_no'],['name','mark_total']);
+                $data = [
+                    'name' => $mark->name,
+                    'mark_total' => round($overalTotalAvg,0),
+                    'admission_no' => $mark->admission_no,
+                ];
+
+                Session::push("classTotal",$data);
+            }
+
+            return back()->withSuccess('You are good to go!');
+        } else {
+            return back()->withErrors($class->name." "."has no students at he moment!");
         }
-
-        return back()->withSuccess('You are good to go!');
     }
 
     public function twoExamsStreamTotalsStore(Request $request)
     {
-        StreamTotal::query()->truncate();
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $streamId = $request->stream_id;
 
-        $yearId = $request->year;
-        $termId = $request->term;
-        $streamId = $request->stream;
-        //Get Exam Ids
-        $examIds = Exam::whereIn('id',$request->exams)->get();
-        $array = $examIds->toArray();
+        //Stream totals general required requests not done well error
+        if(($yearId === null) || ($termId === null) ||($streamId === null)){
+            return back()->withErrors('Please fill in all the required details first before you proceed!');
+        }
+        
+        // Obtained Exams ids to array
+        $array = Session::get('AdminRtExams');
         $examOneId = $array[0];
         $examTwoId = $array[1];
 
@@ -207,75 +285,119 @@ class ReportcardTotalsController extends Controller
         $term = Term::where('id',$termId)->first();
         $year = Year::where('id',$yearId)->first();
 
-        if(($yearId === null) || ($termId === null) ||($streamId === null) || ($examOneId === null) || ($examTwoId === null)){
-            return back()->withErrors('Please populate stream marks first!');
-        }
-
         $classId = $stream->class->id;
-        $streamStudents = $stream->students()->with('user')->get();
-        foreach($streamStudents as $student){
-            $name = $student->user->full_name;
-            $mark = Mark::when($yearId,function($query,$yearId){
-                    return $query->where('year_id',$yearId);
-                })->when($termId,function($query,$termId){
-                    return $query->where('term_id',$termId);
-                })->when($classId,function($query,$classId){
-                    return $query->where('class_id',$classId);
-                })->when($streamId,function($query,$streamId){
-                    return $query->where('stream_id',$streamId);
-                })->when($name,function($query,$name){
-                    return $query->where('name','like',"%$name%");
-                })->firstOrFail();
 
-            $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examOneId])->first();
-            $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examTwoId])->first();
-
-            $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics]);
-            $mathsAvg = $maths->avg();
-            $eng = collect([$examOneMark->english,$examTwoMark->english]);
-            $engAvg = $eng->avg();
-            $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili]);
-            $kiswAvg = $kisw->avg();
-            $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry]);
-            $chemAvg = $chem->avg();
-            $bio = collect([$examOneMark->biology,$examTwoMark->biology]);
-            $bioAvg = $bio->avg();
-            $physics = collect([$examOneMark->physics,$examTwoMark->physics]);
-            $physicsAvg = $physics->avg();
-            $cre = collect([$examOneMark->cre,$examTwoMark->cre]);
-            $creAvg = $cre->avg();
-            $islam = collect([$examOneMark->islam,$examTwoMark->islam]);
-            $islamAvg = $islam->avg();
-            $hist = collect([$examOneMark->history,$examTwoMark->history]);
-            $histAvg = $hist->avg();
-            $geog = collect([$examOneMark->geography,$examTwoMark->geography]);
-            $geogAvg = $geog->avg();
-
-            $examOneTotal = $examOneMark->total;
-            $examTwoTotal = $examTwoMark->total;
-            $overalTotal = collect([$examOneTotal,$examTwoTotal]);
-            $overalTotalAvg = $overalTotal->avg();
-
-                StreamTotal::upsert([
-                            'name' => $mark->name,
-                            'mark_total' => round($overalTotalAvg,0),
-                            'admission_no' => $mark->admission_no,
-                ],['admission_no'],['name','mark_total']);
+        if(session()->exists("streamTotal")){
+            session()->forget("streamTotal");
         }
 
-        return back()->withSuccess('Everything Ok!');
+        $streamStudents = $stream->students()->with('user')->get();
+        if($streamStudents->isNotEmpty()){
+            foreach($streamStudents as $student){
+                $name = $student->user->full_name;
+                $mark = Mark::when($yearId,function($query,$yearId){
+                        return $query->where('year_id',$yearId);
+                    })->when($termId,function($query,$termId){
+                        return $query->where('term_id',$termId);
+                    })->when($classId,function($query,$classId){
+                        return $query->where('class_id',$classId);
+                    })->when($streamId,function($query,$streamId){
+                        return $query->where('stream_id',$streamId);
+                    })->when($name,function($query,$name){
+                        return $query->where('name','like',"%$name%");
+                    })->firstOrFail();
+
+                $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examOneId])->first();
+                $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examTwoId])->first();
+
+                $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics]);
+                $mathsAvg = $maths->avg();
+                $eng = collect([$examOneMark->english,$examTwoMark->english]);
+                $engAvg = $eng->avg();
+                $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili]);
+                $kiswAvg = $kisw->avg();
+                $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry]);
+                $chemAvg = $chem->avg();
+                $bio = collect([$examOneMark->biology,$examTwoMark->biology]);
+                $bioAvg = $bio->avg();
+                $physics = collect([$examOneMark->physics,$examTwoMark->physics]);
+                $physicsAvg = $physics->avg();
+                $cre = collect([$examOneMark->cre,$examTwoMark->cre]);
+                $creAvg = $cre->avg();
+                $islam = collect([$examOneMark->islam,$examTwoMark->islam]);
+                $islamAvg = $islam->avg();
+                $historyAndGoverment = collect([$examOneMark->history_and_government,$examTwoMark->history_and_government]);
+                $histAndGovernmentAvg = $historyAndGoverment->avg();
+                $geog = collect([$examOneMark->geography,$examTwoMark->geography]);
+                $geogAvg = $geog->avg();
+                $homeScience = collect([$examOneMark->home_science,$examTwoMark->home_science]);
+                $homeScienceAvg = $homeScience->avg();
+                $artAndDesign = collect([$examOneMark->art_and_design,$examTwoMark->art_and_design]);
+                $artAndDesignAvg = $artAndDesign->avg();
+                $agriculture = collect([$examOneMark->agriculture,$examTwoMark->agriculture]);
+                $agricultureAvg = $agriculture->avg();
+                $businessStudies = collect([$examOneMark->business_studies,$examTwoMark->business_studies]);
+                $businessStudiesAvg = $businessStudies->avg();
+                $computerStudies = collect([$examOneMark->computer_studies,$examTwoMark->computer_studies]);
+                $computerStudiesAvg = $computerStudies->avg();
+                $drawingAndDesign = collect([$examOneMark->drawing_and_design,$examTwoMark->drawing_and_design]);
+                $drawingAndDesignAvg = $drawingAndDesign->avg();
+                $french = collect([$examOneMark->french,$examTwoMark->french]);
+                $frenchAvg = $french->avg();
+                $german = collect([$examOneMark->german,$examTwoMark->german]);
+                $germanAvg = $german->avg();
+                $arabic = collect([$examOneMark->arabic,$examTwoMark->arabic]);
+                $arabicAvg = $arabic->avg();
+                $signLanguage = collect([$examOneMark->sign_language,$examTwoMark->sign_language]);
+                $signLanguageAvg = $signLanguage->avg();
+                $music = collect([$examOneMark->music,$examTwoMark->music]);
+                $musicAvg = $music->avg();
+                $woodWork = collect([$examOneMark->wood_work,$examTwoMark->wood_work]);
+                $woodWorkAvg = $woodWork->avg();
+                $metalWork = collect([$examOneMark->metal_work,$examTwoMark->metal_work]);
+                $metalWorkAvg = $metalWork->avg();
+                $buildingConstruction = collect([$examOneMark->building_construction,$examTwoMark->building_construction]);
+                $buildingConstructionAvg = $buildingConstruction->avg();
+                $powerMechanics = collect([$examOneMark->power_mechanics,$examTwoMark->power_mechanics]);
+                $powerMechanicsAvg = $powerMechanics->avg();
+                $electricity = collect([$examOneMark->electricity,$examTwoMark->electricity]);
+                $electricityAvg = $electricity->avg();
+                $aviationTechnology = collect([$examOneMark->aviation_technology,$examTwoMark->aviation_technology]);
+                $aviationTechnologyAvg = $aviationTechnology->avg();
+
+                $examOneTotal = $examOneMark->total;
+                $examTwoTotal = $examTwoMark->total;
+                $overalTotal = collect([$examOneTotal,$examTwoTotal]);
+                $overalTotalAvg = $overalTotal->avg();
+
+                $data = [
+                    'name' => $mark->name,
+                    'mark_total' => round($overalTotalAvg,0),
+                    'admission_no' => $mark->admission_no,
+                ];
+
+                Session::push("streamTotal",$data);
+            }
+
+            return back()->withSuccess('Everything Ok!');
+        } else {
+            return back()->withErrors($stream->name." "."has no students at the moment");
+        }
     }
 
     public function threeExamsStreamTotalsStore(Request $request)
     {
-        StreamTotal::query()->truncate();
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $streamId = $request->stream_id;
 
-        $yearId = $request->year;
-        $termId = $request->term;
-        $streamId = $request->stream;
-        //Get Exam Ids
-        $examIds = Exam::whereIn('id',$request->exams)->get();
-        $array = $examIds->toArray();
+        //Stream totals general required requests not done well error
+        if(($yearId === null) || ($termId === null) ||($streamId === null)){
+            return back()->withErrors('Please fill in all the required details first before you proceed!');
+        }
+
+        //Obtained Exams ids to array
+        $array = Session::get('AdminRtExams');
         $examOneId = $array[0];
         $examTwoId = $array[1];
         $examThreeId = $array[2];
@@ -284,64 +406,105 @@ class ReportcardTotalsController extends Controller
         $term = Term::where('id',$termId)->first();
         $year = Year::where('id',$yearId)->first();
 
-        if(($yearId === null) || ($termId === null) ||($streamId === null) || ($examOneId === null) || ($examTwoId === null) || ($examThreeId === null)){
-            return back()->withErrors('Please populate stream marks first!');
-        }
-
         $classId = $stream->class->id;
         $streamStudents = $stream->students()->with('user')->get();
-        foreach($streamStudents as $student){
-            $name = $student->user->full_name;
-            $mark = Mark::when($yearId,function($query,$yearId){
-                    return $query->where('year_id',$yearId);
-                })->when($termId,function($query,$termId){
-                    return $query->where('term_id',$termId);
-                })->when($classId,function($query,$classId){
-                    return $query->where('class_id',$classId);
-                })->when($streamId,function($query,$streamId){
-                    return $query->where('stream_id',$streamId);
-                })->when($name,function($query,$name){
-                    return $query->where('name','like',"%$name%");
-                })->firstOrFail();
 
-            $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examOneId])->first();
-            $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examTwoId])->first();
-            $examThreeMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examThreeId])->first();
-
-            $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics,$examThreeMark->mathematics]);
-            $mathsAvg = $maths->avg();
-            $eng = collect([$examOneMark->english,$examTwoMark->english,$examThreeMark->english]);
-            $engAvg = $eng->avg();
-            $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili,$examThreeMark->kiswahili]);
-            $kiswAvg = $kisw->avg();
-            $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry,$examThreeMark->chemistry]);
-            $chemAvg = $chem->avg();
-            $bio = collect([$examOneMark->biology,$examTwoMark->biology,$examThreeMark->biology]);
-            $bioAvg = $bio->avg();
-            $physics = collect([$examOneMark->physics,$examTwoMark->physics,$examThreeMark->physics]);
-            $physicsAvg = $physics->avg();
-            $cre = collect([$examOneMark->cre,$examTwoMark->cre,$examThreeMark->cre]);
-            $creAvg = $cre->avg();
-            $islam = collect([$examOneMark->islam,$examTwoMark->islam,$examThreeMark->islam]);
-            $islamAvg = $islam->avg();
-            $hist = collect([$examOneMark->history,$examTwoMark->history,$examThreeMark->history]);
-            $histAvg = $hist->avg();
-            $geog = collect([$examOneMark->geography,$examTwoMark->geography,$examThreeMark->geography]);
-            $geogAvg = $geog->avg();
-
-            $examOneTotal = $examOneMark->total;
-            $examTwoTotal = $examTwoMark->total;
-            $examThreeTotal = $examThreeMark->total;
-            $overalTotal = collect([$examOneTotal,$examTwoTotal,$examThreeTotal]);
-            $overalTotalAvg = $overalTotal->avg();
-
-                StreamTotal::upsert([
-                            'name' => $mark->name,
-                            'mark_total' => round($overalTotalAvg,0),
-                            'admission_no' => $mark->admission_no,
-                ],['admission_no'],['name','mark_total']);
+        if(session()->exists("streamTotal")){
+            session()->forget("streamTotal");
         }
 
-        return back()->withSuccess('Everything Ok!');
+        if($streamStudents->isNotEmpty()){
+            foreach($streamStudents as $i => $student){
+                $name = $student->user->full_name;
+                $mark = Mark::when($yearId,function($query,$yearId){
+                        return $query->where('year_id',$yearId);
+                    })->when($termId,function($query,$termId){
+                        return $query->where('term_id',$termId);
+                    })->when($classId,function($query,$classId){
+                        return $query->where('class_id',$classId);
+                    })->when($streamId,function($query,$streamId){
+                        return $query->where('stream_id',$streamId);
+                    })->when($name,function($query,$name){
+                        return $query->where('name','like',"%$name%");
+                    })->firstOrFail();
+
+                $examOneMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examOneId])->first();
+                $examTwoMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examTwoId])->first();
+                $examThreeMark = Mark::where(['name'=>$name,'class_id'=>$classId,'stream_id'=>$streamId,'exam_id'=>$examThreeId])->first();
+
+                $maths = collect([$examOneMark->mathematics,$examTwoMark->mathematics,$examThreeMark->mathematics]);
+                $mathsAvg = $maths->avg();
+                $eng = collect([$examOneMark->english,$examTwoMark->english,$examThreeMark->english]);
+                $engAvg = $eng->avg();
+                $kisw = collect([$examOneMark->kiswahili,$examTwoMark->kiswahili,$examThreeMark->kiswahili]);
+                $kiswAvg = $kisw->avg();
+                $chem = collect([$examOneMark->chemistry,$examTwoMark->chemistry,$examThreeMark->chemistry]);
+                $chemAvg = $chem->avg();
+                $bio = collect([$examOneMark->biology,$examTwoMark->biology,$examThreeMark->biology]);
+                $bioAvg = $bio->avg();
+                $physics = collect([$examOneMark->physics,$examTwoMark->physics,$examThreeMark->physics]);
+                $physicsAvg = $physics->avg();
+                $cre = collect([$examOneMark->cre,$examTwoMark->cre,$examThreeMark->cre]);
+                $creAvg = $cre->avg();
+                $islam = collect([$examOneMark->islam,$examTwoMark->islam,$examThreeMark->islam]);
+                $islamAvg = $islam->avg();
+                $historyAndGoverment = collect([$examOneMark->history_and_government,$examTwoMark->history_and_government,$examThreeMark->history_and_government]);
+                $histAndGovernmentAvg = $historyAndGoverment->avg();
+                $geog = collect([$examOneMark->geography,$examTwoMark->geography,$examThreeMark->geography]);
+                $geogAvg = $geog->avg();
+                $homeScience = collect([$examOneMark->home_science,$examTwoMark->home_science,$examThreeMark->home_science]);
+                $homeScienceAvg = $homeScience->avg();
+                $artAndDesign = collect([$examOneMark->art_and_design,$examTwoMark->art_and_design,$examThreeMark->art_and_design]);
+                $artAndDesignAvg = $artAndDesign->avg();
+                $agriculture = collect([$examOneMark->agriculture,$examTwoMark->agriculture,$examThreeMark->agriculture]);
+                $agricultureAvg = $agriculture->avg();
+                $businessStudies = collect([$examOneMark->business_studies,$examTwoMark->business_studies,$examThreeMark->business_studies]);
+                $businessStudiesAvg = $businessStudies->avg();
+                $computerStudies = collect([$examOneMark->computer_studies,$examTwoMark->computer_studies,$examThreeMark->computer_studies]);
+                $computerStudiesAvg = $computerStudies->avg();
+                $drawingAndDesign = collect([$examOneMark->drawing_and_design,$examTwoMark->drawing_and_design,$examThreeMark->drawing_and_design]);
+                $drawingAndDesignAvg = $drawingAndDesign->avg();
+                $french = collect([$examOneMark->french,$examTwoMark->french,$examThreeMark->french]);
+                $frenchAvg = $french->avg();
+                $german = collect([$examOneMark->german,$examTwoMark->german,$examThreeMark->german]);
+                $germanAvg = $german->avg();
+                $arabic = collect([$examOneMark->arabic,$examTwoMark->arabic,$examThreeMark->arabic]);
+                $arabicAvg = $arabic->avg();
+                $signLanguage = collect([$examOneMark->sign_language,$examTwoMark->sign_language,$examThreeMark->sign_language]);
+                $signLanguageAvg = $signLanguage->avg();
+                $music = collect([$examOneMark->music,$examTwoMark->music,$examThreeMark->music]);
+                $musicAvg = $music->avg();
+                $woodWork = collect([$examOneMark->wood_work,$examTwoMark->wood_work,$examThreeMark->wood_work]);
+                $woodWorkAvg = $woodWork->avg();
+                $metalWork = collect([$examOneMark->metal_work,$examTwoMark->metal_work,$examThreeMark->metal_work]);
+                $metalWorkAvg = $metalWork->avg();
+                $buildingConstruction = collect([$examOneMark->building_construction,$examTwoMark->building_construction,$examThreeMark->building_construction]);
+                $buildingConstructionAvg = $buildingConstruction->avg();
+                $powerMechanics = collect([$examOneMark->power_mechanics,$examTwoMark->power_mechanics,$examThreeMark->power_mechanics]);
+                $powerMechanicsAvg = $powerMechanics->avg();
+                $electricity = collect([$examOneMark->electricity,$examTwoMark->electricity,$examThreeMark->electricity]);
+                $electricityAvg = $electricity->avg();
+                $aviationTechnology = collect([$examOneMark->aviation_technology,$examTwoMark->aviation_technology,$examThreeMark->aviation_technology]);
+                $aviationTechnologyAvg = $aviationTechnology->avg();
+
+                $examOneTotal = $examOneMark->total;
+                $examTwoTotal = $examTwoMark->total;
+                $examThreeTotal = $examThreeMark->total;
+                $overalTotal = collect([$examOneTotal,$examTwoTotal,$examThreeTotal]);
+                $overalTotalAvg = $overalTotal->avg();
+
+                $data = [
+                    'name' => $mark->name,
+                    'mark_total' => round($overalTotalAvg,0),
+                    'admission_no' => $mark->admission_no,
+                ];
+
+                Session::push("streamTotal",$data);
+            }
+
+            return back()->withSuccess('Everything Ok!');
+        } else {
+            return back()->withErrors($stream->name." "."has no students at the moment!");
+        }
     }
 }

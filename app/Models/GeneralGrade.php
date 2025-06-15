@@ -32,4 +32,9 @@ class GeneralGrade extends Model
     {
         return $this->belongsTo('App\Models\Term')->withDefault();
     }
+
+    public function scopeEagerLoaded($query)
+    {
+        return $query->with('class','year','term','exam');
+    }
 }

@@ -27,7 +27,7 @@ class AttachDetachStudentController extends Controller
     {
     	$club = $this->clubRepo->getId($id);
     	$students = $request->students;
-    	$club->students()->attach($students);
+    	$club->students()->sync($students);
 
     	return back()->withSuccess('Done Successfully');
     }

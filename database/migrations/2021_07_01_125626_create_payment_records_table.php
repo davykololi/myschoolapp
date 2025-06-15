@@ -14,7 +14,7 @@ class CreatePaymentRecordsTable extends Migration
     public function up()
     {
         Schema::create('payment_records', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->decimal('amount_paid')->default(0);
             $table->decimal('balance')->default(0);
             $table->string('payment_mode');
@@ -23,12 +23,10 @@ class CreatePaymentRecordsTable extends Migration
             $table->boolean('verified')->default(0);
             $table->string('ref_no', 100)->unique()->nullable();
             $table->string('barcode');
-            $table->bigInteger('student_id')->unsigned();
-            $table->bigInteger('payment_id')->unsigned();
-            $table->bigInteger('accountant_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
-            $table->foreign('accountant_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('payment_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('accountant_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('payment_section_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

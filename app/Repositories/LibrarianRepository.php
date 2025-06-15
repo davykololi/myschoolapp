@@ -20,7 +20,12 @@ class LibrarianRepository implements LibrarianInterface
 
     public function all()
     {
-        return $this->librarian->eagerLoaded();
+        return $this->librarian->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->librarian->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

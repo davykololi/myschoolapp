@@ -14,19 +14,14 @@ class CreateTimetablesTable extends Migration
     public function up()
     {
         Schema::create('timetables', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('file');
             $table->string('desc');
-            $table->bigInteger('school_id')->unsigned();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
-            $table->bigInteger('class_id')->unsigned()->nullable();
-            $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
-            $table->bigInteger('stream_id')->unsigned()->nullable();
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
-            $table->bigInteger('exam_id')->unsigned()->nullable();
-            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->bigInteger('teacher_id')->unsigned()->nullable();
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('class_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('stream_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('exam_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

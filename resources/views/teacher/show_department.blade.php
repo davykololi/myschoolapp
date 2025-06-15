@@ -2,6 +2,7 @@
 @section('title', '| Teacher Department Details')
 
 @section('content')
+@role('teacher')
 <!-- frontend-main view -->
 <x-frontend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
@@ -105,4 +106,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

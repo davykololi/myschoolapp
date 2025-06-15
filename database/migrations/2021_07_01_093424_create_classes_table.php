@@ -14,9 +14,10 @@ class CreateClassesTable extends Migration
     public function up()
     {
         Schema::create('classes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->string('initials');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->text('desc');
             $table->string('slug')->nullable()->unique();
             $table->timestamps();

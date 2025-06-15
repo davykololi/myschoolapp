@@ -38,12 +38,22 @@ class MyParentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $myParents = $this->parentService->all();
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $search = strtolower($request->search);
+            if($search){
+                $myParents = MyParent::whereLike(['user.first_name', 'user.middle_name', 'user.last_name', 'user.email', 'phone_no','id_no','current_address','permanent_address','gender','school.name'], $search)->eagerLoaded()->paginate(15);
 
-        return view('admin.parents.index',compact('myParents'));
+                return view('admin.parents.index',compact('myParents'));
+            } else {
+                $myParents = $this->parentService->all();
+
+                return view('admin.parents.index',compact('myParents'));
+            }
+        }
     }
 
     /**

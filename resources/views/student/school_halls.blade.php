@@ -17,7 +17,9 @@
                                 {{ $hall->name }} <span class="text-green-800">Category:</span> {{ $hall->category_hall->name }} 
                             </li>
                             @empty
-                            <p class="text-[red]">{{$user->school->name}} has no halls.</p>
+                            <p class="bg-red-700 text-white text-center px-1 px-2 rounded-md">
+                                {{ strtoupper($user->school->name) }} {{ strtoupper(__('HALLS NOTYET POPULATED')) }}.
+                            </p>
                             @endforelse
                         </ol>
                     </div>

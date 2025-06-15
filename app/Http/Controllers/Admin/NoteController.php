@@ -7,7 +7,6 @@ use App\Services\NotesService;
 use App\Services\StreamService;
 use App\Services\TeacherService;
 use App\Services\SubjectService;
-use App\Services\StreamSubjectService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\NotesFormRequest as StoreRequest;
@@ -15,13 +14,13 @@ use App\Http\Requests\NotesFormRequest as UpdateRequest;
 
 class NoteController extends Controller
 {
-    protected $notesService,$streamService,$teacherService,$subjectService,$streamSubjectService;
+    protected $notesService,$streamService,$teacherService,$subjectService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(NotesService $notesService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService,StreamSubjectService $streamSubjectService)
+    public function __construct(NotesService $notesService,StreamService $streamService,TeacherService $teacherService,SubjectService $subjectService)
     {
         $this->middleware('auth');
         $this->middleware('role:admin');
@@ -31,7 +30,6 @@ class NoteController extends Controller
         $this->streamService = $streamService;
         $this->teacherService = $teacherService;
         $this->subjectService = $subjectService;
-        $this->streamSubjectService = $streamSubjectService;
     }
 
     /**
@@ -56,10 +54,10 @@ class NoteController extends Controller
     {
         //
         $streams = $this->streamService->all();
-        $teachers = $this->teacherService->all();
         $subjects = $this->subjectService->all();
+        $teachers = $this->teacherService->all();
 
-        return view('admin.notes.create',compact('streams','teachers','subjects'));
+        return view('admin.notes.create',compact('streams','subjects','teachers'));
     }
 
     /**
@@ -101,11 +99,10 @@ class NoteController extends Controller
         //
         $note = $this->notesService->getId($id);
         $streams = $this->streamService->all();
-        $teachers = $this->teacherService->all();
         $subjects = $this->subjectService->all();
-        $streamSubjects = $this->streamSubjectService->all();
+        $teachers = $this->teacherService->all();
 
-        return view('admin.notes.edit',compact('note','streams','teachers','subjects','streamSubjects'));
+        return view('admin.notes.edit',compact('note','streams','subjects','teachers'));
     }
 
     /**

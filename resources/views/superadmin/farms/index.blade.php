@@ -2,9 +2,10 @@
 @section('title', '| Farms List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
-<div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
+<div class="max-w-full p-8 md:p-4 lg:p- shadow-2xl">
     <div class="w-full">
     @include('partials.messages')
     <!-- Posts list -->
@@ -38,7 +39,9 @@
                             @foreach($farms as $key => $farm)
                                 <tr class="border-b dark:border-neutral-500 bg-transparent dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{$loop->iteration}}</div>
+                                        <div>
+                                            {{ $farms->perPage() * ($farms->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{$farm->name}}</div>
@@ -73,4 +76,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

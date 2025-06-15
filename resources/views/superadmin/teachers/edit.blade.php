@@ -2,6 +2,7 @@
 @section('title', '| Edit Teacher')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
     <section class="max-w-full py-1 bg-blueGray-50">
@@ -26,5 +27,6 @@
             </div>
         </div>
     </section>
-</x-backend-main>  
+</x-backend-main>
+@endrole  
 @endsection

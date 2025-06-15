@@ -19,16 +19,10 @@ return new class extends Migration
             $table->bigInteger('from_total')->nullable();
             $table->bigInteger('to_total')->nullable();
             $table->string('remark_id')->unique();
-            $table->bigInteger('class_id')->unsigned()->nullable();
-            $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
-            $table->bigInteger('exam_id')->unsigned()->nullable();
-            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->bigInteger('school_id')->unsigned()->nullable();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
-            $table->bigInteger('year_id')->unsigned()->nullable();
-            $table->foreign('year_id')->references('id')->on('years')->onDelete('cascade');
-            $table->bigInteger('term_id')->unsigned()->nullable();
-            $table->foreign('term_id')->references('id')->on('terms')->onDelete('cascade');
+            $table->foreignUuid('class_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('year_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('term_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

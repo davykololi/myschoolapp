@@ -17,16 +17,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\CommonUserInformation;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Accountant extends CommonUserInformation implements Searchable, BannableContract
 {
-    use HasFactory, Notifiable, Bannable;
+    use HasFactory, Notifiable, Bannable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'accountants';
+
+    /**
+     * The attributes that should be cast.
+     * 
+     * @var array<string, string|class->string>
+     */
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> AccountantPositionEnum::class];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -41,7 +57,7 @@ class Accountant extends CommonUserInformation implements Searchable, BannableCo
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','meetings','rewards','user')->get();
+        return $query->with('school','meetings','awards','user');
     }
 
     public function seniorAccountant()

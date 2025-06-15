@@ -14,11 +14,11 @@ class CreateAdminsTable extends Migration
     public function up()
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('blood_group')->default('A');
             $table->string('image')->nullable();
+            $table->string('gender');
             $table->string('emp_no')->nullable();
-            $table->string('gender')->nullable();
             $table->string('id_no');
             $table->string('dob');
             $table->string('designation');
@@ -28,9 +28,8 @@ class CreateAdminsTable extends Migration
             $table->longText('history',2000);
             $table->string('position')->default('Ordinary Admin');
             $table->boolean('is_banned')->default(false);
-            $table->bigInteger('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

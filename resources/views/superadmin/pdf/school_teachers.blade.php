@@ -2,6 +2,7 @@
 @section('title', '| School Teachers')
 
 @section('content')
+@role('superadmin')
 <div class="container"> 
     <h1 class="title"><u>{{$title}}</u></h1> 
     <div>
@@ -20,10 +21,10 @@
             @forelse($schoolTeachers as $schoolTeacher)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $schoolTeacher->title }} {{ $schoolTeacher->full_name }}</td>
+                <td>{{ $schoolTeacher->user->salutation }} {{ $schoolTeacher->user->full_name }}</td>
                 <td>{{ $schoolTeacher->phone_no }}</td>
-                <td>{{ $schoolTeacher->email }}</td>
-                <td>{{ $schoolTeacher->role->name }}</td>
+                <td>{{ $schoolTeacher->user->email }}</td>
+                <td>{{ $schoolTeacher->position->value }}</td>
             @empty
                 <td colspan="10" style="color: red">
                     No teachers assigned to {{$school->name}} yet.
@@ -34,5 +35,6 @@
         </tbody>
     </table>
     </div>
-</div>           
+</div>
+@endrole           
 @endsection

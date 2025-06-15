@@ -15,10 +15,8 @@ class CreateExamTeacherTable extends Migration
     {
         Schema::create('exam_teacher', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('exam_id')->unsigned();
-            $table->bigInteger('teacher_id')->unsigned();
-            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreignUuid('exam_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

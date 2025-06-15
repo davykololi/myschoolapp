@@ -2,6 +2,7 @@
 @section('title', '| Stream Sections')
 
 @section('content')
+@role('superadmin')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
 <div class="row">
     <div class="col-lg-12">
@@ -20,10 +21,11 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
-                <table class="table table-bordered table-bordered-bd-warning mt-4"">
+                <table class="table table-bordered table-bordered-bd-warning mt-4">
                     <!-- Table Headings -->
                     <thead>
-                        <th width="30%">NAME</th>
+                        <th width="5">NO</th>
+                        <th width="25%">NAME</th>
                         <th width="15%">INITIALS</th>
                         <th width="30%">DESCRIPTION</th>
                         <th width="25%">ACTION</th>
@@ -32,6 +34,11 @@
                     <tbody>
                     @foreach($streamSections as $key => $streamSection)
                         <tr>
+                            <td class="table-text">
+                                <div>
+                                    {{ $streamSections->perPage() * ($streamSections->currentPage() - 1) + $key + 1 }}
+                                </div>
+                            </td>
                             <td class="table-text">
                                 <div>{{$streamSection->name}}</div>
                             </td>
@@ -64,4 +71,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

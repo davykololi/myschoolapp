@@ -10,12 +10,12 @@
         .hr_receipt_bottom{width: 82%;border-top: 2px dashed;}
         .table-left{text-align: left;}
         .uc{text-transform: uppercase;}
-        .school_margin{margin-top: -1.1em;margin-bottom: -0.6em;margin-left: 22em;font-family: Arial Narrow;}
-        .email_margin{margin-top: 0.4em;margin-bottom: 10px;margin-left: 22em;}
-        .postal-mt {margin-top: -28px;margin-left: 22em;font-family: Arial Narrow;}
+        .school_margin{margin-top: -1.1em;margin-bottom: -0.6em;text-align: center;font-family: Arial Narrow;margin-right: 5em}
+        .email_margin{margin-top: 0.4em;margin-bottom: 10px;text-align: center;margin-right: 5em}
+        .postal-mt {margin-top: -28px;text-align: center;font-family: Arial Narrow;margin-right: 5em}
         .page-break{page-break-after: always;}
         .center{text-align: center;}
-        .main-heading {text-align: center;margin-right: 1.5cm;color: midnightblue;font-size: 40px;}
+        .main-heading {text-align: center;color: midnightblue;font-size: 40px;margin-right: 4em;}
         .left{text-align: left;}
         .right{text-align: right;}
         .margin{margin: 500px;margin-left: 130px;margin-right: 130px;}

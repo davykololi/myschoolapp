@@ -1,7 +1,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" >Attach </label>
                         <div class="col-md-10">
-                            <select id="subject" type="subject" value="{{old('subject')}}" class="form-control" name="subject">
+                            <select id="subject_id" type="text" value="{{old('subject_id')}}" class="form-control" name="subject_id">
                                 <option value="">Select Subject</option>
                                 @foreach ($subjects as $subject)
                             <option value="{{$subject->id}}">{{$subject->name}}</option>

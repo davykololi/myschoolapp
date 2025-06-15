@@ -14,15 +14,15 @@ class CreateParentsTable extends Migration
     public function up()
     {
         Schema::create('parents', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('image')->nullable();
-            $table->string('gender')->nullable();
+            $table->string('gender');
             $table->string('id_no');
             $table->string('phone_no')->nullable();
             $table->string('current_address')->nullable();
             $table->string('permanent_address')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->boolean('is_banned')->default(false);
             $table->string('lock')->default('enabled');
             $table->timestamps();

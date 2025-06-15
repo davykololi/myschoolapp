@@ -12,7 +12,7 @@ class ReportCard extends Model implements Searchable
     use HasFactory;
 
     protected $table = 'report_cards';
-    public $incrementing = false; 
+     
     protected $fillable = ['name','maths','eng','kisw','chem','bio','physics','cre','islam','hist','ghc','recommendation','school_id','class_id','stream_id','teacher_id','term_id','year_id'];
 
     public function getSearchResult(): SearchResult

@@ -6,9 +6,7 @@
     <div class="mt"><x-pdf-landscape-current-date/></div>
     <div>
     <h2 class="title" style="margin-top: -25px"><u>{{ $title }}</u></h2>
-    <h3>
-        <span style="margin-left: 10px;margin-right: 10px;"><b>Total:</b> {{ $schoolParents->count() }} <i>Parents</i></span>
-    </h3>
+    <p style="margin-left: -80px;"><u><b>Total:</b> {{ $schoolParents->count() }} <i>Parents</i></u></p>
     <div>
     <table>
         <thead class="table-bordered">
@@ -16,7 +14,8 @@
                 <td><b>NO</b></td>
                 <td><b>NAME</b></td>
                 <td><b>PHONE NO</b></td>
-                <td><b>POSTAL ADDRESS</b></td>
+                <td><b>C.POSTAL ADDRESS</b></td>
+                <td><b>P.POSTAL ADDRESS</b></td>
                 <td><b>EMAIL ADDRESS</b></td>
             </tr>
         </thead>
@@ -28,6 +27,7 @@
                 <td class="table-left">{{ $schoolParent->user->salutation }} {{ $schoolParent->user->full_name }}</td>
                 <td class="table-left">{{ $schoolParent->phone_no }}</td>
                 <td class="table-left">{{ $schoolParent->current_address }}</td>
+                <td class="table-left">{{ $schoolParent->permanent_address }}</td>
                 <td class="table-left blue">{{ $schoolParent->user->email }}</td>
             @empty
                 <td colspan="10" style="color: red">

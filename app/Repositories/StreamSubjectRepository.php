@@ -23,6 +23,11 @@ class StreamSubjectRepository implements StreamSubjectInterface
         return $this->streamSubject->eagerLoaded()->get();
     }
 
+    public function paginated()
+    {
+        return $this->streamSubject->eagerLoaded()->paginate(5);
+    }
+
     public function create(array $data)
     {
     	return $this->streamSubject->create($data);

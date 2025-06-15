@@ -1,4 +1,5 @@
 <x-teacher>
+@role('teacher')
     <!-- frontend-main view -->
     <x-frontend-main>
     <div class="row">
@@ -16,25 +17,29 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $teacher->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
+            @if($teacher->gender === "Male")
+            <img src="{{ $teacher->image_url }}" class="border-4 border-yellow-800 p-2 h-48 w-48" alt="{{ $teacher->user->full_name }}" onerror="this.src='{{asset('static/avatar.png')}}'">
+            @elseif($teacher->gender === "Female")
+            <img src="{{ $teacher->image_url }}" class="border-4 border-yellow-800 p-2 h-48 w-48" alt="{{ $teacher->user->full_name }}" onerror="this.src='{{asset('static/female_avatar.png')}}'">
+            @endif
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Name:</strong>
-            {{ $teacher->salutation }} {{ $teacher->full_name }}
+            {{ $teacher->user->salutation }} {{ $teacher->user->full_name }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Position:</strong>
-            {{ $teacher->role->name }}
+            {{ $teacher->position->value }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Email:</strong>
-            {{ $teacher->email }}
+            {{ $teacher->user->email }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -64,4 +69,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 </x-teacher>

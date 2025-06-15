@@ -6,11 +6,11 @@
         header{position: fixed;top: 0.5cm;left: 0cm;right: 0cm;height: 2cm;line-height: 0.5cm;}
         footer{position: fixed;bottom: 0cm;left: 0cm;right: 0cm;height: 2.5cm;text-align: center;line-height: 0.5cm;}
         table{width: 82%;border: 2px solid black; margin-left: -5px;}
-        thead tr {background-color: midnightblue;color: white;}
-        tbody tr:nth-child(odd) {background-color: #FFEDD2;line-height: 25px}
-        tbody tr:nth-child(even) {background-color: #D8CCBA;line-height: 25px}
-        tfoot tr:nth-child(odd) {background-color: lightgray;line-height: 25px}
-        tfoot tr:nth-child(even) {background-color: dimgray;line-height: 25px} 
+        thead tr {background-color: midnightblue;color: white;line-height: 25px;}
+        tbody tr:nth-child(odd) {background-color: #FFEDD2;line-height: 20px;}
+        tbody tr:nth-child(even) {background-color: #D8CCBA;line-height: 20px;}
+        tfoot tr:nth-child(odd) {background-color: lightgray;line-height: 20px;}
+        tfoot tr:nth-child(even) {background-color: dimgray;line-height: 20px;} 
         .hr_portrait_bottom{width: 82%;border-top: 10px groove brown;}
         .table-left{text-align: left;}
         .table-center{text-align: center;}
@@ -21,7 +21,7 @@
         .email_margin{margin-top: 0.5em;margin-bottom: 10px;margin-left: 22em;}
         .postal-mt {margin-top: -25px;margin-left: 22em;font-family: Arial Narrow;}
         .table_caption{text-transform: uppercase;text-align: center;margin-top: 0;margin-bottom: -04em;}
-        .title{text-transform: uppercase;text-align: center;margin-top: 20px;font-style: Times New Roman;}
+        .title{text-transform: uppercase;text-align: center;margin-top: 20px;font-style: Times New Roman;font-size: 25px;}
         .uppercase{text-transform: uppercase;}
         .dotted-underline{border-bottom: 2px dotted #000;}
         .midnightblue{color: midnightblue;}

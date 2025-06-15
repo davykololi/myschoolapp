@@ -2,6 +2,7 @@
 @section('title', '| Class Details')
 
 @section('content')
+@role('superadmin')
   <!-- frontend-main view -->
   <x-backend-main>
     <div class="row">
@@ -52,14 +53,6 @@
         </div>
     </div>
 </div>
-</x-backend-main>  
+</x-backend-main>
+@endrole 
 @endsection
-
-
-
-
-
-
-
-
-

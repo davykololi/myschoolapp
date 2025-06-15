@@ -14,10 +14,10 @@ class CreateIntakesTable extends Migration
     public function up()
     {
         Schema::create('intakes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('desc');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

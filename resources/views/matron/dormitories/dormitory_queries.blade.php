@@ -27,7 +27,7 @@
                         @include('ext._get_dormitory_ids')
                         <div class="w-full">
                             <div class="mt-4">
-                                <x-generate-button/>
+                                <x-button class="generate-button">GENERATE</x-button>
                             </div>
                         </div>
                     </form>

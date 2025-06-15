@@ -1,8 +1,8 @@
 
 <!-- Toggler -->
 @auth <!-- Start of Authorized User -->
-<!-- Start of Superadmin Toggler Button -->
 @if(Auth::user()->hasRole('superadmin'))
+<!-- Start of Superadmin Toggler Button -->
 <button
   class="md:-my-2 lg:-my-2 inline-block rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
   data-te-sidenav-toggle-ref
@@ -22,11 +22,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Superadmin Toggler Button -->
+@endif
 
-<!-- Start of Admin Toggler Button -->
 @if(Auth::user()->hasRole('admin'))
+<!-- Start of Admin Toggler Button -->
 <button
   class="sm:pb-4 md:pb-0 lg:pb-0 inline-block rounded bg-primary px-6 py-1 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg dark:bg-gray-800 dark:text-slate-400 mx-2 mt-1"
   data-te-sidenav-toggle-ref
@@ -46,11 +46,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Admin Toggler Button -->
+@endif
 
-<!-- Start of Accountant Toggler Button -->
 @if(Auth::user()->hasRole('accountant'))
+<!-- Start of Accountant Toggler Button -->
 <button
   class="sidebar-toggler-button"
   data-te-sidenav-toggle-ref
@@ -70,11 +70,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Accountant Toggler Button -->
+@endif
 
-<!-- Start of Teacher Toggler Button -->
 @if(Auth::user()->hasRole('teacher'))
+<!-- Start of Teacher Toggler Button -->
 <button
   class="sidebar-toggler-button"
   data-te-sidenav-toggle-ref
@@ -94,11 +94,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Teacher Toggler Button -->
+@endif
 
-<!-- Start of Matron Toggler Button -->
 @if(Auth::user()->hasRole('matron'))
+<!-- Start of Matron Toggler Button -->
 <button
   class="sidebar-toggler-button"
   data-te-sidenav-toggle-ref
@@ -118,11 +118,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Matron Toggler Button -->
+@endif
 
-<!-- Start of Librarian Toggler Button -->
 @if(Auth::user()->hasRole('librarian'))
+<!-- Start of Librarian Toggler Button -->
 <button
   class="sm:pb-4 md:pb-0 lg:pb-0 inline-block rounded bg-primary px-6 py-1 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg dark:bg-gray-800 dark:text-slate-400 mx-2 mt-1"
   data-te-sidenav-toggle-ref
@@ -142,11 +142,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Librarian Toggler Button -->
+@endif
 
-<!-- Start of Student Toggler Button -->
 @if(Auth::user()->hasRole('student'))
+<!-- Start of Student Toggler Button -->
 <button
   class="sidebar-toggler-button"
   data-te-sidenav-toggle-ref
@@ -166,11 +166,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Student Toggler Button -->
+@endif
 
-<!-- Start of Parent Toggler Button -->
 @if(Auth::user()->hasRole('parent'))
+<!-- Start of Parent Toggler Button -->
 <button
   class="-my-2 inline-block rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
   data-te-sidenav-toggle-ref
@@ -190,12 +190,11 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Parent Toggler Button -->
+@endif
 
-
-<!-- Start of Staff Toggler Button -->
 @if(Auth::user()->hasRole('subordinate'))
+<!-- Start of Staff Toggler Button -->
 <button
   class="sidebar-toggler-button"
   data-te-sidenav-toggle-ref
@@ -215,7 +214,7 @@
     </svg>
   </span>
 </button>
-@endif
 <!-- End of Parent Toggler Button -->
+@endif
 @endauth <!-- End of Authorized User -->
 <!-- Toggler -->

@@ -26,7 +26,7 @@ class AttachDetachSubjectController extends Controller
     {
     	$student = Student::findOrFail($id);
     	$subjects = $request->subjects;
-    	$student->subjects()->attach($subjects);
+    	$student->subjects()->sync($subjects);
 
     	return back()->withSuccess('Done uccessfully');
     }

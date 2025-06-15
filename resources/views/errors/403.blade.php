@@ -23,7 +23,7 @@
             Permission Denied!!!!
           </p>
           <a
-            href="{{ url()->previous() }}"
+            href="{{ route('login') }}"
             class="hover:text-primary inline-block rounded-lg border border-white px-8 py-3 text-center text-base font-semibold text-white transition hover:bg-white"
           >
             Back

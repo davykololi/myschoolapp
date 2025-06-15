@@ -30,10 +30,10 @@ class DeleteReportMarksheetController extends Controller
     public function __invoke(Request $request)
     {
         //
-        $yearId = $request->year;
-        $termId = $request->term;
-        $examId = $request->exam;
-        $classId = $request->class;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $examId = $request->exam_id;
+        $classId = $request->class_id;
 
         $class = MyClass::where('id',$classId)->first();
         $exam = Exam::where('id',$examId)->first();

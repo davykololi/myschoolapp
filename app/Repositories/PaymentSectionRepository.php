@@ -7,35 +7,35 @@ use App\Models\PaymentSection;
 
 class PaymentSectionRepository implements PaymentSectionInterface
 {
-	protected $PaymentSection;
+	protected $paymentSection;
 	/**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(PaymentSection $PaymentSection)
+    public function __construct(PaymentSection $paymentSection)
     {
-        $this->PaymentSection = $PaymentSection;
+        $this->paymentSection = $paymentSection;
     }
 
     public function all()
     {
-        return $this->PaymentSection->eagerLoaded()->get();
+        return $this->paymentSection->eagerLoaded()->get();
     }
 
     public function paginated()
     {
-        return $this->PaymentSection->eagerLoaded()->paginate(50);
+        return $this->paymentSection->eagerLoaded()->paginate(50);
     }
 
     public function create(array $data)
     {
-    	return $this->PaymentSection->create($data);
+    	return $this->paymentSection->create($data);
     }
 
     public function getId($id)
     {
-    	return $this->PaymentSection->findOrFail($id);
+    	return $this->paymentSection->findOrFail($id);
     }
 
     public function update(array $data,$id)
@@ -46,6 +46,6 @@ class PaymentSectionRepository implements PaymentSectionInterface
 
     public function delete($id)
     {
-    	return $this->PaymentSection->destroy($id);
+    	return $this->paymentSection->destroy($id);
     }
 }

@@ -16,7 +16,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ $user->parent->image }}" onerror="this.src='{{asset('static/avatar.png')}}'" class="border-4 border-yellow-800 p-4" alt="{{ $user->full_name }}">
+            <x-user-profile-avatar/>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

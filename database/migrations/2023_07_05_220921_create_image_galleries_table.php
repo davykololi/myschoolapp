@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('image_galleries', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title',100)->unique();
             $table->text('description',200);
             $table->string('slug',200)->unique();
@@ -22,9 +22,9 @@ return new class extends Migration
             $table->text('keywords');
             $table->string('published_by')->nullable();
             $table->boolean('is_published')->default(false);
-            $table->foreignId('admin_id')->constrained()->onDelete('cascade');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
-            $table->foreignId('section_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('admin_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('section_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

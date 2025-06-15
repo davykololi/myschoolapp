@@ -47,8 +47,8 @@ class ExamService
         $data['code'] = strtoupper(Str::random(15));
         $data['type'] = $request->exam_type;
         $data['school_id'] = Auth::user()->school->id;
-        $data['year_id'] = $request->year;
-        $data['term_id'] = $request->term;
+        $data['year_id'] = $request->year_id;
+        $data['term_id'] = $request->term_id;
 
         return $data;
 	}
@@ -58,8 +58,8 @@ class ExamService
 		$data = $request->only(['name','start_date','end_date']);
         $data['type'] = $request->exam_type;
         $data['school_id'] = Auth::user()->school->id;
-        $data['year_id'] = $request->year;
-        $data['term_id'] = $request->term;
+        $data['year_id'] = $request->year_id;
+        $data['term_id'] = $request->term_id;
         $data['status'] = $request->status;
 
         return $data;

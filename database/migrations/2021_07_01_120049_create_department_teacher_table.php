@@ -15,10 +15,8 @@ class CreateDepartmentTeacherTable extends Migration
     {
         Schema::create('department_teacher', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('department_id')->unsigned();
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
-            $table->bigInteger('teacher_id')->unsigned();
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreignUuid('department_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

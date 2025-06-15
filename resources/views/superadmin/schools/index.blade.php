@@ -2,6 +2,7 @@
 @section('title', '| Schools List')
 
 @section('content')
+@role('superadmin')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
 <div class="row">
     <div class="col-lg-12">
@@ -25,7 +26,8 @@
                     <!-- Table Headings -->
                     <thead>
                         <tr>
-                            <th width="25%">NAME</th>
+                            <th width="5%">NO</th>
+                            <th width="20%">NAME</th>
                             <th width="20%">CATEGORY</th>
                             <th width="15%">EMAIL </th>
                             <th width="10%">PHONE </th>
@@ -35,8 +37,13 @@
                     </thead>
                     <!-- Table Body -->
                     <tbody>
-                    @foreach($schools as $school)
+                    @foreach($schools as $key => $school)
                         <tr>
+                            <td class="table-text">
+                                <div>
+                                    {{ $schools->perPage() * ($schools->currentPage() - 1) + $key + 1 }}
+                                </div>
+                            </td>
                             <td class="table-text">
                                 <div>{{$school->name}}</div>
                             </td>
@@ -77,4 +84,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

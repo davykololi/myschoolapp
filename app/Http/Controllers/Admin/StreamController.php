@@ -6,7 +6,7 @@ use App\Models\Teacher;
 use App\Models\Assignment;
 use App\Models\Exam;
 use App\Models\Meeting;
-use App\Models\Reward;
+use App\Models\Award;
 use App\Models\Subject;
 use App\Services\StreamService;
 use App\Http\Controllers\Controller;
@@ -51,23 +51,23 @@ class StreamController extends Controller
     public function details($id)
     {
         //
-        $stream = $this->streamService->getId($id);
-        $teachers = Teacher::all()->pluck('full_name','id');
-        $streamTeachers = $stream->teachers;
-        $assignments = Assignment::all()->pluck('name','id');
-        $streamAssignments = $stream->assignments;
-        $exams = Exam::all()->pluck('name','id');
-        $streamExams = $stream->exams;
-        $meetings = Meeting::all()->pluck('name','id');
-        $streamMeetings = $stream->meetings;
-        $rewards = Reward::all()->pluck('name','id');
-        $streamRewards = $stream->rewards;
-        $subjects = Subject::all()->pluck('name','id');
-        $streamSubjects = $stream->subjects;
-        $streamStudents = $stream->students->count();
-        $females = $stream->females();
-        $males = $stream->males();
+        $data['stream'] = $this->streamService->getId($id);
+        $data['teachers'] = Teacher::all();
+        $data['streamTeachers'] = $data['stream']->teachers()->eagerLoaded()->get();
+        $data['assignments'] = Assignment::all();
+        $data['streamAssignments'] = $data['stream']->assignments()->eagerLoaded()->get();
+        $data['exams'] = Exam::all();
+        $data['streamExams'] = $data['stream']->exams()->eagerLoaded()->get();
+        $data['meetings'] = Meeting::all();
+        $data['streamMeetings'] = $data['stream']->meetings()->eagerLoaded()->get();
+        $data['awards'] = Award::all();
+        $data['streamAwards'] = $data['stream']->awards()->eagerLoaded()->get();
+        $data['subjects'] = Subject::all();
+        $data['streamSubjects'] = $data['stream']->subjects()->eagerLoaded()->get();
+        $data['streamStudents'] = $data['stream']->students->count();
+        $data['females'] = $data['stream']->females();
+        $data['males'] = $data['stream']->males();
 
-        return view('admin.streams.show',compact('stream','teachers','streamTeachers','assignments','streamAssignments','exams','streamExams','meetings','streamMeetings','rewards','streamRewards','subjects','streamSubjects','streamStudents','females','males'));
+        return view('admin.streams.show',$data);
     }
 }

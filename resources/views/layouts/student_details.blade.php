@@ -26,9 +26,11 @@
         .right{text-align: right;}
         .margin{margin: 500px;margin-left: 130px;margin-right: 130px;}
         .mt{margin-top: 120px}
-        .td {background-color: lightgray;padding: 2px;width: 30%;text-transform: uppercase;font-size: 20px;}
-        .p1 {margin-top: 10px;font-family: Calibri;text-align: center;text-transform: uppercase;font-size: 20px;}
-        table{width: 82%; border: 1px solid black;}
+        .td {padding: 2px;width: 30%;text-transform: uppercase;font-size: 20px;}
+        .p1 {margin-top: 10px;font-family: Calibri;text-transform: capitalize;font-size: 20px;}
+        .blue {color: blue;}
+        .mr {margin-right: 700px;}
+        table{width: 82%;}
         th, td {padding: 3px;white-space: nowrap; } 
     </style>
 </head>

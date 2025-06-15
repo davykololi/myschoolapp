@@ -5,13 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Record extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'records';
     protected $fillable = ['content','student_id','school_id','stream_id','department_id','teacher_id','subordinate_id','librarian_id','matron_id','accountant_id','admin_id','bog_id','class_id','parent_id','dormitory_id','intake_id','subject_id','event_id','standard_subject_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function student(): BelongsTo
     {

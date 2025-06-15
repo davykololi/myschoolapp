@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\TeacherPositionEnum;
 use App\Http\Requests\CommonUserFormRequest as StoreRequest;
 use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
@@ -43,12 +44,22 @@ class TeacherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request)
     {
         //
-        $teachers = $this->teacherService->all();
+        $user = Auth::user();
+        if($user->hasRole('superadmin')){
+            $search = strtolower($request->search);
+            if($search){
+                $teachers = Teacher::whereLike(['user.salutation','user.first_name', 'user.middle_name', 'user.last_name', 'user.email', 'phone_no','emp_no','position', 'id_no', 'designation','gender','streams.name'], $search)->eagerLoaded()->paginate(15);
 
-        return view('superadmin.teachers.index',['teachers' => $teachers]);
+                return view('superadmin.teachers.index',compact('teachers'));
+            } else {
+                $teachers = $this->teacherService->paginated();
+
+                return view('superadmin.teachers.index',compact('teachers'));
+            }
+        }
     }
 
     /**
@@ -58,7 +69,8 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        return view('superadmin.teachers.create');
+        $positions = TeacherPositionEnum::cases();
+        return view('superadmin.teachers.create',compact('positions'));
     }
 
     /**
@@ -75,6 +87,7 @@ class TeacherController extends Controller
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
+            'gender' => $request->gender,
             'password' => Hash::make($request->password),
             'school_id' => Auth::user()->school->id,
         ]);
@@ -134,8 +147,9 @@ class TeacherController extends Controller
     {
         //
         $teacher = $this->teacherService->getId($id);
+        $positions = TeacherPositionEnum::cases();
 
-        return view('superadmin.teachers.edit',compact('teacher'));
+        return view('superadmin.teachers.edit',compact('teacher','positions'));
     }
 
     /**
@@ -156,6 +170,7 @@ class TeacherController extends Controller
                 'middle_name' => $request->middle_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
+                'gender' => $request->gender,
                 'school_id' => Auth::user()->school->id,
             ]);
 

@@ -36,6 +36,7 @@
         .arial-narrow{font-style: Arial Black;}
         .right{float: right;margin-right: 20px;}
         .mt{margin-top: -40px}
+        .dotted-underline{border-bottom: 2px dotted #000;}
         table {width: 82%;margin-left: -5px;border-collapse: collapse;}
         thead tr {background-color: midnightblue;color: white;height: 20px;}
         thead tr td {height: 0.75cm;}

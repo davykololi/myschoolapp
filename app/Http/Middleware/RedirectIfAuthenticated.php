@@ -18,7 +18,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect('/authentication-code');
+            return redirect()->route('2fa.index');
         }
 
         return $next($request);

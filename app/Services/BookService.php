@@ -22,6 +22,11 @@ class BookService
 		return $this->bookRepository->all();
 	}
 
+	public function paginated()
+	{
+		return $this->bookRepository->paginated();
+	}
+
 	public function create(BookStoreRequest $request)
 	{
 		$data = $this->createData($request);
@@ -44,19 +49,20 @@ class BookService
 	public function createData(BookStoreRequest $request)
 	{
 		$data = $request->validated();
+		$data['book_id'] = "BK/".mt_rand(100000,999999)."/".date("Y");
         $data['school_id'] = Auth::user()->school->id;
-        $data['library_id'] = $request->library;
-        $data['category_book_id'] = $request->book_category;
+        $data['library_id'] = $request->library_id;
+        $data['category_book_id'] = $request->category_book_id;
 
         return $data;
 	}
 
 	public function updateData(BookUpdateRequest $request)
 	{
-		$data = $request->validated();
+		$data = $request->only('title','rack_no','row_no','author','units','library_id','category_book_id');
         $data['school_id'] = Auth::user()->school->id;
         $data['library_id'] = $request->library;
-        $data['category_book_id'] = $request->book_category;
+        $data['category_book_id'] = $request->book_category_id;
 
         return $data;
 	}

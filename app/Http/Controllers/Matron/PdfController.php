@@ -25,12 +25,13 @@ class PdfController extends Controller
 
     public function dormitoryStudents(Request $request)
     {
-        $dormitoryId = $request->dormitory;
+        $dormitoryId = $request->dormitory_id;
         $dormitory = Dormitory::whereId($dormitoryId)->firstOrFail();
         $dormitoryStudents = $dormitory->students()->with('stream','school','user','dormitory','bed_number')->inRandomOrder()->get();
         $school = Auth::user()->school;
         $title = $dormitory->name." ".'Dormitory Students';
-        $downloadTitle = $school->name." ".$title;
+        $moreInfo = ". For more inquiries, contact us via ".Auth::user()->school->phone_no;
+        $downloadTitle = $school->name." ".$title.$moreInfo;
 
         if($dormitoryStudents->isEmpty()){
             return back()->with('error','This dormitory has no students at the moment!');

@@ -2,6 +2,7 @@
 @section('title', '| Subject Details')
 
 @section('content')
+@role('superadmin')
 <div class="max-w-screen">
     <div class="row">
     <div class="col-md-12 margin-tb">
@@ -47,4 +48,5 @@
     </div>
 </div>
 </div>
+@endrole
 @endsection

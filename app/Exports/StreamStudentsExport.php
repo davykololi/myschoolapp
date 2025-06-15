@@ -24,7 +24,7 @@ class StreamStudentsExport implements FromCollection, WithHeadings, WithMapping 
     public function collection()
     {
         //
-        return $this->stream->students()->with('stream','school','dormitory')->get();
+        return $this->stream->students()->eagerLoaded()->get();
     }
 
     public function headings(): array
@@ -43,11 +43,11 @@ class StreamStudentsExport implements FromCollection, WithHeadings, WithMapping 
     {
         return [
             $student->id,
-            $student->full_name,
+            $student->user->full_name,
             $student->admission_no,
             $student->phone_no,
             $student->dormitory->name,
-            $student->email,
+            $student->user->email,
          ];
     }
 }

@@ -2,6 +2,7 @@
 @section('title', '| Admin Club Details')
 
 @section('content')
+@role('admin')
   <!-- frontend-main view -->
   <x-backend-main>
     <div class="row">
@@ -108,4 +109,5 @@
     @include('admin.club.attach_detach_meetingform')
 </div>
 </x-backend-main>
+@endrole
 @endsection

@@ -11,16 +11,26 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\CommonUserInformation;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Matron extends CommonUserInformation
 {
-    use HasFactory,Notifiable;
+    use HasFactory, Notifiable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'matrons';
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> MatronPositionEnum::class];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function seniorMatron()
     {
@@ -39,6 +49,6 @@ class Matron extends CommonUserInformation
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','meetings','rewards','user')->get();
+        return $query->with('school','meetings','awards','user');
     }
 }

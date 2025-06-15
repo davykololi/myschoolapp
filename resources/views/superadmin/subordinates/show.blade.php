@@ -2,6 +2,7 @@
 @section('title', '| Subordinate Staff Details')
 
 @section('content')
+@role('superadmin')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
     <div class="row">
     <div class="col-md-12 margin-tb">
@@ -9,9 +10,9 @@
             <h2 style="text-transform: uppercase;">{{$subordinate->user->salutation}} {{$subordinate->user->first_name}}'s Details</h2>
             <br/>
         </div>
-        <div class="pull-right">
-            <a href="{{ url()->previous() }}" class="label label-primary pull-right">Back</a>
-        </div>
+        <x-button class="back-button">
+                            <x-back-svg-n-url/>
+                        </x-button>
     </div>
 </div>
 <div class="row">
@@ -94,4 +95,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

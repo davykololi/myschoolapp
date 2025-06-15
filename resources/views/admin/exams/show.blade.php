@@ -90,7 +90,7 @@
             <span><strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($exam->created_at)) }}</span>
         </div>
     </div>
-    @include('exam.attachsubjectform')
+    @include('admin.exam.attach_dettach_subjectform')
 </div>
 </x-backend-main>
 @endcan

@@ -11,20 +11,33 @@ use App\Models\MyClass;
 use App\Models\ImageGallery;
 use App\Models\ReportRemark;
 use App\Models\ReportSubjectGrade;
+use App\Models\StreamHeadTeacher;
+use App\Models\SubjectRemark;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class School extends Model
 {
     //
+    use HasUuids;
+    
     protected $table = 'schools';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
+    
     protected $fillable = ['name','initials','code','head','ass_head','motto','vision','mission','phone_no','email','postal_address','core_values','image','type'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function nationalSchool()
     {
@@ -221,6 +234,11 @@ class School extends Model
         return $this->hasMany('App\Models\Attendance','school_id','id');
     }
 
+    public function stream_sections(): HasMany
+    {
+        return $this->hasMany('App\Models\StreamSection','school_id','id');
+    }
+
     public function report_cards(): HasMany
     {
         return $this->hasMany('App\Models\ReportCard','school_id','id');
@@ -228,7 +246,7 @@ class School extends Model
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','departments','clubs','streams','subordinates')->get();
+        return $query->with('teachers','students','departments','clubs','streams','subordinates')->latest();
     }
 
     public function grades(): HasMany
@@ -246,18 +264,38 @@ class School extends Model
         return $this->hasMany(ReportSubjectGrade::class,'school_id','id');
     }
 
-    public function males(): int
+    public function male_students(): int
     {
-        return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','school_id','id')->where(['gender'=>'Male'])->count();
+        return $this->hasMany('App\Models\Student','school_id','id')->whereGender("Male")->count();
     }
 
-    public function females(): int
+    public function female_students(): int
     {
-        return $this->hasManyThrough('App\Models\Student','App\Models\Stream','class_id','school_id','id')->where(['gender'=>'Female'])->count();
+        return $this->hasMany('App\Models\Student','school_id','id')->whereGender("Female")->count();
+    }
+
+    public function male_teachers(): int
+    {
+        return $this->hasMany('App\Models\Teacher','school_id','id')->whereGender("Male")->count();
+    }
+
+    public function female_teachers(): int
+    {
+        return $this->hasMany('App\Models\Teacher','school_id','id')->whereGender("Female")->count();
     }
 
     public function image_galleries(): HasMany
     {
         return $this->hasMany(ImageGallery::class,'school_id','id');
+    }
+
+    public function stream_head_teachers(): HasManyThrough
+    {
+        return $this->hasManyThrough(StreamHeadTeacher::class,Stream::class,'stream_id','school_id','id');
+    }
+
+    public function subject_remarks(): HasMany
+    {
+        return $this->hasMany(SubjectRemark::class,'school_id','id');
     }
 }

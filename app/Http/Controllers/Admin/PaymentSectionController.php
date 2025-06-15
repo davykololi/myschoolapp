@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Auth;
+use App\Models\PaymentSection;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\PaymentSectionService;
@@ -27,12 +29,22 @@ class PaymentSectionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $paymentSections = $this->paymentSectionService->all();
+        $user = Auth::user();
+        $search = strtolower($request->search);
+        if($user->hasRole('admin')){
+            if($search){
+                $paymentSections = PaymentSection::whereLike(['name', 'description', 'payment_amount', 'ref_no','payments.description','payments.amount','payments.ref_no'], $search)->eagerLoaded()->paginate(15);
 
-        return view('admin.payment-sections.index',compact('paymentSections'));
+                return view('admin.payment-sections.index',compact('paymentSections'));
+            } else {
+                $paymentSections = $this->paymentSectionService->paginated();
+
+                return view('admin.payment-sections.index',compact('paymentSections'));
+            }
+        }
     }
 
     /**
@@ -100,6 +112,9 @@ class PaymentSectionController extends Controller
         //
         $paymentSection = $this->paymentSectionService->getId($id);
         if($paymentSection){
+            if($paymentSection->has("payments")->with('payment_records','>',0)){
+                return back()->withErrors("You can't delete this payment section becouse payments already allocated and has payment records");
+            }
             $this->paymentSectionService->delete($id);
 
             return redirect()->route('admin.payment-sections.index')->withSuccess(ucwords($paymentSection->name." ".'deleted successfully'));

@@ -8,12 +8,25 @@ use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Club extends Model implements Searchable
 {
     //
+    use HasUuids;
+
     protected $table = 'clubs';
+
     protected $fillable = ['name','code','reg_date','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -61,6 +74,11 @@ class Club extends Model implements Searchable
         return $this->belongsToMany('App\Models\Meeting')->withTimestamps();
     }
 
+    public function awards(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Models\Award')->withTimestamps();
+    }
+
     public function regDate()
     {
         $reg_date = $this->reg_date;
@@ -71,6 +89,6 @@ class Club extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','teachers','streams','subordinates','students','assignments','meetings')->get();
+        return $query->with('school','teachers','streams','subordinates','students','assignments','meetings');
     }
 }

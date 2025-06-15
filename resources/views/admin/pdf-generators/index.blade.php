@@ -2,6 +2,7 @@
 @section('title', '| Pdfs List')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen mb-8">
@@ -92,4 +93,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

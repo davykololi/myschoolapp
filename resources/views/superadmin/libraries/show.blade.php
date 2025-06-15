@@ -2,6 +2,7 @@
 @section('title', '| Library Details')
 
 @section('content')
+@role('superadmin')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
     <div class="row">
     @include('partials.messages')
@@ -69,4 +70,5 @@
     @include('library.attachmeetingform')
 </div>
 </main>
+@endrole
 @endsection

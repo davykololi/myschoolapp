@@ -17,11 +17,15 @@
                         <h2 class="text-center font-bold uppercase text-2xl">BOOKS LIST</h2>
                     </div>
                 </div>
-                <div style="float:right;">
-                    <a class="bg-blue-500 text-white p-2 rounded md:hover:text-blue-500 md:hover:bg-white dark:bg-black dark:text-slate-400 mx-2" href="{{route('admin.books.create')}}">
-                        CREATE
-                    </a>
-                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <x-search-form/>
+                <a href="{{route('admin.books.create')}}" class="sm:mt-4">
+                    <x-button class="create-button">CREATE</x-button>
+                </a>
+            </div>
+            <div class="mt-12">
+                TOTAL NUMBER OF BOOKS: {{ $numberOfAllBooks }}, NUMBER OF ISSUED BOOKS: {{ $numberOfissuedBooks }}, CURRENT BOOKS AVAILABLE: {{ $numberOfAvailableBooks }}.
             </div>
             <div class="flex flex-col overflow-x-auto mt-20">
                 <div class="sm:-mx-6 lg:-mx-8">
@@ -33,7 +37,7 @@
                                     <tr>
                                         <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                         <th scope="col" class="px-2 py-4" width="20%">TITLE</th>
-                                        <th scope="col" class="px-2 py-4" width="15%">CATEGORY</th>
+                                        <th scope="col" class="px-2 py-4" width="15%">GENRE</th>
                                         <th scope="col" class="px-2 py-4" width="15%">LIBRARY</th>
                                         <th scope="col" class="px-2 py-4" width="15%">AUTHOR</th>
                                         <th scope="col" class="px-2 py-4" width="10%">UNITS</th>
@@ -47,7 +51,9 @@
                                     @foreach($books as $key => $book)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-slate-900">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{ $loop->iteration }}</div>
+                                            <div>
+                                                {{ $books->perPage() * ($books->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{ $book->title }}</div>
@@ -90,12 +96,15 @@
                                     @if($books->isEmpty())
                                     <tr>
                                         <td colspan="10" class="w-full text-center text-white bg-blue-900 uppercase tracking-tighter h-12 dark:bg-gray-800 dark:text-slate-400">
-                                            <div>Books Notyet populated.</div>
+                                            <div>Not Available.</div>
                                         </td>
                                     </tr>
                                     @endif
                                 </tfoot>
                             </table>
+                        </div>
+                        <div class="my-4">
+                            {{ $books->links() }}
                         </div>
                     </div>
                 </div>

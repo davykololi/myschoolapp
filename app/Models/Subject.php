@@ -14,6 +14,7 @@ use App\Models\Note;
 use App\Models\Grade;
 use App\Models\Record;
 use App\Models\ReportSubjectGrade;
+use App\Models\SubjectRemark;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,12 +22,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Subject extends Model implements Searchable
 {
     //
+    use HasUuids;
+    
     protected $table = 'subjects';
     protected $fillable = ['name','type','code','department_id','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -140,6 +153,16 @@ class Subject extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','students','school','department','stream_subjects')->latest()->get();
+        return $query->with('teachers','students','school','department','stream_subjects')->latest();
+    }
+
+    public function hasNotes()
+    {
+        return $this->stream_subjects()->where(['subject_id'=>$this->id])->exists();
+    }
+
+    public function subject_remarks(): HasMany
+    {
+        return $this->hasMany(SubjectRemark::class,'subject_id','id');
     }
 }

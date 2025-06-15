@@ -25,7 +25,7 @@ class AttachDetachMeetingController extends Controller
     {
     	$student = Student::findOrFail($id);
     	$meetings = $request->meetings;
-    	$student->meetings()->attach($meetings);
+    	$student->meetings()->sync($meetings);
 
     	return back()->withSuccess('Done Successfully');
     }

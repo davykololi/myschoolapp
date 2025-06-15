@@ -21,7 +21,7 @@ class AccountantService
 
 	public function all()
 	{
-		return $this->accRepo->all();
+		return $this->accRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)
@@ -47,10 +47,10 @@ class AccountantService
 	{
 		$data = $request->validated();
         $data['school_id'] = Auth::user()->school->id;
-        $data['position'] = $request->accountant_position;
+        $data['position'] = $request->position;
         $data['blood_group'] = $request->blood_group;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        $data['user_id'] = $this->userId;
+        $data['user_id'] = Auth::user()->id;
 
         return $data;
 	}
@@ -59,10 +59,10 @@ class AccountantService
 	{
         $data=$request->only('dob','gender','current_address','permanent_address','phone_no','id_no','designation','emp_no','history');
         $data['school_id'] = Auth::user()->school->id;
-        $data['position'] = $request->accountant_position;
+        $data['position'] = $request->position;
         $data['blood_group'] = $request->blood_group;
         $data['image'] = $this->verifyAndUpload($request,'image','public/storage/');
-        $data['user_id'] = $this->userId;
+        $data['user_id'] = Auth::user()->id;
 
         return $data;
 	}

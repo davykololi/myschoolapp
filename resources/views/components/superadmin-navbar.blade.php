@@ -1,13 +1,18 @@
 <nav class="border-b text-white sticky top-0 bg-blue-700 z-10 dark:bg-gray-800 dark:text-white">
     <div x-data="{showMenu : false}" class="container max-w-screen-lg mx-0 flex justify-between h-14">
         <!-- Brand-->
-        <a href="{{ url('/') }}" class="flex items-center cursor-pointer hover:bg-purple-50 px-2">
+        <div class="flex items-center cursor-pointer hover:text-gray-100 px-2">
             <!-- Logo-->
-            <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8"/>
+            <div class="ml-4"><x-graduates-cap/></div>
             <div class="font-semibold ml-2 uppercase font-extrabold justify-center hover:lg:text-black font-extrabold">
-                {{ config('app.name') }}
+                @if(Auth::user()->hasRole('superadmin'))
+                    <a href="/superadmin/dashboard">{{ config('app.name') }} App</a>
+                @endif
             </div>
-        </a>
+            <div class="ml-7">
+                <x-sidenav-toggler-button class="w-8 h-8"/>
+            </div>
+        </div>
         <!-- Navbar Toggle Button -->
         <button @click="showMenu = !showMenu" class="block md:hidden text-gray-700 p-2 rounded hover:border focus:border focus:bg-gray-100 my-2 mr-5" type="button" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -16,9 +21,6 @@
         <ul class="md:flex text-base mr-3 origin-top"
             :class="{ 'block absolute top-14 border-b bg-white w-full p-2': showMenu, 'hidden': !showMenu}"
             id="navbar-main" x-cloak>
-            <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800" :class="showMenu && 'py-1'">
-                <x-sidenav-toggler-button/>
-            </li>
             <li class="px-3 cursor-pointer hover:bg-purple-50 flex items-center hover:text-gray-800" :class="showMenu && 'py-1'">
                 <a href="#">ASSIGNMENTS</a>
             </li>

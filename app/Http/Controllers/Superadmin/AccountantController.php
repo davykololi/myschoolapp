@@ -5,27 +5,35 @@ namespace App\Http\Controllers\Superadmin;
 use Auth;
 use App\Models\User;
 use App\Models\Accountant;
+use App\Services\UserService;
+use App\Services\AccountantService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\AccountantPositionEnum;
+use App\Enums\Concerns\GetsAttributes;
 use App\Http\Requests\CommonUserFormRequest as StoreRequest;
 use App\Http\Requests\CommonUserFormRequest as UpdateRequest;
 
 class AccountantController extends Controller
 {
-    use ImageUploadTrait;
+    use ImageUploadTrait, GetsAttributes;
+    protected $userService;
+    protected $accountantService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserService $userService, AccountantService $accountantService)
     {
         $this->middleware('auth');
         $this->middleware('role:superadmin');
         $this->middleware('checktwofa');
+        $this->userService = $userService;
+        $this->accountantService = $accountantService;
     }
 
     /**
@@ -33,14 +41,21 @@ class AccountantController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         $user = Auth::user();
         if($user->hasRole('superadmin')){
-            $accountants = Accountant::with('user')->latest()->paginate(10);
+            $search = strtolower($request->search);
+            if($search){
+                $accountants = Accountant::whereLike(['user.first_name', 'user.middle_name', 'user.last_name', 'user.email', 'phone_no','emp_no','position', 'id_no', 'designation'], $search)->eagerLoaded()->paginate(15);
 
-            return view('superadmin.accountants.index',compact('accountants'));
+                return view('superadmin.accountants.index',compact('accountants'));
+            } else {
+                $accountants = $this->accountantService->all();
+
+                return view('superadmin.accountants.index',compact('accountants'));
+            } 
         }
     }
 
@@ -52,7 +67,8 @@ class AccountantController extends Controller
     public function create()
     {
         //
-        return view('superadmin.accountants.create');
+        $positions = AccountantPositionEnum::cases();
+        return view('superadmin.accountants.create',compact('positions'));
     }
 
     /**
@@ -69,6 +85,7 @@ class AccountantController extends Controller
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
+            'gender' => $request->gender,
             'password' => Hash::make($request->password),
             'school_id' => Auth::user()->school->id,
         ]);
@@ -118,8 +135,9 @@ class AccountantController extends Controller
     {
         //
         $accountant = Accountant::findOrFail($id);
+        $positions = AccountantPositionEnum::cases();
 
-        return view('superadmin.accountants.edit',compact('accountant'));
+        return view('superadmin.accountants.edit',compact('accountant','positions'));
     }
 
     /**

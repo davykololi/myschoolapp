@@ -20,7 +20,7 @@ class AssignmentService
 
 	public function all()
 	{
-		return $this->assignRepo->all();
+		return $this->assignRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

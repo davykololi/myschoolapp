@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('student_infos', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('religion')->nullable();
             $table->string('fathers_name')->nullable();
             $table->string('fathers_phone_number')->nullable();
@@ -34,10 +34,8 @@ return new class extends Migration
             $table->string('guardian_occupation')->nullable();
             $table->string('home_email_address')->nullable();
             $table->string('home_postal_address')->nullable();
-            $table->bigInteger('student_id')->unsigned()->nullable();
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->bigInteger('admin_id')->unsigned()->nullable();
-            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreignUuid('student_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUuid('admin_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

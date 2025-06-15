@@ -5,14 +5,19 @@
       <div class="w-full px-4 sm:w-2/3 lg:w-3/12">
         <div class="mb-10 w-full">
           <a href="/" class="flex items-center">
-            <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8" alt="school logo" />
-            <span class="self-center text-2xl font-semibold uppercase whitespace-nowrap dark:text-white">{{ config('app.name') }}</span>
+            <x-graduates-cap/>
+            <span class="self-center text-2xl font-semibold uppercase whitespace-nowrap dark:text-white ml-2">{{ config('app.name') }}</span>
           </a>
+          @if(!is_null($school))
           <p class="text-body-color my-7 text-base">
-            Sed ut perspiciatis undmnis is iste natus error sit amet voluptatem
-            totam rem aperiam.
+            {!! $school->core_values !!}
           </p>
-          <p class="text-dark flex items-center text-sm font-medium">
+          @elseif(is_null($school))
+          <p class="text-body-color my-7 text-base">
+            {{ __('SCHOOL SETTINGS NOTYET DONE')}}
+          </p>
+          @endif
+          <p class="text-dark flex items-center text-sm font-medium mt-2">
             <span class="text-primary mr-3">
               <svg
                 width="19"
@@ -31,7 +36,7 @@
                 />
               </svg>
             </span>
-            <span>+012 (345) 678 99</span>
+            <span>{{ $school->phone_no }}</span>
           </p>
         </div>
       </div>

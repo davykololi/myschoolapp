@@ -2,6 +2,7 @@
 @section('title', '| Section Details')
 
 @section('content')
+@role('superadmin')
 <main role="main" class="container"  style="margin-top: 5px" id="main">
     @include('partials.messages')
     <div class="row">
@@ -36,4 +37,5 @@
     </div>
 </div>
 </main>
+@endrole
 @endsection

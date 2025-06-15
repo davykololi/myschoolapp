@@ -20,7 +20,12 @@ class SubordinateRepository implements SubordinateInterface
 
     public function all()
     {
-        return $this->subordinate->eagerLoaded();
+        return $this->subordinate->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->subordinate->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

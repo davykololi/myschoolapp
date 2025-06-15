@@ -28,16 +28,16 @@ class StreamSubjectFormRequest extends FormRequest
             return [
                 //
                 'desc' => 'required|string|max:100',
-                'teacher' => 'required|exists:teachers,id', 
-                'stream' => 'required|exists:streams,id',
-                'subject' => 'required|exists:subjects,id',
+                'teacher_id' => 'required|exists:teachers,id', 
+                'stream_id' => 'required|exists:streams,id',
+                'subject_id' => 'required|exists:subjects,id',
             ];
         } else {
             return [
                 'desc' => 'required|string|max:100',
-                'teacher' => 'required', 
-                'stream' => 'required',
-                'subject' => 'required',
+                'teacher_id' => 'required', 
+                'stream_id' => 'required',
+                'subject_id' => 'required',
             ];
         }
     }
@@ -49,17 +49,17 @@ class StreamSubjectFormRequest extends FormRequest
             return [
                 //
                 'desc.required' => 'The name of the stream subject is required',
-                'teacher.required' => 'The name of the teacher facilitating this stream subject is required',
-                'stream.required' => 'The stream this subject belongs to is required',
-                'subject.required' => 'The general subject this stream subject belongs to is required',
+                'teacher_id.required' => 'The name of the teacher facilitating this stream subject is required',
+                'stream_id.required' => 'The stream this subject belongs to is required',
+                'subject_id.required' => 'The general subject this stream subject belongs to is required',
             ];
         } else {
             return [
                 //
                 'desc.required' => 'The name of the stream subject is required',
-                'teacher.required' => 'The name of the teacher facilitating this stream subject is required',
-                'stream.required' => 'The stream this subject belongs to is required',
-                'subject.required' => 'The general subject this stream subject belongs to is required',
+                'teacher_id.required' => 'The name of the teacher facilitating this stream subject is required',
+                'stream_id.required' => 'The stream this subject belongs to is required',
+                'subject_id.required' => 'The general subject this stream subject belongs to is required',
             ];
         }
     }

@@ -12,7 +12,7 @@ use App\Services\TeacherService;
 use App\Services\AssignmentService;
 use App\Services\ExamService;
 use App\Services\MeetingService;
-use App\Services\RewardService;
+use App\Services\AwardService;
 use App\Services\SubjectService;
 use App\Services\ClassService;
 use App\Services\StreamSecService;
@@ -24,13 +24,13 @@ use App\Http\Requests\StreamFormRequest as UpdateRequest;
 
 class StreamController extends Controller
 {
-    protected $streamService, $teacherService, $classService, $streamSecService, $assignmentService, $examService, $meetingService, $rewardService, $subjectService;
+    protected $streamService, $teacherService, $classService, $streamSecService, $assignmentService, $examService, $meetingService, $awardService, $subjectService, $streamSubjectService;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(StreamService $streamService, TeacherService $teacherService, ClassService $classService, StreamSecService $streamSecService, AssignmentService $assignmentService, ExamService $examService, MeetingService $meetingService, RewardService $rewardService, SubjectService $subjectService)
+    public function __construct(StreamService $streamService, TeacherService $teacherService, ClassService $classService, StreamSecService $streamSecService, AssignmentService $assignmentService, ExamService $examService, MeetingService $meetingService, AwardService $awardService, SubjectService $subjectService)
     {
         $this->middleware('auth');
         $this->middleware('role:superadmin');
@@ -42,7 +42,7 @@ class StreamController extends Controller
         $this->assignmentService = $assignmentService;
         $this->examService = $examService;
         $this->meetingService = $meetingService;
-        $this->rewardService = $rewardService;
+        $this->awardService = $awardService;
         $this->subjectService = $subjectService;
     }
     
@@ -54,7 +54,7 @@ class StreamController extends Controller
     public function index()
     {
         //
-        $streams = $this->streamService->all();
+        $streams = $this->streamService->paginated();
 
         return view('superadmin.streams.index',compact('streams'));
     }
@@ -105,17 +105,18 @@ class StreamController extends Controller
         $streamExams = $stream->exams;
         $meetings = $this->meetingService->all()->pluck('name','id');
         $streamMeetings = $stream->meetings;
-        $rewards = $this->rewardService->all()->pluck('name','id');
-        $streamRewards = $stream->rewards;
+        $awards = $this->awardService->all()->pluck('name','id');
+        $streamAwards = $stream->awards;
         $subjects = $this->subjectService->all();
         $streamSubjects = $stream->subjects;
+        $streamSubjectsArray = collect($stream->subjects()->pluck('name'))->toArray();
         $alocatedStreamSubjects = $stream->stream_subjects()->where('stream_id',$stream->id)->with('teacher.user','stream','school','subject')->get();
         $streamStudents = $stream->students()->with('user')->get();
         $streamStudentsNumber = $stream->students->count();
         $females = $stream->females();
         $males = $stream->males();
 
-        return view('superadmin.streams.show',compact('stream','teachers','streamTeachers','assignments','streamAssignments','exams','streamExams','meetings','streamMeetings','rewards','streamRewards','subjects','streamSubjects','streamStudents','streamStudentsNumber','streamSubjects','alocatedStreamSubjects','females','males'));
+        return view('superadmin.streams.show',compact('stream','teachers','streamTeachers','assignments','streamAssignments','exams','streamExams','meetings','streamMeetings','awards','streamAwards','subjects','streamSubjects','streamSubjectsArray','streamStudents','streamStudentsNumber','streamSubjects','alocatedStreamSubjects','females','males'));
     }
 
     /**

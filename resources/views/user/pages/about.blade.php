@@ -3,7 +3,7 @@
 
 @section('content')
 <!-- ====== About Section Start -->
-<section class="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px] border-t dark:bg-slate-990 dark:text-slate-400">
+<section class="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px] dark:bg-slate-900 dark:text-slate-400">
   <div class="container mx-auto">
     <div class="-mx-4 flex flex-wrap items-center justify-between">
       <div class="w-full px-4 lg:w-6/12">

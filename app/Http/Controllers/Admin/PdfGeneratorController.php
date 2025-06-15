@@ -55,7 +55,7 @@ class PdfGeneratorController extends Controller
     public function store(Request $request)
     {
         //
-        $input = $request->all();
+        $input['content'] = $request->content;
         $input['school_id'] = auth()->user()->school->id;
         $pdfGenerator = PdfGenerator::create($input);
 
@@ -101,7 +101,7 @@ class PdfGeneratorController extends Controller
     {
         //
         $pdfGenerator = PdfGenerator::findOrFail($id);
-        $input = $request->all();
+        $input['content'] = $request->content;
         $input['school_id'] = auth()->user()->school->id;
         $pdfGenerator->update($input);
 

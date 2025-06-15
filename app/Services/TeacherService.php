@@ -24,6 +24,11 @@ class TeacherService
 		return $this->teacherRepository->all();
 	}
 
+	public function paginated()
+	{
+		return $this->teacherRepository->paginated();
+	}
+
 	public function create(StoreRequest $request)
 	{
 		$data = $this->createData($request);

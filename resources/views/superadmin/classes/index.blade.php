@@ -1,4 +1,5 @@
 <x-superadmin>
+@role('superadmin')
     <!-- frontend-main view -->
     <x-backend-main>
     <div class="max-w-full p-8 md:p-8 lg:p-8 shadow-2xl">
@@ -24,12 +25,13 @@
                             <!-- Table Headings -->
                             <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                 <tr>
-                                    <th scope="col" class="px-2 py-4" width="10%">NO</th>
+                                    <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="30%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="20%">STUDENTS</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">MALES</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">FEMALES</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">MALES</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">FEMALES</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">LOCK</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">ACTION</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -37,7 +39,9 @@
                             @foreach($classes as $key => $class)
                                 <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                     <td class="whitespace-nowrap px-2 py-4">
-                                        <div>{{ $loop->iteration }}</div>
+                                        <div>
+                                            {{ $classes->perPage() * ($classes->currentPage() - 1) + $key + 1 }}
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $class->name }}</div>
@@ -50,6 +54,29 @@
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <div>{{ $class->females() }}</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @if(($class->students->isNotEmpty()) && ($class->studentsInfoUnlocked()))
+                                            <form action="{{ route('superadmin.lockClassStudentsInfo') }}" method="POST">
+                                                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                <input type="hidden" name="class_id" value="{{ $class->id }}">
+                                                <button type="submit">
+                                                    <x-academicon-open-access class="w-8 h-8 text-red-800"/>
+                                                </button>
+                                            </form>
+                                            @elseif(($class->students->isNotEmpty()) && ($class->studentsInfoLocked()))
+                                            <form action="{{ route('superadmin.unlockClassStudentsInfo') }}" method="POST">
+                                                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                <input type="hidden" name="class_id" value="{{ $class->id }}">
+                                                <button type="submit">
+                                                    <x-academicon-closed-access class="w-8 h-8 text-green-800"/>
+                                                </button>
+                                            </form>
+                                            @else
+                                            {{ __('--------')}}
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-2 py-4">
                                         <form action="{{route('superadmin.classes.destroy',$class->id)}}" method="POST" class="flex flex-row">
@@ -78,6 +105,7 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 </x-superadmin>
 
 

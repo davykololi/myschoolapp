@@ -25,7 +25,7 @@ class CreateBansTable extends Migration
     public function up(): void
     {
         Schema::create('bans', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id')->primary();
             $table->morphs('bannable');
             $table->nullableMorphs('created_by');
             $table->text('comment')->nullable();

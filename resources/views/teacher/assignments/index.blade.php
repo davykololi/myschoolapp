@@ -2,9 +2,10 @@
 @section('title', '| Teacher Assignments')
 
 @section('content')
+@role('teacher')
 <!-- frontend-main view -->
 <x-frontend-main>
-<div class="max-w-screen mb-8">
+<div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen">
     <div class="w-full">
         <div class="mx-2 md:mx-8 lg:mx-8">
             <!-- Posts list -->
@@ -74,10 +75,8 @@
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>
-                                                <a type="button" href="{{route('teacher.assignment.download',$assignment->id)}}" class="bg-orange-500 inline-flex px-2 py-1 mb-0.5 justify-center items-center rounded">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-flex pb-0.5">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                                    </svg>
+                                                <a href="{{route('teacher.assignment.download',$assignment->id)}}">
+                                                    <x-download-button/>
                                                 </a>
                                             </div>
                                         </td>
@@ -102,7 +101,7 @@
                                 </tbody>
                                 <tfoot>
                                     @if($assignments->isEmpty())
-                                    <tr class="w-full text-center text-white bg-red-700 uppercase tracking-tighter h-12 dark:bg-gray-700 dark:text-slate-400">
+                                    <tr class="w-full text-center text-white bg-red-700 uppercase tracking-tighter h-12 dark:bg-gray-700 dark:text-slate-400 text-2xl fond-bold">
                                         <td colspan="12">
                                             {{ __('I have notyet given out any assignment') }}
                                         </td>
@@ -111,6 +110,9 @@
                                 </tfoot>
                             </table>
                         </div>
+                        <div class="my-4">
+                            {{ $assignments->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,6 +120,7 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection
 
 

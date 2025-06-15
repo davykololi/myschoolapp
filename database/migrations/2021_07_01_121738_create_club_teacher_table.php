@@ -15,10 +15,8 @@ class CreateClubTeacherTable extends Migration
     {
         Schema::create('club_teacher', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('club_id')->unsigned();
-            $table->foreign('club_id')->references('id')->on('clubs')->onDelete('cascade');
-            $table->bigInteger('teacher_id')->unsigned();
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreignUuid('club_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 @section('title', '| Admin Departments List')
 
 @section('content')
+@role('admin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen mb-8">
@@ -86,4 +87,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

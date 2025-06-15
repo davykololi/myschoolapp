@@ -11,15 +11,12 @@
             @include('partials.messages')
             <!-- Posts list -->
             @if(!empty($myParents))
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <h2>PARENTS LIST</h2>
-                    </div>
-                    <div class="pull-right">
-                        <a class="btn btn-success" href="{{route('admin.parents.create')}}">Create</a>
-                    </div>
-                </div>
+            <h1 class="front-h1">PARENTS LIST</h1>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <x-search-form/>
+                <a href="{{route('admin.parents.create')}}" class="sm:mt-4">
+                    <x-button class="style-one-button">CREATE</x-button>
+                </a>
             </div>
             <div class="flex flex-col overflow-x-auto mt-12">
                 <div class="sm:-mx-6 lg:-mx-8">
@@ -31,9 +28,9 @@
                                     <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                     <th scope="col" class="px-2 py-4" width="25%">NAME</th>
                                     <th scope="col" class="px-2 py-4" width="20%">EMAIL</th>
-                                    <th scope="col" class="px-2 py-4" width="15%">ID NO.</th>
+                                    <th scope="col" class="px-2 py-4" width="15%">IDNO.</th>
                                     <th scope="col" class="px-2 py-4" width="15%">PHONE</th>
-                                    <th scope="col" class="px-2 py-4" width="10%">?CHILDREN</th>
+                                    <th scope="col" class="px-2 py-4" width="10%">CHILDREN?</th>
                                     <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                 </thead>
                                 <!-- Table Body -->
@@ -80,7 +77,17 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
+                                <tfoot>
+                                    @if($myParents->isEmpty())
+                                    <td colspan="12" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12 text-2xl">
+                                        {{ Auth::user()->school->name }} {{ __('Parents Notyet Populated')}}.
+                                    </td>
+                                    @endif
+                                </tfoot>
                             </table>
+                        </div>
+                        <div class="my-4">
+                            {{ $myParents->links() }}
                         </div>
                     </div>
                 </div>

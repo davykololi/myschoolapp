@@ -16,7 +16,7 @@
                             <u>{{$title}}</u>
                         </h3>
                         <div>
-                            <div style="line-height:16px;font-family: Calibri;font-size: 20px;">
+                            <div style="line-height:16px;font-family: Calibri;font-size: 16px;">
                                 <div class="mb">
                                     <span class="uppercase"><b class="mnb">NAME: </b>
                                         <span class="receipt-name">{{ $studentName }}</span>
@@ -32,7 +32,16 @@
                                         </span>
                                     </span>
                                     <span class="uppercase right"><b class="mnb">BALANCE: </b>
-                                        <span class="receipt-name">Kshs: {{ number_format($paymentRecord->balance,2) }}</span>
+                                        <span class="receipt-name">
+                                            Kshs: {{ number_format($paymentRecord->student->fee_balance,2) }}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="mb">
+                                    <span class="uppercase"><b class="mnb">Amount Paid In Words: </b>
+                                        <span class="receipt-name">
+                                            {{ ucwords($amountPaidInWords) }} {{__('Kenyan Shillings Only')}}
+                                        </span>
                                     </span>
                                 </div>
                                 <div class="mb">
@@ -45,25 +54,25 @@
                                 </div>
                                 <div class="mb">
                                     <span class="uppercase"><b class="mnb">BEING PAYMENT FOR: </b>
-                                        <span class="receipt-name">{{ $paymentRecord->payment->payment_section->name }}</span>
+                                        <span class="receipt-name">{{ $paymentFor }}</span>
                                     </span>
-                                </div>
-                                <div class="mb">
-                                    <span class="uppercase"><b class="mnb">PAYMENT MODE: </b>
+                                    <span class="uppercase right"><b class="mnb">PAYMENT MODE: </b>
                                         <span class="receipt-name">{{ $paymentRecord->payment_mode }}</span>
                                     </span>
-                                    <span class="uppercase right"><b class="mnb">PAYMENT DATE: </b>
-                                        <span class="receipt-name">{{ $paymentRecord->payment_date }}</span>
-                                    </span>
                                 </div>
                                 <div class="mb">
-                                    <span class="uppercase"><b class="mnb">VERIFICATION DATE: </b>
+                                    <span class="uppercase"><b class="mnb">PAYMENT DATE: </b>
+                                        <span class="receipt-name">{{ $paymentRecord->payment_date }}</span>
+                                    </span>
+                                    <span class="uppercase right"><b class="mnb">VERIFICATION DATE: </b>
                                         <span class="receipt-name">{{ $paymentRecord->created }}</span>
                                     </span>
                                 </div>
-                                <div class="mb">
+                                <div class="mb" style="margin-top: 20px">
                                     <span class="uppercase"><b class="mnb">SERVED BY: </b>
-                                        <span class="receipt-name">{{ Auth::user()->first_name }}</span>
+                                        <span class="receipt-name">
+                                            {{ Auth::user()->salutation }} {{ Auth::user()->first_name }}
+                                        </span>
                                     </span>
                                     <span class="uppercase right"><b class="mnb">SIGNATURE: </b>
                                         <span>{{ __('.....................................') }}</span>

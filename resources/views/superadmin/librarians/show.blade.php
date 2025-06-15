@@ -2,6 +2,7 @@
 @section('title', '| Librarian Details')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
     <div class="row">
     @include('partials.messages')
@@ -95,4 +96,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

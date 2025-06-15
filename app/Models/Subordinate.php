@@ -15,16 +15,26 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CommonUserInformation;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Subordinate extends CommonUserInformation implements Searchable
 {
-    use Notifiable;
+    use Notifiable, HasUuids;
     /**
     * The attributes that are mass assignable.
     *@var array
     */
     protected $table = 'subordinates';
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> SubordinatePositionEnum::class];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -54,7 +64,7 @@ class Subordinate extends CommonUserInformation implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('school','departments','meetings','rewards','clubs','assignments','user')->get();
+        return $query->with('school','departments','meetings','awards','clubs','assignments','user');
     }
 
     public function schoolSecretary()

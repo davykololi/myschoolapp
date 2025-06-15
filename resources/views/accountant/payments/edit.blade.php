@@ -2,6 +2,7 @@
 @section('title', '| Edit Payment')
 
 @section('content')
+@role('accountant')
 <x-frontend-main>
 <div class="max-w-screen px-4 md:px-8 lg:px-8 h-screen shadow-lg mb-8">
     <div class="w-full">
@@ -45,4 +46,5 @@
     </div>
 </div>
 </x-frontend-main>
+@endrole
 @endsection

@@ -9,7 +9,7 @@
         <div class="mx-2 md:mx-8 lg:mx-8">
             <div class="mt-4">
                 <div class="">
-                    <h2 class="text-center text-2xl font-bold uppercase">Sub-Staff Dashboard</h2>
+                    <h2 class="text-center text-2xl font-bold uppercase">Subordinate Staff Dashboard</h2>
 
                     <div class="panel-body">
                         You are logged in as Sub-Staff! with

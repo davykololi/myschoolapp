@@ -14,17 +14,15 @@ class CreateIssuedBooksTable extends Migration
     public function up()
     {
         Schema::create('issued_books', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('issued_date');
             $table->string('return_date');
             $table->string('serial_no');
             $table->boolean('returned')->default(false);
             $table->boolean('returned_status')->default(true);
             $table->text('recommentation')->nullable();
-            $table->bigInteger('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->bigInteger('book_id')->unsigned();
-            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('book_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

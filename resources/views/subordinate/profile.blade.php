@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
-            <img style="width:15%" src="/storage/storage/{{ Auth::user()->image }}">
+            <x-user-profile-avatar/>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -27,7 +27,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Position:</strong>
-            {{$user->staff->position->value}}
+            {{$user->subordinate->position->value }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -39,56 +39,56 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>ID No:</strong>
-            {{ $user->staff->id_no }}
+            {{ $user->subordinate->id_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Employment No:</strong>
-            {{ $user->staff->emp_no }}
+            {{ $user->subordinate->emp_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>DOB:</strong>
-            {{ $user->staff->dob }}
+            {{ $user->subordinate->dob }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Age:</strong>
-            {{ $user->staff->age }} years
+            {{ $user->subordinate->age }} years
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Designation:</strong>
-            {{ $user->staff->designation }}
+            {{ $user->subordinate->designation }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Current Postal Address:</strong>
-            {{ $user->staff->current_address }}
+            {{ $user->subordinate->current_address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Permanent Postal Address:</strong>
-            {{ $user->staff->permanent_address }}
+            {{ $user->subordinate->permanent_address }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Phone No:</strong>
-            {{ $user->staff->phone_no }}
+            {{ $user->subordinate->phone_no }}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>Staff Departments:</strong>
             <ol>
-            @forelse($user->staff->departments as $dept)
+            @forelse($user->subordinate->departments as $dept)
                 <li>{{ $dept->name }} {{ $dept->phone_no }}</li>
             @empty
             <p>Notyet assigned to any department(s).</p>
@@ -99,7 +99,8 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <span>
-                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($user->staff->created_at)) }}</span>
+                <strong>Published On: </strong> {{ date("F j,Y,g:i a",strtotime($user->subordinate->created_at)) }}
+            </span>
         </div>
     </div>
 </div>

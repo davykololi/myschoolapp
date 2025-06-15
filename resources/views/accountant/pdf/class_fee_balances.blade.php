@@ -34,7 +34,7 @@
                             <td>{{ $value->admission_no }}</td>
                 
                             @if($value->fee_balance != null)
-                            <td style="color: red;">
+                            <td style="color: black;">
                                 <span class="left">Kshs:</span> 
                                 <span style="float:right;">{{ number_format($value->fee_balance,2) }}</span>
                             </td>

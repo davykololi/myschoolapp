@@ -2,6 +2,7 @@
 @section('title', '| Teachers List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen page-container">
@@ -9,19 +10,20 @@
         <div class="mx-2 md:mx-8 lg:mx-8">
             @include('partials.messages')
             <!-- Posts list -->
-            <div class="w-full">
-                <div><h1 class="uppercase text-center text-2xl font-bold underline mb-4">Teachers List</h1></div>
-                <div class="inline-flex">
-                    <a href="{{route('superadmin.school.teachers', Auth::user()->school->id)}}">
+            <h1 class="front-h2">Teachers List</h1>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <x-search-form/>
+                <span class="flex flex-row">
+                    <a href="{{route('superadmin.school.teachers', Auth::user()->school->id)}}" class="justify-between items-center">
                         <x-carbon-document-pdf class="w-16 h-10 bg-orange-500 text-white px-4 py-0.5 rounded mx-1"/>
                     </a>
-                    <a href="{{route('superadmin.export.shool_teachers')}}" class="bg-green-800 text-white px-2 py-1 rounded mx-2 dark:bg-green-900 dark:text-slate-400">
+                    <a href="{{route('superadmin.export.shool_teachers')}}" class="bg-green-800 text-white px-2 py-1 rounded mx-2 dark:bg-green-900 dark:text-slate-400 justify-between items-center">
                         Excel
                     </a>
-                    <a class="bg-blue-700 text-white px-2 py-1 rounded mx-2 dark:text-slate-400 dark:bg-gray-800" href="{{route('superadmin.teachers.create')}}">
-                        Create
+                    <a href="{{route('superadmin.teachers.create')}}">
+                        <x-button class="create-button">CREATE</x-button>
                     </a>
-                </div>
+                </span>
             </div>
             <div class="flex flex-col overflow-x-auto mt-16">
                 <div class="sm:-mx-6 lg:-mx-8">
@@ -34,22 +36,25 @@
                                         <th scope="col" class="px-2 py-4" width="5%">NO</th>
                                         <th scope="col" class="px-2 py-4" width="15%">NAME</th>
                                         <th scope="col" class="px-2 py-4" width="10%">EMAIL</th>
-                                        <th scope="col" class="px-2 py-4" width="10%">ID NO.</th>
-                                        <th scope="col" class="px-2 py-4" width="10%">EMP NO.</th>
+                                        <th scope="col" class="px-2 py-4" width="10%">IDNO.</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">EMPNO.</th>
                                         <th scope="col" class="px-2 py-4" width="10%">ROLE</th>
                                         <th scope="col" class="px-2 py-4" width="10%">PHONE NO.</th>
                                         <th scope="col" class="px-2 py-4" width="10%">BANNED</th>
                                         <th scope="col" class="px-2 py-4" width="10%">STATUS</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">IMPERSONATE</th>
                                         <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                     </tr>
                                 </thead>
                                 <!-- Table Body -->
                                 <tbody>
-                                    @if(!empty($teachers))
+                                    @if($teachers->isNotEmpty())
                                     @foreach($teachers as $key => $teacher)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{$loop->iteration}}</div>
+                                            <div>
+                                                {{ $teachers->perPage() * ($teachers->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{$teacher->user->salutation}} {{$teacher->user->full_name}}</div>
@@ -81,7 +86,7 @@
                                                 @if($teacher->is_banned == 0)
                                                 <form action="{{ route('superadmin.teacher.bann',$teacher->id) }}" method="POST">
                                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                                    <button type="submit" class="text-white bg-red-700 px-4 py-1 rounded">BAN</button>
+                                                    <button type="submit" class="ban-button">BAN</button>
                                                 </form>
                                                 @elseif($teacher->is_banned == 1)
                                                 <form action="{{ route('superadmin.teacher.unbann',$teacher->id) }}" method="POST">
@@ -92,6 +97,13 @@
                                                 </form>
                                                 @endif
                                             </div>
+                                        </td>
+                                        <td class="whitespace-nowrap p-2">
+                                            @canBeImpersonated($teacher->user,$guard=null)
+                                            <a href="{{route('superadmin.impersonate',$teacher->user->id)}}" data-toggle='tooltip' data-placement='top' title="Impersonate" class="icon-style">
+                                                <button type="submit" class="impersonate-button">IMPERSONATE</button>
+                                            </a> 
+                                            @endCanBeImpersonated
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <form action="{{route('superadmin.teachers.destroy',$teacher->id)}}" method="POST" class="flex flex-row">
@@ -112,7 +124,17 @@
                                     @endforeach
                                     @endif
                                 </tbody>
+                                <tfoot>
+                                    @if($teachers->isEmpty())
+                                    <td colspan="12" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12 text-2xl">
+                                        {{ __('The Teachers Notyet Populated')}}.
+                                    </td>
+                                    @endif
+                                </tfoot>
                             </table>
+                        </div>
+                        <div class="my-4">
+                            {{ $teachers->links() }}
                         </div>
                     </div>
                 </div>
@@ -121,4 +143,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

@@ -31,7 +31,7 @@ class TeacherController extends Controller
     public function index()
     {
         //
-        $teachers = $this->teacherService->all();
+        $teachers = $this->teacherService->paginated();
 
         return view('admin.teachers.index',['teachers' => $teachers]);
     }

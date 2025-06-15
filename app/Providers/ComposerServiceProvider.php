@@ -74,5 +74,15 @@ class ComposerServiceProvider extends ServiceProvider
             'ext.subordinate-search-student',
             'App\Http\ViewComposers\StudentComposer'
         );
+
+        View::composer(
+            'components.general-footer',
+            'App\Http\ViewComposers\SchoolComposer'
+        );
+
+        View::composer(
+            'components.home-main',
+            'App\Http\ViewComposers\SchoolComposer'
+        );
     }
 }

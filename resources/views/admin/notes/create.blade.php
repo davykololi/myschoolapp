@@ -31,9 +31,9 @@
                             <input type="text" name="desc" id="desc" class="form-control" placeholder="Description">
                         </div>
                     </div>
+                    @include('ext._get_subjects_ids')
                     @include('ext._get_streams_ids')
                     @include('ext._get_teachers_ids')
-                    @include('ext._get_subjects_ids')
                     @include('ext._submit_create_button')
                 </form>
             </div>

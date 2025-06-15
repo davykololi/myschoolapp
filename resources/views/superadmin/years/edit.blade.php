@@ -2,6 +2,7 @@
 @section('title', '| Edit Year')
 
 @section('content')
+@role('superadmin')
 <x-backend-main>
 <div class="max-w-screen h-fit md:min-h-screen lg:min-h-screen">
     <div class="w-full">
@@ -34,4 +35,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

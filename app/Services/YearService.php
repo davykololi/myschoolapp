@@ -17,7 +17,7 @@ class YearService
 
 	public function all()
 	{
-		return $this->yearRepo->all();
+		return $this->yearRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)
@@ -41,7 +41,7 @@ class YearService
 
 	public function data(StoreRequest $request)
 	{
-		$data = $request->all();
+		$data = $request->validated();
 
         return $data;
 	}

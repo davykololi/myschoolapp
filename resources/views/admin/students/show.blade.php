@@ -25,7 +25,12 @@
     class="relative overflow-hidden bg-cover bg-no-repeat"
     data-te-ripple-init
     data-te-ripple-color="light">
+    @if($student->user->gender === "Male")
     <img class="rounded-t-lg h-64 w-64 mx-auto pt-8" src="{{ $student->image_url }}" alt="" onerror="this.src='{{asset('static/avatar.png')}}'"/>
+    @endif
+    @if($student->user->gender === "Female")
+    <img class="rounded-t-lg h-64 w-64 mx-auto pt-8" src="{{ $student->image_url }}" alt="" onerror="this.src='{{asset('static/female_avatar.png')}}'"/>
+    @endif
     <a href="#!">
       <div
         class="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"></div>
@@ -183,9 +188,9 @@
         <div class="form-group">
             <strong>{{ $student->user->first_name }}'s Awards:</strong>
             <ol>
-            @forelse($student->rewards as $reward)
-            <a href="{{route('admin.rewards.show',$reward->id)}}">
-                <li>{{ $reward->name }} <span style="color: blue">Purpose:</span> {{ $reward->purpose }}.</li>
+            @forelse($studentAwards as $award)
+            <a href="{{route('admin.awards.show',$award->id)}}">
+                <li>{{ $award->name }} <span style="color: blue">Purpose:</span> {{ $award->purpose }}.</li>
             </a>
             @empty
                 <p class="text-[red]">{{ $student->user->first_name }} notyet recieved any award.</p>
@@ -197,7 +202,7 @@
         <div class="form-group">
             <strong>{{ $student->user->first_name }}'s Assignments:</strong>
             <ol>
-            @forelse($student->assignments as $assignment)
+            @forelse($studentAssignments as $assignment)
                 <li>
                     {{ $assignment->name }}  <span style="color: blue">Given:</span> 
                     {{ date("jS,F,Y,g:i a",strtotime($assignment->date_given)) }} <span style="color: red">Deadline:</span> 
@@ -217,7 +222,7 @@
         <div class="form-group">
             <strong>{{ $student->user->first_name }}'s Clubs:</strong>
             <ol>
-            @forelse($student->clubs as $club)
+            @forelse($studentClubs as $club)
             <a href="{{route('admin.clubs.show',$club->id)}}">
                 <li>{{ $club->name }}</li>
             </a>
@@ -231,7 +236,7 @@
         <div class="form-group">
             <strong>{{ $student->user->first_name }}'s Meetings:</strong>
             <ol>
-            @forelse($student->meetings as $key => $meeting)
+            @forelse($studentMeetings as $key => $meeting)
             <a href="{{route('admin.meetings.show',$meeting->id)}}">
                 <li>
                     {{$meeting->name}} to be held on {{ $meeting->getDate() }} at {{ $meeting->venue }}. Agenda will be 
@@ -247,7 +252,6 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
             <strong>More About {{ $student->user->first_name }}:</strong>
-            {!! $student->history !!}
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">

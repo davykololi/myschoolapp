@@ -1,20 +1,26 @@
 @role('admin')
-<nav class="border-b bg-[#0F266E] border-gray-200 sticky top-0 z-10 dark:bg-gray-900 py-1 shadow-lg">
+<nav class="border-b bg-blue-600 border-gray-200 sticky top-0 z-10 dark:bg-gray-900 py-1 shadow-lg">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
-  <a href="{{ url('/') }}" class="flex items-center">
-      <img src="{{ asset('static/favicon.png') }}" class="w-8 h-8" alt="school logo" />
-      <span class="self-center text-2xl font-semibold uppercase whitespace-nowrap dark:text-white">{{ config('app.name') }}</span>
-  </a>
+  <div class="flex items-center  text-white cursor-pointer">
+  <!-- Logo-->
+    <div class="-ml-4"><x-graduates-cap/></div>
+    <div class="font-semibold mx-4 uppercase font-extrabold justify-center hover:lg:text-black font-extrabold">
+      @if(Auth::user()->hasRole('admin'))
+      <a href="/admin/dashboard">{{ config('app.name') }}</a>
+      @endif
+    </div>
+    <div class="ml-6"><x-sidenav-toggler-button class="w-8 h-8"/></div>
+  </div>
   <div class="flex items-center md:order-2">
       <button type="button" class="flex" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
         <span class="sr-only">Open user menu</span>
         <x-user-avatar/>
       </button>
       <!-- Dropdown menu -->
-      <div class="z-50 hidden my-4 text-base list-none bg-stone-400 text-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
         <div class="px-4 py-3">
-          <span class="block text-sm text-gray-900 dark:text-white">{{ Auth::user()->full_name }}</span>
-          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->email }}</span>
+          <span class="block text-sm text-purple-700 dark:text-white">{{ Auth::user()->full_name }}</span>
+          <span class="block text-sm  text-purple-700 truncate dark:text-gray-400">{{ Auth::user()->email }}</span>
         </div>
         <ul class="py-2" aria-labelledby="user-menu-button">
           @guest
@@ -29,22 +35,22 @@
           @endif
           @else
           <li>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
+            <a href="#" class="block px-4 py-2 text-sm text-purple-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
           </li>
           <li>
-            <a href="{{ route('admin.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+            <a href="{{ route('admin.profile') }}" class="block px-4 py-2 text-sm text-purple-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
               My Profile
             </a>
           </li>
           <li>
-            <a href="{{ route('changePassword.form') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+            <a href="{{ route('changePassword.form') }}" class="block px-4 py-2 text-sm text-purple-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
               Change Password
             </a>
           </li>
           <li>
             <form method="POST" action="{{ route('logout') }}">
               @csrf
-              <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+              <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-purple-700 hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                 Sign out
               </a>
             </form>
@@ -59,9 +65,6 @@
   </div>
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
     <ul class="flex flex-col font-bold p-4 md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 text-sm">
-      <li>
-        <x-sidenav-toggler-button/>
-      </li>
       <li class="mt-2">
         <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">HOME</a>
       </li>
@@ -71,7 +74,7 @@
       @if(session('impersonated_by'))
       @impersonating($guard = null)
       <li class="mt-2" @if(Request::is('admin/impersonate-leave*')) @endif>
-          <a  href="{{route('admin.impersonate-leave')}}" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+          <a  href="{{route('admin.impersonateLeave')}}" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
             BACK TO MY ACCOUNT
           </a>
       </li>

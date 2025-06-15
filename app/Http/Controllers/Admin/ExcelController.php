@@ -19,6 +19,8 @@ use App\Services\ClassService;
 use App\Services\StreamService;
 use App\Services\TeacherService;
 use App\Services\SubjectService;
+use App\Enums\StreamsEnum;
+use App\Enums\SubjectsEnum;
 use App\Imports\ClassMarkSheets\StreamsMarkSheetImport;
 use App\Imports\ReportCardGeneralRemarks\ReportcardRemarksSheetImport;
 use App\Exports\StreamStudentsExport;
@@ -26,7 +28,7 @@ use App\Exports\StreamTeachersExport;
 use App\Exports\ClassMarksExport;
 use App\Exports\StreamMarksExport;
 use App\Imports\SubjectGrades\MarksGradesheetImport;
-use App\Imports\GeneralGradesheetImport;
+use App\Imports\ExamGeneralGrades\GeneralGradesheetImport;
 use App\Imports\ReportCardSubjectGrades\ReportSubjectGradesheetImport;
 use App\Imports\ReportCardMeanGrades\ReportMeanGradesheetImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -41,7 +43,7 @@ class ExcelController extends Controller
      *
      * @return void
      */
-    public function __construct( YearService $yearService, TermService $termService, ExamService $examService, ClassService $classService, StreamService $streamService, TeacherService $teacherService, SubjectService $subjectService)
+    public function __construct(YearService $yearService, TermService $termService, ExamService $examService, ClassService $classService, StreamService $streamService, TeacherService $teacherService, SubjectService $subjectService)
     {
         $this->middleware('auth');
         $this->middleware('role:admin');
@@ -69,12 +71,12 @@ class ExcelController extends Controller
 
     public function classResultMarks(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $examId = $request->exam;
-        $classId = $request->class;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $examId = $request->exam_id;
+        $classId = $request->class_id;
 
-        if((is_null($yearId)) || (is_null($termId)) || (is_null($examId)) || (is_null($streamId))){
+        if((is_null($yearId)) || (is_null($termId)) || (is_null($examId)) || (is_null($classId))){
             return back()->withErrors('Please fill in all the required details before you proceed!');
         }
 
@@ -93,10 +95,10 @@ class ExcelController extends Controller
 
     public function streamResultMarks(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $examId = $request->exam;
-        $streamId = $request->stream;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $examId = $request->exam_id;
+        $streamId = $request->stream_id;
 
         if((is_null($yearId)) || (is_null($termId)) || (is_null($examId)) || (is_null($streamId))){
             return back()->withErrors('Please fill in all the required details before you proceed!');
@@ -129,78 +131,116 @@ class ExcelController extends Controller
 
     public function streamsMarksheets(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $examId = $request->exam;
-        $classId = $request->class;
-        $teacherId = $request->teacher;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $examId = $request->exam_id;
+        $classId = $request->class_id;
+        $teacherId = $request->teacher_id;
+
+        if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null) || ($teacherId === null)){
+            return back()->withErrors('Please fill in the required details before you proceed!');
+        }
         
-        $north = StreamSection::whereName('North')->firstOrFail();
+        $north = StreamSection::whereName(StreamsEnum::NORTH->value)->firstOrFail();
         $northId = $north->id;
-        $south = StreamSection::whereName('South')->firstOrFail();
+        $south = StreamSection::whereName(StreamsEnum::SOUTH->value)->firstOrFail();
         $southId = $south->id;
-        $west = StreamSection::whereName('West')->firstOrFail();
+        $west = StreamSection::whereName(StreamsEnum::WEST->value)->firstOrFail();
         $westId = $west->id;
-        $east = StreamSection::whereName('East')->firstOrFail();
+        $east = StreamSection::whereName(StreamsEnum::EAST->value)->firstOrFail();
         $eastId = $east->id;
         $year = Year::whereId($yearId)->first();
         $term = Term::whereId($termId)->first();
         $class = MyClass::whereId($classId)->first();
         $exam = Exam::whereId($examId)->first();
-        $requestedFile = request()->file('file');
 
-        if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null) || ($teacherId === null) || ($northId === null) || ($southId === null) || ($westId === null) || ($eastId === null) || (empty($requestedFile))){
-            return back()->withErrors('Please fill in the required details before you proceed!');
-        } 
+        $requestedFile = request()->file('file');
+        if(empty($requestedFile)){
+            toastr()->error(ucwords('Please ensure you select the required excel sheet document before you proceed!'));
+            return back()->withErrors('Please ensure you select the required excel sheet document before you proceed!');
+        }  
 
         \Excel::import(new StreamsMarkSheetImport($yearId,$termId,$examId,$classId,$teacherId,$northId,$southId,$westId,$eastId),$requestedFile);
 
-        \Session::put('success',$term->name." ".$class->name." ".$exam->name." ".'Result Marksheets Uploaded Successfully!!');
+        \Session::flash('success',$term->name." ".$class->name." ".$exam->name." ".'Result Marksheets Uploaded Successfully!!');
 
         return back();
     }
 
     public function marksGradesStore(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $classId = $request->class;
-        $examId = $request->exam;
-        $teacherId = $request->teacher;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $classId = $request->class_id;
+        $examId = $request->exam_id;
+        $teacherId = $request->teacher_id;
 
-        $maths = Subject::whereName('Mathematics')->firstOrFail();
+        $maths = Subject::whereName(SubjectsEnum::MATHS->value)->firstOrFail();
         $mathsId = $maths->id;
-        $english = Subject::whereName('English')->firstOrFail();
+        $english = Subject::whereName(SubjectsEnum::ENG->value)->firstOrFail();
         $englishId = $english->id;
-        $kisw = Subject::whereName('Kiswahili')->firstOrFail();
+        $kisw = Subject::whereName(SubjectsEnum::KISW->value)->firstOrFail();
         $kiswId = $kisw->id;
-        $chem = Subject::whereName('Chemistry')->firstOrFail();
+        $chem = Subject::whereName(SubjectsEnum::CHEM->value)->firstOrFail();
         $chemId = $chem->id;
-        $biology = Subject::whereName('Biology')->firstOrFail();
+        $biology = Subject::whereName(SubjectsEnum::BIO->value)->firstOrFail();
         $bioId = $biology->id;
-        $physics = Subject::whereName('Physics')->firstOrFail();
+        $physics = Subject::whereName(SubjectsEnum::PHY->value)->firstOrFail();
         $physicsId = $physics->id;
-        $cre = Subject::whereName('CRE')->firstOrFail();
+        $cre = Subject::whereName(SubjectsEnum::CRE->value)->firstOrFail();
         $creId = $cre->id;
-        $islam = Subject::whereName('Islam')->firstOrFail();
+        $islam = Subject::whereName(SubjectsEnum::ISLM->value)->firstOrFail();
         $islamId = $islam->id;
-        $hist = Subject::whereName('History')->firstOrFail();
-        $histId = $hist->id;
-        $geog = Subject::whereName('Geography')->firstOrFail();
+        $histAndGov = Subject::whereName(SubjectsEnum::HISTANDGOV->value)->firstOrFail();
+        $histAndGovId = $histAndGov->id;
+        $geog = Subject::whereName(SubjectsEnum::GEOG->value)->firstOrFail();
         $geogId = $geog->id;
-        
+        $homeScience = Subject::whereName(SubjectsEnum::HOMESC->value)->firstOrFail();
+        $homeScienceId = $homeScience->id;
+        $artAndDesign = Subject::whereName(SubjectsEnum::ARTDSGN->value)->firstOrFail();
+        $artAndDesignId = $artAndDesign->id;
+        $agriculture = Subject::whereName(SubjectsEnum::AGRIC->value)->firstOrFail();
+        $agricultureId = $agriculture->id;
+        $businessStudies = Subject::whereName(SubjectsEnum::BUZSTRDS->value)->firstOrFail();
+        $businessStudiesId = $businessStudies->id;
+        $computerStudies = Subject::whereName(SubjectsEnum::COMPSTRDS->value)->firstOrFail();
+        $computerStudiesId = $computerStudies->id;
+        $drawingAndDesign = Subject::whereName(SubjectsEnum::DRWNDGN->value)->firstOrFail();
+        $drawingAndDesignId =  $drawingAndDesign->id;
+        $french = Subject::whereName(SubjectsEnum::FRNCH->value)->firstOrFail();
+        $frenchId = $french->id;
+        $german = Subject::whereName(SubjectsEnum::GRMN->value)->firstOrFail();
+        $germanId = $german->id;
+        $arabic = Subject::whereName(SubjectsEnum::ARBC->value)->firstOrFail();
+        $arabicId = $arabic->id;
+        $signLanguage = Subject::whereName(SubjectsEnum::SGNLANG->value)->firstOrFail();
+        $signLanguageId = $signLanguage->id;
+        $music = Subject::whereName(SubjectsEnum::MSC->value)->firstOrFail();
+        $musicId = $music->id;
+        $woodWork = Subject::whereName(SubjectsEnum::WDWK->value)->firstOrFail();
+        $woodWorkId = $woodWork->id;
+        $metalWork = Subject::whereName(SubjectsEnum::MTWK->value)->firstOrFail();
+        $metalWorkId = $metalWork->id;
+        $buildingConstruction = Subject::whereName(SubjectsEnum::BUILDCON->value)->firstOrFail();
+        $buildingConstructionId = $buildingConstruction->id;
+        $powerMechanics = Subject::whereName(SubjectsEnum::PWRMC->value)->firstOrFail();
+        $powerMechanicsId = $powerMechanics->id;
+        $electricity = Subject::whereName(SubjectsEnum::ELEC->value)->firstOrFail();
+        $electricityId =  $electricity->id;
+        $aviationTechnology = Subject::whereName(SubjectsEnum::AVTEC->value)->firstOrFail();
+        $aviationTechnologyId =  $aviationTechnology->id;
         
         $class = MyClass::whereId($classId)->first();
         $year = Year::whereId($yearId)->first();
         $term = Term::whereId($termId)->first();
         $exam = Exam::where(['id'=>$examId,'term_id'=>$termId,'year_id'=>$yearId])->first();
+        
         $requestedFile = request()->file('file');
-
         if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null) || ($exam === null) || (empty($requestedFile))){
             return back()->withErrors('Please fill in the required details before you proceed!');
         } 
 
-        \Excel::import(new MarksGradesheetImport($yearId,$termId,$classId,$exam,$teacherId,$mathsId,$englishId,$kiswId,$chemId,$bioId,$physicsId,$creId,$islamId,$histId,$geogId),$requestedFile);
+        \Excel::import(new MarksGradesheetImport($yearId,$termId,$classId,$exam,$teacherId,$mathsId,$englishId,$kiswId,$chemId,$bioId,$physicsId,$creId,$islamId,$histAndGovId,$geogId,$homeScienceId,$artAndDesignId,$agricultureId,$businessStudiesId,$computerStudiesId,$drawingAndDesignId,$frenchId,$germanId,$arabicId,$signLanguageId,$musicId,$woodWorkId,$metalWorkId,$buildingConstructionId,$powerMechanicsId,$electricityId,$aviationTechnologyId),$requestedFile);
 
         \Session::put('success', $term->name." ".$class->name." ".$exam->name." ".'Grades Uploaded Successfully');
 
@@ -209,21 +249,27 @@ class ExcelController extends Controller
 
     public function generalGradesStore(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $classId = $request->class;
-        $examId = $request->exam;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $classId = $request->class_id;
+        $examId = $request->exam_id;
+
+        if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null)){
+            return back()->withErrors('Please fill in the required details before you proceed!');
+        }
         
         $class = MyClass::where('id',$classId)->first();
         $year = Year::where('id',$yearId)->first();
         $term = Term::where('id',$termId)->first();
         $exam = Exam::where(['id'=>$examId,'term_id'=>$termId,'year_id'=>$yearId])->first();
 
-        if(($yearId === null) || ($termId === null) || ($examId === null) || ($classId === null) || ($exam->year->id =! $yearId) || ($exam->term->id =! $termId)){
-            return back()->withErrors('Please fill in the required details before you proceed!');
-        } 
-
-        \Excel::import(new GeneralGradesheetImport($yearId,$termId,$classId,$exam),request()->file('file'));
+        $requestedFile = request()->file('file');
+        if(empty($requestedFile)){
+            toastr()->error(ucwords('Please ensure you select the required excel sheet document before you proceed!'));
+            return back()->withErrors('Please ensure you select the required excel sheet document before you proceed!');
+        }
+ 
+        \Excel::import(new GeneralGradesheetImport($yearId,$termId,$classId,$exam),$requestedFile);
 
         \Session::put('success', $year->year." ".$term->name." ".$class->name." ".$exam->name." ".'General Grades Uploaded Successfully');
 
@@ -232,53 +278,94 @@ class ExcelController extends Controller
 
     public function reportGeneralRemarks(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $classId = $request->class;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $classId = $request->class_id;
+
+        if(($yearId === null) || ($termId === null) || ($classId === null)){
+            return back()->withErrors('Please fill in all the required details before you proceed!');
+        }
         
         $class = MyClass::where('id',$classId)->first();
         $year = Year::where('id',$yearId)->first();
-        $term = Term::where('id',$termId)->first();
+        $term = Term::where('id',$termId)->first(); 
 
-        if(($yearId === null) || ($termId === null) || ($classId === null)){
-            toastr()->error(ucwords('Please ensure you have filled all the required details!'));
-            return back();
+        $requestedFile = request()->file('file');
+        if(empty($requestedFile)){
+            return back()->withErrors('Please ensure you select the required excel sheet document before you proceed!');
         } 
 
-        \Excel::import(new ReportcardRemarksSheetImport($yearId,$termId,$classId),request()->file('file'));
+        \Excel::import(new ReportcardRemarksSheetImport($yearId,$termId,$classId),$requestedFile);
 
-        toastr()->success(ucwords($year->year." ".$term->name." ".$class->name." ".'Report Card General Comments Uploaded Successfully'));
-
-        return back();
+        return back()->withSuccess(ucwords($year->year." ".$term->name." ".$class->name." ".'Report Card General Comments Uploaded Successfully'));
     }
 
     public function reportSubjectGradesStore(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $classId = $request->class;
-        $teacherId = $request->teacher;
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $classId = $request->class_id;
+        $teacherId = $request->teacher_id;
 
-        $maths = Subject::whereName('Mathematics')->firstOrFail();
+        if(($yearId === null) || ($termId === null) || ($classId === null) || ($teacherId === null)){
+            toastr()->error(ucwords('Please ensure you have filled all the required details!'));
+            return back()->withErrors('Please ensure you have filled all the required details!');
+        }
+
+        $maths = Subject::whereName(SubjectsEnum::MATHS->value)->firstOrFail();
         $mathsId = $maths->id;
-        $english = Subject::whereName('English')->firstOrFail();
+        $english = Subject::whereName(SubjectsEnum::ENG->value)->firstOrFail();
         $englishId = $english->id;
-        $kisw = Subject::whereName('Kiswahili')->firstOrFail();
+        $kisw = Subject::whereName(SubjectsEnum::KISW->value)->firstOrFail();
         $kiswId = $kisw->id;
-        $chem = Subject::whereName('Chemistry')->firstOrFail();
+        $chem = Subject::whereName(SubjectsEnum::CHEM->value)->firstOrFail();
         $chemId = $chem->id;
-        $biology = Subject::whereName('Biology')->firstOrFail();
+        $biology = Subject::whereName(SubjectsEnum::BIO->value)->firstOrFail();
         $bioId = $biology->id;
-        $physics = Subject::whereName('Physics')->firstOrFail();
+        $physics = Subject::whereName(SubjectsEnum::PHY->value)->firstOrFail();
         $physicsId = $physics->id;
-        $cre = Subject::whereName('CRE')->firstOrFail();
+        $cre = Subject::whereName(SubjectsEnum::CRE->value)->firstOrFail();
         $creId = $cre->id;
-        $islam = Subject::whereName('Islam')->firstOrFail();
+        $islam = Subject::whereName(SubjectsEnum::ISLM->value)->firstOrFail();
         $islamId = $islam->id;
-        $hist = Subject::whereName('History')->firstOrFail();
-        $histId = $hist->id;
-        $geog = Subject::whereName('Geography')->firstOrFail();
+        $histAndGov = Subject::whereName(SubjectsEnum::HISTANDGOV->value)->firstOrFail();
+        $histAndGovId = $histAndGov->id;
+        $geog = Subject::whereName(SubjectsEnum::GEOG->value)->firstOrFail();
         $geogId = $geog->id;
+        $homeScience = Subject::whereName(SubjectsEnum::HOMESC->value)->firstOrFail();
+        $homeScienceId = $homeScience->id;
+        $artAndDesign = Subject::whereName(SubjectsEnum::ARTDSGN->value)->firstOrFail();
+        $artAndDesignId = $artAndDesign->id;
+        $agriculture = Subject::whereName(SubjectsEnum::AGRIC->value)->firstOrFail();
+        $agricultureId = $agriculture->id;
+        $businessStudies = Subject::whereName(SubjectsEnum::BUZSTRDS->value)->firstOrFail();
+        $businessStudiesId = $businessStudies->id;
+        $computerStudies = Subject::whereName(SubjectsEnum::COMPSTRDS->value)->firstOrFail();
+        $computerStudiesId = $computerStudies->id;
+        $drawingAndDesign = Subject::whereName(SubjectsEnum::DRWNDGN->value)->firstOrFail();
+        $drawingAndDesignId =  $drawingAndDesign->id;
+        $french = Subject::whereName(SubjectsEnum::FRNCH->value)->firstOrFail();
+        $frenchId = $french->id;
+        $german = Subject::whereName(SubjectsEnum::GRMN->value)->firstOrFail();
+        $germanId = $german->id;
+        $arabic = Subject::whereName(SubjectsEnum::ARBC->value)->firstOrFail();
+        $arabicId = $arabic->id;
+        $signLanguage = Subject::whereName(SubjectsEnum::SGNLANG->value)->firstOrFail();
+        $signLanguageId = $signLanguage->id;
+        $music = Subject::whereName(SubjectsEnum::MSC->value)->firstOrFail();
+        $musicId = $music->id;
+        $woodWork = Subject::whereName(SubjectsEnum::WDWK->value)->firstOrFail();
+        $woodWorkId = $woodWork->id;
+        $metalWork = Subject::whereName(SubjectsEnum::MTWK->value)->firstOrFail();
+        $metalWorkId = $metalWork->id;
+        $buildingConstruction = Subject::whereName(SubjectsEnum::BUILDCON->value)->firstOrFail();
+        $buildingConstructionId = $buildingConstruction->id;
+        $powerMechanics = Subject::whereName(SubjectsEnum::PWRMC->value)->firstOrFail();
+        $powerMechanicsId = $powerMechanics->id;
+        $electricity = Subject::whereName(SubjectsEnum::ELEC->value)->firstOrFail();
+        $electricityId =  $electricity->id;
+        $aviationTechnology = Subject::whereName(SubjectsEnum::AVTEC->value)->firstOrFail();
+        $aviationTechnologyId =  $aviationTechnology->id;
         
         
         $class = MyClass::whereId($classId)->first();
@@ -286,12 +373,12 @@ class ExcelController extends Controller
         $term = Term::whereId($termId)->first();
         $requestedFile = request()->file('file');
 
-        if(($yearId === null) || ($termId === null) || ($classId === null) || (empty($requestedFile))){
-            toastr()->error(ucwords('Please ensure you have filled all the required details!'));
-            return back();
+        if(empty($requestedFile)){
+            toastr()->error(ucwords('Please ensure you select the required excel sheet document before you proceed!'));
+            return back()->withErrors('Please ensure you select the required excel sheet document before you proceed!');
         } 
 
-        \Excel::import(new ReportSubjectGradesheetImport($yearId,$termId,$classId,$teacherId,$mathsId,$englishId,$kiswId,$chemId,$bioId,$physicsId,$creId,$islamId,$histId,$geogId),$requestedFile);
+        \Excel::import(new ReportSubjectGradesheetImport($yearId,$termId,$classId,$teacherId,$mathsId,$englishId,$kiswId,$chemId,$bioId,$physicsId,$creId,$islamId,$histAndGovId,$geogId,$homeScienceId,$artAndDesignId,$agricultureId,$businessStudiesId,$computerStudiesId,$drawingAndDesignId,$frenchId,$germanId,$arabicId,$signLanguageId,$musicId,$woodWorkId,$metalWorkId,$buildingConstructionId,$powerMechanicsId,$electricityId,$aviationTechnologyId),$requestedFile);
 
         \Session::put('success', $term->name." ".$class->name." ".'Report Card Subject Average Grades Uploaded Successfully');
 
@@ -300,20 +387,26 @@ class ExcelController extends Controller
 
     public function reportMeanGradesStore(Request $request)
     {
-        $yearId = $request->year;
-        $termId = $request->term;
-        $classId = $request->class;
-        
-        $class = MyClass::where('id',$classId)->first();
-        $year = Year::where('id',$yearId)->first();
-        $term = Term::where('id',$termId)->first();
+        $yearId = $request->year_id;
+        $termId = $request->term_id;
+        $classId = $request->class_id;
 
         if(($yearId === null) || ($termId === null) || ($classId === null)){
             toastr()->error(ucwords('Please ensure you have filled all the required details!'));
-            return back();
-        } 
+            return back()->withErrors('Please ensure you have filled all the required details!');
+        }
+        
+        $class = MyClass::where('id',$classId)->first();
+        $year = Year::where('id',$yearId)->first();
+        $term = Term::where('id',$termId)->first(); 
 
-        \Excel::import(new ReportMeanGradesheetImport($yearId,$termId,$classId),request()->file('file'));
+        $requestedFile = request()->file('file');
+        if(empty($requestedFile)){
+            toastr()->error(ucwords('Please ensure you select the required excel sheet document before you proceed!'));
+            return back()->withErrors('Please ensure you select the required excel sheet document before you proceed!');
+        }
+
+        \Excel::import(new ReportMeanGradesheetImport($yearId,$termId,$classId),$requestedFile);
 
         \Session::put('success', $year->year." ".$term->name." ".$class->name." ".'Report Card General Grades Uploaded Successfully');
 

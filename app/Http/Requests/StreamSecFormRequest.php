@@ -30,14 +30,12 @@ class StreamSecFormRequest extends FormRequest
                 'name' => 'required|string|max:100',
                 'initials' => 'required|string|max:100',
                 'desc' => 'required|string|max:500',
-                'school' => 'required|exists:schools,id',
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
                 'initials' => 'required|string|max:100',
                 'desc' => 'required|string|max:500',
-                'school' => 'required|exists:schools,id',
             ];
         }
     }
@@ -51,7 +49,6 @@ class StreamSecFormRequest extends FormRequest
                 'name.required' => 'The name of the stream section is required',
                 'initials.required' => 'The initials are required',
                 'desc.required' => 'The description of the stream section is required',
-                'school.required' => 'The name of the school is required',
             ];
         } else {
             return [
@@ -59,7 +56,6 @@ class StreamSecFormRequest extends FormRequest
                 'name.required' => 'The name of the stream section is required',
                 'initials.required' => 'The initials are required',
                 'desc.required' => 'The description of the stream section is required',
-                'school.required' => 'The name of the school is required',  
             ];
         }
     }

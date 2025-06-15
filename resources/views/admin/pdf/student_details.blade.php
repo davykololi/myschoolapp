@@ -8,11 +8,13 @@
         <div class="col-md-12">
             <div class="mt"><x-pdf-portrait-current-date/></div>
             <h2><u>{{$title}}</u></h2>
-            <div>
-                @if(!empty($student->image))
-                <img src="data:image/png;base64,{!! base64_encode(file_get_contents(public_path('/storage/storage/'.$student->image))) !!}" width="200px" height="200px" style="border: 5px double gray;float: right; margin-right: 10px;"> 
-                @else
+            <div> 
+                @if(($student->image === "image.png") && ($student->user->gender === "Male"))
                 <img src="data:image/png;base64,{!! base64_encode(file_get_contents(public_path('/static/avatar.png'))) !!}" width="200px" height="200px" align="right" style="border: 5px double gray; float: right;margin-right: 10px;">
+                @elseif(($student->image === "image.png") && ($student->user->gender === "Female"))
+                <img src="data:image/png;base64,{!! base64_encode(file_get_contents(public_path('/static/female_avatar.png'))) !!}" width="200px" height="200px" align="right" style="border: 5px double gray; float: right;margin-right: 10px;">
+                @else
+                <img src="data:image/png;base64,{!! base64_encode(file_get_contents(public_path('/storage/storage/'.$student->image))) !!}" width="200px" height="200px" style="border: 5px double gray;float: right; margin-right: 10px;">
                 @endif     
             </div>  
             <br/>
@@ -24,6 +26,9 @@
                         </caption>
                         <tbody>
                             <tr>
+                                <td class="td"><b> FULL NAME:</b> {{ $student->user->full_name }}</td>
+                            </tr>
+                            <tr>
                                 <td class="td"><b> F.NAME:</b> {{ $student->user->first_name }}</td>
                                 <td class="td"><b> M.NAME:</b> {{ $student->user->middle_name }}</td>
                                 <td class="td"><b> L.NAME:</b> {{ $student->user->last_name }}</td>
@@ -31,6 +36,7 @@
                              <tr>
                                 <td class="td"><b>D.O.B:</b> {{ $student->getDob() }}</td>
                                 <td class="td"><b>AGE:</b> {{ $student->age }} Years</td>
+                                <td class="td"><b>GENDER:</b> {{ $student->gender }} </td>
                             </tr>
                         </tbody>
                     </table>
@@ -45,8 +51,8 @@
                                 <td class="td"><b>PHONE:</b> {{ $student->parent->phone_no }}</td>
                             </tr>
                             <tr>
-                                <td class="td"><b>C.ADDRESS</b> {{ $student->parent->current_adress }}</td>
-                                <td class="td"><b>P.ADDRESS</b> {{ $student->parent->permanent_adress }}</td>
+                                <td class="td"><b>C.ADDRESS</b> {{ $student->parent->current_address }}</td>
+                                <td class="td"><b>P.ADDRESS</b> {{ $student->parent->permanent_address }}</td>
                             </tr>
 
                             @if(!is_null($student->student_info))
@@ -108,7 +114,9 @@
                         <tbody>
                             <tr>
                                 @if(!empty($streamSubjects))
-                                    <p class="p1"><u>{{ $student->stream->name }} offers the following subjects:</u></p>
+                                    <p class="p1">
+                                        <b>{{ $student->user->full_name  }} {{ __('belongs to') }} {{ $student->stream->name }} which offers the following subjects:</b>
+                                    </p>
                                     <span>{!! \Arr::join($streamSubjects, ', ', ', and ') !!}.</span>
                                 @else
                                     <span style="color: red">No subjects assigned to {{ $student->stream->name }} at the moment.</span>

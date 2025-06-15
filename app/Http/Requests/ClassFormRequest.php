@@ -28,11 +28,13 @@ class ClassFormRequest extends FormRequest
             return [
                 //
                 'name' => 'required|string|max:100',
+                'initials' => 'required|string|max:100',
                 'desc' => 'required|string|max:500'
             ];
         } else {
             return [
                 'name' => 'required|string|max:100',
+                'initials' => 'required|string|max:100',
                 'desc' => 'required|string|max:500'
             ];
         }
@@ -45,12 +47,14 @@ class ClassFormRequest extends FormRequest
             return [
                 //
                 'name.required' => 'The name of the class is required',
+                'initials.required' => 'The class initials are required',
                 'desc.required' => 'The description of the class is required',
             ];
         } else {
             return [
                 //
                 'name.required' => 'The name of the class is required',
+                'initials.required' => 'The class initials are required',
                 'desc.required' => 'The description of the class is required',  
             ];
         }

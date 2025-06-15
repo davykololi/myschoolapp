@@ -14,7 +14,7 @@ class CreateMeetingsTable extends Migration
     public function up()
     {
         Schema::create('meetings', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('agenda');
             $table->string('venue');
@@ -22,7 +22,7 @@ class CreateMeetingsTable extends Migration
             $table->string('start_at');
             $table->string('end_at');
             $table->string('code');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

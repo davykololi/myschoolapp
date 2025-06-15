@@ -24,7 +24,7 @@ class AccountantProfileController extends Controller
     public function accountantProfile()
     {
         $user = Auth::user();
-        if($user->hasRole('accountant')){
+        if(Auth::check() && $user->hasRole('accountant')){
             return view('accountant.profile',compact('user'));
         }
     }

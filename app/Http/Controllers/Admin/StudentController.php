@@ -12,7 +12,7 @@ use App\Services\ParentService;
 use App\Models\Dormitory;
 use App\Models\Intake;
 use App\Services\SubjectService;
-use App\Models\Reward;
+use App\Models\Award;
 use App\Models\Assignment;
 use App\Models\Meeting;
 use App\Models\Student;
@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ImageUploadTrait;
+use App\Enums\StudentPositionEnum;
 use App\Http\Requests\StudentFormRequest as StoreRequest;
 use App\Http\Requests\StudentFormRequest as UpdateRequest;
 use Illuminate\Support\Facades\Storage;
@@ -55,12 +56,22 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $students = $this->studentService->paginate();
-        
-        return view('admin.students.index',compact('students'));
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $search = strtolower($request->search);
+            if($search){
+                $students = Student::whereLike(['user.first_name','user.middle_name','user.last_name','user.email','admission_no','doa','position','dob','adm_mark','phone_no','stream.name','dormitory.name','intake.name','stream.name','assignments.name'], $search)->eagerLoaded()->paginate(15);
+
+                return view('admin.students.index',compact('students'));
+            } else {
+                $students = $this->studentService->paginated();
+
+                return view('admin.students.index',compact('students'));
+            }
+        }
     }
 
     /**
@@ -75,8 +86,9 @@ class StudentController extends Controller
         $intakes = Intake::all();
         $dormitories = Dormitory::all();
         $parents = $this->parentService->all();
+        $positions = StudentPositionEnum::cases();
 
-        return view('admin.students.create',compact('streams','intakes','dormitories','parents'));
+        return view('admin.students.create',compact('streams','intakes','dormitories','parents','positions'));
     }
 
     /**
@@ -108,12 +120,12 @@ class StudentController extends Controller
             'dob' => $request->dob,
             'doa' => $request->doa,
             'position' => $request->position,
-            'stream_id' => $request->stream,
-            'intake_id' => $request->intake,
-            'dormitory_id' => $request->dormitory,
+            'stream_id' => $request->stream_id,
+            'intake_id' => $request->intake_id,
+            'dormitory_id' => $request->dormitory_id,
             'school_id' => auth()->user()->school->id,
             'admin_id' => Auth::user()->admin->id,
-            'parent_id' => $request->parent, 
+            'parent_id' => $request->parent_id, 
             'active' => 1,
         ]);
 
@@ -137,16 +149,17 @@ class StudentController extends Controller
         $student = $this->studentService->getId($id);
         $subjects = $this->subjectService->all();
         $studentSubjects = $student->subjects;
-        $rewards = Reward::all();
-        $studentRewards = $student->rewards;
+        $awards = Award::all();
+        $studentAwards = $student->awards;
         $assignments = Assignment::all();
-        $studentAssignments = $student->assignments;
+        $studentAssignments = $student->assignments()->with('teachers')->get();
         $meetings = Meeting::all();
         $studentMeetings = $student->meetings;
+        $studentClubs = $student->clubs;
         $vv = collect($student->stream->subjects()->pluck('name'));
         $streamSubjects = $vv->toArray();
 
-        return view('admin.students.show',compact('student','subjects','studentSubjects','rewards','studentRewards','assignments','studentAssignments','meetings','studentMeetings','streamSubjects'));
+        return view('admin.students.show',compact('student','subjects','studentSubjects','awards','studentAwards','assignments','studentAssignments','meetings','studentMeetings','studentClubs','streamSubjects'));
     }
 
     /**
@@ -163,8 +176,9 @@ class StudentController extends Controller
         $intakes = Intake::all();
         $dormitories = Dormitory::all();
         $parents = $this->parentService->all();
+        $positions = StudentPositionEnum::cases();
 
-        return view('admin.students.edit',compact('student','streams','intakes','dormitories','parents'));
+        return view('admin.students.edit',compact('student','streams','intakes','dormitories','parents','positions'));
     }
 
     /**
@@ -199,12 +213,12 @@ class StudentController extends Controller
                 'dob' => $request->dob,
                 'doa' => $request->doa,
                 'position' => $request->position,
-                'stream_id' => $request->stream,
-                'intake_id' => $request->intake,
-                'dormitory_id' => $request->dormitory,
+                'stream_id' => $request->stream_id,
+                'intake_id' => $request->intake_id,
+                'dormitory_id' => $request->dormitory_id,
                 'school_id' => auth()->user()->school->id,
                 'admin_id' => Auth::user()->admin->id,
-                'parent_id' => $request->parent, 
+                'parent_id' => $request->parent_id, 
                 'active' => $request->active,
             ]);
 

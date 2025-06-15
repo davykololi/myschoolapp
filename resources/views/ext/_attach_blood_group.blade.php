@@ -1,5 +1,5 @@
     
-            <select id="blood_group" type="blood_group" value="{{old('blood_group')}}" class="user-form-input" name="blood_group" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Blood Group">
+            <select id="blood_group" type="blood_group" value="{{old('blood_group')}}" class="input-three" name="blood_group" data-te-select-init data-te-select-filter="true" data-te-select-size="sm" data-te-select-placeholder="Select Blood Group">
                 <option value="{{ __('A+') }}">{{ __('A-') }}</option>
                 <option value="{{ __('A+') }}">{{ __('A+') }}</option>
                 <option value="{{ __('B+') }}">{{ __('B-') }}</option>

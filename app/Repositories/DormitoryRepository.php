@@ -23,6 +23,11 @@ class DormitoryRepository implements DormitoryInterface
         return $this->dom->eagerLoaded()->get();
     }
 
+    public function paginated()
+    {
+        return $this->dom->eagerLoaded()->paginate(15);
+    }
+
     public function create(array $data)
     {
     	return $this->dom->create($data);

@@ -15,10 +15,8 @@ class CreateStreamSubjectTable extends Migration
     {
         Schema::create('stream_subject', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('stream_id')->unsigned();
-            $table->bigInteger('subject_id')->unsigned();
-            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
-            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
+            $table->foreignUuid('stream_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subject_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

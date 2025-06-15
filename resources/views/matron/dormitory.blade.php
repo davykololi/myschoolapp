@@ -37,8 +37,22 @@
             <ol>
             @forelse($dormitoryStudents as $student)
                 <li>
-                    {{ $student->user->full_name }} Class: {{ $student->stream->name }} 
-                    <img style="margin-left: 2em" width="30" height="30" src="/storage/storage/{{ $student->image }}">
+                    {{ $student->user->full_name }} Bed Number:
+
+                    @if($student->bed_number != null )
+                    <span>{{ $student->bed_number->number }}</span>
+                    @else
+                    <span>Bed Number Notyet assigned</span>
+                    @endif
+
+                      Class: {{ $student->stream->name }} 
+                    <span>
+                    @if($student->gender === "Male")
+                    <img class="rounded-full ring-4 ring-offset-4 ring-offset-black ring-blue-700 w-8 h-8 mr-6 dark:ring-slate-600" src="/storage/storage/{{$student->image }}" onerror="this.src='{{asset('static/avatar.png')}}'">
+                    @elseif($student->gender === "Female")
+                    <img class="rounded-full ring-4 ring-offset-4 ring-offset-black ring-blue-700 w-8 h-8 mr-6 dark:ring-slate-600" src="/storage/storage/{{$student->image }}" onerror="this.src='{{asset('static/female_avatar.png')}}'">
+                    @endif
+                    </span>
                 </li>
             @empty
             <p>No students assigned to {{ $dormitory->name }} Dormitory yet.</p>

@@ -19,7 +19,7 @@ class LibraryService
 
 	public function all()
 	{
-		return $this->libRepo->all();
+		return $this->libRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)
@@ -43,7 +43,7 @@ class LibraryService
 
 	public function createData(StoreRequest $request)
 	{
-		$data = $request->all();
+		$data = $request->validated();
         $data['code'] = strtoupper(Str::random(15));
         $data['school_id'] = Auth::user()->school->id;
 
@@ -52,7 +52,7 @@ class LibraryService
 
 	public function updateData(UpdateRequest $request)
 	{
-        $data = $request->only('name','phone_no');
+        $data = $request->only('name','phone_no','lib_head','lib_asshead');
         $data['school_id'] = Auth::user()->school->id;
 
         return $data;

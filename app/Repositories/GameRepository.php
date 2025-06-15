@@ -20,7 +20,12 @@ class GameRepository implements GameInterface
 
     public function all()
     {
-        return $this->game->eagerLoaded();
+        return $this->game->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->game->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

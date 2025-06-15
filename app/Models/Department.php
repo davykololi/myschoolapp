@@ -8,12 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Department extends Model implements Searchable
 {
     //
+    use HasUuids;
+    
     protected $table = 'departments';
-    protected $fillable = ['name','code','phone_no','head_name','asshead_name','motto','vision','mission','dept_section_id','school_id'];
+    protected $fillable = ['name','code','phone_no','head_name','asshead_name','motto','vision','mission','department_section_id','school_id'];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function getSearchResult(): SearchResult
     {
@@ -36,7 +48,7 @@ class Department extends Model implements Searchable
         return $this->belongsTo('App\Models\School')->withDefault();
     }
 
-    public function dept_section(): BelongsTo
+    public function department_section(): BelongsTo
     {
         return $this->belongsTo('App\Models\DepartmentSection')->withDefault();
     }
@@ -66,13 +78,13 @@ class Department extends Model implements Searchable
         return $this->belongsToMany('App\Models\Meeting')->withTimestamps();
     }
 
-    public function rewards(): BelongsToMany
+    public function awards(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
+        return $this->belongsToMany('App\Models\Award')->withTimestamps();
     }
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('teachers','school','subordinates','exams','assignments','subjects','meetings','dept_section')->get();
+        return $query->with('teachers','school','subordinates','exams','assignments','subjects','meetings','department_section');
     }
 }

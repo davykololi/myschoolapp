@@ -26,7 +26,7 @@ class AttachDetachStudentController extends Controller
     {
     	$assignment = Assignment::findOrFail($id);
     	$students = $request->students;
-    	$assignment->students()->attach($students);
+    	$assignment->students()->sync($students);
 
     	return back()->withSuccess('Done Successfully');
     }

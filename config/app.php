@@ -165,14 +165,13 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Cog\Laravel\Ban\Providers\BanServiceProvider::class,
-        Spatie\Html\HtmlServiceProvider::class,
         RoyceLtd\LaravelBulkSMS\LaravelBulkSMSServiceProvider::class,
         Artesaos\SEOTools\Providers\SEOToolsServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
-        Jimmyjs\ReportGenerator\ServiceProvider::class,
         Milon\Barcode\BarcodeServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -242,9 +241,8 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Image' => Intervention\Image\Facades\Image::class,
-        'Html' => Spatie\Html\Facades\Html::class,
         'Countdown' => jpmurray\LaravelCountdown\Facades\CountdownFacade::class,
-        'RoyceBulkSMS' => \RoyceLtd\LaravelBulkSMS\Facades\RoyceBulkSMS::class,
+        'RoyceBulkSMS' => RoyceLtd\LaravelBulkSMS\Facades\RoyceBulkSMS::class,
         'SEOMeta'       => Artesaos\SEOTools\Facades\SEOMeta::class,
         'OpenGraph'     => Artesaos\SEOTools\Facades\OpenGraph::class,
         'Twitter'       => Artesaos\SEOTools\Facades\TwitterCard::class,
@@ -253,6 +251,8 @@ return [
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Chart' => ArielMejiaDev\LarapexCharts\LarapexChart::class,
     ],
 
 ];

@@ -14,10 +14,9 @@ class CreatePdfGeneratorsTable extends Migration
     public function up()
     {
         Schema::create('pdf_generators', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->longText('content');
-            $table->bigInteger('school_id')->unsigned();
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
+            $table->foreignUuid('school_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

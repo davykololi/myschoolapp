@@ -20,7 +20,12 @@ class SubjectRepository implements SubjectInterface
 
     public function all()
     {
-        return $this->subject->eagerLoaded();
+        return $this->subject->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->subject->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)

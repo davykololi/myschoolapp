@@ -2,6 +2,7 @@
 @section('title', '| Librarians List')
 
 @section('content')
+@role('superadmin')
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-screen page-container">
@@ -9,15 +10,12 @@
         <div class="mx-2 md:mx-8 lg:mx-8">
             @include('partials.messages')
             <!-- Posts list -->
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <h2>LIBRARIANS LIST</h2>
-                    </div>
-                    <div class="pull-right">
-                        <a class="btn btn-success" href="{{route('superadmin.librarians.create')}}">Create</a>
-                    </div>
-                </div>
+            <h2 class="front-h2">LIBRARIANS LIST</h2>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <x-search-form/>
+                <a href="{{route('superadmin.librarians.create')}}" class="sm:mt-4">
+                    <x-button class="create-button">CREATE</x-button>
+                </a>
             </div>
             <div class="flex flex-col overflow-x-auto mt-12">
                 <div class="sm:-mx-6 lg:-mx-8">
@@ -33,19 +31,22 @@
                                         <th scope="col" class="px-2 py-4" width="10%">EMAIL</th>
                                         <th scope="col" class="px-2 py-4" width="10%">ID NO.</th>
                                         <th scope="col" class="px-2 py-4" width="10%">PHONE</th>
-                                        <th scope="col" class="px-2 py-4" width="10%">EMP NO.</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">EMP NO.</th>
                                         <th scope="col" class="px-2 py-4" width="5%">BANNED</th>
-                                        <th scope="col" class="px-2 py-4" width="10%">STATUS</th>
+                                        <th scope="col" class="px-2 py-4" width="5%">STATUS</th>
+                                        <th scope="col" class="px-2 py-4" width="10%">IMPERSONATE</th>
                                         <th scope="col" class="px-2 py-4" width="10%">ACTION</th>
                                     </tr>
                                 </thead>
                                 <!-- Table Body -->
                                 <tbody>
                                     @if(!empty($librarians))
-                                    @foreach($librarians as $librarian)
+                                    @foreach($librarians as $key => $librarian)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{$loop->iteration}}</div>
+                                            <div>
+                                                {{ $librarians->perPage() * ($librarians->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <div>{{$librarian->user->salutation}} {{$librarian->user->full_name}}</div>
@@ -79,7 +80,7 @@
                                                 @if($librarian->is_banned == 0)
                                                 <form action="{{ route('superadmin.librarian.bann',$librarian->id) }}" method="POST">
                                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                                    <button type="submit" class="text-white bg-red-700 px-4 py-1 rounded">BAN</button>
+                                                    <button type="submit" class="ban-button">BAN</button>
                                                 </form>
                                                 @elseif($librarian->is_banned == 1)
                                                 <form action="{{ route('superadmin.librarian.unbann',$librarian->id) }}" method="POST">
@@ -90,6 +91,13 @@
                                                 </form>
                                                 @endif
                                             </div>
+                                        </td>
+                                        <td class="whitespace-nowrap p-2">
+                                            @canBeImpersonated($librarian->user,$guard=null)
+                                            <a href="{{route('superadmin.impersonate',$librarian->user->id)}}" data-toggle='tooltip' data-placement='top' title="Impersonate" class="icon-style">
+                                                <button type="submit" class="impersonate-button">IMPERSONATE</button>
+                                            </a> 
+                                            @endCanBeImpersonated
                                         </td>
                                         <td class="whitespace-nowrap p-2">
                                             <form action="{{route('superadmin.librarians.destroy',$librarian->id)}}" method="POST" class="flex flex-row">
@@ -110,7 +118,17 @@
                                     @endforeach
                                     @endif
                                 </tbody>
+                                <tfoot>
+                                    @if($librarians->isEmpty())
+                                    <td colspan="12" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12 text-2xl">
+                                        {{ __('The Librarians Notyet Populated')}}.
+                                    </td>
+                                    @endif
+                                </tfoot>
                             </table>
+                        </div>
+                        <div class="my-4">
+                            {{ $librarians->links() }}
                         </div>
                     </div>
                 </div>
@@ -119,4 +137,5 @@
     </div>
 </div>
 </x-backend-main>
+@endrole
 @endsection

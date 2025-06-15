@@ -2,6 +2,7 @@
 @section('title', '| Authors Books')
 
 @section('content') 
+@role('librarian')
   <!-- frontend-main view -->
   <x-frontend-main>
     <div class="max-w-full h-screen">
@@ -66,6 +67,7 @@
         </div>
     </div>
   </x-frontend-main>
+@endrole
 @endsection
 
 

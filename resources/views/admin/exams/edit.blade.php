@@ -7,27 +7,35 @@
 <!-- frontend-main view -->
 <x-backend-main>
 <div class="max-w-full md:p-8 lg:p-8 shadow-2xl">
-    <div class="col-lg-12">
+    <div class="w-full">
         @include('partials.errors')
-        <div class="card">
+        <div class="mx-2 md:mx-8 lg:mx-8">
             <div>
                 <h2 class="admin-h2">Edit An Exam</h2>
             </div>
-            <div class="text-right">
-                <x-back-button/>
+            <div class="justify-right">
+                <x-button class="back-button">
+                    <x-back-svg-n-url/>
+                </x-button>
             </div>
             <div class="px-4 border-2 mt-8 py-8">
                 <form action="{{ route('admin.exams.update', $exam->id) }}" method="post" class="form-horizontal" enctype="multipart/form-data">
                     @include('ext._csrfdiv')
                     <input type="hidden" name="_method" value="PUT">
                     <div class="w-full flex flex-col md:flex-row lg:flex-row mb-4 gap-2">
-                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
                             <label class="control-label col-sm-2" >Exam Name</label>
                             <div class="flex flex-col">
                                 <input type="text" name="name" id="name" class="lib-form-input" value="{{ $exam->name }}">
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
+                            <label class="control-label col-sm-2" >Exam Initials</label>
+                            <div class="flex flex-col">
+                                <input type="text" name="initials" id="initials" class="lib-form-input" value="{{ $exam->initials }}">
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
                             <label class="w-full" >Start Date</label>
                             <div class="flex flex-col">
                                 <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>
@@ -35,7 +43,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 lg:w-1/3 md:mx-2 lg:mx-2">
+                        <div class="w-full md:w-1/4 lg:w-1/4 md:mx-2 lg:mx-2">
                             <label class="control-label col-sm-2" >End Date</label>
                             <div class="flex flex-col">
                                 <div class="relative w-full" data-te-datepicker-init data-te-inline="true" data-te-input-wrapper-init>

@@ -10,9 +10,9 @@
         <thead>
             <tr>
                 <td><b>NO</b></td>
-                <td><b>NAME</b></td>
+                <td><b>TEACHER</b></td>
                 <td><b>SUBJECT</b></td>
-                <td><b>PHONE NO</b></td>
+                <td><b>MOBILE</b></td>
                 <td><b>EMAIL</b></td>
             </tr>
         </thead>

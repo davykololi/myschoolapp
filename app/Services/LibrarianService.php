@@ -21,7 +21,7 @@ class LibrarianService
 
 	public function all()
 	{
-		return $this->librarianRepo->all();
+		return $this->librarianRepo->paginated();
 	}
 
 	public function create(StoreRequest $request)

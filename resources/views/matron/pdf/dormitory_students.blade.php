@@ -28,11 +28,11 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $student->user->full_name }}</td>
                 <td>{{ $student->admission_no }}</td>
-                <td>
+                <td class="mx-0.5">
                     @if($student->bed_number != null)
                     {{ $student->bed_number->number }}
                     @else
-                    {{ __('...........') }}
+                    {{ __('........................') }}
                     @endif
                 </td>
                 <td>{{ $student->stream->name}}</td>

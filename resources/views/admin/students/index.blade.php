@@ -11,60 +11,59 @@
         <div class="mx-2 md:mx-8 lg:mx-8">
             <!-- Posts list -->
             @if(!empty($students))
-            <div class="w-full">
-                <div class="">
-                    <div class="text-center py-4 group-hover:text-red-600">
-                        <h2 class="admin-h2 font-branda">STUDENTS LIST</h2>
-                        <h5>Page {{ $students->currentPage() }} of {{ $students->lastPage() }}</h5>
-                    </div>
-                    <div class="flex flex-row mb-4" style="float: right;">
-                        @can('studentRegistrar')
-                        <div class="inline-flex">
-                            <a href="{{route('admin.students.create')}}">
-                                <x-carbon-document-add class="w-16 h-10 bg-blue-700 text-white px-2 py-0.5 rounded mx-1"/>
-                            </a>
-                            <a class="excel" href="{{route('admin.export.students')}}">
-                                <x-excel-svg/>
-                            </a> 
-                            <a href="{{ route('admin.school.students') }}" class="justify-center items-center">
-                                <x-carbon-document-pdf class="w-16 h-10 bg-orange-500 text-white px-4 py-0.5 rounded mx-1"/>
-                            </a>
-                        </div>
-                        @endcan
-                    </div>
-                    <div class="pt-8 uppercase text-center font-2xl">
-                        @include('partials.messages')
-                        @include('partials.errors')
-                    </div>
-                </div>
+            <h1 class="admin-h2 font-branda">STUDENTS LIST</h1>
+            <p>Page {{ $students->currentPage() }} of {{ $students->lastPage() }}</p>
+            <div class="pt-8 uppercase text-center font-2xl">
+                @include('partials.messages')
+                @include('partials.errors')
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center mx-2">
+                <x-search-form/>
+                @can('studentRegistrar')
+                <span class="flex flex-row justify-between items-center">
+                    <a href="{{route('admin.students.create')}}">
+                        <x-carbon-document-add class="w-16 h-10 bg-blue-700 text-white px-2 py-0.5 rounded mx-1"/>
+                    </a>
+                    <a class="excel" href="{{route('admin.export.students')}}">
+                        <x-excel-svg/>
+                    </a> 
+                    <a href="{{ route('admin.school.students') }}" class="justify-center items-center">
+                        <x-carbon-document-pdf class="w-16 h-10 bg-orange-500 text-white px-4 py-0.5 rounded"/>
+                    </a>
+                </span>
+                @endcan
             </div>
             <div class="w-full flex flex-col overflow-x-auto md:mx-2 mt-8">
                 <div class="sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                         <div class="overflow-x-auto" data-te-datatable-init>
-                            <table class="group text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly shadow-3xl">
+                            <table class="group text-left text-sm font-light bg-transparent w-full mx-auto justify-evenly shadow-3xl" id="search-table">
                                 <!-- Table Headings -->
                                 <thead class="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 flex-grow dark:text-slate-400 dark:bg-black">
                                     <tr>
                                         <th scope="col" class="px-2 py-4 group-hover:text-red-600" width="5%">NO</th>
                                         <th scope="col" class="px-2 py-4 group-hover:text-orange-600" width="10%">AVATAR</th>
                                         <th scope="col" class="px-2 py-4 group-hover:text-yellow-400" width="20%">NAME</th>
-                                        <th scope="col" class="px-2 py-4 group-hover:text-purple-600" width="10%">ADM NO</th>
+                                        <th scope="col" class="px-2 py-4 group-hover:text-purple-600" width="10%">ADMNO</th>
                                         <th scope="col" class="px-2 py-4 group-hover:text-blue-600" width="10%">CLASS</th>
                                         <th scope="col" class="px-2 py-4 group-hover:text-green-600" width="10%">PHONE</th>
                                         <th scope="col" class="px-2 py-4 group-hover:text-sky-600" width="10%">EMAIL</th>
                                         <th scope="col" class="px-2 py-4 group-hover:text-red-600" width="10%">ROLE</th>
-                                        <th scope="col" class="px-2 py-4 group-hover:text-red-600" width="15%">ACTION</th>
+                                        <th scope="col" class="px-2 py-4 group-hover:text-red-600" width="5%">PDF</th>
+                                        <th scope="col" class="px-2 py-4 group-hover:text-red-600" width="10%">ACTION</th>
                                     </tr>
                                 </thead>
                                 <!-- Table Body -->
                                 <tbody>
-                                    @foreach($students as $student)
+                                    @if($students->isNotEmpty())
+                                    @foreach($students as $key => $student)
                                     <tr class="border-b dark:border-neutral-500 dark:text-slate-400 dark:bg-gray-800">
                                         <td class="whitespace-nowrap p-2">
-                                            <div>{{ $loop->iteration }}</div>
+                                            <div>
+                                                {{ $students->perPage() * ($students->currentPage() - 1) + $key + 1 }}
+                                            </div>
                                         </td>
-                                        <td class="whitespace-nowrap p-2 relative">
+                                        <td class="whitespace-nowrap p-2">
                                             <div>@include('partials.student-avatar')</div>
                                         </td>
                                         <td class="whitespace-nowrap p-2">
@@ -87,7 +86,16 @@
                                                 {{ $student->position->value }}
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap p-2 flex flex-row inline-flex">
+                                        <td class="whitespace-nowrap p-1 items-center">
+                                            <form action="{{ route('admin.student.details') }}" method="GET">
+                                                @csrf
+                                                <input type="hidden" name="student_id" value="{{ $student->id}}">
+                                                <x-button type="submit" class="items-center justify-center">
+                                                    <x-carbon-document-pdf class="w-8 h-8 bg-orange-500 text-white p-1 rounded -mt-1"/>
+                                                </x-button>    
+                                            </form>
+                                        </td>
+                                        <td class="whitespace-nowrap flex flex-row p-2">
                                             <form action="{{route('admin.students.destroy',$student->id)}}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -105,23 +113,22 @@
                                                 </button>
                                                 @endcan
                                             </form>
-                                            <form action="{{ route('admin.student.details') }}" method="GET">
-                                                @csrf
-                                                <input type="hidden" name="student" value="{{ $student->id}}">
-                                                <button type="submit">
-                                                    <x-carbon-document-pdf class="w-8 h-8 bg-orange-500 text-white p-1 rounded mx-1"/>
-                                                </button>     
-                                            </form>
                                         </td>
                                     </tr>
                                     @endforeach
+                                    @endif
                                 </tbody>
                                 <tfoot>
-                                    <div class="relative my-4 text-white dark:text-slate-200">
-                                        {{ $students->links() }}
-                                    </div>
+                                    @if($students->isEmpty())
+                                    <td colspan="12" class="w-full text-center text-white bg-red-700 uppercase tracking-tighter dark:bg-gray-800 dark:text-slate-400 h-12 text-2xl">
+                                        {{ Auth::user()->school->name }} has no students at the moment.
+                                    </td>
+                                    @endif
                                 </tfoot>
                             </table>
+                        </div>
+                        <div class="my-4 text-white dark:text-slate-200">
+                            {{ $students->links() }}
                         </div>
                     </div>
                 </div>
@@ -134,3 +141,14 @@
 @endcan
 @endrole
 @endsection
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#example').DataTable({
+            // Add custom options here
+        })
+    })
+</script>

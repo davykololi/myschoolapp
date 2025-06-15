@@ -12,6 +12,7 @@ use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Number;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,10 +22,12 @@ use	Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Notifications\StudentResetPasswordNotification;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 class Student extends Model implements Searchable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUuids;
+    
     protected $fee_balances = [];
     /**
     * The attributes that are mass assignable.
@@ -32,8 +35,17 @@ class Student extends Model implements Searchable
     */
     protected $table = 'students';
     protected $fillable = ['image','gender','blood_group','adm_mark','admission_no','phone_no','dob','doa','active','position','stream_id','intake_id','dormitory_id','admin_id','parent_id','is_banned','payment_locked','lock','user_id','school_id'];
-    protected $appends = ['age','full_name','fee_balance'];
+    protected $appends = ['age','image_url','fee_balance'];
     protected $casts = ['created_at' => 'datetime:d-m-Y H:i','position'=> StudentPositionEnum::class];
+
+    // Specify the primary key
+    protected $primaryKey = "id";
+
+    // Specify key type as Uuids
+    protected $keyType = "string";
+
+    // Disable auto incrementing for Uuids
+    public $incrementing = false;
 
     public function sendPasswordResetNotification($token)
     {
@@ -198,9 +210,9 @@ class Student extends Model implements Searchable
         return $this->belongsToMany('App\Models\Meeting')->withTimestamps();
     }
 
-    public function rewards(): BelongsToMany
+    public function awards(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Reward')->withTimestamps();
+        return $this->belongsToMany('App\Models\Award')->withTimestamps();
     }
 
     public function clubs(): BelongsToMany
@@ -280,7 +292,7 @@ class Student extends Model implements Searchable
 
     public function scopeEagerLoaded($query)
     {
-        return $query->with('libraries','teachers','class','stream','clubs','payments','payment_records','user','dormitory');
+        return $query->with('libraries','teachers','stream','clubs','payments','payment_records','user','dormitory','bed_number');
     }
 
     public function getTotalPaymentAmountAttribute()

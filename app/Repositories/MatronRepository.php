@@ -20,7 +20,12 @@ class MatronRepository implements MatronInterface
 
     public function all()
     {
-        return $this->matron->eagerLoaded();
+        return $this->matron->eagerLoaded()->get();
+    }
+
+    public function paginated()
+    {
+        return $this->matron->eagerLoaded()->paginate(15);
     }
 
     public function create(array $data)
